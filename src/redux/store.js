@@ -5,7 +5,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 // import createHistory from 'history/createHashHistory'; // 兼容IE
 // 兼容IE
 // import { createHashHistory } from 'history';
-import createHistory from 'history/createBrowserHistory';
+import { createBrowserHistory as createHistory } from 'history';
 import {
   routerReducer,
   routerMiddleware,

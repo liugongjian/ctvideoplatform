@@ -91,6 +91,6 @@ module.exports = merge(common, {
       'process.env.NODE_ENV': JSON.stringify('development'),
       __DEVELOPMENT__: true,
       __SERVER__: false
-    })
+    }),
   ]
 });
