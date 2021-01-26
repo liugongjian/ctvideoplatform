@@ -114,3 +114,8 @@ export function loadAction() {
         }
      ```
   - 路由请按照格式添加，详细的在routeconfig文件中有注释
+  - ！！！不要写任何的行内样式！！！
+  - 可以不使用less in js ，自己写less文件注意格式和层级，避免影响他人组件
+  - 记得开启编辑器的eslint检查
+- 项目中需要的文档
+  - [antd 3.x ](https://3x.ant.design/components/button-cn/) 
