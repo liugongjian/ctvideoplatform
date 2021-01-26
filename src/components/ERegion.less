@@ -1,0 +1,92 @@
+@import (reference) '~Styles/index.less';
+
+@eregion-prefix-cls:~"@{emr-prefix}-eregion";
+
+.@{eregion-prefix-cls} {
+    max-height: 600px;
+    overflow-y: auto;
+    width: 410px;
+    position: absolute;
+    z-index: 99999;
+    padding: 10px;
+    min-height: 170px;
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    left: -290px;
+    background-color: #fff;
+    color: #666;
+    text-align: left;
+    &-pBox{
+        margin: 5px;
+        div{
+            display: inline-block;
+            width: 68px;
+            // text-align: center;
+        }
+    }
+    &-pName{
+        cursor: pointer;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        line-height: 28px;
+        font-size: 14px;
+        text-align: left;
+        &:hover{
+            background-color: #f7f6f6;
+        }
+        &-choosen{
+            font-weight: bold;
+        }
+        span{
+            text-align: left;
+        }
+    }
+    &-city{
+        position: absolute;
+        left: 0;
+        top: 15px;
+        width: 410px;
+        min-height: 170px;
+        z-index: 9;
+        background-color: #fff;
+        padding: 20px;
+        &-choose{
+            margin: 10px;
+            display: inline-block;
+            padding: 0 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            line-height: 28px;
+            font-size: 14px;
+            &:hover{
+                background-color: #f7f6f6;
+            }
+            &-icon{
+                color: #ff9832;
+            }
+            &-text{
+                margin-left: 7px;
+            }
+        }
+    }
+    &-province-show{
+        font-size: 16px;
+        font-weight: bolder;
+        color:#333;
+    }
+    &-goback{
+        display: inline-block;
+        height: 20px;
+        padding: 0 10px;
+        border: 1px solid #ccc;
+        line-height: 20px;
+        margin-left: 10px;
+        border-radius: 2px;
+        background-color: #fff;
+        cursor: pointer;
+        &:hover{
+            color: #3399FF ;
+            border-color: #3399FF;
+        }
+    }
+}

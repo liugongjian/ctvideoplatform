@@ -1,0 +1,18 @@
+@import (reference) '../style/index.less';
+
+@table-prefix-cls: ~'@{emr-prefix}-table';
+
+.@{table-prefix-cls} {
+  :global {
+    table {
+      table-layout: fixed;
+      th,
+      td {
+        border-bottom: 1px solid #E9E9E9;
+      }
+      td {
+        padding: 14px 16px;
+      }
+    }
+  }
+}

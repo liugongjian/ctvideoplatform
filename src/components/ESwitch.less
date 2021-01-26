@@ -1,0 +1,45 @@
+@import (reference) '../style/index.less';
+
+@switch-prefix-cls: ~'@{emr-prefix}-switch';
+
+.@{switch-prefix-cls} {
+  :global {
+    .ant-switch {
+      height: 4px;
+      line-height: 4px;
+      width: 30px;
+      min-width: 30px;
+      background-color: @mid-grey;
+      opacity: 1;
+      box-sizing: border-box;
+    }
+    .ant-switch-checked {
+      height: 12px;
+      line-height: 12px;
+      background-color: @primary-active-color;
+    }
+    .ant-switch-disabled, .ant-switch-loading {
+      background-color: @disable-radio-border;
+    }
+    .ant-switch-loading-icon,
+    .ant-switch:after {
+      width: 16px;
+      height: 16px;
+      top: -7px;
+      left: -1px;
+      border: 1px solid @mid-grey;
+      box-shadow: none;
+    }
+    .ant-switch-checked:after {
+      margin-left: 2px;
+      transform: translateX(100%);
+    }
+    .ant-switch-checked.ant-switch:after {
+      top: -3px;
+      border-color: @primary-active-color;
+    }
+    .ant-switch-disabled.ant-switch:after {
+      border: 1px solid @disable-radio-border;
+    }
+  }
+}

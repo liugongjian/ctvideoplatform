@@ -1,0 +1,65 @@
+
+
+:global {
+  .EMR-modal {
+      .ant-modal-content {
+
+          .ant-modal-header {
+              padding: 40px 40px 20px;
+              border: none;
+          }
+  
+          .ant-modal-body {
+              padding: 0;
+          }
+  
+          .ant-modal-footer {
+              padding: 0;
+              border: none;
+              text-align: center;
+          }
+      }
+  }
+}
+
+.modal-client-title {
+  position: relative;
+
+  &-text {
+      font-size: 16px;
+      line-height: 21px;
+      color: #333;
+  }
+
+  &-close {
+      z-index: 10;
+      position: absolute;
+      right: -5px;
+      top: 0;
+      padding: 0;
+      cursor: pointer;
+      border: 0;
+      background: transparent;
+      text-decoration: none;
+      transition: color 0.3s;
+      color: #999;
+      outline: 0;
+
+      &:focus, &:hover {
+          color: rgba(0,0,0,0.75);
+          text-decoration: none;
+      }
+
+      &-x {
+          display: block;
+          font-style: normal;
+          text-align: center;
+          text-transform: none;
+          text-rendering: auto;
+          width: 22px;
+          height: 22px;
+          line-height: 22px;
+          font-size: 16px;
+      }
+  }
+}

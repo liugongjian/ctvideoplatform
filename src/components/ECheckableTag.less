@@ -1,0 +1,49 @@
+@import (reference) '../style/index.less';
+
+@checkabletag-prefix-cls: ~'@{emr-prefix}-checkabletag';
+
+.@{checkabletag-prefix-cls} {
+  :global {
+    .ant-tag {
+      line-height: 26px;
+      height: 28px;
+      padding: 0 10px;
+      font-size: 14px;
+      color: @font-main-color;
+      background-color: @white;
+      border-color: @primary-active-color;
+      &.disabled {
+        // border-color: @disable-bg-color;
+        // background: @disable-bg-color;
+        // color: @disable-font-color;
+        background: #f0f0f0;
+        border: 1px solid #ececec;
+        color: @light-grey;
+        cursor: not-allowed;
+        &:hover {
+          color: @light-grey;
+        }
+      }
+      &.lg {
+        line-height: 30px;
+        height: 32px;
+      }
+      &.sm {
+        line-height: 24px;
+        height: 26px;
+      }
+      &:hover,
+      a:hover {
+        color: @primary-active-color;
+        opacity: 1;
+      }
+    }
+    .ant-tag-checkable-checked {
+      background-color: @primary-active-color;
+      color: @white;
+      &:hover {
+        color: @white;
+      }
+    }
+  }
+}

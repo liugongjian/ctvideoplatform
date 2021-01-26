@@ -1,0 +1,64 @@
+@import '~Styles/index.less';
+@manage-prefix-cls: ~'@{emr-prefix}-manage';
+
+.@{manage-prefix-cls} {
+  &-container {
+    // position: relative;
+    font-family: 'Microsoft Yahei', sans-serif;
+    // min-height: calc(100% - 50px);
+    height: calc(100vh - 50px);
+    overflow: hidden;
+    display: flex;
+    flex: auto;
+    flex-direction: row;
+  }
+  &-tab {
+    // width: 240px;
+    // position: fixed;
+    // padding-top: 50px;
+    // left: 0;
+    // top: 0;
+    // bottom: 0;
+    background-color: #f7f8f8;
+    // z-index: 9;
+    // flex: 0 0 15%;
+    min-height: 80vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  &-content {
+    //   padding: 0 20px 20px;
+      // margin-left: 240px;
+    //   background: #fff;
+      // flex: 0 0 85%;
+    flex: 1;
+    background-color: white;
+    overflow-y: scroll;
+    &-inner{
+      position: relative;
+    }
+  }
+  &-avatar {
+    height: 120px;
+  }
+  &-img {
+    display: block;
+    width: 41px;
+    height: 40px;
+    margin: 28px auto 0;
+  }
+  &-name {
+    font-family: 'Microsoft Yahei', sans-serif;
+    font-size: 20px;
+    margin-top: 12px;
+    text-align: center;
+  }
+  &-menu {
+    width: 240px;
+  }
+  &-main {
+    overflow:auto;
+    padding:20px;
+    height: calc(100vh - 120px);
+  }
+}

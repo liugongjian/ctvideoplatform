@@ -1,0 +1,48 @@
+@import (reference) '../style/index.less';
+
+@pagination-prefix-cls: ~'@{emr-prefix}-pagination';
+@bg-item: #F7F8F8;
+
+.@{pagination-prefix-cls} {
+  display: flex;
+  :global {
+    .ant-pagination-total-text {
+      flex: auto;
+      color: @mid-grey;
+    }
+    .ant-pagination-prev,
+    .ant-pagination-next,
+    .ant-pagination-item {
+      margin-right: 5px !important;
+    }
+    .ant-pagination-prev,
+    .ant-pagination-next {
+      .ant-pagination-item-link {
+        background: @bg-item !important;
+        color: @mid-grey;
+      }
+    }
+    .ant-pagination-item {
+      border: none;
+      border-radius: 0;
+      &.ant-pagination-item-active {
+        background: @bg-item;
+        a {
+          color: @primary-active-color;
+        }
+      }
+      &:hover:not(.ant-pagination-item-active) {
+        background: @primary-hover-color !important;
+        a {
+          color: @white;
+        }
+        &:focus {
+          background: @primary-active-color !important;
+        }
+
+      }
+    }
+  }
+  margin: 10px 0;
+  font-size: 12px;
+}

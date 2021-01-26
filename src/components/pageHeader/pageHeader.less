@@ -1,0 +1,42 @@
+@lineHeight:32px;
+.page-header{
+    padding: 20px;
+    height: 70px;
+    position: relative;
+    border-bottom: 1px solid #D8D8D8;
+    :global {
+        .ant-breadcrumb > span {
+            display: inline-block;
+            font-size: 22px;
+            height: @lineHeight;
+            max-width: 500px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .ant-breadcrumb{
+            white-space: nowrap;
+            line-height: @lineHeight;
+            overflow: hidden;
+            height: @lineHeight;
+            .ant-breadcrumb-link{
+                // font-size: 22px;
+                // height: 100%;
+                // line-height: 100%;
+                // display: inline-block;
+                // max-width: 300px;
+                // overflow: hidden;
+                // text-overflow: ellipsis;
+                float: left;
+                max-width: 400px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: inline-block;
+            }
+            .ant-breadcrumb-separator{
+                // font-size: 22px;
+                display: inline-block;
+                float: left;
+            }
+        }
+    }
+}

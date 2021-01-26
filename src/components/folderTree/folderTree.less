@@ -1,0 +1,100 @@
+@searchBarHeight: 40px;
+.folder-tree{
+    // :global{
+    //     // 父节点展开图标问题
+    //     .ant-tree-switcher_close > .ant-tree-switcher-icon {
+    //         transform: rotate(-90deg) !important;
+    //     }
+    //     .ant-tree-switcher_open > .ant-tree-switcher-icon {
+    //         transform: rotate(0deg) !important;
+    //     }
+        
+    // }
+    overflow: hidden;
+    display: block;
+    height: 100%;
+    border-right: 1px solid #D8D8D8;
+    padding-right: 20px;
+    :global{
+        .ant-tree li ul{
+            padding-left:7px;
+        }
+        .ant-spin-nested-loading{
+            height: 100%;
+            .ant-spin-container{
+                height: 100%;
+            }
+        }
+    }
+    .dept-title{
+        // height: 25px;
+        // line-height: 25px;
+        position: relative;
+    }
+    .dept-op{
+        position: absolute;
+        right: 0;
+    }
+    .dept-total{
+        margin-left:10px;
+        font-size: 12px;
+        color:#999999;
+        quotes: '(' ')';
+        display: inline-block;
+        overflow: hidden;
+        width: 37px;
+        text-overflow: ellipsis;
+    }
+    .dept-text{
+        max-width: calc(100% - 80px); // title过长问题
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        // vertical-align:middle;
+    }
+    .dept-total::before{
+        content:open-quote;
+    }
+    .dept-total::after{
+        content:close-quote;
+    }
+    .search-bar{
+        margin-bottom: 3px;
+    }
+  
+    .folder-wrapper{
+        overflow-y: scroll;
+        overflow-x: hidden;
+        height: calc(100% - @searchBarHeight);
+    }
+    .folder-wrapper::-webkit-scrollbar {
+        opacity: 0;
+        width:0;
+    }
+    .folder-scroll::-webkit-scrollbar{
+        opacity: 1;
+        width: 10px;
+    }
+    .folder-scroll::-webkit-scrollbar-track-piece {
+        background-color: #fff;
+    } /* 滚动条的内层滑轨背景颜色 */
+
+    .folder-scroll::-webkit-scrollbar-track {
+        background-color: #fff;
+    } /* 滚动条的外层滑轨背景颜色 */
+
+    .folder-scroll::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 10px;
+    } /* 滚动条的内层滑块颜色 */
+
+    .folder-scroll::-webkit-scrollbar-button {
+        background-color: #fff;
+        display: none;
+    } /* 滑轨两头的监听按钮颜色 */
+    
+
+}
+.add-folder{
+    // width:300px;
+}

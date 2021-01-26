@@ -1,0 +1,143 @@
+@itemHeight: 46px;
+@searchBarHeight: 40px;
+.group-picker{
+    overflow: hidden;
+    display: block;
+    height: 100%;
+    border-right: 1px solid #D8D8D8;
+    :global{
+        .ant-spin-nested-loading{
+            height: 100%;
+        }
+        .ant-spin-container{
+            height: 100%;
+        }
+    }
+    .group-wrapper{
+        overflow-y: scroll;
+        overflow-x: hidden;
+        height: calc(100% - @searchBarHeight);
+    }
+    .group-wrapper::-webkit-scrollbar {
+        opacity: 0;
+        width:0;
+    }
+    .group-scroll::-webkit-scrollbar{
+        opacity: 1;
+        width: 10px;
+    }
+    .group-scroll::-webkit-scrollbar-track-piece {
+        background-color: #fff;
+      } /* 滚动条的内层滑轨背景颜色 */
+    
+      .group-scroll::-webkit-scrollbar-track {
+        background-color: #fff;
+      } /* 滚动条的外层滑轨背景颜色 */
+    
+      .group-scroll::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 10px;
+      } /* 滚动条的内层滑块颜色 */
+    
+      .group-scroll::-webkit-scrollbar-button {
+        background-color: #fff;
+        display: none;
+      } /* 滑轨两头的监听按钮颜色 */
+    .search-bar{
+        padding-right: 20px;
+        margin-bottom: 3px;
+        height: @searchBarHeight;
+        line-height: @searchBarHeight;
+        // overflow: hidden;
+        display: flex;
+        .search-input{
+            width: 100%;
+            margin-right: 10px;
+        }
+        // .add-btn{
+        //     float: right;
+        //     width: 72px;
+        // }
+        // & > span{
+        //     display: inline-block;
+        // }
+    }
+    .add-btn{
+        font-size: 12px;
+    }
+    .group-item-wrapper{
+        &:first-child {
+            padding-top: 7px;
+        }
+        &:last-child {
+            padding-top: 7px;
+        }
+        &::selection {
+            color: #fff;
+            background: #44A1F6;
+        }
+        .group-item:hover {
+            background-color: #f0faff;
+        }
+        .group-item-selected {
+            // background-color: #f0faff;
+            // 没用，js中设置
+            color:#2A89E0 !important;
+            border-right: 3px solid #2883D6;
+        }
+        .group-item{
+            display: inline-block;
+            position: relative;
+            height: @itemHeight;
+            margin: 0;
+            padding: 0 5px;
+            color: #333;
+            line-height: @itemHeight;
+            width:100%;
+            text-decoration: none;
+            vertical-align: top;
+            // border-radius: 2px;
+        }
+        margin: 0;
+        padding: 4px 0 4px 10px;
+        white-space: nowrap;
+        list-style: none;
+        outline: 0;
+        line-height: @itemHeight;
+        cursor: pointer;
+        transition: all 0.3s;
+        .group-text-match{
+            color: red;
+        }
+        .group-text{
+            max-width: calc(100% - 80px); // title过长问题
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            // vertical-align:middle;
+        }
+        .group-op{
+            position: absolute;
+            right: 4px;
+        }
+        .group-total{
+            margin-left:10px;
+            font-size: 12px;
+            // color:#999999;
+            quotes: '(' ')';
+            display: inline-block;
+            overflow: hidden;
+            width: 37px;
+            text-overflow: ellipsis;
+        }
+        .group-total::before{
+            content:open-quote;
+        }
+        .group-total::after{
+            content:close-quote;
+        }
+    }
+    .add-btn-wrapper{
+        cursor: default;
+    }
+}

@@ -1,0 +1,81 @@
+@import (reference) '../../style/index.less';
+@prefixCls: ~'E-SearchTable';
+
+.@{prefixCls}-search-table-list {
+  // background-color: #fff;
+  // padding-bottom: 50px;
+  // .ant-row {
+  //   margin-bottom: 10px;
+  // }
+  // .ant-table-tbody > tr > td {
+  //   padding: 10px 8px;
+  // }
+  // .ant-table-row:nth-child(2n) {
+  //   background-color: #F7F7F7;
+  // }
+  // height: calc(100vh - 160px);
+  // overflow: auto;
+  .content-body {
+    &.default {
+      // margin: 10px;
+      // border: 1px solid #eee;
+      // padding: 10px;
+    }
+    .table-content {
+      position: relative;
+    }
+    .line {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      .label {
+        margin-right: 5px;
+      }
+      .content {
+      }
+    }
+    .inline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      white-space: nowrap;
+      // position: relative;
+      .left {
+        display: flex;
+        align-items: center;
+        .action-item {
+          margin-right: 20px;
+        }
+      }
+      .right {
+        display: flex;
+        align-items: center;
+      }
+    }
+    .search-wp {
+      display: flex;
+      align-items: center;
+      .search-item {
+        margin-right: 8px;
+      }
+    }
+    .actions {
+      display: flex;
+      align-items: center;
+      .action-item {
+        margin-left: 8px;
+      }
+      .reset {
+        margin-left: 20px;
+        color: #2a89e0;
+        cursor: pointer;
+      }
+    }
+  }
+  :global {
+    table {
+      table-layout: auto;
+    }
+  }
+}

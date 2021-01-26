@@ -1,0 +1,71 @@
+@import (reference) '~Styles/index.less';
+
+@formpop-prefix-cls:~"@{emr-prefix}-formpop";
+
+.@{formpop-prefix-cls} {
+    width: 100%;
+    &-label{
+        display: block;
+        width: 70%;
+        padding-left: 80px;
+        font-size: 14px;
+        margin: 10px 0;
+        span:before{
+            display: inline-block;
+            margin-right: 4px;
+            content: "*";
+            font-family: "SimSun", sans-serif;
+            line-height: 1;
+            font-size: 14px;
+            color: #f5222d;
+        }
+        ::-webkit-input-placeholder{
+            color:#ccc
+        }
+        i{
+            vertical-align: middle;
+            padding-right: 5px;
+            margin-top: -2px;
+            display: inline-block;
+        }
+    }
+    &-input{
+        display: inline-block;
+        width: 70%;
+        margin: 0 10px;
+        list-style: none;
+        padding: 4px 11px;
+        height: 36px;
+        font-size: 14px;
+        line-height: 18px;
+        color: #333;
+        background-color: #fff;
+        border: 1px solid #d9d9d9;
+        border-radius: 2px;
+        transition: all 0.3s;
+        &-wrong:focus{
+            border:1px solid #FF8833;
+            outline: none;
+        }
+    }
+    &-ul{
+        //解决 因为antd造成的位置偏移
+        padding: 0;
+        margin: 0;
+        li{
+            list-style: none;
+            line-height: 20px;
+            i{
+                vertical-align: middle;
+                padding-right: 5px;
+                margin-top: -2px;
+                display: inline-block;
+            }
+        }
+    }
+    &-wrong{
+        color:#FF8833;
+        font-size: 12px;
+        margin-left: 83px;
+    }
+}

@@ -1,0 +1,101 @@
+@import (reference) '../style/index.less';
+
+.btn-base() {
+  background-color: @minor-color;
+  border: none;
+  color: @white;
+}
+
+:global {
+
+  .ant-btn {
+    &:focus,
+    &:hover {
+      border: 1px solid @primary-hover-color;
+      color: @font-main-color;
+      // background-color: #fff;
+    }
+
+    &:active {
+      border: 1px solid @primary-active-color;
+      color: @primary-active-color;
+    }
+
+    // background-color: @primary-hover-color;
+    &[disabled] {
+      &:active,
+      &:focus,
+      &:hover {
+        color: @light-grey;
+        background-color: @disable-radio-bg;
+      }
+      color: @light-grey;
+      background-color: @disable-radio-bg;
+    }
+    
+    transition: 0s;
+  }
+
+  .ant-btn-primary {
+    .btn-base;
+
+    &:focus,
+    &:hover {
+      // .btn-base;
+      border: none;
+      color: @white;
+      background-color: @minor-hover-color;
+    }
+
+    &:active {
+      color: @white;
+      background-color: @minor-active-color;
+    }
+
+    &[disabled] {
+      &:active,
+      &:focus,
+      &:hover {
+        color: @white;
+        background-color: @disable-minor-btn-bg;
+      }
+      color: @white;
+      background-color: @disable-minor-btn-bg;
+    }
+  }
+
+  .ant-btn-danger {
+    .btn-base;
+    background-color: @danger-color;
+    &:focus,
+    &:hover {
+      // .btn-base;
+      border: none;
+      color: @white;
+      background-color: @danger-hover-color;
+    }
+
+    &:active {
+      color: @white;
+      background-color: @danger-hover-color;
+    }
+
+    &[disabled] {
+      &:active,
+      &:focus,
+      &:hover {
+        color: @white;
+        background-color: @disable-minor-btn-bg;
+      }
+      color: @white;
+      background-color: @disable-minor-btn-bg;
+    }
+  }
+
+  transition: 0s;
+}
+
+.ant-click-animating-node,
+  [ant-click-animating-without-extra-node]:after {
+    animation: 0s !important;
+  }

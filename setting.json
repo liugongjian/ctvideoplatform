@@ -1,0 +1,9 @@
+"path-intellisense.mappings": {
+    "component": "${workspaceRoot}/src/component",
+    "@": "${workspaceRoot}/src",
+    "Components": "${workspaceRoot}/src/components",
+    "Assets": "{workspaceRoot}/src/assets/*",
+    "Styles": "{workspaceRoot}/src/style/*",
+    "Container": "{workspaceRoot}/src/container/*",
+    "@ant-design/icons/lib/dist$": "{workspaceRoot}/src/icons.js",
+}

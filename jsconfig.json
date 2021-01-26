@@ -1,0 +1,38 @@
+{
+  "include": [
+    "./src/*",
+    "./src/**/*",
+    "./src/**/**/*",
+  ],
+  "compilerOptions": {
+    "target": "es6",
+    "jsx": "react",
+    "allowSyntheticDefaultImports": false,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "Assets/*": [
+        "src/assets/*"
+      ],
+      "Components/*": [
+        "src/components/*"
+      ],
+      "Styles/*": [
+        "src/style/*"
+      ],
+      "Container": [
+        "src/container/*"
+      ],
+      "@ant-design/icons/lib/dist$": [
+        "src/icons.js"
+      ],
+    },
+    "experimentalDecorators": true
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

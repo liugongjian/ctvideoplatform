@@ -1,0 +1,19 @@
+@import (reference) '../style/index.less';
+
+@search-prefix-cls:~"@{emr-prefix}-search";
+
+.@{search-prefix-cls} {
+  position: relative;
+  &-input {
+
+  }
+  :global {
+    .ant-input-search-icon {
+      font-size: 20px;
+      color: #929292;
+      &:hover {
+        color: @primary-active-color;
+      }
+    }
+  }
+}

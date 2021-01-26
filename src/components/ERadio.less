@@ -1,0 +1,34 @@
+@import (reference) '../style/index.less';
+
+@radio-prefix-cls:~"@{emr-prefix}-radio";
+
+.@{radio-prefix-cls} {
+  :global{
+    .ant-radio-inner {
+      border-color: @light-grey;
+    }
+    .ant-radio-checked .ant-radio-inner {
+      border-color: @primary-active-color;
+    }
+    .ant-radio-inner:after {
+      width: 6px;
+      height: 6px;
+      left: 4px;
+      top: 4px;
+    }
+    .ant-radio-disabled .ant-radio-inner {
+      border-color: @disable-radio-border !important;
+      background-color: @disable-radio-bg;
+    }
+    .ant-radio-disabled .ant-radio-inner:after {
+      background-color: @disable-radio-inner;
+    }
+    .ant-radio-checked:not(.ant-radio-disabled) .ant-radio-inner {
+      background-color: @primary-active-color;
+    }
+    .ant-radio-checked:not(.ant-radio-disabled) .ant-radio-inner:after {
+      background-color: @white;
+    }
+  }
+}
+

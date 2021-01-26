@@ -1,0 +1,747 @@
+@font-face {
+    font-family: 'icomoon';
+    src: url('icomoon.eot');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'icomoon';
+    src: url(data:application/font-woff2;charset=utf-8;base64,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) format('woff2'),
+    url(data:application/font-woff;charset=utf-8;base64,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) format('woff'),
+    url('icomoon.ttf') format('truetype'),
+    url('icomoon.svg#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+[class^="icon-"], [class*=" icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'icomoon' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-address:before {
+    content: "\e900";
+}
+.icon-footerIcon:before {
+    content: "\e901";
+}
+.icon-heart:before {
+    content: "\e902";
+}
+.icon-help:before {
+    content: "\e903";
+}
+.icon-list:before {
+    content: "\e904";
+    font-size: 20px;
+    vertical-align: middle;
+    display: inline-block;
+}
+.icon-msg:before {
+    content: "\e905";
+}
+.icon-quota:before {
+    content: "\e906";
+}
+.icon-redheart:before {
+    content: "\e907";
+    color: #f42548;
+}
+
+
+ul,li {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+a{
+    text-decoration: none;
+    color:inherit
+}
+.console-heade .icon-cpu:before {
+    content: "\e900";
+}
+.console-header{
+    position: fixed;
+    width: 100%;
+    height: 50px;
+    top: 0;
+    z-index: 2000;
+    background: #222222;
+    font-size: 14px;
+    color: #ffffff;
+    font-family: "Microsoft Yahei", tahoma, arial, "Hiragino Sans GB", 宋体;
+    font-style: normal;
+}
+.console-header .header-left{
+    float: left;
+    margin-left: 30px;
+}
+.console-header .logo{
+    width: 145px;
+    height: 45px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: table-cell;
+    vertical-align: middle;
+}
+.console-header .logo img{
+    /*width: 100%;*/
+}
+.console-header .center{
+    cursor: pointer;
+    display: table-cell;
+    vertical-align: middle;
+    /*width: 100px;*/
+    font-size: 16px;
+    color: #ffffff;
+    padding-left: 10px;
+}
+.console-header .console-dropdown {
+    /*width: 150px;*/
+    height: 50px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: table-cell;
+    /*vertical-align: middle;*/
+}
+.console-header .navList .nav{
+    display: table-cell;
+    font-size: 14px;
+    line-height: 50px;
+    margin-right: 20px;
+    height: 50px;
+    color: #aaa;
+    padding: 0 10px;
+}
+.console-header .navList .nav img{
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+.console-header .navList .navlabel{
+    display: block;
+    width: 100px;
+    height: 50px;
+    text-align: center;
+    position: relative;
+}
+.console-header .navList .navlabel:hover{
+    color: #ffffff;
+}
+.console-header .navList .navlabel .name{
+    margin-right: 5px;
+}
+.console-header .navList .navlabel svg{
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+}
+.console-header .navList .subnav{
+    width: 18px;
+    height: 18px;
+    font-size: 14px;
+}
+/*.console-header .navList .nav:hover{*/
+    /*background-color: #6C6C6C;*/
+    /*color: #fff;*/
+/*}*/
+
+.console-header .navList .nav span{
+    margin-left: 8px;
+}
+.console-header .navList .subnav span{
+    margin:0;
+}
+.console-header .secondNav{
+    width: 90%;
+    display: none;
+    position: fixed;
+    top: 50px;
+    left: 5%;
+    background-color: #fff;
+    -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.15);
+    border-radius: 0 0 2px 2px;
+}
+.console-header .secondNav:before{
+    position: absolute;
+    content: "";
+    width: 0;
+    height: 0;
+    display: inline-block;
+    border: 5px solid transparent;
+    border-bottom-color: #fff;
+    top: -10px;
+    left: 267px;
+}
+.console-header .secondNav .listNav{
+    width: calc(100% - 40px);
+/* height: 200px; */
+/* position: absolute; */
+/* top: 50px; */
+/* left: 10%; */
+    background: #FFFFFF;
+    color: #666;
+    padding: 20px;
+    font-size: 12px;
+}
+.console-header .secondNav ul{
+     width: 100%;
+    position: relative;
+
+ }
+.console-header .secondNav ul li{
+    display: inline-block;
+    vertical-align: top;
+    width: 18%;
+    margin-right: 15px;
+    height: 100%;
+    position: relative;
+
+}
+.console-header .secondNav ul li span{
+    display: inline-block;
+    font-size: 14px;
+}
+.console-header .secondNav ul li span:first-child{
+    margin-right: 5px;
+}
+.console-header .secondNav ul li div{
+    line-height: 35px;
+    position: relative;
+
+}
+.console-header .secondNav ul li div:hover{
+    color: #f5b840;
+}
+.console-header .secondNav ul .firstNav{
+    margin-top: 30px;
+}
+.console-header .secondNav ul li label{
+    display: block;
+    border-bottom: 1px solid #c8c9cc;
+    height: 30px;
+    line-height: 30px;
+}
+
+.console-header .header-right{
+    float: right;
+    height: 50px;
+    line-height: 50px;
+    /*border-left: #282f3e 1px solid;*/
+}
+.console-header .header-right .node-list{
+    width: 120px;
+    height: 50px;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    cursor: pointer;
+    line-height: 50px;
+
+}
+.console-header .header-right .node-list .nodes{
+    display: inline-block;
+    color: #aaaaaa;
+    width: 120px;
+    text-align: left;
+    padding: 0 6px;
+    height: 24px;
+    line-height: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    font-size: 14px;
+    vertical-align: middle;
+    box-sizing: border-box;
+    -webkit-transition: all 0.3s;
+}
+.console-header .header-right .node-list .nodes:hover{
+    color: #fff;
+}
+.console-header .header-right .node-list .nodes span{
+    /*float: left;*/
+}
+.console-header .header-right .node-list .nodes .address{
+    width: 15px;
+    vertical-align: middle;
+    display: inline-block;
+    color: rgb(255, 209, 128);
+}
+.console-header .header-right .node-list .nodes .addressBlue{
+    color: rgb(95, 247, 212);
+}
+.console-header .header-right .node-list .nodes .address img{
+    width: 100%;
+}
+.console-header .header-right .node-list .nodes .node{
+    text-align: center;
+    overflow: hidden;
+    max-width: 72px;
+    width: 72px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    height: 24px;
+    margin-left: 5px;
+}
+.console-header .header-right .node-list .nodes .icon{
+    width: 15px;
+    overflow: hidden;
+    font-size: 14px;
+    padding-left: 5px;
+    float: right;
+}
+.console-header .header-right .node-list .nodes .icon img{
+    width: 100%;
+}
+
+.console-header .header-right .node-list .select{
+    position: absolute;
+    right: 0;
+    background-color: #fff;
+    -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.15);
+    border-radius: 0 0 2px 2px;
+    color: #333;
+    padding: 10px;
+}
+.console-header .AG {
+    line-height: 30px;
+    padding-bottom: 5px;
+}
+.console-header .AG label{
+    display: inline-block;
+    vertical-align: top;
+    width: 35px;
+    margin: 0 10px;
+    line-height: 30px;
+}
+.console-header .AG .AGlist {
+    width: 300px;
+    display: inline-block;
+    text-align: left;
+    line-height: 30px;
+}
+.console-header .AG .AGlist li{
+    display: inline-block;
+    line-height: 20px;
+}
+.console-header .AG .AGlist li span{
+    display: inline-block;
+    line-height: 20px;
+    padding: 1px 10px;
+}
+.console-header .AG .AGlist li span:hover{
+    background-color: #F5F6F7;
+}
+.console-header .HK {
+    line-height: 30px;
+    padding-bottom: 5px;
+}
+.console-header .HK label{
+    display: inline-block;
+    vertical-align: top;
+    width: 35px;
+    margin: 0 10px;
+    line-height: 30px;
+}
+.console-header .HK .HKlist {
+    text-align: left;
+    display: inline-block;
+    width: 300px;
+    line-height: 30px;
+
+}
+.console-header .HK .HKlist li{
+    display: inline-block;
+    line-height: 20px;
+}
+.console-header .HK .HKlist li span{
+    display: inline-block;
+    line-height: 20px;
+    padding: 1px 10px;
+}
+.console-header .HK .HKlist li span:hover{
+    background-color: #F5F6F7;
+}
+.console-header .LS {
+    line-height: 30px;
+    padding-bottom: 5px;
+}
+.console-header .LS label{
+    display: inline-block;
+    vertical-align: top;
+    width: 35px;
+    margin: 0 10px;
+    line-height: 30px;
+}
+.console-header .LS .LSlist {
+    display: inline-block;
+    width: 300px;
+    text-align: left;
+    line-height: 30px;
+
+}
+.console-header .LS .LSlist li{
+    display: inline-block;
+    line-height: 20px;
+}
+.console-header .LS .LSlist li span{
+    display: inline-block;
+    line-height: 20px;
+    padding: 1px 10px;
+}
+.console-header .LS .LSlist li span:hover{
+    background-color: #F5F6F7;
+}
+.console-header .TZ {
+    line-height: 30px;
+    padding-bottom: 5px;
+
+}
+.console-header .TZ label{
+    display: inline-block;
+    vertical-align: top;
+    width: 35px;
+    margin: 0 10px;
+    line-height: 30px;
+}
+.console-header .TZ .TZlist {
+    display: inline-block;
+    width: 300px;
+    text-align: left;
+    line-height: 30px;
+}
+.console-header .TZ .TZlist li{
+    display: inline-block;
+    line-height: 20px;
+}
+.console-header .TZ .TZlist li span{
+    display: inline-block;
+    line-height: 20px;
+    padding: 1px 10px;
+}
+.console-header .TZ .TZlist li span:hover{
+    background-color: #F5F6F7;
+}
+.console-header .node-list .AGlist,.node-list .HKlist,.node-list .LSlist,.node-list .TZlist{
+    width: 300px;
+    /*display: -webkit-box;*/
+    /*display: -ms-flexbox;*/
+    /*display: flex;*/
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    /*flex-direction: row;*/
+    -ms-flex-wrap: wrap;
+    /*flex-wrap: wrap;*/
+}
+
+.console-header .header-right .node-list .nodeInfo {
+    width: 375px;
+    position: absolute;
+    right: 0;
+    color: #333;
+    background-color: #fff;
+    -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.15);
+    border-radius: 0 0 2px 2px;
+    padding: 15px 20px 15px 15px;
+}
+.console-header .node-list .nodeInfo .title {
+    text-align: left;
+    line-height: 20px;
+    margin-bottom: 23px;
+}
+.console-header .node-list .nodeInfo .title label {
+    margin-left: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333333;
+}
+.console-header .node-list .nodeInfo .title .returnF {
+    margin-left: 10px;
+    border: 1px solid #CCCCCC;
+    padding: 0 15px;
+    display: inline-block;
+}
+.console-header .node-list .nodeInfo .title .returnF:hover{
+    color: #2883d6;
+    border: 1px solid #2883d6;
+}
+.console-header .node-list .nodeInfo ul {
+    line-height: 30px;
+    text-align: left;
+}
+.console-header .node-list .nodeInfo ul li {
+    display: inline-block;
+    margin-left: 10px;
+    line-height: 30px;
+    padding: 3px 15px;
+}
+.console-header .node-list .nodeInfo ul  a{
+    display: inline-block;
+}
+
+.console-header .node-list .nodeInfo ul li:hover{
+    background-color: #F5F6F7;
+}
+
+
+
+
+ .console-header .header-right .user{
+    position: relative;
+    display: table-cell;
+    vertical-align: middle;
+     padding-left:20px;
+     padding-right: 10px;
+    line-height: 50px;
+}
+.console-header .useShow .userImg{
+    display: table-cell;
+    vertical-align: middle;
+    width: 24px;
+    height: 24px;
+    line-height: 50px;
+}
+.console-header .useShow .userImg img{
+    width: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
+    vertical-align: middle;
+
+}
+.console-header .useShow .userList{
+    color: #aaaaaa;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+}
+.console-header .useShow .userList:hover{
+    color: #fff;
+}
+.console-header .useShow .userName{
+    display: inline-block;
+    width: 55px;
+}
+/*.console-header .useShow .userName:hover{*/
+    /*color: #fff;*/
+/*}*/
+.console-header .infoList{
+    position: absolute;
+    width: 100px;
+    color: #333;
+    background-color: #fff;
+    -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.15);
+    border-radius: 0 0 2px 2px;
+    text-align: center;
+}
+.console-header .infoList li:hover{
+    background-color: #F5F6F7;
+}
+.console-header .header-right .msg{
+    font-size: 16px;
+    display: table-cell;
+    vertical-align: middle;
+    padding-right: 30px;
+    color: #aaaaaa;
+}
+.console-header .header-right .msg:hover{
+    color: #ffffff;
+}
+.console-header .header-right .msg a img{
+    width: 100%;
+}
+.console-header .header-right .quota{
+    display: table-cell;
+    vertical-align: middle;
+    padding-right: 30px;
+    color: #aaaaaa;
+    font-size: 16px;
+}
+.console-header .header-right .quota a{
+    display: block;
+    transform: scaleX(-1);
+}
+.console-header .header-right .quota:hover{
+    color: #ffffff;
+}
+.console-header .header-right .quota a img{
+    width: 100%;
+}
+.console-header .header-right .help{
+    display: table-cell;
+    vertical-align: middle;
+    padding-right: 50px;
+    color: #aaaaaa;
+    font-size: 16px;
+}
+.console-header .header-right .help:hover{
+    color: #ffffff;
+}
+.console-header .header-right .help a img{
+    width: 100%;
+}
+/*.console-header .header-right .node-list .selected{*/
+    /*display: block;*/
+    /*width: 100%;*/
+    /*height: 50px;*/
+    /*text-align: left;*/
+/*}*/
+/*.console-header .header-right .node-list .select{*/
+    /*position: absolute;*/
+    /*color: #333;*/
+    /*width: 100%;*/
+    /*border: 1px solid #e4e7ed;*/
+    /*border-radius: 4px;*/
+    /*background-color: #fff;*/
+    /*box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);*/
+    /*height: 400px;*/
+    /*overflow-y:auto ;*/
+/*}*/
+/*.console-header .header-right .node-list span{*/
+    /*display: block;*/
+    /*position: absolute;*/
+    /*top: 45%;*/
+    /*right: 0;*/
+    /*font-size: 12px;*/
+/*}*/
+/*.console-header .header-right .node-list .select li{*/
+    /*font-size: 14px;*/
+    /*padding: 0 20px;*/
+    /*position: relative;*/
+    /*white-space: nowrap;*/
+    /*overflow: hidden;*/
+    /*text-overflow: ellipsis;*/
+    /*color: #606266;*/
+    /*height: 34px;*/
+    /*text-align: left;*/
+    /*line-height: 34px;*/
+    /*-webkit-box-sizing: border-box;*/
+    /*box-sizing: border-box;*/
+    /*cursor: pointer;*/
+/*}*/
+/*.console-header .header-right .node-list .select li:hover{*/
+    /*color: #409EFF;*/
+    /*font-weight: 700;*/
+    /*background-color: #f5f7fa;*/
+/*}*/
+
+
+
+/*.console-header .header-right .user{*/
+    /*display: inline-block;*/
+    /*float: left;*/
+    /*width: 140px;*/
+    /*margin-left: 30px;*/
+/*}*/
+/*.console-header .header-right .user .name{*/
+    /*display: block;*/
+    /*width: 100%;*/
+
+
+/*}*/
+/*.console-header .header-right .user ul{*/
+    /*position: absolute;*/
+    /*right:5px;*/
+    /*width: 120px;*/
+    /*padding: 15px 0;*/
+    /*margin-right: 20px;*/
+    /*margin-top: 3px;*/
+    /*background-color: #fff;*/
+    /*border: 1px solid #ebeef5;*/
+    /*border-radius: 4px;*/
+    /*box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);*/
+    /*transform-origin: center top 0px;*/
+/*}*/
+.console-header .hide{
+    display: none;
+}
+.console-header .show{
+    display: block;
+}
+/*.console-header .header-right .user ul li{*/
+    /*text-align: center;*/
+    /*color: #333;*/
+    /*line-height: 35px;*/
+/*}*/
+/*.console-header .header-right .user ul li a{*/
+    /*color: #333;*/
+/*}*/
+/*.console-header .header-right .user ul li:hover{*/
+    /*background-color: #ECF5FF;*/
+    /*color: #ECF5FF ;*/
+/*}*/
+.console-footer{
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    height: 34px;
+    line-height: 34px;
+    font-size: 12px;
+    background-color: #222222;
+    color: #aaaaaa;
+    font-family: "Microsoft Yahei";
+}
+.console-footer .left{
+    float: left;
+    padding-left: 20px;
+    color: #aaa;
+}
+.console-footer .left:hover{
+    color: #fff;
+}
+.console-footer .left .footer-font{
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 16px;
+    padding-right: 5px;
+}
+.console-footer .left span{
+
+    display: table-cell;
+    vertical-align: middle;
+}
+.console-footer .right{
+    /*display: inline-block;*/
+    float: right;
+    padding-right: 20px;
+}
+.console-footer .right span{
+    float: left;
+    padding-right: 10px;
+ }
+.console-footer .right span:hover{
+    color: #fff;
+}
+.console-footer .right a{
+    float: left;
+    padding-right: 10px;
+}
+.console-footer .right a:hover{
+    color: #fff;
+}
+
+.console-footer .right .line{
+    border-left: 1px solid #6c6c6c;
+    height: 12px;
+    margin: 11px 2px 0 2px;
+}
