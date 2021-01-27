@@ -5,5 +5,5 @@
     "Assets": "{workspaceRoot}/src/assets/*",
     "Styles": "{workspaceRoot}/src/style/*",
     "Container": "{workspaceRoot}/src/container/*",
-    "@ant-design/icons/lib/dist$": "{workspaceRoot}/src/icons.js",
+    // "@ant-design/icons/lib/dist$": "{workspaceRoot}/src/icons.js",
 }

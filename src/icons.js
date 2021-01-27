@@ -7,6 +7,14 @@ export {
 export {
   default as LoadingOutline
 } from '@ant-design/icons/lib/outline/LoadingOutline';
+export {
+  default as MenuFoldOutline
+} from '@ant-design/icons/lib/outline/MenuFoldOutline';
+export {
+  default as MenuUnfoldOutline
+} from '@ant-design/icons/lib/outline/MenuUnfoldOutline';
+
+
 // export what antd other components need
 // export {
 //   default as CloseOutline

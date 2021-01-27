@@ -11,6 +11,23 @@
     display: flex;
     flex: auto;
     flex-direction: row;
+    :global{
+      .ant-menu-inline-collapsed{
+        .ant-menu-item{
+          text-align: center;
+          a{
+            .anticon+span{
+              display: inline-block;
+              max-width: 0;
+              opacity: 0;
+            }
+          }
+        }
+      }
+      .ant-menu-vertical{
+        border-right: none;
+      }
+    }
   }
   &-tab {
     // width: 240px;
@@ -56,9 +73,15 @@
   &-menu {
     width: 240px;
   }
+  &-menuInline{
+    width: 100px;
+  }
   &-main {
     overflow:auto;
     padding:20px;
     height: calc(100vh - 120px);
+  }
+  &-menuicon{
+    padding-left: 10px;
   }
 }

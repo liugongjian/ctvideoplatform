@@ -149,7 +149,7 @@ module.exports = {
       Redux: path.resolve(__dirname, 'src/redux'),
       Styles: path.resolve(__dirname, 'src/style'),
       Constants: path.resolve(__dirname, 'src/constants'),
-      '@ant-design/icons/lib/dist$': path.resolve(__dirname, './src/icons.js'), // 3.10 icon太大的问题
+      // '@ant-design/icons/lib/dist$': path.resolve(__dirname, './src/icons.js'), // 3.10 icon太大的问题
       Setting: path.resolve(__dirname, 'src/setting'),
       Utils: path.resolve(__dirname, 'src/utils'),
     },

@@ -41,7 +41,6 @@ commit有钩子，推荐安装eslint插件
     - utils 工具
     - template html入口模板
     - routers.js route 
-    - icons.js 分离antd icons(3.9后默认把icon的svg打到进来了)包按需加载
     - index.js 
     
 发起请求的中间件处理写法
@@ -82,9 +81,7 @@ export function loadAction() {
 
 - components
     - Button
-    - Icon
     - FormItem  重写（支持右提示）
-   
 
     - *menu
     - table

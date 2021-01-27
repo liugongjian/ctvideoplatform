@@ -25,9 +25,9 @@
       "Container": [
         "src/container/*"
       ],
-      "@ant-design/icons/lib/dist$": [
-        "src/icons.js"
-      ],
+      // "@ant-design/icons/lib/dist$": [
+      //   "src/icons.js"
+      // ],
     },
     "experimentalDecorators": true
   },
