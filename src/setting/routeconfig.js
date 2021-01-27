@@ -75,11 +75,11 @@ const menuRoutes = [
   },
   {
     path: '/monitor',
-    pageTitle: '摄像头管理',
+    pageTitle: '设备管理',
     exact: true,
     component: Monitor,
     menuCode: '02',
-    menuTitle: '摄像头管理'
+    menuTitle: '设备管理'
   },
 ];
 
