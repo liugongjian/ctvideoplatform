@@ -6,6 +6,7 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 // import Icon from 'Components/Icon';
 import PageHeader from 'Components/pageHeader';
+import styles from './pageHeader.less';
 
 const mapStateToProps = state => ({
   pageHeaderRoute: state.pageHeader.pageHeaderRoute || []
@@ -43,8 +44,8 @@ class Contents extends Component {
     const { pageHeaderRoute } = this.props;
     const { collapsed } = this.state;
     return (
-      <div>
-        <Button type="primary" onClick={this.toggleCollapsed} style={{ marginBottom: 16 }}>
+      <div className={styles.pageHeaderBox}>
+        <Button type="primary" onClick={this.toggleCollapsed}>
           <Icon type={collapsed ? 'menu-unfold' : 'menu-fold'} />
         </Button>
         <PageHeader routes={pageHeaderRoute} />
