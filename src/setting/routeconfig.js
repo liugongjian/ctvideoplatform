@@ -46,6 +46,7 @@ import App from 'Container/App';
 import Login from 'Views/login';
 import Dashboard from 'Views/dashboard';
 import Monitor from 'Views/monitor';
+import CameraDetail from 'Views/cameraDetail';
 import { pathPrefix } from 'Constants/Dictionary';
 
 const routesConfig = [
@@ -80,6 +81,39 @@ const menuRoutes = [
     component: Monitor,
     menuCode: '02',
     menuTitle: '设备管理'
+  },
+  {
+    path: '/cameraDetail',
+    pageTitle: '摄像头详情',
+    exact: true,
+    component: CameraDetail,
+    menuCode: '02',
+    menuTitle: '摄像头详情（先放这里后面删）'
+  },
+  {
+    path: '/system',
+    // pageTitle: '系统管理',
+    exact: true,
+    menuCode: '02',
+    menuTitle: '系统管理',
+    children: [
+      {
+        path: '/role',
+        pageTitle: '角色管理',
+        exact: true,
+        component: Monitor,
+        menuCode: '02',
+        menuTitle: '角色管理',
+      },
+      {
+        path: '/account',
+        pageTitle: '账号管理',
+        exact: true,
+        component: Monitor,
+        menuCode: '02',
+        menuTitle: '账号管理',
+      }
+    ]
   },
 ];
 
