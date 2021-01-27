@@ -14,9 +14,9 @@ export default () => (
     <Header />
     <Manage />
     <Footer />
-    {/* <Switch>
+    <Switch>
       <Route path="/login" exact component={Login} />
-    </Switch> */}
+    </Switch>
   </div>
   // </LoginContainer>
 );
