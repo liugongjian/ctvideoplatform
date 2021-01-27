@@ -140,6 +140,7 @@ export async function ifLogin() {
       return data.data;
     }
   }).catch((err) => {
+    // huanglulu todo
     if (err.status === 403) {
       window.location.href = `${window.origin}/temperature/noauth`;
     }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Form, Input, Button, message
+  Icon, Form, Input, Button, message, 
 } from 'antd';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
@@ -9,6 +9,10 @@ import { push } from 'react-router-redux';
 import { pathPrefix } from 'Constants/Dictionary';
 import { userlogin } from 'Redux/reducer/login';
 import styles from './index.less';
+import leftTop from 'Assets/leftTop.png';
+import rightTop from 'Assets/rightTop.png';
+import leftBottom from 'Assets/leftBottom.png';
+import rightBottom from 'Assets/rightBottom.png';
 
 const FormItem = Form.Item;
 
@@ -41,35 +45,38 @@ class Login extends Component {
     });
   };
 
-  // validateToNextPassword = (rule, value, callback) => {
-  //   console.log(rule);
-  //   console.log(value);
-  //   // console.log(callback);
-  //   callback();
-  // }
-
   render() {
     const {
       form: { getFieldDecorator },
     } = this.props;
     return (
-      <div className={styles.content}>
-        <div className={styles.loginBox}>
-          <div className={styles.logo}>
-            <img src="" alt="" />
+      <div className={styles.login}>
+        <div className={styles.imgs}>
+          <div className={styles.leftTop}>
+            <img src={leftTop}></img>
           </div>
-          <div className={styles.textTitle}>
-            <h1>天翼云人脸考勤系统</h1>
+          <div className={styles.rightTop}>
+            <img src={rightTop}></img>
           </div>
+          <div className={styles.leftBottom}>
+            <img src={leftBottom}></img>
+          </div>
+          <div className={styles.rightBottom}>
+            <img src={rightBottom}></img>
+          </div>
+          <div className={styles.logo}></div>
+        </div>
+        <div className={styles.centerBox}></div>
+        <div className={styles.loginForm}>
+          <div className={styles.logo}>智能视频分析平台</div>
+          <p className={styles.title}>账号密码登录</p>
           <Form onSubmit={this.handleSubmit}>
-            <FormItem>
-              登录
-            </FormItem>
-            <FormItem>
-              {getFieldDecorator('username', {
+             <FormItem>
+               {getFieldDecorator('username', {
                 rules: [{ required: true, message: '请输入用户名' }],
               })(
                 <Input
+                  prefix={<Icon type='user' className={styles.icon} />}
                   placeholder="账号"
                 />,
               )}
@@ -79,12 +86,13 @@ class Login extends Component {
                 rules: [{ required: true, message: '请输入密码' }],
               })(
                 <Input.Password
+                  prefix={<Icon type='lock' className={styles.icon} />}
                   placeholder="密码"
                 />,
               )}
             </FormItem>
             <FormItem>
-              <Button type="primary" htmlType="submit" className="login-form-button" block>
+              <Button type="primary" htmlType="submit" className={styles.submitBtn} block>
                 登录
               </Button>
             </FormItem>

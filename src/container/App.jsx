@@ -13,9 +13,10 @@ export default () => (
   <div style={{ height: '100%' }}>
     <Header />
     <Manage />
-    {/* <Switch>
+    {/** <Footer /> */}
+    <Switch>
       <Route path="/login" exact component={Login} />
-    </Switch> */}
+    </Switch>
   </div>
   // </LoginContainer>
 );

@@ -50,12 +50,12 @@ import CameraDetail from 'Views/cameraDetail';
 import { pathPrefix } from 'Constants/Dictionary';
 
 const routesConfig = [
-  // {
-  //   path: '/login',
-  //   exact: true,
-  //   // indexRoute: '/preview',
-  //   component: Login
-  // },
+  {
+    path: '/login',
+    exact: true,
+    // indexRoute: '/preview',
+    component: Login
+  },
   {
     path: '/',
     // exact: true,
