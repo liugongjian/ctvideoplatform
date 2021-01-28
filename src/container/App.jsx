@@ -13,7 +13,7 @@ export default () => (
   <div style={{ height: '100%' }}>
     <Header />
     <Manage />
-    <Footer />
+    {/** <Footer /> */}
     <Switch>
       <Route path="/login" exact component={Login} />
     </Switch>
