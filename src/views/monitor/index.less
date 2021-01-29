@@ -1,3 +1,17 @@
 .content{
-  background: yellow;
+  display: flex;
+  .areaTree{
+    width: 200px;
+  }
+  .searchBox{
+    display: flex;
+    .searchItme{
+      flex: 1;
+      :global{
+        .ant-input{
+          width: 60%;
+        }
+      }
+    }
+  }
 }

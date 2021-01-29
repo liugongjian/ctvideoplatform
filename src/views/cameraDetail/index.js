@@ -1,28 +1,33 @@
 import React, { Component } from 'react';
 import {
   Select,
+  Tabs,
+  Form,
+  Input,
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
-import {
-  getSummary, getMonitorMetric,
-} from 'Redux/reducer/monitor';
+import { getSummary, getMonitorMetric } from 'Redux/reducer/monitor';
+import BasicSettings from './basicSettings';
+import AlgorithmSettings from './algorithmSettings';
 
 import styles from './index.less';
 
-const { Option } = Select;
-
+const { TabPane } = Tabs;
 const mapStateToProps = state => ({ monitor: state.monitor });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {},
   dispatch
 );
 
-class Monitor extends Component {
-  state = {
-    test: '测试什么的'
+class CameraDetail extends Component {
+  constructor() {
+    super();
+    this.state = {
+      curTab: 'algo',
+    };
   }
 
   componentDidMount() {
@@ -30,19 +35,24 @@ class Monitor extends Component {
   }
 
   render() {
-    const { test } = this.state;
-    const { monitor } = this.props;
+    const { curTab } = this.state;
     return (
-      <div className={styles.content}>
-        123
-        {test}
+      <div className={styles.cameraDetail}>
+        <Tabs activeKey={curTab} onChange={curTab => this.setState({ curTab })}>
+          <TabPane tab="基础配置" key="basic">
+            <BasicSettings />
+          </TabPane>
+          <TabPane tab="算法配置" key="algo">
+            <AlgorithmSettings />
+          </TabPane>
+        </Tabs>
       </div>
     );
   }
 }
 
-Monitor.propTypes = {
-  monitor: PropTypes.object.isRequired
+CameraDetail.propTypes = {
+//   monitor: PropTypes.object.isRequired
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Monitor);
+export default connect(mapStateToProps, mapDispatchToProps)(CameraDetail);
