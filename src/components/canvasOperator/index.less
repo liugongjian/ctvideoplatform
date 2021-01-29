@@ -1,0 +1,33 @@
+.canvasOperator{
+    .optButtonWrapper{
+        .optButton{
+            margin-bottom: 20px;
+            border:1px solid #999;
+            width: 70px;
+            height: 30px;
+            display: inline-block;
+            cursor: pointer;
+            text-align: center;
+            line-height: 30px;
+            &-selected{
+                background-color: #ff9832;
+                color:white;
+                border-color: #ff9832;
+            }
+            &:not(:last-child){
+                margin-right: 10px;
+            }
+        }
+    
+    } 
+    .canvasWrapper{
+        position: relative;
+    }
+    .canvasLayer-op{
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index:100;
+    }
+}
+
