@@ -140,6 +140,7 @@ module.exports = {
     extensions: ['.js', '.jsx', '.less', '.scss', '.css', '.json'], // 后缀名自动补全
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      'react-dom': '@hot-loader/react-dom',
       Views: path.resolve(__dirname, 'src/views'),
       fonts: path.resolve(__dirname, 'src/style/fonts/fonts'),
       Components: path.resolve(__dirname, 'src/components'),

@@ -47,6 +47,7 @@ import Login from 'Views/login';
 import Dashboard from 'Views/dashboard';
 import Monitor from 'Views/monitor';
 import CameraDetail from 'Views/cameraDetail';
+import Account from 'Views/system/user';
 import { pathPrefix } from 'Constants/Dictionary';
 
 const routesConfig = [
@@ -92,7 +93,7 @@ const menuRoutes = [
   },
   {
     path: '/system',
-    // pageTitle: '系统管理',
+    pageTitle: '系统管理',
     exact: true,
     menuCode: '02',
     menuTitle: '系统管理',
@@ -109,7 +110,7 @@ const menuRoutes = [
         path: '/account',
         pageTitle: '账号管理',
         exact: true,
-        component: Monitor,
+        component: Account,
         menuCode: '02',
         menuTitle: '账号管理',
       }
