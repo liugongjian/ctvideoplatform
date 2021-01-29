@@ -18,15 +18,45 @@ import styles from './index.less';
 
 const { Option } = Select;
 
-const mapStateToProps = state => ({ monitor: state.monitor });
+const mapStateToProps = state => ({
+  // monitor: state.monitor
+});
 const mapDispatchToProps = dispatch => bindActionCreators(
   {},
   dispatch
 );
 
+
+const LocationInput = ({ value, onChange }) => {
+  let longitude = 0;
+  let latitude = 0;
+  if (value && value.length) {
+    [longitude, latitude] = value?.split(',');
+  }
+  return (
+    <>
+      <Input
+        type="number"
+        className={styles.locationInputNumber}
+        value={longitude}
+        onChange={(e) => { onChange(`${e.target.value},${latitude}`); }}
+      />
+      <span className={styles.locationInputSplit}>&nbsp;,</span>
+      <Input
+        type="number"
+        className={styles.locationInputNumber}
+        value={latitude}
+        onChange={(e) => { onChange(`${longitude},${e.target.value}`); }}
+      />
+    </>
+  );
+};
 class BasicSetting extends Component {
-  state = {
-    test: '测试什么的'
+  constructor() {
+    super();
+    this.state = {
+
+    };
   }
 
   componentDidMount() {
@@ -69,25 +99,40 @@ class BasicSetting extends Component {
                   required: true,
                   message: '请输入摄像头名称!',
                 },
+                {
+                  max: 30,
+                  message: '请勿输入超过30个字符!',
+                },
               ],
             })(<Input />)}
           </Form.Item>
-          <Form.Item label="经纬度" hasFeedback>
-            {getFieldDecorator('password', {
+          <Form.Item label="经纬度">
+            {getFieldDecorator('longitude', { // longitude and latitude;
               rules: [
                 {
                   required: true,
-                  message: 'Please input your password!',
-                },
+                  message: '请输入经纬度',
+                }
+              ],
+            })(<LocationInput />)}
+          </Form.Item>
+          <Form.Item label="区域详情">
+            {getFieldDecorator('area', {
+              rules: [
                 {
-                  validator: this.validateToNextPassword,
+                  required: true,
+                  message: '请选择区域!',
                 },
               ],
-            })(<Input.Password />)}
+            })(<Input />)}
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>
             <Button type="primary" htmlType="submit">
               保存
+            </Button>
+            <span className={styles.span10px} />
+            <Button>
+              取消
             </Button>
           </Form.Item>
         </Form>
@@ -100,4 +145,4 @@ BasicSetting.propTypes = {
   monitor: PropTypes.object.isRequired
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create({ name: 'register' })(BasicSetting));
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(BasicSetting));

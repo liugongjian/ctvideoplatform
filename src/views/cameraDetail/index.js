@@ -11,6 +11,7 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import { getSummary, getMonitorMetric } from 'Redux/reducer/monitor';
 import BasicSettings from './basicSettings';
+import AlgorithmSettings from './algorithmSettings';
 
 import styles from './index.less';
 
@@ -21,11 +22,11 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   dispatch
 );
 
-class Monitor extends Component {
+class CameraDetail extends Component {
   constructor() {
     super();
     this.state = {
-      curTab: 1,
+      curTab: 'algo',
     };
   }
 
@@ -36,13 +37,13 @@ class Monitor extends Component {
   render() {
     const { curTab } = this.state;
     return (
-      <div className={styles.content}>
-        <Tabs defaultActiveKey="1">
-          <TabPane tab="基础配置" key="1">
+      <div className={styles.cameraDetail}>
+        <Tabs activeKey={curTab} onChange={curTab => this.setState({ curTab })}>
+          <TabPane tab="基础配置" key="basic">
             <BasicSettings />
           </TabPane>
-          <TabPane tab="算法配置" key="2">
-            Content of Tab Pane 2
+          <TabPane tab="算法配置" key="algo">
+            <AlgorithmSettings />
           </TabPane>
         </Tabs>
       </div>
@@ -50,8 +51,8 @@ class Monitor extends Component {
   }
 }
 
-Monitor.propTypes = {
-  monitor: PropTypes.object.isRequired
+CameraDetail.propTypes = {
+//   monitor: PropTypes.object.isRequired
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Monitor);
+export default connect(mapStateToProps, mapDispatchToProps)(CameraDetail);
