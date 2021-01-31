@@ -266,10 +266,8 @@ class Account extends Component {
     let rePassword = this.props.form.getFieldValue('rePassword');
     if (rePassword && rePassword !== value) {
         callback(new Error('两次密码输入不一致！'));
-    }else if(!(/^.{8,30}$/.test(value)) && value){
-        callback(new Error('密码长度应为8到30个字符！'));
-    }else if(!(/^(?=.*[a-zA-Z])(?=.*\d)/.test(value)) && value){
-        callback(new Error('密码必须包含数字以及英文！'));
+    }else if(!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?])(.{12,26})/.test(value)) && value){
+      callback(new Error('密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符！'));
     }else {
         callback();
     }
@@ -279,10 +277,8 @@ class Account extends Component {
     let password = this.props.form.getFieldValue('password');
     if (password && password !== value && value) {
       callback(new Error('两次密码输入不一致'));
-    }else if(!(/^.{8,30}$/.test(value)) && value){
-      callback(new Error('密码长度应为8到30个字符！'));
-    }else if(!(/^(?=.*[a-zA-Z])(?=.*\d)/.test(value)) && value){
-      callback(new Error('密码应该包含数字以及英文！'));
+    }else if(!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?])(.{12,26})/.test(value)) && value){
+      callback(new Error('密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符！'));
     }else {
       callback();
     }
