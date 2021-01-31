@@ -9,9 +9,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
-import { getSummary, getMonitorMetric } from 'Redux/reducer/monitor';
-import BasicSettings from './basicSettings';
-import AlgorithmSettings from './algorithmSettings';
+// import { getSummary, getMonitorMetric } from 'Redux/reducer/monitor';
+import BasicSettings from './basic/basicSettings';
+import AlgorithmSettings from './algorithm/algorithmSettings';
 
 import styles from './index.less';
 
