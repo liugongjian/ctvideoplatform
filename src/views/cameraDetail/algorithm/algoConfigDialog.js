@@ -27,7 +27,7 @@ class CameraDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      a: 0,
+      areas: [],
     };
   }
 
@@ -36,6 +36,7 @@ class CameraDetail extends Component {
   }
 
   handleOk = () => {
+    console.log('areas', this.state.areas);
     this.props.closeModal();
   }
 
@@ -43,11 +44,18 @@ class CameraDetail extends Component {
     this.props.closeModal();
   }
 
+  onAreasChange = (areas) => {
+    this.setState({ areas });
+  }
+
   render() {
     const {
       title,
       visible,
     } = this.props;
+    const {
+      areas
+    } = this.state;
     return (
       <Modal
         className={styles.algoConfig}
@@ -61,6 +69,8 @@ class CameraDetail extends Component {
           <CanvasOperator
             width="750px"
             id="1"
+            areas={areas}
+            onAreasChange={this.onAreasChange}
           />
         </div>
       </Modal>
