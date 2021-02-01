@@ -34,7 +34,7 @@ const AlgorithmItem = ({
     </span>
     <span className={styles['algoItem-title']}>{title}</span>
     <span className={styles['algoItem-desp']}>{desp}</span>
-    <span className={styles['algoItem-configBtn']}><a onClick={() => toConfig(id)}>算法配置</a></span>
+    <span className={styles['algoItem-configBtn']}><a onClick={() => toConfig(id)}>规则配置</a></span>
   </div>
 );
 

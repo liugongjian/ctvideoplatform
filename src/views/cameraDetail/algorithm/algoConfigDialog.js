@@ -59,7 +59,7 @@ class CameraDetail extends Component {
     return (
       <Modal
         className={styles.algoConfig}
-        title="算法配置"
+        title="规则配置"
         visible={visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
