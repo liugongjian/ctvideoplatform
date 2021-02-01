@@ -72,7 +72,6 @@ class ApiClient {
                   return;
                 }
                 if (res.body.code === 0) {
-                  console.log('res.body', res.body);
                   return resolve(res.body);
                 }
 

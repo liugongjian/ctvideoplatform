@@ -11,7 +11,6 @@ const initialState = {
 };
 
 export default function monitor(state = initialState, action = {}) {
-  console.log('reducer', action);
   switch (action.type) {
     case GET_LIST:
       return {
@@ -38,6 +37,6 @@ export default function monitor(state = initialState, action = {}) {
 export function getList(pid) {
   return {
     type: [GET_LIST, GET_LIST_SUCCESS, GET_LIST_FAIL],
-    promise: apiClient => apiClient.get(`${urlPrefix}/area/list/${pid}`).then((res) => { console.log('res', res); return res; })
+    promise: apiClient => apiClient.get(`${urlPrefix}/area/list/${pid}`)
   };
 }
