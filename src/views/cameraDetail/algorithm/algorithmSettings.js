@@ -12,9 +12,9 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import { getSummary, getMonitorMetric } from 'Redux/reducer/monitor';
-import BasicSettings from './basicSettings';
+import AlgoConfigDialog from './algoConfigDialog';
 
-import styles from './index.less';
+import styles from '../index.less';
 
 const mapStateToProps = state => ({ monitor: state.monitor });
 const mapDispatchToProps = dispatch => bindActionCreators(
@@ -23,7 +23,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 );
 
 const AlgorithmItem = ({
-  id, checked, title, desp, onChange
+  id, checked, title, desp, onChange, toConfig
 }) => (
   <div className={styles.algoItem}>
     <span className={styles['algoItem-checked']}>
@@ -34,7 +34,7 @@ const AlgorithmItem = ({
     </span>
     <span className={styles['algoItem-title']}>{title}</span>
     <span className={styles['algoItem-desp']}>{desp}</span>
-    <span className={styles['algoItem-configBtn']}><a>算法配置</a></span>
+    <span className={styles['algoItem-configBtn']}><a onClick={() => toConfig(id)}>算法配置</a></span>
   </div>
 );
 
@@ -69,7 +69,9 @@ class AlgorithmSetting extends Component {
           desp: '这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，'
         },
       ],
-      algoChecked: {}
+      algoChecked: {},
+      configVisible: false,
+      curId: undefined,
     };
   }
 
@@ -85,6 +87,20 @@ class AlgorithmSetting extends Component {
     });
   }
 
+  openAlgoConfigDialog = (id) => {
+    this.setState({
+      configVisible: true,
+      curId: id,
+    });
+  }
+
+  closeConfigModal = () => {
+    this.setState({
+      configVisible: false,
+      curId: undefined,
+    });
+  }
+
   onAlgoCheckedChange = (id, checked) => {
     const { algoChecked } = this.state;
     algoChecked[id] = checked;
@@ -94,9 +110,19 @@ class AlgorithmSetting extends Component {
   }
 
   render() {
-    const { listData, algoChecked } = this.state;
+    const {
+      listData,
+      algoChecked,
+      curId,
+      configVisible
+    } = this.state;
     return (
       <div className={styles.algorithmSetting}>
+        <AlgoConfigDialog
+          key={curId}
+          visible={configVisible}
+          closeModal={this.closeConfigModal}
+        />
         <div className={styles.algorithmList}>
           {
             listData.map(item => (
@@ -104,6 +130,7 @@ class AlgorithmSetting extends Component {
                 {...item}
                 checked={algoChecked[item.id]}
                 onChange={this.onAlgoCheckedChange}
+                toConfig={this.openAlgoConfigDialog}
               />
             ))
           }

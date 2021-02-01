@@ -14,7 +14,7 @@ import {
   getSummary, getMonitorMetric,
 } from 'Redux/reducer/monitor';
 
-import styles from './index.less';
+import styles from '../index.less';
 
 const { Option } = Select;
 
