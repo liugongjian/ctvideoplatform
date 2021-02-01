@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 
 import React, { Component } from 'react';
 import {
@@ -11,6 +12,7 @@ import PropTypes from 'prop-types';
 import { create, all } from 'mathjs';
 import { constant } from 'lodash';
 import { DRAW_MODES } from './constants';
+import { getRectPropFromPoints } from './utils';
 import testJpg from './test.jpg';
 
 import styles from './index.less';
@@ -35,7 +37,8 @@ class CanvasOperator extends Component {
       ratio: 1,
       isDraw: false,
       // startPoint: [],
-      points: [], // 绘制轨迹,eg:[[x1,y1],[x2,y2]]
+      points: [], // 当前绘制轨迹,eg:[[x1,y1],[x2,y2]]
+      areas: [], // 当前已绘制图案, eg:[{type: 'rect', data: {left, top, width, height}}]
     };
   }
 
@@ -53,6 +56,8 @@ class CanvasOperator extends Component {
     // 初始化背景图片和canvas宽高
     const img = new Image();
     img.src = testJpg;
+    // 取消右键默认菜单
+    canvasDom.oncontextmenu = e => false;
     img.onload = () => {
       // 图片按比例缩放，保存缩放比
       const ratio = math.divide(img.width, backgroundLayer.width);
@@ -81,17 +86,6 @@ class CanvasOperator extends Component {
     });
   }
 
-  onMouseDown = (e) => {
-    const { canvas, canvasDom } = this.state;
-    const curPoint = this.getLocation(e.clientX, e.clientY);
-    if (curPoint) {
-      this.setState({
-        isDraw: true,
-        points: [curPoint],
-      });
-    }
-  }
-
   // 传入鼠标clientX/clientY,获取canvas中坐标
   getLocation = (x, y) => {
     const {
@@ -115,11 +109,76 @@ class CanvasOperator extends Component {
     return curPoint;
   }
 
+  // 绘制已暂存在areas中的区域
+  renderBeforeAreas = () => {
+    const { areas, canvas } = this.state;
+    console.log(areas);
+    if (areas.length) {
+      for (const area of areas) {
+        canvas.beginPath();
+        // eslint-disable-next-line default-case
+        switch (area.type) {
+          case DRAW_MODES.RECT: {
+            const { points } = area;
+            const {
+              left, top, width, height
+            } = getRectPropFromPoints(points[0], points[1]);
+            canvas.strokeRect(left, top, width, height);
+          }
+        }
+        canvas.closePath();
+      }
+    }
+  }
+
+  closePolygon = () => {
+    const {
+      canvas, points, areas
+    } = this.state;
+    const newArea = {
+      type: DRAW_MODES.POLYGON,
+      points
+    };
+    canvas.lineTo(points[0][0], points[0][1]);
+    canvas.stroke();
+    canvas.closePath();
+    this.setState({
+      isDraw: false,
+      ponts: [],
+      areas: [...areas, newArea]
+    });
+  }
+
+  onMouseDown = (e) => {
+    const {
+      canvas, canvasDom, points, mode, isDraw
+    } = this.state;
+    const curPoint = this.getLocation(e.clientX, e.clientY);
+    if (curPoint) {
+      switch (mode) {
+        case DRAW_MODES.POLYGON:
+          if (!isDraw) {
+            this.setState({
+              isDraw: true,
+            });
+          } else if (e.button === 2) {
+            this.closePolygon();
+          }
+          break;
+        default:
+          this.setState({
+            isDraw: true,
+            // points: [...points, curPoint]
+          });
+      }
+    }
+  }
+
   onMouseMove = (e) => {
     const {
-      isDraw, canvas, canvasDom, mode
+      isDraw, canvas, canvasDom, mode,
     } = this.state;
-    let { points } = this.state;
+    const { points } = this.state;
     if (!isDraw) {
       return;
     }
@@ -129,49 +188,83 @@ class CanvasOperator extends Component {
     if (!curPoint) {
       return;
     }
-    points = [...points, curPoint];
-    this.setState({ points });
+    if (!points.length) {
+      points.push(curPoint);
+      this.setState({ points });
+    }
+    // points = [...points, curPoint];
+    // this.setState({ points });
     switch (mode) {
       case DRAW_MODES.RECT: {
-        const left = points[0][0];
-        const top = points[0][1];
-        const prewidth = points.length > 1 && points[points.length - 2][0] - left;
-        const preheight = points.length > 1 && points[points.length - 2][1] - top;
-        const width = points[points.length - 1][0] - left;
-        const height = points[points.length - 1][1] - top;
+        const {
+          left, top, width, height
+        } = getRectPropFromPoints(points[0], curPoint);
         canvas.beginPath();
-        canvas.lineWidth = '6';
+        canvas.lineWidth = '3';
         canvas.strokeStyle = 'red';
-        // canvas.clearRect(left, top, prewidth, preheight);
+        // 清除绘图区域
         canvas.clearRect(0, 0, canvasDom.width, canvasDom.height);
+        // 绘制已暂存区域
+        this.renderBeforeAreas();
+        // 绘制起点到当前点的矩形
         canvas.strokeRect(left, top, width, height);
+        canvas.closePath();
+        break;
+      }
+      case DRAW_MODES.POLYGON: {
+        canvas.beginPath();
+        canvas.lineWidth = '3';
+        canvas.strokeStyle = 'red';
+        // 清除绘图区域
+        canvas.clearRect(0, 0, canvasDom.width, canvasDom.height);
+        // 绘制已暂存区域
+        this.renderBeforeAreas();
+        // 开始绘制当前多边形
+        // canvas.moveTo(points[0][0], points[0][1]);
+        // 绘制已暂存折点
+        for (const point of points) {
+          canvas.lineTo(point[0], point[1]);
+        }
+        // 绘制当前点
+        canvas.lineTo(curPoint[0], curPoint[1]);
+        canvas.stroke();
+        // canvas.closePath();
         break;
       }
       default:
+
         break;
     }
-
-    // switch (active) {
-    //     case 'pen':
-    //         canvas.strokeStyle = color
-    //         canvas.lineJoin = "round";
-    //         canvas.lineWidth = 5;
-    //         canvas.beginPath();
-    //         arr.length > 1 && canvas.moveTo(arr[arr.length - 2][0], arr[arr.length - 2][1]);
-    //         canvas.lineTo(arr[arr.length - 1][0], arr[arr.length - 1][1]);
-    //         canvas.closePath();
-    //         canvas.stroke();  //描边
-    //         return
-
-    //     default:
-    //         return
-    // }
   }
 
-  onMouseUp = () => {
-    this.setState({
-      isDraw: false,
-    });
+  onMouseUp = (e) => {
+    console.log('onMouseUp');
+    const {
+      isDraw, canvas, canvasDom, mode, points, areas
+    } = this.state;
+    const curPoint = this.getLocation(e.clientX, e.clientY);
+    if (!curPoint) {
+      return;
+    }
+    switch (mode) {
+      case DRAW_MODES.RECT: {
+        const newArea = {
+          type: DRAW_MODES.RECT,
+          points: [points[0], curPoint]
+        };
+        // 将区域暂存；清空轨迹；清除作画状态
+        this.setState({ areas: [...areas, newArea], points: [], isDraw: false, });
+        break;
+      }
+      case DRAW_MODES.POLYGON: {
+        // 记录轨迹
+        this.setState({ points: [...points, curPoint] });
+        break;
+      }
+      default:
+        this.setState({ points: [] });
+        break;
+    }
   }
 
   render() {
@@ -187,8 +280,8 @@ class CanvasOperator extends Component {
             矩形
           </div>
           <div
-            className={`${styles.optButton} ${mode === DRAW_MODES.MUTILPLE ? styles['optButton-selected'] : ''}`}
-            onClick={() => this.setDrawMode(DRAW_MODES.MUTILPLE)}
+            className={`${styles.optButton} ${mode === DRAW_MODES.POLYGON ? styles['optButton-selected'] : ''}`}
+            onClick={() => this.setDrawMode(DRAW_MODES.POLYGON)}
           >
             多边形
           </div>
