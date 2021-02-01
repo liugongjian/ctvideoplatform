@@ -63,11 +63,11 @@ class CameraDetail extends Component {
         visible={visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
-        width="800px"
+        width="600px"
       >
         <div>
           <CanvasOperator
-            width="750px"
+            width="550px"
             id="1"
             areas={areas}
             onAreasChange={this.onAreasChange}
