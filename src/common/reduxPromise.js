@@ -21,7 +21,7 @@ const reduxPromise = ({ dispatch }) => next => (action) => {
       }
       dispatch({ type: type[0], id });
       return mPromise.then((data) => {
-        if (data.success === 0) {
+        if (data.code === 0) {
           dispatch({ type: type[1], data: data.data, id, });
           // return Promise.resolve(data.data);
           return data.data;
@@ -34,7 +34,7 @@ const reduxPromise = ({ dispatch }) => next => (action) => {
 
     // type为string的单个异步请求
     return mPromise.then((data) => {
-      if (data.success === 0) {
+      if (data.code === 0) {
         dispatch({ type, data: data.data, id, });
         return data.data;
       }
