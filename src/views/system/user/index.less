@@ -1,17 +1,149 @@
 .content{
     // background: yellow;
     position: relative;
-    .header{
+    .operationAssets{
         display: flex;
+        height: 36px;
+        align-items: center;
+        margin-bottom: 10px;
+        .del,.enable,.stop{
+            margin-left: 20px;
+            .iconDisabled{
+                color: #999
+            }
+            .iconActive{
 
-        .operationAssets{
-            display: flex;
-        }
-        .query{
-            display: flex;
-            div{
-                display: flex;
+                color: #44A1F6
+            }
+            a{
+                margin-left: 5px;
             }
         }
+    }
+    .query{
+        display: flex;
+        height: 72px;
+        background: rgba(0,0,0,0.03);
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 0 20px;
+        .btnContainer{
+            position: absolute;
+            right: 20px;
+            .resetBtn{
+                margin-left: 10px;
+            }
+        }
+        .queryRoleName,.queryStatus{
+            margin-right: 20px;
+        }
+        .queryUserName{
+            :global{
+                .ant-input{
+                    width: 65%;
+                    height: 32px;
+                }
+            }
+        }
+        .queryRoleName{
+            :global{
+                .ant-input{
+                    width: 70%;
+                    height: 32px;
+                }
+            }
+        }
+        div{
+            display: flex;
+            align-items: center;
+            :global{
+                .ant-select-selection{
+                    width: 90px;
+                    height: 32px;
+                }
+            }
+            .queryLabel{
+                font-family: PingFangSC-Regular;
+                font-size: 14px;
+                color: #333333;
+                text-align: right;
+
+            }
+        }
+        
+        
+    }
+    .operation{
+        display: flex;
+        div{
+            display: flex;
+            .line{
+                margin: 0 5px;
+                height: 16px;
+                border-left: 1px solid #E9E9E9;
+            }
+        }
+    }
+    .status{
+        display: flex;
+        align-items: center;
+        .statusOn{
+            background: #52C41A;
+            height: 6px;
+            width: 6px;
+            border-radius: 3px;
+            margin-right: 8px;
+        }
+        .statusOff{
+            background: rgba(0,0,0,0.25);
+            height: 6px;
+            width: 6px;
+            border-radius: 3px;
+            margin-right: 8px;
+        }
+
+    }
+    .isEnabled{
+        span{
+            margin-left: 10px;
+        }
+        :global{
+            .ant-switch-checked{
+                background: #FF934C;
+            }
+        }
+    }
+    
+    
+}
+.editSecTitle{
+    font-family: MicrosoftYaHei;
+    font-size: 16px;
+    color: #333333;
+    margin-bottom: 20px;
+    :global{
+        .ant-form-item{
+            margin-bottom: 10px;
+        }
+    }
+}
+.pswModal{
+    .tooltip{
+        margin-bottom: 20px;
+        margin-top: 10px;
+        span{
+            font-family: MicrosoftYaHei;
+            font-size: 12px;
+            color: #999999;
+        }
+        :global{
+            .ant-form-item-control{
+                height: 17px;
+                line-height: 17px;
+            }
+        }
+    }
+    .passwordBpttom{
+        margin-bottom: 0px;
     }
 }

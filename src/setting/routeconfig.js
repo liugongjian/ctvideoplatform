@@ -48,6 +48,7 @@ import Dashboard from 'Views/dashboard';
 import Monitor from 'Views/monitor';
 import CameraDetail from 'Views/cameraDetail';
 import Account from 'Views/system/user';
+import AddAccount from 'Views/system/user/addUser';
 import { pathPrefix } from 'Constants/Dictionary';
 
 const routesConfig = [
@@ -113,6 +114,14 @@ const menuRoutes = [
         component: Account,
         menuCode: '02',
         menuTitle: '账号管理',
+      },
+      {
+        path: '/accountAdd',
+        pageTitle: '增加账号',
+        exact: true,
+        component: AddAccount,
+        menuCode: '02',
+        menuTitle: '增加账号（先放这里后面删）',
       }
     ]
   },

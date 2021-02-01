@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
 import {
-  Select, Button, Modal, Form, Input, Icon
+  Select, Button, Modal, Form, Input, Switch
 } from 'antd';
+import Icon from 'Components/Icon';
 import ETable from 'Components/ETable';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import {
     getAccountList, 
 } from 'Redux/reducer/account';
 
 import styles from './index.less';
-import copy from 'copy-to-clipboard'
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -31,7 +30,10 @@ class Account extends Component {
               "id": "inner_gB9fOjfjJ5Y",
               "status": 0,
               "isEnabled": 1,
-              "role": "角色1",
+              "role": {
+                "id": "role1",
+                "name": "角色1"
+              },
               "departmentName": "研发三部",
               "departmentCode": "yfsb",
               "refUid": "fa606bdf1f814e5aa09d887e0e4981a2",
@@ -60,7 +62,10 @@ class Account extends Component {
               "id": "inner_n5VEu5Jl5lN",
               "status": 0,
               "isEnabled": 0,
-              "role": "角色2",
+              "role": {
+                "id": "role2",
+                "name": "角色2"
+              },
               "departmentName": "研发三部",
               "departmentCode": "yfsb",
               "refUid": "c7a4287fb0f3498fabe6cd9553ac6dd5",
@@ -89,7 +94,10 @@ class Account extends Component {
               "id": "inner_vQwj0g-JEa",
               "status": 0,
               "isEnabled": 1,
-              "role": "角色21",
+              "role": {
+                "id": "role3",
+                "name": "管理员"
+              },
               "departmentName": "省公司独立运维组",
               "departmentCode": "SDLYUW",
               "refUid": "fdb62b7d0d544f94a2852e4aeb0fa8b0",
@@ -118,7 +126,10 @@ class Account extends Component {
               "id": "inner_7uTkb6coWS",
               "status": 1,//0代表在线 1代表离线
               "isEnabled": 0,
-              "role": "角色2",
+              "role": {
+                "id": "role4",
+                "name": "审核员"
+              },
               "departmentName": "天翼云西南中心",
               "departmentCode": "tyyxnzx",
               "refUid": "fd8fbf8f2dd54e959f7a619a3a991fd4",
@@ -144,12 +155,11 @@ class Account extends Component {
               "lastLoginTime": "2020-07-24T01:57:50.226Z"
             }
     ],
-    dialogVisible: false,   // 对话框显示标志
-    dialogStatus: 'create',   // 判断是新增还是编辑的对话框
-    textMap: {
-        update: '编辑账号',
-        create: '新建账号'
-    },
+    modalVisible: false,   // 对话框显示标志
+    pswModalVisible: false,
+    deleteModelVisible: false,
+    stopModelVisible: false,
+    enableModelVisible: false,
     loading: false,             // 账号列表加载状态
     // loginUserId: Cookies.get('uid'), // 登录用户的uid
     searchParams: {
@@ -162,13 +172,41 @@ class Account extends Component {
     total: 0,
     pageSize: 10,
     pageNum: 1,
-    username: '', //编辑用户时 拿到的用户名字
-    password: ''//编辑用户时 拿到的用户密码
-  }
+    editXq: {
+      userName: '一开始的用户名',
+      initialRoleValue: 'role4'
+    },
+    pswXq: {
+      userId: '',
+      userName: '',
+      rentPassword: '',
+      reNewPassword: ''
+    },
+    isTooltipShow: true,
+    roleData: [
+      {
+        value: 'role1',
+        text: '角色1'
+      },
+      {
+        value: 'role2',
+        text: '角色2'
+      },
+      {
+        value: 'role3',
+        text: '管理员'
+      },
+      {
+        value: 'role4',
+        text: '审核员'
+      }
+    ]
+  };
 
   componentDidMount() {
     this.getTableList();
-  }
+    this.getRoleList();
+  };
   getTableList = () => {
     const params = {
       userName: this.state.searchParams.userName,
@@ -188,7 +226,10 @@ class Account extends Component {
     //     debugger
     //     console.log('>>>>>>>', res)
     // })
-  }
+  };
+  getRoleList = ()=>{
+    console.log('获取不分页的角色列表')
+  };
   handleRowSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
   };
@@ -199,51 +240,25 @@ class Account extends Component {
       })
     this.getTableList();
   };
-  // 添加用户按钮
+  // 新增用户按钮 跳转到新增账号页面
   handleAddUser = () => {
-    this.setState({
-      dialogVisible: true,
-    //   searchInput: '',
-      dialogStatus: 'create'
-    })
-    this.props.form.resetFields();
+    console.log('>>>>跳转到新增账号页面') 
   };
-  // 提交添加用户的表单
-  createUser = (e) => {
-    this.props.form.validateFields((errors, values) => {
-      if(!errors) {  
-        console.log('创建用户的values', values)      
-        // addUsers(values ).then(
-        //   (res) => {
-        //     if(res.code === 200) {
-        //       message.success('创建成功！');
-        //       this.setState({
-        //         dialogVisible: false
-        //       })
-        //       this.getTableList();
-        //     }else {
-        //       message.error(res.msg);
-        //     }
-        //     this.props.form.resetFields();
-        //   }
-        // ).catch(err => {
-        //   message.warning('创建失败')
-        // })
-      } else {
-      }
-    })
-  }
    // 提交编辑用户的表单
-   updateUser = () => {
+  updateUser = () => {
     this.props.form.validateFields((errors, values) => {
       if(!errors) {
         console.log('编辑用户的values', values)
+        // const userId = this.state.editXq.userId
+        // delete values.reNewPassword
+        // delete values.reNewPassword1
+        // delete values.rentpassword
         // editUsers(this.state.editUserId, values).then(
         //   res => {
         //     if(res.code === 200) {
         //       message.success('修改成功');
         //       this.setState({
-        //         dialogVisible: false
+        //         modalVisible: false
         //       })
         //       this.getUserList()
         //     }else {
@@ -256,29 +271,28 @@ class Account extends Component {
       }
     })
 
-  }
+  };
   handleCancel = () => {
     this.setState({
-      dialogVisible: false
+      modalVisible: false
     })
   };
-  validatorPsd = (rule, value, callback) => {
-    let rePassword = this.props.form.getFieldValue('rePassword');
-    if (rePassword && rePassword !== value) {
-        callback(new Error('两次密码输入不一致！'));
+  validatorRePsw = (rule, value, callback) => {
+    let reNewPassword2 = this.props.form.getFieldValue('reNewPassword2');
+    if (reNewPassword2 && reNewPassword2 !== value && value) {
+      callback(new Error('两次密码输入不一致！'));
     }else if(!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?])(.{12,26})/.test(value)) && value){
-      callback(new Error('密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符！'));
+      callback(new Error('新密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符！'));
     }else {
-        callback();
+      callback();
     }
-    
   };
-  validatorRePsd = (rule, value, callback) => {
-    let password = this.props.form.getFieldValue('password');
-    if (password && password !== value && value) {
-      callback(new Error('两次密码输入不一致'));
+  validatorRePsw2 = (rule, value, callback) => {
+    let reNewPassword = this.props.form.getFieldValue('reNewPassword');
+    if (reNewPassword && reNewPassword !== value && value) {
+      callback(new Error('两次密码输入不一致！'));
     }else if(!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?])(.{12,26})/.test(value)) && value){
-      callback(new Error('密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符！'));
+      callback(new Error('确认密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符！'));
     }else {
       callback();
     }
@@ -327,124 +341,85 @@ class Account extends Component {
     })
   };
   renderTableHeaders = () => {
-    const {
-        form: { getFieldDecorator },
-      } = this.props;
-    const formItemLayout = {
-      labelCol: { span: 6 },
-      wrapperCol: { span: 18 },
-    };
     return (
-      <div className={styles.header}>
-          <div className={styles.operationAssets}>
-            <div className={styles.add}>
-                <Button onClick={this.handleAddUser}>添加用户</Button>
-                <Modal 
-                  title={this.state.textMap[this.state.dialogStatus]}
-                  visible={this.state.dialogVisible}
-                  okText="确认"
-                  cancelText="取消"
-                  onOk={this.state.dialogStatus==="create"?this.createUser:this.updateUser}
-                  onCancel={this.handleCancel}
-                >
-                  <Form horizontal="true">
-                    <FormItem label="用户名" {...formItemLayout}>
-                        {getFieldDecorator('username', 
-                            { rules: [
-                                { required: true , message: '用户名不能为空'},
-                                {
-                                    max: 30, message: '用户名不得超过30个字符',
-                                },
-                                { pattern: new RegExp(/\S/), message: '用户名不能为空'}
-                            ],
-                            validateTrigger: 'onBlur'},
-                            { initialValue: this.state.dialogStatus === "create"?'':  this.state.username})
-                            (
-                              <Input placeholder="请输入用户名"  disabled={this.state.dialogStatus === "create" ? false: true}/>
-                            )
-                        }
-                    </FormItem>
-                    <FormItem label="密码" autoComplete="off" {...formItemLayout}>
-                       {getFieldDecorator('password',
-                          {
-                            rules: [
-                                { required: true, message: '请输入密码' },
-                                { validator: (rule, value, callback) => { this.validatorPsd(rule, value, callback) } }
-                              ],
-                            validateTrigger: 'onChange'
-                          },
-                          { initialValue: this.state.dialogStatus === "create"?'':  this.state.password}
-                        )(
-                            <Input.Password placeholder="请输入密码" />
-                        )}
-                    </FormItem>
-                    <FormItem label="确认密码" autoComplete="off" {...formItemLayout}>
-                       {getFieldDecorator('rePassword',
-                          {
-                            rules: [
-                                { required: true, message: '请确认密码' },
-                                { validator: (rule, value, callback) => { this.validatorRePsd(rule, value, callback) } }
-                              ],
-                            validateTrigger: 'onBlur'
-                          },
-                          { initialValue: this.state.dialogStatus === "create"?'':  this.state.password}
-                        )(
-                            <Input.Password placeholder="请输入密码" />
-                        )}
-                    </FormItem>
-                    <FormItem label="角色" {...formItemLayout}>
-                        {
-                            getFieldDecorator('role', { initialValue: 0})(
-                                <Select initialValue={0}>
-                                    <Option value={1}>管理员</Option>
-                                    <Option value={0}>普通用户</Option>
-                                </Select>
-                            )
-                        }    
-                    </FormItem>
-                  </Form>
-                </Modal>
-            </div>
-            <div className={styles.del}>
-                <Button onClick={this.handleDelete} disabled={this.state.selectedRowKeys.length > 0 ? false: true}>删除</Button>
-            </div>
-            <div className={styles.stop}>
-                <Button onClick={this.handleStop} disabled={this.state.selectedRowKeys.length > 0 ? false: true}>禁用</Button>
-            </div>
-            <div className={styles.enable}>
-                <Button onClick={this.handleEnable} disabled={this.state.selectedRowKeys.length > 0 ? false: true}>启用</Button>
-            </div>
+      <div>
+        <div className={styles.query}> 
+          <div className={styles.queryUserName}>
+            <span className={styles.queryLabel}>用户名：</span>
+            <Input placeholder="请输入用户名" onChange={this.queryUserName} />
           </div>
-          <div className={styles.query}>
-            <div className={styles.queryUserName}>
-              <span>用户名：</span>
-              <Input placeholder="请输入用户名" onChange={this.queryUserName} />
-            </div>
-            <div className={styles.queryRoleName}>
-              <span>角色名称：</span>
-              <Input placeholder="请输入角色名称" onChange={this.queryRoleName}/>
-            </div>
-            <div className={styles.queryEnabled}  >
-              <span>是否启用：</span>
-              <Select defaultValue={2} onChange={this.queryEnabled}>
-                <Option value={0}>启用</Option>
-                <Option value={1}>禁用</Option>
-                <Option value={2}>全部</Option>
-              </Select>
-            </div>
-            <div className={styles.queryStatus}>
-              <span>状态：</span>
-              <Select defaultValue={2} onChange={this.queryStatus}>
-                <Option value={0}>在线</Option>
-                <Option value={1}>离线</Option>
-                <Option value={2}>全部</Option>
-              </Select>
-            </div>
-            <Button onClick={this.getTableList}>查询</Button>
-            <Button onClick={this.reset}>重置</Button>
-
+          <div className={styles.queryRoleName}>
+            <span className={styles.queryLabel}>角色名称：</span>
+            <Input placeholder="请输入角色名称" onChange={this.queryRoleName}/>
           </div>
+          <div className={styles.queryStatus}>
+            <span className={styles.queryLabel}>在线状态：</span>
+            <Select defaultValue={2} onChange={this.queryStatus}>
+              <Option value={0}>在线</Option>
+              <Option value={1}>离线</Option>
+              <Option value={2}>全部</Option>
+            </Select>
+          </div>
+          <div className={styles.queryEnabled}  >
+            <span className={styles.queryLabel}>启用状态：</span>
+            <Select defaultValue={2} onChange={this.queryEnabled}>
+              <Option value={0}>启用</Option>
+              <Option value={1}>禁用</Option>
+              <Option value={2}>全部</Option>
+            </Select>
+          </div>
+          
+          <div className={styles.btnContainer}>
+            <Button onClick={this.getTableList} type="primary">查询</Button>
+            <Button onClick={this.reset} icon="redo" className={styles.resetBtn}>重置</Button>
+          </div>
+        </div>
+      <div className={styles.operationAssets}>
+        <div className={styles.add}>
+          <Button icon="plus" onClick={this.handleAddUser} type="primary">新增账号</Button>
+        </div>
+        <div className={styles.del}>
+          {
+            this.state.selectedRowKeys.length > 0 ? 
+            <>
+              <Icon type={`anticon-delete ${styles.iconActive}`} ></Icon>
+              <a onClick={this.handleDelete} >批量删除</a>
+            </>: 
+            <>
+              <Icon type={`anticon-delete ${styles.iconDisabled}`} ></Icon>
+              <a disabled>批量删除</a>
+            </>
+          }
+        </div>
+        <div className={styles.enable}>
+          {
+            this.state.selectedRowKeys.length > 0 ? 
+            <>
+              <Icon type={`anticon-status-start ${styles.iconActive}`} ></Icon>
+              <a onClick={this.handleEnable} >批量启用</a>
+            </>: 
+            <>
+              <Icon type={`anticon-status-start ${styles.iconDisabled}`} ></Icon>
+              <a disabled>批量启用</a>
+            </>
+          }
+        </div>
+        <div className={styles.stop}>
+          {
+            this.state.selectedRowKeys.length > 0 ? 
+            <>
+              <Icon type={`anticon-status-stop ${styles.iconActive}`} ></Icon>
+              <a onClick={this.handleStop} >批量启用</a>
+            </>: 
+            <>
+              <Icon type={`anticon-status-stop ${styles.iconDisabled}`} ></Icon>
+              <a disabled>批量禁用</a>
+            </>
+          }
+        </div>
+       
       </div>
+    </div>
 
     )
   };
@@ -455,46 +430,64 @@ class Account extends Component {
   onShowSizeChange = (current, pageSize) => {
     this.handleTableChange({ current, pageSize }, {}, {});
   };
+  
+  //编辑账号
+  handleEdit= (val)=>{
+    console.log('handleEdit');
+    this.setState({
+      modalVisible: true,
+      editXq: {
+        userId: val.id,
+        userName: val.username,
+        initialRoleValue: val.role.id
+      }
+    })
+  };
   //删除账号
   handleDelete = (val)=> {
     const id = val.id;
     console.log('handleDelete', id)
-    Modal.confirm({
-      title: '删除账号',
-      content: `确定要删除账号：${val.username}吗?`,
-      onOk() {
-        // self.props.delFunc(key).then((res) => {
-        //   message.success('删除成功');
-        //   self.props.refresh();
-        // });
-      },
-      onCancel() {},
-    });
-  };
-  //编辑账号
-  handleEdit= (val)=>{
-    console.log('handleEdit')
+    this.setState({
+      deleteModelVisible: true
+    })
+    // Modal.confirm({
+    //   title: '删除账号',
+    //   content: `确定要删除账号：${val.username}吗?`,
+    //   onOk() {
+    //     // self.props.delFunc(key).then((res) => {
+    //     //   message.success('删除成功');
+    //     //   self.props.refresh();
+    //     // });
+    //   },
+    //   onCancel() {},
+    // });
   };
   //禁用账号
   handleStop= (val)=>{
     const id = val.id;
     console.log('handleStop', id)
-    Modal.confirm({
-      title: '禁用账号',
-      content: `确定要禁用账号：${val.username}吗?`,
-      onOk() {
-        // self.props.delFunc(key).then((res) => {
-        //   message.success('禁用成功');
-        //   self.props.refresh();
-        // });
-      },
-      onCancel() {},
-    });
+    this.setState({
+      stopModelVisible: true
+    })
+    // Modal.confirm({
+    //   title: '禁用账号',
+    //   content: `确定要禁用账号：${val.username}吗?`,
+    //   onOk() {
+    //     // self.props.delFunc(key).then((res) => {
+    //     //   message.success('禁用成功');
+    //     //   self.props.refresh();
+    //     // });
+    //   },
+    //   onCancel() {},
+    // });
   };
   //启用账号
   handleEnable = (val)=>{
     const id = val.id;
     console.log('handleEnable', id)
+    this.setState({
+      enableModelVisible: true
+    })
     Modal.confirm({
       title: '启用账号',
       content: `确定要启用账号：${val.username}吗?`,
@@ -509,35 +502,74 @@ class Account extends Component {
   };
   //重置密码
   handlePassword = (val)=>{
-    const id = val.id;
-    console.log('handleEnable', id)
-    Modal.confirm({
-      title: '重置密码',
-      content: `确定要重置账号：${val.username}的密码吗?`,
-      onOk() {
-        // resetPassword(uid).then(
+    this.props.form.resetFields();
+    this.setState({
+      pswModalVisible: true,
+      pswXq: {
+        userId: val.id,
+        userName: val.username,
+        rentPassword: '',
+        reNewPassword: ''
+      },
+      isTooltipShow: true,
+    }) 
+    
+  };  
+  handleRoleChange = (value)=> {
+    console.log(`selected role ${value}`);
+  };
+  
+  handleRoleSearch = (value)=>  {
+    console.log('search:', value);
+  };
+  updatePassword = ()=> {
+    this.props.form.validateFields((errors, values) => {
+      if(!errors) {
+        console.log('重置密码的values', values)
+        // const userId = this.state.pswXq.userId
+        // delete values.roleId
+        // delete values.reNewPassword1
+        // editUsers(this.state.editUserId, values).then(
         //   res => {
         //     if(res.code === 200) {
-        //       Modal.success({
-        //         content: `该账号新密码为：${res.data.password}`,
-        //         okText: "复制密码",
-        //         onOk(){
-        //           copy(res.data.password);
-        //           message.success('密码已复制到剪切板');
-        //         }
-        //       });
-        //     }else{
-        //       message.warning(res.msg);
+        //       message.success('修改成功');
+        //       this.setState({
+        //         modalVisible: false
+        //       })
+        //       this.getUserList()
+        //     }else {
+        //       message.warning(res.msg)
         //     }
         //   }
         // )
-      },
-      onCancel() {},
-    });
-      
-  };  
+      } else {
+        // message.warning('表单验证错误');
+      }
+    })
+  };
+  handlePswCancel = ()=> {
+    this.setState({
+      pswModalVisible: false
+    })
+  };
+  reNewPswChange = ()=>{
+    this.setState({
+      isTooltipShow: false
+    })
+  };
   renderTable = () => {
-    const { selectedRowKeys,total, pageSize,pageNum,loading, accountData} = this.state;
+    const { selectedRowKeys,total, pageSize,pageNum,loading, accountData, roleData, editXq, pswXq, isTooltipShow} = this.state;
+    const {
+      form: { getFieldDecorator },
+    } = this.props;
+    const formItemLayout = {
+      labelCol: { span: 6 },
+      wrapperCol: { span: 18 },
+    };
+    const tailFormItemLayout = {
+      labelCol: { span: 6 },
+      wrapperCol: { span: 18, offset: 6, },
+    };
     let pagination;
     pagination = {
         showSizeChanger: true,
@@ -564,24 +596,40 @@ class Account extends Component {
         {
           title: '角色名称',
           dataIndex: 'role',
-          render:(text)=>{
+          render:(text, record)=>{
               return (
-                <div title={text}>{text}</div>
+                <div title={record.role.name}>{record.role.name}</div>
               )
           }
         },
         {
-          title: '是否启用',//0 启用 有禁用stop操作 1禁用 有启用操作
-          dataIndex: 'isEnabled',
+          title: '在线状态', //状态0 在线 1离线 
+          dataIndex: 'status',
           render:(text, record)=>(
-            record.isEnabled == 0 ? <div >启用</div>: <div >禁用</div>
+            record.isEnabled == 0 ? 
+            <div className={styles.status}>
+              <div className={styles.statusOn}></div>
+              <span>在线</span>
+            </div>: 
+            <div className={styles.status}>
+              <div className={styles.statusOff}></div>
+              <span>离线</span>
+            </div>
           )
         },
         {
-          title: '状态', //状态0 在线 1离线 
-          dataIndex: 'status',
+          title: '启用状态',//0 启用 有禁用stop操作 1禁用 有启用操作
+          dataIndex: 'isEnabled',
           render:(text, record)=>(
-            record.isEnabled == 0 ? <div >在线</div>: <div >离线</div>
+            record.isEnabled == 0 ? 
+            <div className={styles.isEnabled}>
+              <Switch defaultChecked={true} onChange={()=>this.handleStop(record)} size="small"></Switch>
+              <span>已启用</span>
+            </div>: 
+            <div className={styles.isEnabled}>
+              <Switch defaultChecked={false} onChange={()=>this.handleEnable(record)} size="small"></Switch>
+              <span>已禁用</span>
+            </div>
           )
         },
         {
@@ -589,10 +637,17 @@ class Account extends Component {
           key: 'operation',
           render: (text, record) => (
             <div className={styles.operation}>
-                <span onClick={()=>this.handleDelete(record)}><Icon type="delete" /></span>
-                <span onClick={()=>this.handleEdit(record)}><Icon type="edit" /></span>
-                {record.isEnabled === 0 ? <span onClick={()=>this.handleStop(record)}><Icon type="stop" /></span>: <span onClick={()=>this.handleEnable(record)}><Icon type="check-circle" /></span>}
-                <span onClick={()=>this.handlePassword(record)}><Icon type="lock" /></span>
+              <div>
+                <a onClick={()=>this.handleEdit(record)}>编辑</a>
+                <div className={styles.line}></div>
+              </div>
+              <div>
+                <a onClick={()=>this.handleDelete(record)}>删除</a>
+                <div className={styles.line}></div>
+              </div>
+              <div>
+                <a onClick={()=>this.handlePassword(record)}>重置密码</a>
+              </div>
             </div>
           ),
         }
@@ -614,6 +669,111 @@ class Account extends Component {
           onChange={this.handleTableChange}
           locale={{ emptyText: '暂无数据' }}
         />
+        <Modal 
+          title="编辑账号"
+          visible={this.state.modalVisible}
+          okText="保存"
+          cancelText="取消"
+          onOk={this.updateUser}
+          onCancel={this.handleCancel}
+         
+        >
+          <Form horizontal="true">
+            <div className={styles.editSecTitle}>基本配置</div>
+            <FormItem label="用户名" {...formItemLayout}>
+              <div>{editXq.userName}</div>
+            </FormItem>
+            <div className={styles.editSecTitle}>关联权限</div>
+            <FormItem label="选择角色" {...formItemLayout}>
+                  {
+                    getFieldDecorator('role', { initialValue: editXq.initialRoleValue})(
+                      <Select 
+                      placeholder="请选择角色"
+                      showSearch 
+                      optionFilterProp="children"
+                      onChange={this.handleRoleChange}
+                      onSearch={this.handleRoleSearch}
+                      initialValue={editXq.initialRoleValue}
+                      filterOption={(input, option) =>
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }>
+                        {roleData.map(d => (
+                        <Option key={d.value}>{d.text}</Option>
+                        ))}
+                      </Select>)
+                    }    
+                </FormItem>
+          </Form>
+        </Modal>
+        <Modal 
+          title="重置密码"
+          visible={this.state.pswModalVisible}
+          okText="保存"
+          cancelText="取消"
+          onOk={this.updatePassword}
+          onCancel={this.handlePswCancel}
+          className={styles.pswModal}
+          width="600px"
+        >
+          <Form horizontal="true">
+            <FormItem label="用户名" {...formItemLayout}>
+              <div>{pswXq.userName}</div>
+            </FormItem>
+            <FormItem label="租户管理员密码" autoComplete="off" {...formItemLayout}>
+              {getFieldDecorator('rentpassword',{
+                rules: [
+                  { required: true, message: '租户管理员密码不能为空！' },
+                ],
+                validateTrigger: 'onBlur'},
+                { initialValue: ''})
+                (
+                  <Input placeholder="请输入租户管理员密码" />
+                )}
+            </FormItem>
+            <FormItem label="新密码" autoComplete="off" {...formItemLayout} className={isTooltipShow ? styles.passwordBpttom: styles.password}>
+              {getFieldDecorator('reNewPassword',{
+                rules: [
+                  { required: true, message: '新密码不能为空！' },
+                  { validator: (rule, value, callback) => { this.validatorRePsw(rule, value, callback) } }
+                ],
+                validateTrigger: 'onBlur'},
+                { initialValue: ''})
+                (
+                  <Input.Password onChange={this.reNewPswChange} placeholder="请输入新密码" />
+                )}
+            </FormItem>
+            {
+              isTooltipShow ? 
+              <FormItem {...tailFormItemLayout} className={styles.tooltip}>
+                <span >新密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符</span>
+              </FormItem> : ''
+            }
+            <FormItem label="确认密码" autoComplete="off" {...formItemLayout}>
+              {getFieldDecorator('reNewPassword1',
+                {
+                  rules: [
+                    { required: true, message: '确认密码不能为空！' },
+                    { validator: (rule, value, callback) => { this.validatorRePsw2(rule, value, callback) } }
+                  ],
+                  validateTrigger: 'onBlur'},
+                { initialValue: ''}
+                )(
+                  <Input.Password placeholder="请输入确认密码" />
+                )}
+            </FormItem>
+          </Form>
+        </Modal>
+        {/* <Modal 
+          visible={this.state.deleteModalVisible}
+          okText="确定"
+          cancelText="取消"
+          onOk={this.delAccount}
+          onCancel={this.handleDelCancel}
+          className={styles.simpleModal}
+          width="300px"
+        >
+          <div>{`您确定要删除${delIds.length > 0 ? delIds.length `个账号吗？`:`账号${delUserName}吗？`}`}</div>
+        </Modal> */}
       </div>
     );
   };
