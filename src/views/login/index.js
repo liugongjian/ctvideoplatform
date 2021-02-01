@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import { pathPrefix } from 'Constants/Dictionary';
+import { pathPrefix,urlPrefix } from 'Constants/Dictionary';
 import { userlogin } from 'Redux/reducer/login';
 import styles from './index.less';
 import leftTop from 'Assets/leftTop.png';
@@ -25,21 +25,32 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 );
 
 class Login extends Component {
+  state = {
+    verifyImgUrl: urlPrefix + '/verifyCode' + '?' + new Date().getTime()
+  };
+  // 刷新验证码
+  refreshImg = ()=> {
+    this.setState({
+      verifyImgUrl: urlPrefix + '/verifyCode' + '?' + new Date().getTime()
+    })
+  };
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const { push, userlogin } = this.props;
-        const { username, password } = values;
+        const { username, password, validate } = values;
         userlogin({
           username,
-          password
+          password,
+          validate,
         }).then((data) => {
-          if (data.islogin === '1') {
-            push(`${pathPrefix}/`);
-          } else {
-            message.error(data.msg);
-          }
+          console.log('>>>>>>', data)
+          // if (data.code == 0) {
+          //   push(`${pathPrefix}/`);
+          // } else {
+          //   message.error(data.msg);
+          // }
         }).catch(err => console.log(err));
       }
     });
@@ -49,6 +60,7 @@ class Login extends Component {
     const {
       form: { getFieldDecorator },
     } = this.props;
+    const { verifyImgUrl }= this.state;
     return (
       <div className={styles.login}>
         <div className={styles.imgs}>
@@ -91,6 +103,21 @@ class Login extends Component {
                 />,
               )}
             </FormItem>
+            <div className={styles.yzmContainer}>
+              <FormItem>
+                {getFieldDecorator('validate', {
+                  rules: [{ required: true, message: '请输入验证码' }],
+                })(
+                  <Input
+                    prefix={<Icon type='safety-certificate' className={styles.icon} />}
+                    placeholder="验证码"
+                  />,
+                )}
+              </FormItem>
+              <div className={styles.yzm} onClick={this.refreshImg}>
+                <img src={verifyImgUrl} alt="" />
+              </div>
+            </div>
             <FormItem>
               <Button type="primary" htmlType="submit" className={styles.submitBtn} block>
                 登录

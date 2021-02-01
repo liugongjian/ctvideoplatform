@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {
-  Select, Button, Modal, Form, Input, Switch
+  Select, Button, Modal, Form, Input, Switch, Icon
 } from 'antd';
-import Icon from 'Components/Icon';
+// import Icon from 'Components/Icon';
 import ETable from 'Components/ETable';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -382,11 +382,13 @@ class Account extends Component {
           {
             this.state.selectedRowKeys.length > 0 ? 
             <>
-              <Icon type={`anticon-delete ${styles.iconActive}`} ></Icon>
+              {/* <Icon type={`anticon-delete ${styles.iconActive}`} ></Icon> */}
+              <Icon type="delete" className={styles.iconActive} ></Icon>
               <a onClick={this.handleDelete} >批量删除</a>
             </>: 
             <>
-              <Icon type={`anticon-delete ${styles.iconDisabled}`} ></Icon>
+              {/* <Icon type={`anticon-delete ${styles.iconDisabled}`} ></Icon> */}
+              <Icon type="delete" className={styles.iconDisabled} ></Icon>
               <a disabled>批量删除</a>
             </>
           }
@@ -395,11 +397,13 @@ class Account extends Component {
           {
             this.state.selectedRowKeys.length > 0 ? 
             <>
-              <Icon type={`anticon-status-start ${styles.iconActive}`} ></Icon>
+              {/* <Icon type={`anticon-status-start ${styles.iconActive}`} ></Icon> */}
+              <Icon type="play-circle" className={styles.iconActive} ></Icon>
               <a onClick={this.handleEnable} >批量启用</a>
             </>: 
             <>
-              <Icon type={`anticon-status-start ${styles.iconDisabled}`} ></Icon>
+              {/* <Icon type={`anticon-status-start ${styles.iconDisabled}`} ></Icon> */}
+              <Icon type="play-circle" className={styles.iconDisabled} ></Icon>
               <a disabled>批量启用</a>
             </>
           }
@@ -408,11 +412,13 @@ class Account extends Component {
           {
             this.state.selectedRowKeys.length > 0 ? 
             <>
-              <Icon type={`anticon-status-stop ${styles.iconActive}`} ></Icon>
-              <a onClick={this.handleStop} >批量启用</a>
+              {/* <Icon type={`anticon-status-stop ${styles.iconActive}`} ></Icon> */}
+              <Icon type="stop" className={styles.iconActive} ></Icon>
+              <a onClick={this.handleStop} >批量禁用</a>
             </>: 
             <>
-              <Icon type={`anticon-status-stop ${styles.iconDisabled}`} ></Icon>
+              {/* <Icon type={`anticon-status-stop ${styles.iconDisabled}`} ></Icon> */}
+              <Icon type="stop" className={styles.iconDisabled} ></Icon>
               <a disabled>批量禁用</a>
             </>
           }

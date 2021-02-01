@@ -58,7 +58,7 @@ export default function login(state = initialState, action = {}) {
 export function userlogin(params) {
   return {
     type: [LOGIN_DATA, LOGIN_DATA_SUCCESS, LOGIN_DATA_FAIL],
-    promise: apiClient => apiClient.post(`${urlPrefix}/api/v1/login/`,
+    promise: apiClient => apiClient.post(`${urlPrefix}/login/`,
       {
         data: params
         // params
