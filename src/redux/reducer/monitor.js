@@ -1,38 +1,42 @@
+import { urlPrefix } from 'Constants/Dictionary';
+
 const GET_LIST = 'GET_LIST';
 const GET_LIST_SUCCESS = 'GET_LIST_SUCCESS';
 const GET_LIST_FAIL = 'GET_LIST_FAIL';
 
 
 const initialState = {
-  summary: [],
+  areaList: [],
+  areaListLoading: false
 };
 
-export default function dashboard(state = initialState, action = {}) {
+export default function monitor(state = initialState, action = {}) {
   switch (action.type) {
     case GET_LIST:
       return {
         ...state,
-        summaryLoading: true
+        areaListLoading: true
       };
     case GET_LIST_SUCCESS:
       return {
         ...state,
-        summaryLoading: false,
-        summary: action.data,
+        areaListLoading: false,
+        areaList: action.data,
       };
     case GET_LIST_FAIL:
       return {
         ...state,
-        summaryLoading: false,
+        areaListLoading: false,
+        error: action.error
       };
     default:
       return state;
   }
 }
 
-export function getSummary() {
+export function getList(pid) {
   return {
     type: [GET_LIST, GET_LIST_SUCCESS, GET_LIST_FAIL],
-    promise: apiClient => apiClient.get('/cloud/api/v1/order/analysize/summary')
+    promise: apiClient => apiClient.get(`${urlPrefix}/area/list/${pid}`)
   };
 }

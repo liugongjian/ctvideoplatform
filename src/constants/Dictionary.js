@@ -25,4 +25,4 @@ export const devApi = '/devApi';
 export const prodApi = '/prodApi';
 const prodName = '/';
 
-export const urlPrefix = prodName;
+export const urlPrefix = devApi;

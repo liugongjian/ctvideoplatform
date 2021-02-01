@@ -51,6 +51,8 @@ import Role from 'Views/role';
 import RoleEdit from 'Views/role/roleedit'
 import RoleAdd from 'Views/role/roleadd'
 import CameraDetail from 'Views/cameraDetail';
+import Account from 'Views/system/user';
+import AddAccount from 'Views/system/user/addUser';
 import { pathPrefix } from 'Constants/Dictionary';
 
 const routesConfig = [
@@ -96,7 +98,7 @@ const menuRoutes = [
   },
   {
     path: '/system',
-    // pageTitle: '系统管理',
+    pageTitle: '系统管理',
     exact: true,
     menuCode: '02',
     menuTitle: '系统管理',
@@ -125,9 +127,17 @@ const menuRoutes = [
         path: '/account',
         pageTitle: '账号管理',
         exact: true,
-        component: Monitor,
+        component: Account,
         menuCode: '02',
         menuTitle: '账号管理',
+      },
+      {
+        path: '/accountAdd',
+        pageTitle: '增加账号',
+        exact: true,
+        component: AddAccount,
+        menuCode: '02',
+        menuTitle: '增加账号（先放这里后面删）',
       }
     ]
   },

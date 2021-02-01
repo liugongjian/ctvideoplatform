@@ -27,7 +27,7 @@ class CameraDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      a: 0,
+      areas: [],
     };
   }
 
@@ -36,6 +36,7 @@ class CameraDetail extends Component {
   }
 
   handleOk = () => {
+    console.log('areas', this.state.areas);
     this.props.closeModal();
   }
 
@@ -43,24 +44,33 @@ class CameraDetail extends Component {
     this.props.closeModal();
   }
 
+  onAreasChange = (areas) => {
+    this.setState({ areas });
+  }
+
   render() {
     const {
       title,
       visible,
     } = this.props;
+    const {
+      areas
+    } = this.state;
     return (
       <Modal
         className={styles.algoConfig}
-        title="算法配置"
+        title="规则配置"
         visible={visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
-        width="800px"
+        width="600px"
       >
         <div>
           <CanvasOperator
-            width="750px"
+            width="550px"
             id="1"
+            areas={areas}
+            onAreasChange={this.onAreasChange}
           />
         </div>
       </Modal>

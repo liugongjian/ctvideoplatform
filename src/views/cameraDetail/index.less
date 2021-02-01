@@ -1,4 +1,40 @@
+:global{
+    //对话框样式覆盖
+    .ant-modal-root{
+        .ant-modal-wrap {
+            .ant-modal{
+                .ant-modal-body{
+                    padding-top:10px;
+                }
+                .ant-modal-close {
+                    top: 16px ;
+                    right: 4px ;
+                }
+                .ant-modal-header{
+                    border-bottom: none ;
+                    padding-top: 30px ;
+                    padding-bottom: 0 ;
+                    height: 60px ;
+                }
+                .ant-modal-footer{
+                    border-top:none ;
+                    text-align: center;
+                    background-color:#F5F5F5;
+                    height: 70px;
+                    line-height: 70px;
+                    overflow: hidden;
+                    padding: 0;
+                }
+            }
+        }
+    }
+}
 .cameraDetail{
+    :global{
+        .ant-form-item-required::before{
+            color:#ff8833;
+        }
+    }
     .span10px{
         width: 10px;
         display: inline-block;
