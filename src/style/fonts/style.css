@@ -52,9 +52,9 @@
 .anticon-arrow-down:before {
   content: "\e606";
 }
-/* .anticon-down:before {
+.anticon-down:before {
   content: "\e621";
-} */
+}
 .anticon-arrow-right:before {
   content: "\e607";
 }
@@ -265,9 +265,9 @@
 .anticon-csgateway:before {
   content: "\e103";
 }
-/* .anticon-desktop:before {
+.anticon-desktop:before {
   content: "\e104";
-} */
+}
 .anticon-domainname:before {
   content: "\e105";
 }
