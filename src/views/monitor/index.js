@@ -21,67 +21,6 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   { push, getList },
   dispatch
 );
-
-
-const tempData = [
-  {
-    id: '1',
-    tenantId: 'string',
-    pid: 0,
-    name: '区域名称one',
-    path: '区域路径',
-    description: '区域描述',
-    position: '同一层级下的位置序号',
-    createTime: 'date',
-    updateTime: 'date'
-  },
-  {
-    id: '2',
-    tenantId: 'string',
-    pid: '1',
-    name: '区域名称two',
-    path: '区域路径',
-    description: '区域描述',
-    position: '0',
-    createTime: 'date',
-    updateTime: 'date'
-  },
-  {
-    id: '3',
-    tenantId: 'string',
-    pid: '1',
-    name: '区域名称three',
-    path: '区域路径',
-    description: '区域描述',
-    position: '1',
-    createTime: 'date',
-    updateTime: 'date'
-  },
-  {
-    id: '4',
-    tenantId: 'string',
-    pid: '2',
-    name: '区域名称four',
-    path: '区域路径',
-    description: '区域描述',
-    position: '0',
-    createTime: 'date',
-    updateTime: 'date'
-  },
-  {
-    id: '5',
-    tenantId: 'string',
-    pid: 3,
-    name: '区域名称five',
-    path: '区域路径',
-    description: '区域描述',
-    position: '0',
-    createTime: 'date',
-    updateTime: 'date'
-  }
-];
-
-
 class Monitor extends Component {
   state = {
     test: '测试什么的',
@@ -96,23 +35,19 @@ class Monitor extends Component {
   getAreaList = () => {
     const { getList } = this.props;
     getList(0).then((data) => {
-      console.log(data);
-    });
-    // tempData
-    const treeDatas = this.dataToTree(tempData);
-    console.log(treeDatas);
-    this.setState({
-      treeDatas
+      const treeDatas = this.dataToTree(data);
+      this.setState({
+        treeDatas,
+      });
     });
   }
 
   dataToTree = (data) => {
     const map = {};
     data.forEach((item) => {
-      item.ifEdite = false;
+      item.ifEdit = false;
       map[item.id] = item;
     });
-    console.log('map', map);
     const val = [];
     data.forEach((item) => {
       const parent = map[item.pid];
@@ -173,8 +108,16 @@ class Monitor extends Component {
   })
 
   editThis = (key) => {
-
+    console.log('edit', key);
   }
+
+  editNode = (key, data) => data.map((item) => {
+    if (item.id === key) {
+      item.ifEdit = true;
+    } else {
+      item.ifEdit = false;
+    }
+  })
 
   onMouseEnter = (key) => {
     this.setState((preState, props) => ({
