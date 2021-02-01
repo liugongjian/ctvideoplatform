@@ -38,7 +38,7 @@ class CanvasOperator extends Component {
       isDraw: false,
       // startPoint: [],
       points: [], // 当前绘制轨迹,eg:[[x1,y1],[x2,y2]]
-      areas: [], // 当前已绘制图案, eg:[{type: 'rect', data: {left, top, width, height}}]
+      // areas: [],
     };
   }
 
@@ -81,8 +81,8 @@ class CanvasOperator extends Component {
   setDrawMode = (mode) => {
     this.setState((preState) => {
       if (preState.mode === mode) {
-        return { mode: null };
-      } return { mode };
+        return { mode: null, isDraw: false };
+      } return { mode, isDraw: false };
     });
   }
 
@@ -111,20 +111,31 @@ class CanvasOperator extends Component {
 
   // 绘制已暂存在areas中的区域
   renderBeforeAreas = () => {
-    const { areas, canvas } = this.state;
+    const { canvas } = this.state;
+    const { areas } = this.props;
     console.log(areas);
     if (areas.length) {
       for (const area of areas) {
         canvas.beginPath();
-        // eslint-disable-next-line default-case
+        const { points } = area;
         switch (area.type) {
           case DRAW_MODES.RECT: {
-            const { points } = area;
             const {
               left, top, width, height
             } = getRectPropFromPoints(points[0], points[1]);
             canvas.strokeRect(left, top, width, height);
+            break;
           }
+          case DRAW_MODES.POLYGON: {
+            canvas.moveTo(points[0][0], points[0][1]);
+            for (const point of points) {
+              canvas.lineTo(point[0], point[1]);
+            }
+            canvas.lineTo(points[0][0], points[0][1]);
+            canvas.stroke();
+            break;
+          }
+          default: break;
         }
         canvas.closePath();
       }
@@ -133,8 +144,9 @@ class CanvasOperator extends Component {
 
   closePolygon = () => {
     const {
-      canvas, points, areas
+      canvas, points
     } = this.state;
+    const { areas, onAreasChange } = this.props;
     const newArea = {
       type: DRAW_MODES.POLYGON,
       points
@@ -144,9 +156,10 @@ class CanvasOperator extends Component {
     canvas.closePath();
     this.setState({
       isDraw: false,
-      ponts: [],
-      areas: [...areas, newArea]
+      points: [],
+      // areas: [...areas, newArea]
     });
+    onAreasChange([...areas, newArea]);
   }
 
   onMouseDown = (e) => {
@@ -220,7 +233,7 @@ class CanvasOperator extends Component {
         // 绘制已暂存区域
         this.renderBeforeAreas();
         // 开始绘制当前多边形
-        // canvas.moveTo(points[0][0], points[0][1]);
+        canvas.moveTo(points[0][0], points[0][1]);
         // 绘制已暂存折点
         for (const point of points) {
           canvas.lineTo(point[0], point[1]);
@@ -240,10 +253,14 @@ class CanvasOperator extends Component {
   onMouseUp = (e) => {
     console.log('onMouseUp');
     const {
-      isDraw, canvas, canvasDom, mode, points, areas
+      isDraw, canvas, canvasDom, mode, points
     } = this.state;
+    const { areas, onAreasChange } = this.props;
+    if (!isDraw) {
+      return;
+    }
     const curPoint = this.getLocation(e.clientX, e.clientY);
-    if (!curPoint) {
+    if (!curPoint || !points.length) {
       return;
     }
     switch (mode) {
@@ -253,7 +270,8 @@ class CanvasOperator extends Component {
           points: [points[0], curPoint]
         };
         // 将区域暂存；清空轨迹；清除作画状态
-        this.setState({ areas: [...areas, newArea], points: [], isDraw: false, });
+        this.setState({ points: [], isDraw: false, });
+        onAreasChange([...areas, newArea]);
         break;
       }
       case DRAW_MODES.POLYGON: {
@@ -311,6 +329,8 @@ class CanvasOperator extends Component {
 CanvasOperator.propTypes = {
   id: PropTypes.string.isRequired,
   width: PropTypes.string.isRequired,
+  areas: PropTypes.array.isRequired, // 当前已绘制图案, eg:[{type: 'rect', points:[]]
+  onAreasChange: PropTypes.func.isRequired,
 };
 
 export default CanvasOperator;
