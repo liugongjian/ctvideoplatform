@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {
-  Select, Tree, Icon, Input, Button
+  Select, Tree, Icon, Input, Button, Table
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import {
-  getSummary, getMonitorMetric,
+  getList
 } from 'Redux/reducer/monitor';
 
 import styles from './index.less';
@@ -18,72 +18,249 @@ const InputGroup = Input.Group;
 
 const mapStateToProps = state => ({ monitor: state.monitor });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  {},
+  { push, getList },
   dispatch
 );
 
+
+const tempData = [
+  {
+    id: '1',
+    tenantId: 'string',
+    pid: 0,
+    name: '区域名称one',
+    path: '区域路径',
+    description: '区域描述',
+    position: '同一层级下的位置序号',
+    createTime: 'date',
+    updateTime: 'date'
+  },
+  {
+    id: '2',
+    tenantId: 'string',
+    pid: '1',
+    name: '区域名称two',
+    path: '区域路径',
+    description: '区域描述',
+    position: '0',
+    createTime: 'date',
+    updateTime: 'date'
+  },
+  {
+    id: '3',
+    tenantId: 'string',
+    pid: '1',
+    name: '区域名称three',
+    path: '区域路径',
+    description: '区域描述',
+    position: '1',
+    createTime: 'date',
+    updateTime: 'date'
+  },
+  {
+    id: '4',
+    tenantId: 'string',
+    pid: '2',
+    name: '区域名称four',
+    path: '区域路径',
+    description: '区域描述',
+    position: '0',
+    createTime: 'date',
+    updateTime: 'date'
+  },
+  {
+    id: '5',
+    tenantId: 'string',
+    pid: 3,
+    name: '区域名称five',
+    path: '区域路径',
+    description: '区域描述',
+    position: '0',
+    createTime: 'date',
+    updateTime: 'date'
+  }
+];
+
+
 class Monitor extends Component {
   state = {
-    test: '测试什么的'
+    test: '测试什么的',
+    treeDatas: [],
+    expandedKeys: ['0', '0-1'],
   }
 
   componentDidMount() {
-    // ajax code
+    this.getAreaList();
+  }
+
+  getAreaList = () => {
+    const { getList } = this.props;
+    getList(0).then((data) => {
+      console.log(data);
+    });
+    // tempData
+    const treeDatas = this.dataToTree(tempData);
+    console.log(treeDatas);
+    this.setState({
+      treeDatas
+    });
+  }
+
+  dataToTree = (data) => {
+    const map = {};
+    data.forEach((item) => {
+      item.ifEdite = false;
+      map[item.id] = item;
+    });
+    console.log('map', map);
+    const val = [];
+    data.forEach((item) => {
+      const parent = map[item.pid];
+      if (parent) {
+        (parent.children || (parent.children = [])).push(item);
+      } else {
+        val.push(item);
+      }
+    });
+    return val;
   }
 
   renderTreeNodes = data => data.map((item) => {
-    if (item.children) {
+    const { deptHover } = this.state;
+    const getBtn = () => {
+      if (deptHover && deptHover[item.id]) {
+        if (item.pid === 0) {
+          return (
+            <span className={styles.treeBtnBox}>
+              <Icon type="edit" className={styles.treeBtn} />
+              <Icon type="plus-square" className={styles.treeBtn} />
+            </span>
+          );
+        }
+        return (
+          <span className={styles.treeBtnBox}>
+            <Icon type="edit" className={styles.treeBtn} onClick={() => this.editThis(item.id)} />
+            <Icon type="delete" className={styles.treeBtn} />
+            <Icon type="plus-square" className={styles.treeBtn} />
+            <Icon type="arrow-up" className={styles.treeBtn} />
+            <Icon type="arrow-down" className={styles.treeBtn} />
+          </span>
+        );
+      }
+      return '';
+    };
+    const getTitle = val => (
+      <div
+        onMouseEnter={() => { this.onMouseEnter(val.id); }}
+        onMouseLeave={() => { this.onMouseLeave(val.id); }}
+        className={styles.treeTitleInfo}
+        key={val.id}
+      >
+        <span>{val.name}</span>
+        {
+          getBtn()
+        }
+      </div>
+    );
+    if (item.children && item.children.length) {
       return (
-        <TreeNode
-          title={item.name}
-          key={item.key}
-        >
-          {item.name}
-          {
-            this.renderTreeNodes(item.children)
-          }
+        <TreeNode key={item.id} title={getTitle(item)}>
+          {this.renderTreeNodes(item.children)}
         </TreeNode>
       );
     }
-    return (
-      <TreeNode
-        title={item.name}
-        key={item.key}
-      >
-        {item.name}
-      </TreeNode>
-    );
+    return <TreeNode key={item.id} title={getTitle(item)} />;
   })
 
+  editThis = (key) => {
+
+  }
+
+  onMouseEnter = (key) => {
+    this.setState((preState, props) => ({
+      deptHover: {
+        ...preState.deptHover,
+        [key]: true,
+      },
+    }));
+  }
+
+  onMouseLeave = (key) => {
+    this.setState((preState, props) => ({
+      deptHover: {
+        ...preState.deptHover,
+        [key]: false,
+      },
+    }));
+  }
+
   render() {
-    const { test } = this.state;
+    const { test, treeDatas, expandedKeys } = this.state;
     const { monitor } = this.props;
+    const columns = [
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        render: text => <a>{text}</a>,
+      },
+      {
+        title: 'Age',
+        dataIndex: 'age',
+      },
+      {
+        title: 'Address',
+        dataIndex: 'address',
+      },
+    ];
+    const data = [
+      {
+        key: '1',
+        name: 'John Brown',
+        age: 32,
+        address: 'New York No. 1 Lake Park',
+      },
+      {
+        key: '2',
+        name: 'Jim Green',
+        age: 42,
+        address: 'London No. 1 Lake Park',
+      },
+      {
+        key: '3',
+        name: 'Joe Black',
+        age: 32,
+        address: 'Sidney No. 1 Lake Park',
+      },
+      {
+        key: '4',
+        name: 'Disabled User',
+        age: 99,
+        address: 'Sidney No. 1 Lake Park',
+      },
+    ];
+    const rowSelection = {
+      onChange: (selectedRowKeys, selectedRows) => {
+        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      },
+      getCheckboxProps: record => ({
+        disabled: record.name === 'Disabled User', // Column configuration not to be checked
+        name: record.name,
+      }),
+    };
     return (
       <div className={styles.content}>
         <div className={styles.areaTree}>
+          <Input placeholder="请输入关键字" />
           <Tree
-            defaultExpandedKeys={['0-0-0', '0-0-1', '0-0-2']}
+            className="draggable-tree"
+            defaultExpandedKeys={expandedKeys}
+            draggable
+            blockNode
             showLine
+            onDragEnter={this.onDragEnter}
+            onDrop={this.onDrop}
           >
-            <TreeNode icon={<Icon type="carry-out" />} title="parent 1" key="0-0">
-              <TreeNode icon={<Icon type="carry-out" />} title="parent 1-0" key="0-0-0">
-                <TreeNode icon={<Icon type="carry-out" />} title="leaf" key="0-0-0-0" />
-                <TreeNode icon={<Icon type="carry-out" />} title="leaf" key="0-0-0-1" />
-                <TreeNode icon={<Icon type="carry-out" />} title="leaf" key="0-0-0-2" />
-              </TreeNode>
-              <TreeNode icon={<Icon type="carry-out" />} title="parent 1-1" key="0-0-1">
-                <TreeNode icon={<Icon type="carry-out" />} title="leaf" key="0-0-1-0" />
-              </TreeNode>
-              <TreeNode icon={<Icon type="carry-out" />} title="parent 1-2" key="0-0-2">
-                <TreeNode icon={<Icon type="carry-out" />} title="leaf" key="0-0-2-0" />
-                <TreeNode
-                  switcherIcon={<Icon type="form" />}
-                  icon={<Icon type="carry-out" />}
-                  title="leaf"
-                  key="0-0-2-1"
-                />
-              </TreeNode>
-            </TreeNode>
+            {this.renderTreeNodes(treeDatas)}
           </Tree>
         </div>
         <div className={styles.monitorList}>
@@ -104,13 +281,16 @@ class Monitor extends Component {
           </div>
           <div className={styles.searchResult}>
             <div className={styles.handleResult}>
-              <Button type="primary">
+              <Button type="link">
                 <Icon type="export" />
+                <span>导入</span>
               </Button>
-              <Button type="primary">
+              <Button type="link">
                 <Icon type="delete" />
+                <span>批量删除</span>
               </Button>
             </div>
+            <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
           </div>
         </div>
       </div>
@@ -119,7 +299,8 @@ class Monitor extends Component {
 }
 
 Monitor.propTypes = {
-  monitor: PropTypes.object.isRequired
+  monitor: PropTypes.object.isRequired,
+  // getList: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Monitor);
