@@ -7,6 +7,7 @@ import dashboard from './dashboard';
 import login from './login';
 import pageHeader from './pageHeader';
 import monitor from './monitor';
+import role from './role';
 
 
 export default {
@@ -15,5 +16,6 @@ export default {
   dashboard,
   pageHeader,
   login,
-  monitor
+  monitor,
+  role,
 };
