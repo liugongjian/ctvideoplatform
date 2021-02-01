@@ -21,20 +21,20 @@ function formatUrl(path) {
   return path;
 }
 
-function getcookie(name) { // for django csrf protection
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === (`${name}=`)) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
-}
+// function getcookie(name) { // for django csrf protection
+//   let cookieValue = null;
+//   if (document.cookie && document.cookie !== '') {
+//     const cookies = document.cookie.split(';');
+//     for (let i = 0; i < cookies.length; i++) {
+//       const cookie = cookies[i].trim();
+//       if (cookie.substring(0, name.length + 1) === (`${name}=`)) {
+//         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+//         break;
+//       }
+//     }
+//   }
+//   return cookieValue;
+// }
 
 class ApiClient {
   constructor() {
@@ -42,14 +42,15 @@ class ApiClient {
       (method) => {
         this[method] = (path, { params, data } = {}) => new Promise((resolve, reject) => {
           const { search } = window.location;
-          const myParam = buildObj(search);
-          const { token, ticket } = myParam;
-          const request = superagent[method](formatUrl(path)).withCredentials().set({
-            'X-CSRFToken': getcookie('csrftoken'),
-            'Redirect-Url': window.location.href,
-            token: token || '',
-            ticket: ticket || ''
-          });
+          // const myParam = buildObj(search);
+          // const { token, ticket } = myParam;
+          const request = superagent[method](formatUrl(path)).withCredentials();
+          // .set({
+          //   'X-CSRFToken': getcookie('csrftoken'),
+          //   'Redirect-Url': window.location.href,
+          //   token: token || '',
+          //   ticket: ticket || ''
+          // });
           if (params) {
             request.query(params);
           }
@@ -70,7 +71,8 @@ class ApiClient {
                   ssoLogin(sso_login_url, params);
                   return;
                 }
-                if (res.body.success === 0) {
+                if (res.body.code === 0) {
+                  console.log('res.body', res.body);
                   return resolve(res.body);
                 }
 

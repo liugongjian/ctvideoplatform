@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import {
-  getSummary, getMonitorMetric,
+  getList
 } from 'Redux/reducer/monitor';
 
 import styles from './index.less';
@@ -18,173 +18,184 @@ const InputGroup = Input.Group;
 
 const mapStateToProps = state => ({ monitor: state.monitor });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  {},
+  { push, getList },
   dispatch
 );
 
-const x = 3;
-const y = 2;
-const z = 1;
-const gData = [];
 
-const generateData = (_level, _preKey, _tns) => {
-  const preKey = _preKey || '0';
-  const tns = _tns || gData;
-
-  const children = [];
-  for (let i = 0; i < x; i++) {
-    const key = `${preKey}-${i}`;
-    tns.push({ title: key, key });
-    if (i < y) {
-      children.push(key);
-    }
-  }
-  if (_level < 0) {
-    return tns;
-  }
-  const level = _level - 1;
-  children.forEach((key, index) => {
-    tns[index].children = [];
-    return generateData(level, key, tns[index].children);
-  });
-};
-generateData(z);
-
-const treeData = [
+const tempData = [
   {
-    title: '根节点',
-    key: '0',
-    children: [
-      {
-        title: '一级区域名称1',
-        key: '0-1',
-        children: [
-          {
-            title: '二级区域名称1',
-            key: '0-1-1'
-          },
-          {
-            title: '二级区域名称2',
-            key: '0-1-2',
-            children: [
-              {
-                title: '三级区域名称1',
-                key: '0-1-2-1'
-              },
-              {
-                title: '三级区域名称2',
-                key: '0-1-2-2',
-                children: [
-                  {
-                    title: '四级区域名称1',
-                    key: '0-1-2-2-1',
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
+    id: '1',
+    tenantId: 'string',
+    pid: 0,
+    name: '区域名称one',
+    path: '区域路径',
+    description: '区域描述',
+    position: '同一层级下的位置序号',
+    createTime: 'date',
+    updateTime: 'date'
+  },
+  {
+    id: '2',
+    tenantId: 'string',
+    pid: '1',
+    name: '区域名称two',
+    path: '区域路径',
+    description: '区域描述',
+    position: '0',
+    createTime: 'date',
+    updateTime: 'date'
+  },
+  {
+    id: '3',
+    tenantId: 'string',
+    pid: '1',
+    name: '区域名称three',
+    path: '区域路径',
+    description: '区域描述',
+    position: '1',
+    createTime: 'date',
+    updateTime: 'date'
+  },
+  {
+    id: '4',
+    tenantId: 'string',
+    pid: '2',
+    name: '区域名称four',
+    path: '区域路径',
+    description: '区域描述',
+    position: '0',
+    createTime: 'date',
+    updateTime: 'date'
+  },
+  {
+    id: '5',
+    tenantId: 'string',
+    pid: 3,
+    name: '区域名称five',
+    path: '区域路径',
+    description: '区域描述',
+    position: '0',
+    createTime: 'date',
+    updateTime: 'date'
   }
 ];
+
 
 class Monitor extends Component {
   state = {
     test: '测试什么的',
-    gData,
-    treeData,
+    treeDatas: [],
     expandedKeys: ['0', '0-1'],
   }
 
   componentDidMount() {
-    // ajax code
-    console.log(this.state.gData);
+    this.getAreaList();
   }
 
-  onDragEnter = (info) => {
-    console.log('onDragEnter----->', info);
-    // expandedKeys 需要受控时设置
-    // this.setState({
-    //   expandedKeys: info.expandedKeys,
-    // });
-  };
-
-  onDrop = (info) => {
-    console.log('onDrop------>', info);
-    const dropKey = info.node.props.eventKey;
-    const dragKey = info.dragNode.props.eventKey;
-    const dropPos = info.node.props.pos.split('-');
-    const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1]);
-
-    const loop = (data, key, callback) => {
-      data.forEach((item, index, arr) => {
-        if (item.key === key) {
-          return callback(item, index, arr);
-        }
-        if (item.children) {
-          return loop(item.children, key, callback);
-        }
-      });
-    };
-    const data = [...this.state.treeData];
-
-    // Find dragObject
-    let dragObj;
-    loop(data, dragKey, (item, index, arr) => {
-      arr.splice(index, 1);
-      dragObj = item;
+  getAreaList = () => {
+    const { getList } = this.props;
+    getList(0).then((data) => {
+      console.log(data);
     });
-
-    if (!info.dropToGap) {
-      // Drop on the content
-      loop(data, dropKey, (item) => {
-        item.children = item.children || [];
-        // where to insert 示例添加到尾部，可以是随意位置
-        item.children.push(dragObj);
-      });
-    } else if (
-      (info.node.props.children || []).length > 0 // Has children
-      && info.node.props.expanded // Is expanded
-      && dropPosition === 1 // On the bottom gap
-    ) {
-      loop(data, dropKey, (item) => {
-        item.children = item.children || [];
-        // where to insert 示例添加到头部，可以是随意位置
-        item.children.unshift(dragObj);
-      });
-    } else {
-      let ar;
-      let i;
-      loop(data, dropKey, (item, index, arr) => {
-        ar = arr;
-        i = index;
-      });
-      if (dropPosition === -1) {
-        ar.splice(i, 0, dragObj);
-      } else {
-        ar.splice(i + 1, 0, dragObj);
-      }
-    }
-
+    // tempData
+    const treeDatas = this.dataToTree(tempData);
+    console.log(treeDatas);
     this.setState({
-      treeData: data,
+      treeDatas
     });
-  };
+  }
+
+  dataToTree = (data) => {
+    const map = {};
+    data.forEach((item) => {
+      item.ifEdite = false;
+      map[item.id] = item;
+    });
+    console.log('map', map);
+    const val = [];
+    data.forEach((item) => {
+      const parent = map[item.pid];
+      if (parent) {
+        (parent.children || (parent.children = [])).push(item);
+      } else {
+        val.push(item);
+      }
+    });
+    return val;
+  }
 
   renderTreeNodes = data => data.map((item) => {
+    const { deptHover } = this.state;
+    const getBtn = () => {
+      if (deptHover && deptHover[item.id]) {
+        if (item.pid === 0) {
+          return (
+            <span className={styles.treeBtnBox}>
+              <Icon type="edit" className={styles.treeBtn} />
+              <Icon type="plus-square" className={styles.treeBtn} />
+            </span>
+          );
+        }
+        return (
+          <span className={styles.treeBtnBox}>
+            <Icon type="edit" className={styles.treeBtn} onClick={() => this.editThis(item.id)} />
+            <Icon type="delete" className={styles.treeBtn} />
+            <Icon type="plus-square" className={styles.treeBtn} />
+            <Icon type="arrow-up" className={styles.treeBtn} />
+            <Icon type="arrow-down" className={styles.treeBtn} />
+          </span>
+        );
+      }
+      return '';
+    };
+    const getTitle = val => (
+      <div
+        onMouseEnter={() => { this.onMouseEnter(val.id); }}
+        onMouseLeave={() => { this.onMouseLeave(val.id); }}
+        className={styles.treeTitleInfo}
+        key={val.id}
+      >
+        <span>{val.name}</span>
+        {
+          getBtn()
+        }
+      </div>
+    );
     if (item.children && item.children.length) {
       return (
-        <TreeNode key={item.key} title={item.title}>
+        <TreeNode key={item.id} title={getTitle(item)}>
           {this.renderTreeNodes(item.children)}
         </TreeNode>
       );
     }
-    return <TreeNode key={item.key} title={item.title} />;
+    return <TreeNode key={item.id} title={getTitle(item)} />;
   })
 
+  editThis = (key) => {
+
+  }
+
+  onMouseEnter = (key) => {
+    this.setState((preState, props) => ({
+      deptHover: {
+        ...preState.deptHover,
+        [key]: true,
+      },
+    }));
+  }
+
+  onMouseLeave = (key) => {
+    this.setState((preState, props) => ({
+      deptHover: {
+        ...preState.deptHover,
+        [key]: false,
+      },
+    }));
+  }
+
   render() {
-    const { test, treeData, expandedKeys } = this.state;
+    const { test, treeDatas, expandedKeys } = this.state;
     const { monitor } = this.props;
     const columns = [
       {
@@ -239,6 +250,7 @@ class Monitor extends Component {
     return (
       <div className={styles.content}>
         <div className={styles.areaTree}>
+          <Input placeholder="请输入关键字" />
           <Tree
             className="draggable-tree"
             defaultExpandedKeys={expandedKeys}
@@ -248,7 +260,7 @@ class Monitor extends Component {
             onDragEnter={this.onDragEnter}
             onDrop={this.onDrop}
           >
-            {this.renderTreeNodes(treeData)}
+            {this.renderTreeNodes(treeDatas)}
           </Tree>
         </div>
         <div className={styles.monitorList}>
@@ -287,7 +299,8 @@ class Monitor extends Component {
 }
 
 Monitor.propTypes = {
-  monitor: PropTypes.object.isRequired
+  monitor: PropTypes.object.isRequired,
+  // getList: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Monitor);
