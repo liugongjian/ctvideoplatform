@@ -11,6 +11,7 @@ import {
 import PropTypes from 'prop-types';
 import { create, all } from 'mathjs';
 import { constant } from 'lodash';
+import EIcon from 'Components/Icon';
 import { DRAW_MODES } from './constants';
 import { getRectPropFromPoints } from './utils';
 import testJpg from './test.jpg';
@@ -81,8 +82,8 @@ class CanvasOperator extends Component {
   setDrawMode = (mode) => {
     this.setState((preState) => {
       if (preState.mode === mode) {
-        return { mode: null, isDraw: false };
-      } return { mode, isDraw: false };
+        return { mode: null, isDraw: false, points: [] };
+      } return { mode, isDraw: false, points: [] };
     });
   }
 
@@ -175,7 +176,11 @@ class CanvasOperator extends Component {
               isDraw: true,
             });
           } else if (e.button === 2) {
-            this.closePolygon();
+            // 先保存当前点，再闭合
+            this.setState(
+              ({ points }) => ({ points: [...points, curPoint] }),
+              () => { this.closePolygon(); }
+            );
           }
           break;
         default:
@@ -290,18 +295,18 @@ class CanvasOperator extends Component {
     const { mode } = this.state;
     return (
       <div className={styles.canvasOperator}>
-        <div className={styles.optButtonWrapper}>
+        <div className={styles.optButtonWrapper} style={{ width }}>
           <div
             className={`${styles.optButton} ${mode === DRAW_MODES.RECT ? styles['optButton-selected'] : ''}`}
             onClick={() => this.setDrawMode(DRAW_MODES.RECT)}
           >
-            矩形
+            <EIcon type="myicon-rect" />
           </div>
           <div
             className={`${styles.optButton} ${mode === DRAW_MODES.POLYGON ? styles['optButton-selected'] : ''}`}
             onClick={() => this.setDrawMode(DRAW_MODES.POLYGON)}
           >
-            多边形
+            <EIcon type="myicon-polygon" />
           </div>
         </div>
         <div id={`configCanvas-${id}-wrapper`} className={styles.canvasWrapper}>
