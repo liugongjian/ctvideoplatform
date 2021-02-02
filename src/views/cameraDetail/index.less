@@ -11,6 +11,9 @@
                     right: 4px ;
                 }
                 .ant-modal-header{
+                    .ant-modal-title{
+                        font-weight: 600;
+                    }
                     border-bottom: none ;
                     padding-top: 30px ;
                     padding-bottom: 0 ;
@@ -28,6 +31,9 @@
             }
         }
     }
+}
+p{
+    margin-bottom: 10px;
 }
 .cameraDetail{
     :global{
@@ -81,7 +87,11 @@
             text-align: center;
         }
     }
-    .algoConfig{
-
+}
+.algoConfig{
+    &-content{
+        &>div:not(:first-child){
+            margin-top: 15px;
+        }
     }
 }

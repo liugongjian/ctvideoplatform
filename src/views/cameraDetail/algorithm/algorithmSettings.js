@@ -23,18 +23,20 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 );
 
 const AlgorithmItem = ({
-  id, checked, title, desp, onChange, toConfig
+  // id, title, desp,
+  curAlgo,
+  checked, onChange, toConfig
 }) => (
   <div className={styles.algoItem}>
     <span className={styles['algoItem-checked']}>
       <Checkbox
-        onChange={e => onChange(id, e.target.checked)}
+        onChange={e => onChange(curAlgo?.id, e.target.checked)}
         checked={checked}
       />
     </span>
-    <span className={styles['algoItem-title']}>{title}</span>
-    <span className={styles['algoItem-desp']}>{desp}</span>
-    <span className={styles['algoItem-configBtn']}><a onClick={() => toConfig(id)}>规则配置</a></span>
+    <span className={styles['algoItem-title']}>{curAlgo?.title}</span>
+    <span className={styles['algoItem-desp']}>{curAlgo?.desp}</span>
+    <span className={styles['algoItem-configBtn']}><a onClick={() => toConfig(curAlgo)}>规则配置</a></span>
   </div>
 );
 
@@ -71,7 +73,7 @@ class AlgorithmSetting extends Component {
       ],
       algoChecked: {},
       configVisible: false,
-      curId: undefined,
+      curAlgo: undefined,
     };
   }
 
@@ -87,17 +89,17 @@ class AlgorithmSetting extends Component {
     });
   }
 
-  openAlgoConfigDialog = (id) => {
+  openAlgoConfigDialog = (algo) => {
     this.setState({
       configVisible: true,
-      curId: id,
+      curAlgo: algo,
     });
   }
 
   closeConfigModal = () => {
     this.setState({
       configVisible: false,
-      curId: undefined,
+      curAlgo: undefined,
     });
   }
 
@@ -113,13 +115,15 @@ class AlgorithmSetting extends Component {
     const {
       listData,
       algoChecked,
-      curId,
+      curAlgo,
       configVisible
     } = this.state;
     return (
       <div className={styles.algorithmSetting}>
         <AlgoConfigDialog
-          key={curId}
+          key={curAlgo?.id}
+          curAlgo={curAlgo}
+          configTypes={[1, 2, 3]}
           visible={configVisible}
           closeModal={this.closeConfigModal}
         />
@@ -127,7 +131,8 @@ class AlgorithmSetting extends Component {
           {
             listData.map(item => (
               <AlgorithmItem
-                {...item}
+                key={item.id}
+                curAlgo={item}
                 checked={algoChecked[item.id]}
                 onChange={this.onAlgoCheckedChange}
                 toConfig={this.openAlgoConfigDialog}
