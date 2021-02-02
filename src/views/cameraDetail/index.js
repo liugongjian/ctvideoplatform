@@ -26,7 +26,7 @@ class CameraDetail extends Component {
   constructor() {
     super();
     this.state = {
-      curTab: 'algo',
+      curTab: 'basic',
     };
   }
 
@@ -36,11 +36,12 @@ class CameraDetail extends Component {
 
   render() {
     const { curTab } = this.state;
+    const algoId = '82808096775c78ad01775c79f3420000';
     return (
       <div className={styles.cameraDetail}>
         <Tabs activeKey={curTab} onChange={curTab => this.setState({ curTab })}>
           <TabPane tab="基础配置" key="basic">
-            <BasicSettings />
+            <BasicSettings algoId={algoId} />
           </TabPane>
           <TabPane tab="算法配置" key="algo">
             <AlgorithmSettings />

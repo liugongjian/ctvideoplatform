@@ -22,6 +22,14 @@ const proxyServer = {
     secure: false,
     changeOrigin: true
   },
+  '/lixueping': {
+    target: 'http://192.168.1.152:8670', //
+    pathRewrite: {
+      '^/lixueping': ''
+    },
+    secure: false,
+    changeOrigin: true
+  },
 };
 
 module.exports = merge(common, {
