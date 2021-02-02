@@ -1,17 +1,20 @@
 import React, { Component, Fragment } from 'react';
 import {
-  Select, Tree, Icon, Input, Button, Table
+  Select, Tree, Icon, Input, Button, Table, Divider,
+  Modal
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import {
-  getList, renameArea, addChild, delArea
+  getList, renameArea, addChild, delArea, upArea, downArea,
+  getDeiviceList
 } from 'Redux/reducer/monitor';
 
 import styles from './index.less';
 
+const { Search } = Input;
 const { Option } = Select;
 const { TreeNode } = Tree;
 const InputGroup = Input.Group;
@@ -19,7 +22,14 @@ const InputGroup = Input.Group;
 const mapStateToProps = state => ({ monitor: state.monitor });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    push, getList, renameArea, addChild, delArea
+    push,
+    getList,
+    renameArea,
+    addChild,
+    delArea,
+    upArea,
+    downArea,
+    getDeiviceList
   },
   dispatch
 );
@@ -31,21 +41,35 @@ class Monitor extends Component {
     editValue: '',
     hasSame: '',
     tempData: [],
-    deptHover: {}
+    deptHover: {},
+    areaId: 0,
+    pageNo: 1,
+    recursive: false,
+    pageSize: 10,
+    tableData: [],
+    showModal: false
   }
 
   componentDidMount() {
     this.getAreaList();
+    this.getDeviceList();
   }
 
-  getAreaList = () => {
-    const { getList, monitor } = this.props;
-    getList(0).then((res) => {
+  onExpand = (expandedKeys) => {
+    this.setState({
+      expandedKeys
+    });
+  }
+
+  getAreaList = (keyword) => {
+    const { getList } = this.props;
+    const { expandedKeys } = this.state;
+    getList(0, keyword).then((res) => {
       const treeDatas = this.dataToTree(res);
       this.setState({
         tempData: res,
         treeDatas,
-      });
+      }, () => this.onExpand(expandedKeys));
     });
   }
 
@@ -76,8 +100,16 @@ class Monitor extends Component {
         if (item.pid === 0) {
           return (
             <span className={styles.treeBtnBox}>
-              <Icon type="edit" className={styles.treeBtn} />
-              <Icon type="plus-square" className={styles.treeBtn} />
+              {item.ifEdit
+                ? (
+                  <Button type="link" disabled={item.hasSame} size="small" onClick={() => { this.sureEdit(item.id, item.addTag, item.pid); }}>
+                    <Icon type="check" />
+                  </Button>
+                )
+                : <Icon type="edit" className={styles.treeBtn} onClick={() => this.editThis(item.id, item.name)} />}
+
+              <Icon type="plus-square" className={styles.treeBtn} onClick={() => { this.onAdd(item.id); }} />
+
             </span>
           );
         }
@@ -95,12 +127,10 @@ class Monitor extends Component {
                 <Fragment>
                   <Icon type="delete" className={styles.treeBtn} onClick={() => { this.onDelete(item.id); }} />
                   <Icon type="plus-square" className={styles.treeBtn} onClick={() => { this.onAdd(item.id); }} />
-                  <Icon type="arrow-up" className={styles.treeBtn} />
-                  <Icon type="arrow-down" className={styles.treeBtn} />
-
+                  <Icon type="arrow-up" className={styles.treeBtn} onClick={() => { this.upArea(item.id); }} />
+                  <Icon type="arrow-down" className={styles.treeBtn} onClick={() => { this.downArea(item.id); }} />
                 </Fragment>
-              ) : null}
-
+              ) : <Icon type="delete" className={styles.treeBtn} onClick={() => { this.cancel(item.id); }} />}
           </span>
         );
       }
@@ -134,12 +164,12 @@ class Monitor extends Component {
     );
     if (item.children && item.children.length) {
       return (
-        <TreeNode key={item.id} title={getTitle(item)}>
+        <TreeNode key={item.id.toString()} title={getTitle(item)}>
           {this.renderTreeNodes(item.children)}
         </TreeNode>
       );
     }
-    return <TreeNode key={item.id} title={getTitle(item)} />;
+    return <TreeNode key={item.id.toString()} title={getTitle(item)} />;
   })
 
   editThis = (key, name) => {
@@ -223,6 +253,10 @@ class Monitor extends Component {
       item.ifEdit = false;
       return item;
     });
+    const arr = this.state.tempData.filter(item => item.addTag);
+    if (arr && arr.length > 0) {
+      return;
+    }
     const temp = {
       hasSame: false,
       ifEdit: true,
@@ -231,9 +265,18 @@ class Monitor extends Component {
       addTag: true
     };
     this.state.tempData.push(temp);
+    const tempKeys = [...this.state.expandedKeys, key.toString()];
     this.setState({
       treeDatas: this.dataToTree(this.state.tempData),
-      editValue: ''
+      editValue: '',
+      expandedKeys: tempKeys
+    });
+  }
+
+  cancel = (key) => {
+    this.state.tempData = this.state.tempData.filter(({ id }) => id !== -1);
+    this.setState({
+      treeDatas: this.dataToTree(this.state.tempData)
     });
   }
 
@@ -262,50 +305,105 @@ class Monitor extends Component {
     }));
   }
 
+  upArea = (key) => {
+    const { upArea } = this.props;
+    upArea(key).then((res) => {
+      this.getAreaList();
+    });
+  }
+
+  downArea =(key) => {
+    const { downArea } = this.props;
+    downArea(key).then((res) => {
+      this.getAreaList();
+    });
+  }
+
+  onSelect = (keys) => {
+    if (keys && keys.length > 0) {
+      const [a] = keys;
+      console.log(a);
+    }
+  }
+
+  getDeviceList = () => {
+    const { getDeiviceList } = this.props;
+    const {
+      areaId,
+      pageNo,
+      recursive,
+      pageSize
+    } = this.state;
+    const param = {
+      areaId,
+      pageNo: 0,
+      recursive: true,
+      pageSize
+    };
+    getDeiviceList(param).then((res) => {
+      console.log(res);
+      this.setState({
+        tableData: res.list
+      });
+    });
+  }
+
+  openModal=() => {
+    this.setState({
+      showModal: true
+    });
+  }
+
   render() {
-    const { test, treeDatas, expandedKeys } = this.state;
-    const { monitor } = this.props;
+    const {
+      test, treeDatas, expandedKeys, tableData, showModal
+    } = this.state;
     const columns = [
       {
-        title: 'Name',
+        title: '摄像头名称',
         dataIndex: 'name',
         render: text => <a>{text}</a>,
       },
       {
-        title: 'Age',
-        dataIndex: 'age',
+        title: '摄像头ID',
+        dataIndex: 'originId',
       },
       {
-        title: 'Address',
+        title: '区域名称',
         dataIndex: 'address',
       },
+      {
+        title: '已配置算法',
+        dataIndex: 'algorithms',
+      },
+      {
+        title: '经纬度',
+        dataIndex: 'longitude',
+        render: (text, record) => (
+          <span>
+            {text}
+            ,
+            {record.latitude}
+          </span>
+        )
+      },
+      {
+        title: '状态',
+        dataIndex: 'online',
+      },
+      {
+        title: '操作',
+        dataIndex: 'x',
+        render: (text, record) => (
+          <span>
+            <a>编辑</a>
+            <Divider type="vertical" />
+            <a>删除</a>
+          </span>
+        ),
+      }
     ];
-    const data = [
-      {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-      },
-      {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-      },
-      {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sidney No. 1 Lake Park',
-      },
-      {
-        key: '4',
-        name: 'Disabled User',
-        age: 99,
-        address: 'Sidney No. 1 Lake Park',
-      },
-    ];
+
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
@@ -318,15 +416,15 @@ class Monitor extends Component {
     return (
       <div className={styles.content}>
         <div className={styles.areaTree}>
-          <Input placeholder="请输入关键字" />
+          <Search placeholder="请输入关键字" onSearch={this.getAreaList} />
           <Tree
             className="draggable-tree"
-            defaultExpandedKeys={expandedKeys}
+            expandedKeys={expandedKeys}
             // expandedKeys={['0']}
             blockNode
             showLine
-            onDragEnter={this.onDragEnter}
-            onDrop={this.onDrop}
+            onExpand={this.onExpand}
+            onSelect={this.onSelect}
           >
             {this.renderTreeNodes(treeDatas)}
           </Tree>
@@ -349,7 +447,7 @@ class Monitor extends Component {
           </div>
           <div className={styles.searchResult}>
             <div className={styles.handleResult}>
-              <Button type="link">
+              <Button type="link" onClick={this.openModal}>
                 <Icon type="export" />
                 <span>导入</span>
               </Button>
@@ -358,17 +456,23 @@ class Monitor extends Component {
                 <span>批量删除</span>
               </Button>
             </div>
-            <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
+            <Table rowSelection={rowSelection} columns={columns} dataSource={tableData} />
           </div>
         </div>
+        <Modal
+          title="导入摄像头"
+          visible={showModal}
+        >
+          <p>123</p>
+        </Modal>
       </div>
     );
   }
 }
 
-Monitor.propTypes = {
-  monitor: PropTypes.object.isRequired,
-  // getList: PropTypes.func.isRequired
-};
+// Monitor.propTypes = {
+//   monitor: PropTypes.object.isRequired,
+//   // getList: PropTypes.func.isRequired
+// };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Monitor);
