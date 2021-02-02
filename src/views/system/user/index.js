@@ -3,6 +3,7 @@ import {
   Select, Button, Modal, Form, Input, Switch, Icon
 } from 'antd';
 // import Icon from 'Components/Icon';
+import { Link } from 'react-router-dom';
 import ETable from 'Components/ETable';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -397,7 +398,7 @@ class Account extends Component {
       </div>
       <div className={styles.operationAssets}>
         <div className={styles.add}>
-          <Button icon="plus" onClick={this.handleAddUser} type="primary">新增账号</Button>
+          <Link to="/system/account/add"><Button icon="plus" onClick={this.handleAddUser} type="primary">新增账号</Button></Link>
         </div>
         <div className={styles.del}>
           {

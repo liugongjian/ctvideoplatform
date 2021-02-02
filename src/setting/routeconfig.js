@@ -130,14 +130,13 @@ const menuRoutes = [
         component: Account,
         menuCode: '02',
         menuTitle: '账号管理',
-      },
-      {
-        path: '/accountAdd',
-        pageTitle: '增加账号',
-        exact: true,
-        component: AddAccount,
-        menuCode: '02',
-        menuTitle: '增加账号（先放这里后面删）',
+        children: [
+          {
+            path: '/add',
+            pageTitle: '添加账号',
+            component: AddAccount,
+          }
+        ]
       }
     ]
   },
