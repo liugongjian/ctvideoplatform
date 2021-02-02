@@ -46,6 +46,10 @@ import App from 'Container/App';
 import Login from 'Views/login';
 import Dashboard from 'Views/dashboard';
 import Monitor from 'Views/monitor';
+
+import Role from 'Views/role';
+import RoleEdit from 'Views/role/roleedit'
+import RoleAdd from 'Views/role/roleadd'
 import CameraDetail from 'Views/cameraDetail';
 import Account from 'Views/system/user';
 import AddAccount from 'Views/system/user/addUser';
@@ -103,9 +107,21 @@ const menuRoutes = [
         path: '/role',
         pageTitle: '角色管理',
         exact: true,
-        component: Monitor,
+        component: Role,
         menuCode: '02',
         menuTitle: '角色管理',
+        children: [
+          {
+            path: '/edit/:roleid',
+            pageTitle: '编辑角色',
+            component: RoleEdit,
+          },
+          {
+            path: '/add',
+            pageTitle: '添加角色',
+            component: RoleAdd,
+          },
+        ]
       },
       {
         path: '/account',
@@ -114,14 +130,13 @@ const menuRoutes = [
         component: Account,
         menuCode: '02',
         menuTitle: '账号管理',
-      },
-      {
-        path: '/accountAdd',
-        pageTitle: '增加账号',
-        exact: true,
-        component: AddAccount,
-        menuCode: '02',
-        menuTitle: '增加账号（先放这里后面删）',
+        children: [
+          {
+            path: '/add',
+            pageTitle: '添加账号',
+            component: AddAccount,
+          }
+        ]
       }
     ]
   },
