@@ -74,12 +74,11 @@ class ApiClient {
                 if (res.body.code === 0) {
                   return resolve(res.body);
                 }
-
                 // notification.error({
                 //   message: res.body.message || res.statusText,
                 //   // description: '您暂无权限访问本页面',
                 // });
-                throw new Error(res.body.message || res.statusText);
+                throw new Error(res.body.msg || res.statusText);
               }
 
               throw new Error(res.statusText);

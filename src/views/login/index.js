@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import {
-  Icon, Form, Input, Button, message, 
+  Icon, Form, Input, Button, message,
 } from 'antd';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import { pathPrefix,urlPrefix } from 'Constants/Dictionary';
+import { pathPrefix, urlPrefix } from 'Constants/Dictionary';
 import { userlogin } from 'Redux/reducer/login';
-import styles from './index.less';
 import leftTop from 'Assets/leftTop.png';
 import rightTop from 'Assets/rightTop.png';
 import leftBottom from 'Assets/leftBottom.png';
 import rightBottom from 'Assets/rightBottom.png';
+import styles from './index.less';
 
 const FormItem = Form.Item;
 
@@ -26,14 +26,16 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 
 class Login extends Component {
   state = {
-    verifyImgUrl: urlPrefix + '/verifyCode' + '?' + new Date().getTime()
+    verifyImgUrl: `${urlPrefix}/verifyCode?${new Date().getTime()}`
   };
+
   // 刷新验证码
-  refreshImg = ()=> {
+  refreshImg = () => {
     this.setState({
-      verifyImgUrl: urlPrefix + '/verifyCode' + '?' + new Date().getTime()
-    })
+      verifyImgUrl: `${urlPrefix}/verifyCode?${new Date().getTime()}`
+    });
   };
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -45,12 +47,11 @@ class Login extends Component {
           password,
           validate,
         }).then((data) => {
-          console.log('>>>>>>', data)
-          // if (data.code == 0) {
-          //   push(`${pathPrefix}/`);
-          // } else {
-          //   message.error(data.msg);
-          // }
+          if (data) {
+            push(`${pathPrefix}/`);
+          } else {
+            this.refreshImg();
+          }
         }).catch(err => console.log(err));
       }
     });
@@ -60,35 +61,35 @@ class Login extends Component {
     const {
       form: { getFieldDecorator },
     } = this.props;
-    const { verifyImgUrl }= this.state;
+    const { verifyImgUrl } = this.state;
     return (
       <div className={styles.login}>
         <div className={styles.imgs}>
           <div className={styles.leftTop}>
-            <img src={leftTop}></img>
+            <img src={leftTop} alt="" />
           </div>
           <div className={styles.rightTop}>
-            <img src={rightTop}></img>
+            <img src={rightTop} alt="" />
           </div>
           <div className={styles.leftBottom}>
-            <img src={leftBottom}></img>
+            <img src={leftBottom} alt="" />
           </div>
           <div className={styles.rightBottom}>
-            <img src={rightBottom}></img>
+            <img src={rightBottom} alt="" />
           </div>
-          <div className={styles.logo}></div>
+          <div className={styles.logo} />
         </div>
-        <div className={styles.centerBox}></div>
+        <div className={styles.centerBox} />
         <div className={styles.loginForm}>
           <div className={styles.logo}>智能视频分析平台</div>
           <p className={styles.title}>账号密码登录</p>
           <Form onSubmit={this.handleSubmit}>
-             <FormItem>
-               {getFieldDecorator('username', {
+            <FormItem>
+              {getFieldDecorator('username', {
                 rules: [{ required: true, message: '请输入用户名' }],
               })(
                 <Input
-                  prefix={<Icon type='user' className={styles.icon} />}
+                  prefix={<Icon type="user" className={styles.icon} />}
                   placeholder="账号"
                 />,
               )}
@@ -98,7 +99,7 @@ class Login extends Component {
                 rules: [{ required: true, message: '请输入密码' }],
               })(
                 <Input.Password
-                  prefix={<Icon type='lock' className={styles.icon} />}
+                  prefix={<Icon type="lock" className={styles.icon} />}
                   placeholder="密码"
                 />,
               )}
@@ -109,7 +110,7 @@ class Login extends Component {
                   rules: [{ required: true, message: '请输入验证码' }],
                 })(
                   <Input
-                    prefix={<Icon type='safety-certificate' className={styles.icon} />}
+                    prefix={<Icon type="safety-certificate" className={styles.icon} />}
                     placeholder="验证码"
                   />,
                 )}

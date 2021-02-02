@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import {
   Select, Tree, Icon, Input, Button, Table
 } from 'antd';
@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import {
-  getList
+  getList, renameArea, addChild, delArea
 } from 'Redux/reducer/monitor';
 
 import styles from './index.less';
@@ -18,75 +18,20 @@ const InputGroup = Input.Group;
 
 const mapStateToProps = state => ({ monitor: state.monitor });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  { push, getList },
+  {
+    push, getList, renameArea, addChild, delArea
+  },
   dispatch
 );
-
-
-const tempData = [
-  {
-    id: '1',
-    tenantId: 'string',
-    pid: 0,
-    name: '区域名称one',
-    path: '区域路径',
-    description: '区域描述',
-    position: '同一层级下的位置序号',
-    createTime: 'date',
-    updateTime: 'date'
-  },
-  {
-    id: '2',
-    tenantId: 'string',
-    pid: '1',
-    name: '区域名称two',
-    path: '区域路径',
-    description: '区域描述',
-    position: '0',
-    createTime: 'date',
-    updateTime: 'date'
-  },
-  {
-    id: '3',
-    tenantId: 'string',
-    pid: '1',
-    name: '区域名称three',
-    path: '区域路径',
-    description: '区域描述',
-    position: '1',
-    createTime: 'date',
-    updateTime: 'date'
-  },
-  {
-    id: '4',
-    tenantId: 'string',
-    pid: '2',
-    name: '区域名称four',
-    path: '区域路径',
-    description: '区域描述',
-    position: '0',
-    createTime: 'date',
-    updateTime: 'date'
-  },
-  {
-    id: '5',
-    tenantId: 'string',
-    pid: 3,
-    name: '区域名称five',
-    path: '区域路径',
-    description: '区域描述',
-    position: '0',
-    createTime: 'date',
-    updateTime: 'date'
-  }
-];
-
-
 class Monitor extends Component {
   state = {
     test: '测试什么的',
     treeDatas: [],
-    expandedKeys: ['0', '0-1'],
+    expandedKeys: ['0'],
+    editValue: '',
+    hasSame: '',
+    tempData: [],
+    deptHover: {}
   }
 
   componentDidMount() {
@@ -94,27 +39,26 @@ class Monitor extends Component {
   }
 
   getAreaList = () => {
-    const { getList } = this.props;
-    getList(0).then((data) => {
-      console.log(data);
-    });
-    // tempData
-    const treeDatas = this.dataToTree(tempData);
-    console.log(treeDatas);
-    this.setState({
-      treeDatas
+    const { getList, monitor } = this.props;
+    getList(0).then((res) => {
+      const treeDatas = this.dataToTree(res);
+      this.setState({
+        tempData: res,
+        treeDatas,
+      });
     });
   }
 
   dataToTree = (data) => {
+    // 下面的forEach写法会改变原数组，所以深度拷贝一次
+    const copy = JSON.parse(JSON.stringify(data));
     const map = {};
-    data.forEach((item) => {
-      item.ifEdite = false;
+    copy.forEach((item) => {
+      item.defaultName = item.name;
       map[item.id] = item;
     });
-    console.log('map', map);
     const val = [];
-    data.forEach((item) => {
+    copy.forEach((item) => {
       const parent = map[item.pid];
       if (parent) {
         (parent.children || (parent.children = [])).push(item);
@@ -139,28 +83,54 @@ class Monitor extends Component {
         }
         return (
           <span className={styles.treeBtnBox}>
-            <Icon type="edit" className={styles.treeBtn} onClick={() => this.editThis(item.id)} />
-            <Icon type="delete" className={styles.treeBtn} />
-            <Icon type="plus-square" className={styles.treeBtn} />
-            <Icon type="arrow-up" className={styles.treeBtn} />
-            <Icon type="arrow-down" className={styles.treeBtn} />
+            {item.ifEdit
+              ? (
+                <Button type="link" disabled={item.hasSame} size="small" onClick={() => { this.sureEdit(item.id, item.addTag, item.pid); }}>
+                  <Icon type="check" />
+                </Button>
+              )
+              : <Icon type="edit" className={styles.treeBtn} onClick={() => this.editThis(item.id, item.name)} />}
+            {!item.addTag
+              ? (
+                <Fragment>
+                  <Icon type="delete" className={styles.treeBtn} onClick={() => { this.onDelete(item.id); }} />
+                  <Icon type="plus-square" className={styles.treeBtn} onClick={() => { this.onAdd(item.id); }} />
+                  <Icon type="arrow-up" className={styles.treeBtn} />
+                  <Icon type="arrow-down" className={styles.treeBtn} />
+
+                </Fragment>
+              ) : null}
+
           </span>
         );
       }
       return '';
     };
     const getTitle = val => (
-      <div
-        onMouseEnter={() => { this.onMouseEnter(val.id); }}
-        onMouseLeave={() => { this.onMouseLeave(val.id); }}
-        className={styles.treeTitleInfo}
-        key={val.id}
-      >
-        <span>{val.name}</span>
-        {
-          getBtn()
-        }
-      </div>
+      <Fragment>
+        <div
+          onMouseEnter={() => { this.onMouseEnter(val.id); }}
+          onMouseLeave={() => { this.onMouseLeave(val.id); }}
+          className={styles.treeTitleInfo}
+          key={val.id}
+        >
+          {
+            val.ifEdit
+              ? (
+                <Input
+                  value={this.state.editValue}
+                  onChange={e => this.onChange(e, val.id, val.name)}
+                  size="small"
+                />
+              )
+              : <span>{val.name}</span>
+          }
+          {
+            getBtn()
+          }
+        </div>
+        {item.hasSame ? <div className={styles.hasSame}>节点名称重复，请重新设置</div> : null}
+      </Fragment>
     );
     if (item.children && item.children.length) {
       return (
@@ -172,8 +142,106 @@ class Monitor extends Component {
     return <TreeNode key={item.id} title={getTitle(item)} />;
   })
 
-  editThis = (key) => {
+  editThis = (key, name) => {
+    const editData = this.editNode(key, this.state.treeDatas);
+    this.setState({
+      treeDatas: editData,
+      editValue: name
+    });
+  }
 
+  editNode = (key, data) => data.map((item) => {
+    if (item.id === key) {
+      item.ifEdit = true;
+    } else {
+      item.ifEdit = false;
+    }
+    item.name = item.defaultName;
+    if (item.children) {
+      this.editNode(key, item.children);
+    }
+    return item;
+  })
+
+  sureEdit = (key, tag, pid) => {
+    console.log(this.state.editValue);
+    if (tag) {
+      const { editValue, tempData } = this.state;
+      const { addChild } = this.props;
+      addChild(pid, editValue).then((res) => {
+        this.getAreaList();
+      });
+    } else {
+      const { editValue, tempData } = this.state;
+      const { renameArea } = this.props;
+      renameArea(key, editValue).then((res) => {
+        const temp = tempData.find(item => item.id === res.id) || {};
+        temp.name = res.name;
+        this.setState({
+          treeDatas: this.dataToTree(tempData)
+        });
+      });
+    }
+  }
+
+  onChange = (e, key, name) => {
+    const { tempData, treeDatas } = this.state;
+
+    const test = tempData.filter(item => item.name === e.target.value);
+    if (test && test.length) {
+      const temp = tempData.find(item => item.id === key && item.name !== e.target.value) || {};
+      temp.hasSame = true;
+      temp.ifEdit = true;
+      this.setState({
+        treeDatas: this.dataToTree(tempData)
+      });
+    } else {
+      const temp = tempData.find(item => item.id === key) || {};
+      temp.hasSame = false;
+      temp.ifEdit = true;
+      this.setState({
+        treeDatas: this.dataToTree(tempData)
+      });
+    }
+    this.setState({
+      editValue: e.target.value
+    });
+  }
+
+  changeNode = (key, value, data) => data.map((item) => {
+    if (item.id === key) {
+      item.name = value;
+    }
+    if (item.children) {
+      this.changeNode(key, value, item.children);
+    }
+    return item;
+  })
+
+  onAdd = (key) => {
+    this.state.tempData.map((item) => {
+      item.ifEdit = false;
+      return item;
+    });
+    const temp = {
+      hasSame: false,
+      ifEdit: true,
+      id: -1,
+      pid: key,
+      addTag: true
+    };
+    this.state.tempData.push(temp);
+    this.setState({
+      treeDatas: this.dataToTree(this.state.tempData),
+      editValue: ''
+    });
+  }
+
+  onDelete = (key) => {
+    const { delArea } = this.props;
+    delArea(key).then((res) => {
+      this.getAreaList();
+    });
   }
 
   onMouseEnter = (key) => {
@@ -254,7 +322,7 @@ class Monitor extends Component {
           <Tree
             className="draggable-tree"
             defaultExpandedKeys={expandedKeys}
-            draggable
+            // expandedKeys={['0']}
             blockNode
             showLine
             onDragEnter={this.onDragEnter}

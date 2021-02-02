@@ -5,8 +5,18 @@
     padding-right: 20px;
     .treeTitleInfo{
       .treeBtnBox{
-        padding-left: 5px;
+        padding: 15px 0 0 5px;
         color: #999999;
+        :global{
+          .ant-btn-link{
+            color: #999999;
+            border: none;
+            &:hover{
+              color: #999999;
+              border: none;
+            }
+          }
+        }
       }
       .treeBtn{
         margin: 3px 2px;
@@ -14,6 +24,18 @@
           
         }
       }
+      :global{
+        .ant-input-sm{
+          width: 50%;
+          padding: 0 1px;
+          height: 20px;
+          line-height:inherit
+        }
+      }
+    }
+    .hasSame{
+      font-size: 12px;
+      margin-top: -4px;
     }
   }
   .searchBox{
