@@ -44,13 +44,13 @@ class BasicSetting extends Component {
 
   initData = () => {
     const {
-      getAreaList, getBasicConfig, cameraDetail, algoId,
+      getAreaList, getBasicConfig, cameraDetail, cameraId,
       form: { setFieldsValue }
     } = this.props;
     // 获取区域层级
     getAreaList(0).then((areaList) => {
       // 获取基础配置
-      getBasicConfig(algoId).then((data) => {
+      getBasicConfig(cameraId).then((data) => {
         const {
           name, areaId, latitude, longitude
         } = data;
@@ -74,7 +74,7 @@ class BasicSetting extends Component {
   }
 
   onSubmit = (e) => {
-    const { form: { validateFields }, putBasicConfig, algoId } = this.props;
+    const { form: { validateFields }, putBasicConfig, cameraId } = this.props;
     e.preventDefault();
     validateFields((err, values) => {
       if (!err) {
@@ -83,7 +83,7 @@ class BasicSetting extends Component {
           name, latitude, longitude, area
         } = values;
         putBasicConfig({
-          id: algoId,
+          id: cameraId,
           areaId: area[area.length - 1],
           name,
           latitude,
@@ -101,7 +101,7 @@ class BasicSetting extends Component {
     const { getFieldDecorator } = this.props.form;
     const { autoCompleteResult } = this.state;
     const {
-      algoId,
+      cameraId,
       cameraDetail: {
         areaTree,
         areaList,
@@ -190,7 +190,7 @@ class BasicSetting extends Component {
 }
 
 BasicSetting.propTypes = {
-  algoId: PropTypes.string.isRequired
+  cameraId: PropTypes.string.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(BasicSetting));
