@@ -7,6 +7,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import { getRoleList } from '@/redux/reducer/role'
+
 import deletePic from '@/assets/role/delete.png'
 import searchPic from '@/assets/role/search.png'
 import warnPic from '@/assets/role/warn.png'
@@ -17,16 +19,18 @@ const { Column } = Table;
 const { Search } = Input;
 
 
-const mapStateToProps = state => ({role : state.role});
+const mapStateToProps = state => ({ role : state.role });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  {},
+  { getRoleList },
   dispatch
 );
 
 
 class Role extends Component {
   state = {
+    roleListInfo:{},
     selectedRowKeys : [], // Check here to configure the default column
+    searchName:"",
     deleteModalVisible : false,
     recordNumTodelete:null,
     deleteItems:[]
@@ -41,23 +45,56 @@ class Role extends Component {
     this.setState({deleteModalVisible:true,recordNumTodelete:1,deleteItems:[{...record}]});
   };
 
+  searchRole = () => {
+    // console.log(this.state.searchName)
+    this.props.getRoleList({
+      name : this.state.searchName,
+      pageNo : 0,
+      pageSize : this.state.roleListInfo.pageSize
+    }).then((data)=>{
+      console.log(data);
+      this.setState({roleListInfo : data})
+    })
+  }
+
   handleDeleteItems = () => {
 
   }
 
+  onPageNumChange = (pageNo) => {
+    this.props.getRoleList({
+      pageNo : pageNo-1,
+      pageSize : this.state.roleListInfo.pageSize
+    }).then((data)=>{
+      this.setState({roleListInfo : data})
+    })
+  }
+
+  onPageSizeChange = (current , size) => {
+    this.props.getRoleList({
+      pageNo : 0,
+      pageSize : size
+    }).then((data)=>{
+      console.log(data);
+      this.setState({roleListInfo : data})
+    })
+  }
+
   componentDidMount() {
-    // ajax code
-    // console.log(this.props.role);
+    this.props.getRoleList({
+      pageNo : 0,
+      pageSize : 2
+    }).then((data)=>{
+      this.setState({roleListInfo : data})
+    })
   }
 
   render() {
-    const { roleList } = this.props.role;
-    const { selectedRowKeys } = this.state;
+    const { selectedRowKeys , roleListInfo } = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
     };
-
     return (
       <div>
         <div className={styles.searchContainer}>
@@ -67,36 +104,40 @@ class Role extends Component {
             批量删除
           </a>
           <div className={styles.searchInput}>
-            <Search placeholder="请输入角色名称" icon={searchPic}>
-            </Search>
+            <Search placeholder="请输入角色名称" icon={searchPic} onSearch={() => this.searchRole()} onChange={(e) => this.setState({searchName:e.target.value})}/>
           </div>
         </div>
-        <Table rowSelection={rowSelection} dataSource={roleList} pagination={false}>
+        <Table rowSelection={rowSelection} dataSource={roleListInfo.list} pagination={false}>
             <Column title="角色名称" dataIndex="name" key="name" />
-            <Column title="创建时间" dataIndex="age" key="age" />
-            <Column title="修改时间" dataIndex="address" key="address" />
-            <Column title="角色描述" dataIndex="comment" key="comment" />
+            <Column title="创建时间" dataIndex="createTime" key="createTime" />
+            <Column title="修改时间" dataIndex="updateTime" key="updateTime" />
+            <Column title="角色描述" dataIndex="description" key="description" />
             <Column
                 title="操作"
                 key="action"
                 render={(text, record) => (
                   <div className={styles.oprationWrapper}>
-                    <Link to={`/system/role/edit/${record.key}`}>
+                    <Link to={`/system/role/edit/${record.id}`}>
                       编辑
                     </Link>
                     <span className={styles.separator}> | </span>
-                    <span onClick={() => this.onDeleteOneItem([record.key])}><a>删除</a></span>
+                    <span onClick={() => this.onDeleteOneItem([record.id])}><a>删除</a></span>
                   </div>
                 )}
               />
         </Table>
         <div className={styles.paginationWrapper}>
-          <span>总条数: 200</span>
+          <span>总条数: {roleListInfo.recordsTotal}</span>
           <div>
             <Pagination
-              total={200}
+              total={roleListInfo.recordsTotal}
+              onChange={(pageNo) => this.onPageNumChange(pageNo)}
+              current={roleListInfo.pageNo+1}
               showSizeChanger
               showQuickJumper
+              defaultPageSize={2}
+              pageSizeOptions={[2,3,6,20]}
+              onShowSizeChange={(current,size) => this.onPageSizeChange(current , size)}
             />
           </div>
         </div>
