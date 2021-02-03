@@ -1,3 +1,5 @@
+/* eslint-disable global-require */
+/* eslint-disable import/no-dynamic-require */
 import React, { Component } from 'react';
 import {
   Select,
@@ -11,66 +13,84 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
-import { getSummary, getMonitorMetric } from 'Redux/reducer/monitor';
+import { getAlgoList } from 'Redux/reducer/cameraDetail';
 import AlgoConfigDialog from './algoConfigDialog';
+import defaultIcon from 'Assets/algorithmIcons/default.png';
 
 import styles from '../index.less';
 
-const mapStateToProps = state => ({ monitor: state.monitor });
+
+const mapStateToProps = state => ({
+  cameraDetail: state.cameraDetail
+});
 const mapDispatchToProps = dispatch => bindActionCreators(
-  {},
+  {
+    push, getAlgoList
+  },
   dispatch
 );
 
-const AlgorithmItem = ({
-  // id, title, desp,
-  curAlgo,
-  checked, onChange, toConfig
-}) => (
-  <div className={styles.algoItem}>
-    <span className={styles['algoItem-checked']}>
-      <Checkbox
-        onChange={e => onChange(curAlgo?.id, e.target.checked)}
-        checked={checked}
-      />
-    </span>
-    <span className={styles['algoItem-title']}>{curAlgo?.title}</span>
-    <span className={styles['algoItem-desp']}>{curAlgo?.desp}</span>
-    <span className={styles['algoItem-configBtn']}><a onClick={() => toConfig(curAlgo)}>规则配置</a></span>
-  </div>
-);
+const getImgUrl = (name) => {
+  const arr = [
+    'carPersonCheck', 'faceRecognize', 'plateRecognize', 'areaAlarm', 'stepWallCheck', 'peopleTraffic', 'plateTraffic', 'safetyHat',
+    'workingClothes', 'carTypeDetect', 'peopleCrowd', 'fightDetect', 'fallDownDetect', 'roadsideStall', 'wanderTarry'
+  ];
+  if (arr.indexOf(name) > -1) {
+    return import (`Assets/algorithmIcons/${name}.png`);
+  }
+  return import ('Assets/algorithmIcons/default.png');
+};
+
+class AlgorithmItem  extends React.Component{
+    constructor(props){
+      super(props);
+      this.state={
+        imgSrc:''
+      }
+    }
+    componentDidMount(){
+      const {curAlgo } = this.props;
+      // 异步获取icon
+      getImgUrl(curAlgo.name).then(module => {
+        this.setState({
+          imgSrc: module.default
+        })
+      })
+    }
+  render(){
+    const {
+      curAlgo,
+      checked, onChange, toConfig
+    } = this.props;
+    const { imgSrc} = this.state;
+    return <div className={styles.algoItem}>
+      <span className={styles['algoItem-checked']}>
+        <Checkbox
+          onChange={e => onChange(curAlgo, e.target.checked)}
+          checked={checked}
+        />
+      </span>
+      <span className={styles['algoItem-title']}>
+        <img src={imgSrc} alt="icon" className={styles['algoItem-title-icon']} />
+        {/* <img src={defaultIcon} alt="icon" /> */}
+        {curAlgo?.cnName}
+      </span>
+      <span className={styles['algoItem-desp']}>{curAlgo?.description}</span>
+      {
+       checked ? (
+        <span className={styles['algoItem-configBtn']}>
+          <a onClick={() => toConfig(curAlgo)}>规则配置</a>
+        </span>
+       ) : null
+      }
+    </div>
+  }
+}
 
 class AlgorithmSetting extends Component {
   constructor() {
     super();
     this.state = {
-      listData: [
-        {
-          id: 1,
-          title: '移动侦测',
-          desp: '实时监控视频范围在出现的人、机动车、非机动车等移动目标，移动目标出现后会进行抓拍和告警。'
-        },
-        {
-          id: 2,
-          title: '电子围栏',
-          desp: '这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，'
-        },
-        {
-          id: 3,
-          title: '人员布控',
-          desp: '这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，'
-        },
-        {
-          id: 4,
-          title: '车辆布控',
-          desp: '这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，'
-        },
-        {
-          id: 5,
-          title: '安全帽检测',
-          desp: '这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，这里是算法描述，'
-        },
-      ],
       algoChecked: {},
       configVisible: false,
       curAlgo: undefined,
@@ -79,13 +99,15 @@ class AlgorithmSetting extends Component {
 
   componentDidMount() {
     // 初始化algoChecked
-    const { listData, algoChecked } = this.state;
-    // eslint-disable-next-line no-restricted-syntax
-    for (const { id, applied } of listData) {
-      algoChecked[id] = applied || false;
-    }
-    this.setState({
-      algoChecked
+    const {algoChecked } = this.state;
+    const { getAlgoList, cameraId } = this.props;
+    getAlgoList(cameraId).then((list) => {
+      for (const { id, isPick } of list) {
+        algoChecked[id] = isPick || false;
+      }
+      this.setState({
+        algoChecked
+      });
     });
   }
 
@@ -103,33 +125,42 @@ class AlgorithmSetting extends Component {
     });
   }
 
-  onAlgoCheckedChange = (id, checked) => {
+  onAlgoCheckedChange = (algo, checked) => {
     const { algoChecked } = this.state;
+    const {id } = algo;
     algoChecked[id] = checked;
     this.setState({
       algoChecked
     }, () => { console.log('algoChecked', algoChecked); });
+    if(checked){
+      this.openAlgoConfigDialog(algo);
+    }
   }
+
 
   render() {
     const {
-      listData,
       algoChecked,
       curAlgo,
       configVisible
     } = this.state;
+    const {
+      cameraDetail: {algoList},
+      cameraId,
+    } = this.props;
     return (
       <div className={styles.algorithmSetting}>
         <AlgoConfigDialog
           key={curAlgo?.id}
+          cameraId={cameraId}
           curAlgo={curAlgo}
-          configTypes={[1, 2, 3]}
+          configTypes={curAlgo?.configTypes?.split(',') || []}
           visible={configVisible}
           closeModal={this.closeConfigModal}
         />
         <div className={styles.algorithmList}>
           {
-            listData.map(item => (
+            algoList.map(item => (
               <AlgorithmItem
                 key={item.id}
                 curAlgo={item}
@@ -141,10 +172,6 @@ class AlgorithmSetting extends Component {
           }
         </div>
         <div className={styles.btnWrapper}>
-          <Button type="primary" htmlType="submit">
-            保存
-          </Button>
-          <span className={styles.span10px} />
           <Button>
             取消
           </Button>
