@@ -69,10 +69,16 @@ class AddAccount extends Component {
     };
 
     validatorPsw = (rule, value, callback) => {
-      const rePassword = this.props.form.getFieldValue('rePassword');
-      if (rePassword && rePassword !== value && value) {
-        callback(new Error('两次密码输入不一致'));
-      } else if (!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?])(.{12,26})/.test(value)) && value) {
+      //   const rePassword = this.props.form.getFieldValue('rePassword');
+      //   if (rePassword && rePassword !== value && value) {
+      //     callback(new Error('两次密码输入不一致'));
+      // eslint-disable-next-line max-len
+      //   } else if (!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?])(.{12,26})/.test(value)) && value) {
+      //     callback(new Error('密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符'));
+      //   } else {
+      //     callback();
+      //   }
+      if (!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?])(.{12,26})/.test(value)) && value) {
         callback(new Error('密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符'));
       } else {
         callback();
@@ -81,10 +87,16 @@ class AddAccount extends Component {
 
       validatorRePsw = (rule, value, callback) => {
         const password = this.props.form.getFieldValue('password');
+        // if (password && password !== value && value) {
+        //   callback(new Error('两次密码输入不一致'));
+        // eslint-disable-next-line max-len
+        // } else if (!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?])(.{12,26})/.test(value)) && value) {
+        //   callback(new Error('确认密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符'));
+        // } else {
+        //   callback();
+        // }
         if (password && password !== value && value) {
           callback(new Error('两次密码输入不一致'));
-        } else if (!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?])(.{12,26})/.test(value)) && value) {
-          callback(new Error('确认密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符'));
         } else {
           callback();
         }

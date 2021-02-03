@@ -41,7 +41,12 @@
             position: absolute;
             right: 20px;
             .resetBtn{
-                margin-left: 10px;
+                margin-left: 10px;    
+                display: flex;
+                align-items: center;
+                i{
+                    line-height: 33px;
+                }
             }
         }
         .queryRoleName,.queryStatus{
@@ -123,6 +128,25 @@
             }
         }
     }
+    .paginationWrapper{
+        &>*{
+          display: inline-block;
+        }
+        &>div{
+          margin-top: 10px;
+          float: right;
+          font-family: HelveticaNeue;
+          font-size: 12px;
+        }
+        &>span{
+          margin-top: 15px;
+          font-family: PingFangSC-Regular;
+          font-size: 12px;
+          color: #666666;
+          text-align: left;
+          line-height: 18px;
+        }
+      }
     
     
 }
