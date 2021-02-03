@@ -1,28 +1,25 @@
 .content{
   display: flex;
   .areaTree{
-    width: 330px;
-    padding-right: 20px;
+    width: 300px;
+    // padding-right: 20px;
+    overflow-x: auto;
     .treeTitleInfo{
       .treeBtnBox{
         padding: 15px 0 0 5px;
         color: #999999;
-        :global{
-          .ant-btn-link{
-            color: #999999;
-            border: none;
-            &:hover{
-              color: #999999;
-              border: none;
-            }
-          }
+      }
+      .checkBtn{
+        width: auto;
+        color: #999999;
+        border: none;
+        &:hover{
+          color: #999999;
+          border: none;
         }
       }
       .treeBtn{
         margin: 3px 2px;
-        &:hover{
-          
-        }
       }
       :global{
         .ant-input-sm{
@@ -38,8 +35,17 @@
       margin-top: -4px;
     }
   }
+  .monitorList{
+    width: calc(100% - 300px);
+    min-width: 900px;
+    margin-left: 20px;
+  }
   .searchBox{
     display: flex;
+    height: 72px;
+    line-height: 72px;
+    background: #f7f7f7;
+    padding-left: 20px;
     .searchItme{
       flex: 1;
       :global{
@@ -48,5 +54,66 @@
         }
       }
     }
+    .searchHandleBtn{
+      margin: 20px 5px 20px 5px;
+    }
+  }
+  .searchResult{
+    margin: 10px 0 5px 0;
+    .tableOnlineStatus{
+      display: inline-block;
+      span{
+        display: inline-block;
+        vertical-align: middle;
+      }
+      .tableOffline{
+        width: 6px;
+        height: 6px;
+        border-radius: 3px;
+        background: #52C41A;
+        margin-right: 5px;
+      }
+      .tableOfflineText{
+
+      }
+      .tableOnlineText{
+
+      }
+      .tableONline{
+        width: 6px;
+        height: 6px;
+        border-radius: 3px;
+        background: #52C41A;
+        margin-right: 5px;
+      }
+    }
+    tr,th,td{
+      white-space:nowrap;
+    }
+
+  }
+  .handleResult{
+    :global{
+      .ant-checkbox-wrapper{
+        margin-left: 20px;
+      }
+    }
+    .handleBtn{
+        width: auto;
+        color: #4095E3;
+        border: none;
+        &:hover{
+          color: #4095E3;
+          border: none;
+        }
+    }
+  }
+  .delModalText{
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+  }
+  .cursorPoniter{
+    cursor: pointer;
   }
 }
