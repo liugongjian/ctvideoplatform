@@ -590,6 +590,7 @@ class Monitor extends Component {
     return (
       <div className={styles.content}>
         <div className={styles.areaTree}>
+          <h1 className={styles.titleText}>区域列表</h1>
           <Search placeholder="请输入关键字" onSearch={this.getAreaList} />
           {
             treeDatas && treeDatas.length ? (
@@ -607,7 +608,7 @@ class Monitor extends Component {
           }
         </div>
         <div className={styles.monitorList}>
-          <h1>视频监控点</h1>
+          <h1 className={styles.titleText}>视频监控点</h1>
           <div className={styles.searchBox}>
             <div className={styles.searchItme}>
               <span>摄像头名称：</span>

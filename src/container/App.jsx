@@ -11,7 +11,7 @@ import Footer from './Footer/Footer';
 export default () => (
   // <LoginContainer>
   <div style={{ height: '100%' }}>
-    <Header />
+    {/** <Header /> */}
     <Manage />
     {/** <Footer /> */}
     <Switch>
