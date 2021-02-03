@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import {
   Select, Tree, Icon, Input, Button, Table, Divider,
-  Modal
+  Modal, Checkbox
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -42,7 +42,7 @@ class Monitor extends Component {
     hasSame: '',
     tempData: [],
     deptHover: {},
-    areaId: 0,
+    areaId: 1,
     pageNo: 1,
     recursive: false,
     pageSize: 10,
@@ -322,7 +322,9 @@ class Monitor extends Component {
   onSelect = (keys) => {
     if (keys && keys.length > 0) {
       const [a] = keys;
-      console.log(a);
+      this.setState({
+        areaId: a
+      }, () => this.getDeviceList());
     }
   }
 
@@ -337,15 +339,27 @@ class Monitor extends Component {
     const param = {
       areaId,
       pageNo: 0,
-      recursive: true,
+      recursive,
       pageSize
     };
     getDeiviceList(param).then((res) => {
-      console.log(res);
       this.setState({
-        tableData: res.list
+        tableData: res.list || []
       });
     });
+  }
+
+  changeStatus = (e) => {
+    const { checked } = e.target;
+    this.setState({
+      recursive: checked
+    }, () => this.getDeviceList());
+  }
+
+  toDetail = (record) => {
+    const { id } = record;
+    const { push } = this.props;
+    push(`/monitor/${id}`);
   }
 
   openModal=() => {
@@ -366,7 +380,7 @@ class Monitor extends Component {
       },
       {
         title: '摄像头ID',
-        dataIndex: 'originId',
+        dataIndex: 'id',
       },
       {
         title: '区域名称',
@@ -396,7 +410,7 @@ class Monitor extends Component {
         dataIndex: 'x',
         render: (text, record) => (
           <span>
-            <a>编辑</a>
+            <a onClick={() => { this.toDetail(record); }}>编辑</a>
             <Divider type="vertical" />
             <a>删除</a>
           </span>
@@ -455,6 +469,7 @@ class Monitor extends Component {
                 <Icon type="delete" />
                 <span>批量删除</span>
               </Button>
+              <Checkbox onChange={this.changeStatus}>包含下级区域</Checkbox>
             </div>
             <Table rowSelection={rowSelection} columns={columns} dataSource={tableData} />
           </div>
