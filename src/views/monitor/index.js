@@ -477,6 +477,17 @@ class Monitor extends Component {
 
   }
 
+  sureImportDevice = () => {
+    this.setState({
+      showModal: false
+    });
+  }
+
+  cancelImportDevice = () => {
+    this.setState({
+      showModal: false
+    });
+  }
 
   render() {
     const {
@@ -648,8 +659,12 @@ class Monitor extends Component {
           title="导入摄像头"
           visible={showModal}
           getContainer={false}
+          onOk={this.sureImportDevice}
+          onCancel={this.cancelImportDevice}
+          forceRender
         >
           <p>123</p>
+          <Checkbox>213</Checkbox>
         </Modal>
         <Modal
           title="删除提示"
