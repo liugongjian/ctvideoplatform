@@ -48,8 +48,8 @@ import Dashboard from 'Views/dashboard';
 import Monitor from 'Views/monitor';
 
 import Role from 'Views/role';
-import RoleEdit from 'Views/role/roleedit'
-import RoleAdd from 'Views/role/roleadd'
+import RoleEdit from 'Views/role/roleedit';
+import RoleAdd from 'Views/role/roleadd';
 import CameraDetail from 'Views/cameraDetail';
 import Account from 'Views/system/user';
 import AddAccount from 'Views/system/user/addUser';
@@ -86,16 +86,24 @@ const menuRoutes = [
     exact: true,
     component: Monitor,
     menuCode: '02',
-    menuTitle: '设备管理'
+    menuTitle: '设备管理',
+    children: [
+      {
+        hideMenu: true,
+        path: '/:cameraId',
+        pageTitle: '摄像头详情',
+        component: CameraDetail,
+      }
+    ]
   },
-  {
-    path: '/cameraDetail',
-    pageTitle: '摄像头详情',
-    exact: true,
-    component: CameraDetail,
-    menuCode: '02',
-    menuTitle: '摄像头详情（先放这里后面删）'
-  },
+  // {
+  //   path: '/cameraDetail',
+  //   pageTitle: '摄像头详情',
+  //   exact: true,
+  //   component: CameraDetail,
+  //   menuCode: '02',
+  //   menuTitle: '摄像头详情（先放这里后面删）'
+  // },
   {
     path: '/system',
     pageTitle: '系统管理',
