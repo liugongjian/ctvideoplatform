@@ -1,4 +1,18 @@
 :global{
+    .ant-btn{
+        width:78px;
+    }
+    // 级联选择样式
+    .ant-cascader-menus {
+        position: absolute;
+        z-index: 1050;
+        font-size: 14px;
+        white-space: nowrap;
+        background: #fff;
+        border-radius: 4px;
+        -webkit-box-shadow: 0 2px 8px rgba(0,0,0,.15);
+        box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    }
     //对话框样式覆盖
     .ant-modal-root{
         .ant-modal-wrap {
@@ -45,7 +59,22 @@ p{
         width: 10px;
         display: inline-block;
     }
+    .span20px{
+        width: 20px;
+        display: inline-block;
+    }
     .basicSetting{
+        :global{
+            .ant-form{
+                .ant-form-item-label{
+                    width: 150px;
+                }
+                &>.ant-form-item>.ant-form-item-control-wrapper{
+                    width: 390px; 
+                    display: inline-block;
+                }
+            }
+        }
         .locationInputSplit{
             display: inline-block;
             width:20px;
@@ -53,6 +82,17 @@ p{
         .locationInputNumber{
             display: inline-block;
             width: calc(50% - 10px);
+        }
+        .addItemRequiredIcon{
+            label::before {
+                display: inline-block;
+                margin-right: 4px;
+                color: #FF8836;
+                font-size: 14px;
+                font-family: SimSun, sans-serif;
+                line-height: 1;
+                content: '*';
+            }
         }
     }
     .algorithmSetting{
