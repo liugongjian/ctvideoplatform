@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import {
-  Select, Button, Form, Input, Tooltip, Icon
+  Select, Button, Form, Input, Icon, message
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
-  getAccountList,
+  getAccountList, getRoleList, addAccount
 } from 'Redux/reducer/account';
 
 import styles from './addUser.less';
@@ -17,31 +17,14 @@ const { Option } = Select;
 const mapStateToProps = state => ({ account: state.account });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    getAccountList,
+    getAccountList, getRoleList, addAccount
   },
   dispatch
 );
 
 class AddAccount extends Component {
     state = {
-      roleData: [
-        {
-          value: 'role1',
-          text: '角色1'
-        },
-        {
-          value: 'role2',
-          text: '角色2'
-        },
-        {
-          value: 'role3',
-          text: '管理员'
-        },
-        {
-          value: 'role4',
-          text: '审核员'
-        }
-      ],
+      roleData: [],
       isTooltipShow: true,
     };
 
@@ -50,39 +33,39 @@ class AddAccount extends Component {
     }
 
     getRoleList = () => {
-      console.log('获取不分页的角色列表');
+      const { getRoleList } = this.props;
+      getRoleList().then((res) => {
+        const roleData = res.map(item => ({ id: item.id, name: item.name }));
+        this.setState({
+          roleData
+        });
+        console.log('获取不分页的角色列表', this.state.roleData);
+      });
     };
 
     // 提交添加用户的表单
     addAccount = (e) => {
+      const { addAccount } = this.props;
       this.props.form.validateFields((errors, values) => {
         if (!errors) {
           console.log('创建用户的values', values);
-          // addUsers(values ).then(
-          //   (res) => {
-          //     if(res.code === 200) {
-          //       message.success('创建成功！');
-          //       this.setState({
-          //         modalVisible: false
-          //       })
-          //       this.getTableList();
-          //     }else {
-          //       message.error(res.msg);
-          //     }
-          //     this.props.form.resetFields();
-          //   }
-          // ).catch(err => {
-          //   message.warning('创建失败')
-          // })
-        } else {
-          // console.log('创建用户的values', values);
+          addAccount(values).then(
+            (res) => {
+              message.success('添加账号成功');
+              this.props.form.resetFields();
+              console.log('添加账号成功 返回上一级菜单');
+              this.props.history.go(-1);
+            }
+          ).catch((err) => {
+            // message.warning('添加账户失败')
+          });
         }
       });
     };
 
     // 添加用户的取消 返回上一级菜单
     handleCancel = () => {
-      console.log('>>>>添加用户的取消 返回上一级菜单');
+      this.props.history.go(-1);
     };
 
     validatorPsw = (rule, value, callback) => {
@@ -202,7 +185,7 @@ class AddAccount extends Component {
                     }
                   >
                     {roleData.map(d => (
-                      <Option key={d.value}>{d.text}</Option>
+                      <Option key={d.id}>{d.name}</Option>
                     ))}
                   </Select>
                 )

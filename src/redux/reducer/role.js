@@ -1,6 +1,7 @@
 import apiClient from 'Common/ApiClient';
 import { urlPrefix } from 'Constants/Dictionary';
 import { devApi } from 'Constants/Dictionary';
+import { func } from 'prop-types';
 
 const ROLE_LIST = 'ROLE_LIST';
 const ROLE_LIST_SUCCESS = 'ROLE_LIST_SUCCESS';
@@ -37,7 +38,11 @@ export default function role(state = initialState, action = {}) {
       return{
         ...state,
         error:action.error
-      }
+      };
+    case ROLE_DELETE:
+      return{
+        ...state,
+      };
     default:
       return {
         ...state
@@ -46,7 +51,7 @@ export default function role(state = initialState, action = {}) {
 }
 
 export function getRoleList(params) {
-  console.log("params->",params)
+  
   return {
     type: [ROLE_LIST,ROLE_LIST_SUCCESS,ROLE_LIST_FAIL],
     promise: apiClient => apiClient.post(`${urlPrefix}/role/list`,
@@ -57,17 +62,11 @@ export function getRoleList(params) {
 }
 
 export function deleteRoles(params) {
-  // return {
-  //   type: ROLE_Delete,
-  //   promise: apiClient => apiClient.post(`${urlPrefix}/api/v1/login/`,
-  //     {
-  //       data: params
-  //       // params
-  //     })
-  // };
-  
   return {
-    type : ROLE_DELETE,
-    data : params
-  }
+    type: ROLE_DELETE,
+    promise: apiClient => apiClient.del(`${urlPrefix}/role/remove`,
+      {
+        data: params
+      })
+  };
 }

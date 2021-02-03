@@ -8,7 +8,8 @@ import login from './login';
 import pageHeader from './pageHeader';
 import monitor from './monitor';
 import account from './account';
-import role from './role'
+import role from './role';
+import cameraDetail from './cameraDetail';
 
 export default {
   routing: routerReducer, // 其中之一reducer   用来管理路由
@@ -18,5 +19,6 @@ export default {
   login,
   monitor,
   account,
-  role
+  role,
+  cameraDetail
 };
