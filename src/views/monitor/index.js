@@ -71,14 +71,6 @@ class Monitor extends Component {
     this.getAlgorithmList();
   }
 
-  componentDidUpdate() {
-    // console.log(this.treeNode);
-    if (document.querySelector(`.${styles.dataTree}`)) {
-      console.log(document.querySelector(`.${styles.dataTree}`).offsetWidth);
-      document.querySelector(`.${styles.dataTree}`).width = `${document.querySelector(`.${styles.dataTree}`).offsetWidth + 70}px`;
-    }
-  }
-
   getAlgorithmList = () => {
     const { getAlgorithmList } = this.props;
     getAlgorithmList().then((res) => {
@@ -181,37 +173,46 @@ class Monitor extends Component {
                 </Button>
               )
               : <Icon type="edit" className={styles.treeBtn} onClick={e => this.editThis(e, item.id, item.name)} />}
-
             <Icon type="plus-square" className={styles.treeBtn} onClick={(e) => { this.onAdd(e, item.id); }} />
-
           </span>
-
         );
       }
       return (
         <span className={styles.treeBtnBox}>
-          {item.ifEdit
-            ? (
-              <Button className={styles.checkBtn} type="link" disabled={item.hasSame} size="small" onClick={(e) => { this.sureEdit(e, item.id, item.addTag, item.pid); }}>
-                <Icon type="check" />
-              </Button>
-            )
-            : <Icon type="edit" className={styles.treeBtn} onClick={e => this.editThis(e, item.id, item.name)} />}
+          {
+            item.ifEdit
+              ? (
+                <Button className={styles.checkBtn} type="link" disabled={item.hasSame} size="small" onClick={(e) => { this.sureEdit(e, item.id, item.addTag, item.pid); }}>
+                  <Icon type="check" />
+                </Button>
+              )
+              : <Icon type="edit" className={styles.treeBtn} onClick={e => this.editThis(e, item.id, item.name)} />
+          }
           {!item.addTag
             ? (
               <Fragment>
-                <Icon type="delete" className={styles.treeBtn} onClick={(e) => { this.onDelete(e, item.id); }} />
+                {item.ifEdit
+                  ? <Icon type="close" className={styles.treeBtn} onClick={(e) => { this.cancel(e, item.id); }} />
+                  : <Icon type="delete" className={styles.treeBtn} onClick={(e) => { this.onDelete(e, item.id); }} />
+                }
+
                 <Icon type="plus-square" className={styles.treeBtn} onClick={(e) => { this.onAdd(e, item.id); }} />
                 <Icon type="arrow-up" className={styles.treeBtn} onClick={(e) => { this.upArea(e, item.id); }} />
                 <Icon type="arrow-down" className={styles.treeBtn} onClick={(e) => { this.downArea(e, item.id); }} />
               </Fragment>
-            ) : <Icon type="delete" className={styles.treeBtn} onClick={(e) => { this.cancel(e, item.id); }} />}
+            ) : <Icon type="close" className={styles.treeBtn} onClick={(e) => { this.cancel(e, item.id); }} />
+          }
         </span>
       );
     };
 
     const getTitle = val => (
-      <Popover placement="topRight" content={getContent()} overlayClassName={styles.popoverInfo}>
+      <Popover
+        arrowPointAtCenter
+        content={getContent()}
+        overlayClassName={item.pid === 0 ? `${styles.popoverInfoMin}` : `${styles.popoverInfo}`}
+        getPopupContainer={trigger => trigger}
+      >
         <div className={styles.treeTitleInfo}>
           {
             val.ifEdit
@@ -272,6 +273,11 @@ class Monitor extends Component {
 
   editThis = (e, key, name) => {
     e.stopPropagation();
+    const arr = this.state.tempData.filter(item => item.addTag);
+    if (arr && arr.length > 0) {
+      return;
+    }
+
     const editData = this.editNode(key, this.state.treeDatas);
     this.setState({
       treeDatas: editData,
