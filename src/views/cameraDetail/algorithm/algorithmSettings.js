@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable global-require */
 /* eslint-disable import/no-dynamic-require */
 import React, { Component } from 'react';
@@ -8,12 +9,13 @@ import {
   Input,
   Checkbox,
   Button,
+  message
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
-import { getAlgoList } from 'Redux/reducer/cameraDetail';
+import { getAlgoList, postAlgoConf } from 'Redux/reducer/cameraDetail';
 import defaultIcon from 'Assets/algorithmIcons/default.png';
 import AlgoConfigDialog from './algoConfigDialog';
 
@@ -25,7 +27,12 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    push, getAlgoList
+    push,
+    getAlgoList,
+    delAlgoConf: (deviceId, id) => postAlgoConf(deviceId, [{
+      id,
+      action: 'delete'
+    }])
   },
   dispatch
 );
@@ -105,6 +112,10 @@ class AlgorithmSetting extends Component {
   }
 
   componentDidMount() {
+    this.initData();
+  }
+
+  initData = () => {
     // 初始化algoChecked
     const { algoChecked } = this.state;
     const { getAlgoList, cameraId } = this.props;
@@ -126,6 +137,7 @@ class AlgorithmSetting extends Component {
   }
 
   closeConfigModal = () => {
+    this.initData();
     this.setState({
       configVisible: false,
       curAlgo: undefined,
@@ -133,16 +145,23 @@ class AlgorithmSetting extends Component {
   }
 
   backToPre = () => {
-    this.props.push('/monitor')
+    this.props.push('/monitor');
   }
 
   onAlgoCheckedChange = (algo, checked) => {
     const { algoChecked } = this.state;
+    const { delAlgoConf, cameraId } = this.props;
     const { id } = algo;
     algoChecked[id] = checked;
     this.setState({
       algoChecked
     }, () => { console.log('algoChecked', algoChecked); });
+    if (!checked) {
+      delAlgoConf(cameraId, id).then((res) => {
+        this.initData();
+        message.success('删除成功');
+      });
+    }
     if (checked) {
       this.openAlgoConfigDialog(algo);
     }

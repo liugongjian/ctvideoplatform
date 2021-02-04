@@ -9,25 +9,18 @@ import {
   Button,
 } from 'antd';
 import PropTypes from 'prop-types';
-import { create, all } from 'mathjs';
 import { constant } from 'lodash';
 import EIcon from 'Components/Icon';
+import math from 'Utils/math';
 import { DRAW_MODES } from './constants';
 import { getRectPropFromPoints } from './utils';
 import testJpg from './test.jpg';
 
 import styles from './index.less';
 
-const config = {
-  epsilon: 1e-12,
-  matrix: 'Matrix',
-  number: 'number',
-  precision: 64,
-  predictable: false,
-  randomSeed: null
-};
-const math = create(all, config);
 
+const lineWidth = '2';
+const strokeStyle = '#50E3C2';
 class CanvasOperator extends Component {
   constructor() {
     super();
@@ -90,6 +83,8 @@ class CanvasOperator extends Component {
       // wrapperDom.style.width = backgroundLayer.width;
       // 图片按缩放比例绘制
       backgroundCtx?.drawImage(img, 0, 0, backgroundLayer.width, backgroundLayer.height);
+      // 如果已有绘制图案、则绘制
+      this.renderBeforeAreas();
     };
   }
 
@@ -127,14 +122,16 @@ class CanvasOperator extends Component {
 
   // 绘制已暂存在areas中的区域
   renderBeforeAreas = () => {
-    const { canvas } = this.state;
+    const { canvas, ratio } = this.state;
     const { areas } = this.props;
     console.log(areas);
-    if (areas.length) {
+    if (areas?.length) {
       for (const area of areas) {
         canvas.beginPath();
-        const { points } = area;
-        switch (area.type) {
+        canvas.lineWidth = lineWidth;
+        canvas.strokeStyle = strokeStyle;
+        const { points, origin } = area;
+        switch (area.shape) {
           case DRAW_MODES.RECT: {
             const {
               left, top, width, height
@@ -143,11 +140,13 @@ class CanvasOperator extends Component {
             break;
           }
           case DRAW_MODES.POLYGON: {
-            canvas.moveTo(points[0][0], points[0][1]);
+            const curRatio = area.origin ? ratio : 1;
+            const toRatio = x => math.divide(x, curRatio);
+            canvas.moveTo(toRatio(points[0][0]), toRatio(points[0][1]));
             for (const point of points) {
-              canvas.lineTo(point[0], point[1]);
+              canvas.lineTo(toRatio(point[0]), toRatio(point[1]));
             }
-            canvas.lineTo(points[0][0], points[0][1]);
+            canvas.lineTo(toRatio(points[0][0]), toRatio(points[0][1]));
             canvas.stroke();
             break;
           }
@@ -160,12 +159,16 @@ class CanvasOperator extends Component {
 
   closePolygon = () => {
     const {
-      canvas, points
+      canvas, points, ratio, imageHeight, imageWidth,
     } = this.state;
     const { areas, onAreasChange } = this.props;
     const newArea = {
-      type: DRAW_MODES.POLYGON,
-      points
+      shape: DRAW_MODES.POLYGON,
+      points,
+      ratio,
+      imageHeight,
+      imageWidth,
+      name: `area-${areas.length}`
     };
     canvas.lineTo(points[0][0], points[0][1]);
     canvas.stroke();
@@ -233,8 +236,8 @@ class CanvasOperator extends Component {
           left, top, width, height
         } = getRectPropFromPoints(points[0], curPoint);
         canvas.beginPath();
-        canvas.lineWidth = '2';
-        canvas.strokeStyle = '#50E3C2';
+        canvas.lineWidth = lineWidth;
+        canvas.strokeStyle = strokeStyle;
         // 清除绘图区域
         canvas.clearRect(0, 0, canvasDom.width, canvasDom.height);
         // 绘制已暂存区域
@@ -246,8 +249,8 @@ class CanvasOperator extends Component {
       }
       case DRAW_MODES.POLYGON: {
         canvas.beginPath();
-        canvas.lineWidth = '2';
-        canvas.strokeStyle = '#50E3C2';
+        canvas.lineWidth = lineWidth;
+        canvas.strokeStyle = strokeStyle;
         // 清除绘图区域
         canvas.clearRect(0, 0, canvasDom.width, canvasDom.height);
         // 绘制已暂存区域
@@ -273,7 +276,7 @@ class CanvasOperator extends Component {
   onMouseUp = (e) => {
     console.log('onMouseUp');
     const {
-      isDraw, canvas, canvasDom, mode, points
+      isDraw, canvas, canvasDom, mode, points, ratio, imageHeight, imageWidth
     } = this.state;
     const { areas, onAreasChange } = this.props;
     if (!isDraw) {
@@ -286,8 +289,12 @@ class CanvasOperator extends Component {
     switch (mode) {
       case DRAW_MODES.RECT: {
         const newArea = {
-          type: DRAW_MODES.RECT,
-          points: [points[0], curPoint]
+          shape: DRAW_MODES.RECT,
+          points: [points[0], curPoint],
+          ratio,
+          imageHeight,
+          imageWidth,
+          name: `area-${areas.length}`
         };
         // 将区域暂存；清空轨迹；清除作画状态
         this.setState({ points: [], isDraw: false, });
@@ -349,7 +356,31 @@ class CanvasOperator extends Component {
 CanvasOperator.propTypes = {
   id: PropTypes.string.isRequired,
   width: PropTypes.string.isRequired,
-  areas: PropTypes.array.isRequired, // 当前已绘制图案, eg:[{type: 'rect', points:[]]
+  areas: PropTypes.array.isRequired, // 当前已绘制图案, eg:[{shape: 'rect', points:[]]
+  //   [
+  //     {
+  //         "type": 1,
+  //         "points": [
+  //             {
+  //                 "x": 114,
+  //                 "y": 72
+  //             },
+  //             {
+  //                 "x": 1152,
+  //                 "y": 72
+  //             },
+  //             {
+  //                 "x": 1152,
+  //                 "y": 544
+  //             },
+  //             {
+  //                 "x": 114,
+  //                 "y": 544
+  //             }
+  //         ],
+  //         "name": "area-update-1"
+  //     }
+  // ]
   onAreasChange: PropTypes.func.isRequired,
 };
 
