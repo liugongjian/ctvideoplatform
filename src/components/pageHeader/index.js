@@ -30,11 +30,12 @@ const PageHeader = (props) => {
           })
         }
       </Breadcrumb>
-      <div className={styles['tooltip-wrappper']}>
+      {/** <div className={styles['tooltip-wrappper']}>
         {
           tooltip ? tooltip() : null
         }
       </div>
+       */}
     </div>
   );
 };
