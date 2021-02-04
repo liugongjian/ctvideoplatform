@@ -125,6 +125,10 @@ class AlgorithmSetting extends Component {
     });
   }
 
+  backToPre = () => {
+    this.props.push('/monitor')
+  }
+
   onAlgoCheckedChange = (algo, checked) => {
     const { algoChecked } = this.state;
     const {id } = algo;
@@ -172,8 +176,8 @@ class AlgorithmSetting extends Component {
           }
         </div>
         <div className={styles.btnWrapper}>
-          <Button>
-            取消
+          <Button onClick={this.backToPre}>
+            返回
           </Button>
         </div>
       </div>

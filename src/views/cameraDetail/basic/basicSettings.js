@@ -102,6 +102,10 @@ class BasicSetting extends Component {
     });
   }
 
+  backToPre = () => {
+    this.props.push('/monitor');
+  }
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const { autoCompleteResult } = this.state;
@@ -200,8 +204,8 @@ class BasicSetting extends Component {
                 保存
               </Button>
               <span className={styles.span20px} />
-              <Button>
-                取消
+              <Button onClick={this.backToPre}>
+                返回
               </Button>
             </Form.Item>
           </Form>
