@@ -14,8 +14,8 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import { getAlgoList } from 'Redux/reducer/cameraDetail';
-import AlgoConfigDialog from './algoConfigDialog';
 import defaultIcon from 'Assets/algorithmIcons/default.png';
+import AlgoConfigDialog from './algoConfigDialog';
 
 import styles from '../index.less';
 
@@ -36,54 +36,61 @@ const getImgUrl = (name) => {
     'workingClothes', 'carTypeDetect', 'peopleCrowd', 'fightDetect', 'fallDownDetect', 'roadsideStall', 'wanderTarry'
   ];
   if (arr.indexOf(name) > -1) {
-    return import (`Assets/algorithmIcons/${name}.png`);
+    return require(`Assets/algorithmIcons/${name}.png`);
   }
-  return import ('Assets/algorithmIcons/default.png');
+  return require('Assets/algorithmIcons/default.png');
 };
 
-class AlgorithmItem  extends React.Component{
-    constructor(props){
-      super(props);
-      this.state={
-        imgSrc:''
-      }
-    }
-    componentDidMount(){
-      const {curAlgo } = this.props;
-      // 异步获取icon
-      getImgUrl(curAlgo.name).then(module => {
-        this.setState({
-          imgSrc: module.default
-        })
-      })
-    }
-  render(){
+class AlgorithmItem extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      imgSrc: ''
+    };
+  }
+
+  componentDidMount() {
+    const { curAlgo } = this.props;
+    // 异步获取icon
+    // getImgUrl(curAlgo.name).then((module) => {
+    //   this.setState({
+    //     imgSrc: module.default
+    //   });
+    // });
+    this.setState({
+      imgSrc: getImgUrl(curAlgo.name)
+    });
+  }
+
+  render() {
     const {
       curAlgo,
       checked, onChange, toConfig
     } = this.props;
-    const { imgSrc} = this.state;
-    return <div className={styles.algoItem}>
-      <span className={styles['algoItem-checked']}>
-        <Checkbox
-          onChange={e => onChange(curAlgo, e.target.checked)}
-          checked={checked}
-        />
-      </span>
-      <span className={styles['algoItem-title']}>
-        <img src={imgSrc} alt="icon" className={styles['algoItem-title-icon']} />
-        {/* <img src={defaultIcon} alt="icon" /> */}
-        {curAlgo?.cnName}
-      </span>
-      <span className={styles['algoItem-desp']}>{curAlgo?.description}</span>
-      {
-       checked ? (
-        <span className={styles['algoItem-configBtn']}>
-          <a onClick={() => toConfig(curAlgo)}>规则配置</a>
+    const { imgSrc } = this.state;
+    return (
+      <div className={styles.algoItem}>
+        <span className={styles['algoItem-checked']}>
+          <Checkbox
+            onChange={e => onChange(curAlgo, e.target.checked)}
+            checked={checked}
+          />
         </span>
-       ) : null
-      }
-    </div>
+        <span className={styles['algoItem-title']}>
+          <img src={imgSrc} alt="icon" className={styles['algoItem-title-icon']} />
+          {/* <img src={defaultIcon} alt="icon" /> */}
+          {curAlgo?.cnName}
+        </span>
+        <span className={styles['algoItem-desp']}>{curAlgo?.description}</span>
+        {
+          checked ? (
+            <span className={styles['algoItem-configBtn']}>
+              <a onClick={() => toConfig(curAlgo)}>规则配置</a>
+            </span>
+          ) : null
+        }
+      </div>
+    );
   }
 }
 
@@ -99,7 +106,7 @@ class AlgorithmSetting extends Component {
 
   componentDidMount() {
     // 初始化algoChecked
-    const {algoChecked } = this.state;
+    const { algoChecked } = this.state;
     const { getAlgoList, cameraId } = this.props;
     getAlgoList(cameraId).then((list) => {
       for (const { id, isPick } of list) {
@@ -127,12 +134,12 @@ class AlgorithmSetting extends Component {
 
   onAlgoCheckedChange = (algo, checked) => {
     const { algoChecked } = this.state;
-    const {id } = algo;
+    const { id } = algo;
     algoChecked[id] = checked;
     this.setState({
       algoChecked
     }, () => { console.log('algoChecked', algoChecked); });
-    if(checked){
+    if (checked) {
       this.openAlgoConfigDialog(algo);
     }
   }
@@ -145,7 +152,7 @@ class AlgorithmSetting extends Component {
       configVisible
     } = this.state;
     const {
-      cameraDetail: {algoList},
+      cameraDetail: { algoList },
       cameraId,
     } = this.props;
     return (
