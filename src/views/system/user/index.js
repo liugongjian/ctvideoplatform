@@ -360,8 +360,8 @@ class Account extends Component {
   handleDelCancel = () => {
     this.setState({
       deleteModelVisible: false,
-      delIds: [],
-      delUserName: ''
+      // delIds: [],
+      // delUserName: ''
     });
   };
 
@@ -377,7 +377,6 @@ class Account extends Component {
       ids = [id];
       userName = val.username;
     }
-    console.log('handleStop', ids);
     this.setState({
       stopModelVisible: true,
       stopIds: ids,
@@ -404,8 +403,8 @@ class Account extends Component {
   handleStopCancel = () => {
     this.setState({
       stopModelVisible: false,
-      stopIds: [],
-      stopUserName: ''
+      // stopIds: [],
+      // stopUserName: ''
     });
   };
 
@@ -421,7 +420,6 @@ class Account extends Component {
       ids = [id];
       userName = val.username;
     }
-    console.log('handleEnable', ids);
     this.setState({
       enableModelVisible: true,
       enableIds: ids,
@@ -448,8 +446,6 @@ class Account extends Component {
   handleEnableCancel = () => {
     this.setState({
       enableModelVisible: false,
-      enableIds: [],
-      enableUserName: ''
     });
   };
 
@@ -469,18 +465,17 @@ class Account extends Component {
   };
 
   handleRoleChange = (value) => {
-    console.log(`selected role ${value}`);
+    // console.log(`selected role ${value}`);
   };
 
   handleRoleSearch = (value) => {
-    console.log('search:', value);
+    // console.log('search:', value);
   };
 
   updatePassword = () => {
     const { updatePassword } = this.props;
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
-        console.log('重置密码的values', values);
         const data = {
           rentpassword: values.rentpassword,
           renewpassword: values.reNewPassword,
@@ -554,7 +549,6 @@ class Account extends Component {
         dataIndex: 'username', // 数据源的字段名
         ellipsis: true,
         render: text => (
-          // <div title={text}>{text}</div>
           <div title={text}>{text && text.length > 10 ? `${text.substring(0, 10)}...` : text}</div>
         )
       },
@@ -562,7 +556,6 @@ class Account extends Component {
         title: '角色名称',
         dataIndex: 'roleName',
         render: (text, record) => (
-          // <div title={text}>{text}</div>
           <div title={text}>{text && text.length > 10 ? `${text.substring(0, 10)}...` : text}</div>
         )
       },
@@ -673,11 +666,12 @@ class Account extends Component {
           onOk={this.updateUser}
           onCancel={this.handleCancel}
           className={styles.editModal}
+          width="600px"
         >
           <Form horizontal="true">
             <div className={styles.editSecTitle}>基本配置</div>
-            <FormItem label="用户名" {...formItemLayout} className={styles.username}>
-              <div>{editXq.userName}</div>
+            <FormItem label="用户名" {...formItemLayout} className={styles.userNameItem}>
+              <div className={styles.userName} title={editXq.userName}>{editXq.userName}</div>
             </FormItem>
             <div className={styles.editSecTitle}>关联权限</div>
             <FormItem label="选择角色" {...formItemLayout} className={styles.role}>
@@ -714,8 +708,8 @@ class Account extends Component {
           width="600px"
         >
           <Form horizontal="true">
-            <FormItem label="用户名" {...formItemLayout} className={styles.username}>
-              <div>{pswXq.userName}</div>
+            <FormItem label="用户名" {...formItemLayout} className={styles.userNameItem}>
+              <div className={styles.userName} title={pswXq.userName}>{pswXq.userName}</div>
             </FormItem>
             <FormItem label="租户管理员密码" autoComplete="off" {...formItemLayout}>
               {getFieldDecorator('rentpassword', {
@@ -776,8 +770,10 @@ class Account extends Component {
           width="400px"
           closable={false}
         >
-          <Icon type="warning" />
-          <div>{`您确定要删除${selectedRowKeys.length > 0 ? `这${delIdsLength}个账号吗？` : `账号：${delUserName}吗？`}`}</div>
+          <div>
+            <Icon type="warning" />
+            <div>{`您确定要删除${selectedRowKeys.length > 0 ? `这${delIdsLength}个账号吗？` : `账号：${delUserName}吗？`}`}</div>
+          </div>
         </Modal>
         <Modal
           visible={stopModelVisible}
@@ -789,8 +785,10 @@ class Account extends Component {
           width="400px"
           closable={false}
         >
-          <Icon type="warning" />
-          <div>{`您确定要禁用${selectedRowKeys.length > 0 ? `${stopIdsLength}个账号吗？` : `账号：${stopUserName}吗？`}`}</div>
+          <div>
+            <Icon type="warning" />
+            <div>{`您确定要禁用${selectedRowKeys.length > 0 ? `这${stopIdsLength}个账号吗？` : `账号：${stopUserName}吗？`}`}</div>
+          </div>
         </Modal>
         <Modal
           visible={enableModelVisible}
@@ -802,8 +800,10 @@ class Account extends Component {
           width="400px"
           closable={false}
         >
-          <Icon type="exclamation-circle" />
-          <div>{`您确定要启用${selectedRowKeys.length > 0 ? `${enableIdsLength}个账号吗？` : `账号：${enableUserName}吗？`}`}</div>
+          <div>
+            <Icon type="exclamation-circle" />
+            <div>{`您确定要启用${selectedRowKeys.length > 0 ? `这${enableIdsLength}个账号吗？` : `账号：${enableUserName}吗？`}`}</div>
+          </div>
         </Modal>
       </div>
     );
