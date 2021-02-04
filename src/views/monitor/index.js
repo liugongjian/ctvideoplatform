@@ -55,7 +55,27 @@ class Monitor extends Component {
     deviceName: '',
     deviceId: '',
     algorithmId: 'all',
-    algorithmList: []
+    algorithmList: [],
+    modalDeviceName: '',
+    modalDeviceId: '',
+    modalDeviceData: [
+      {
+        name: '富平县薛镇两门村樊北樊套柱门前17795880465',
+        originId: '61010010001320000021',
+      },
+      {
+        name: '富平县薛镇两门村22217795880465',
+        originId: '61010010001320000022',
+      },
+      {
+        name: '富平wewwww县薛镇两门村22217795880465',
+        originId: '61010010001320000023',
+      },
+      {
+        name: '富平hhhhhw县薛镇两门村22217795880465',
+        originId: '61010010001320000024',
+      }
+    ]
   }
 
   componentDidMount() {
@@ -379,6 +399,10 @@ class Monitor extends Component {
     });
   }
 
+  getModalDeviceList = () => {
+    console.log('弹框层的列表接口。。。。。');
+  }
+
   selectThisAlgorithm = (value) => {
     this.setState({
       algorithmId: value
@@ -391,9 +415,21 @@ class Monitor extends Component {
     });
   }
 
+  changeModalDeviceName = (e) => {
+    this.setState({
+      modalDeviceName: e.target.value
+    });
+  }
+
   changeDeviceId = (e) => {
     this.setState({
       deviceId: e.target.value
+    });
+  }
+
+  changeModalDeviceId = (e) => {
+    this.setState({
+      modalDeviceId: e.target.value
     });
   }
 
@@ -407,6 +443,14 @@ class Monitor extends Component {
       deviceId: '',
       algorithmId: 'all',
     }, () => this.getDeviceList());
+  }
+
+  resetModalSearch = () => {
+    this.setState({
+      // areaId: 1,
+      modalDeviceName: '',
+      modalDeviceId: '',
+    }, () => this.getModalDeviceList());
   }
 
   changeStatus = (e) => {
@@ -491,7 +535,7 @@ class Monitor extends Component {
 
   render() {
     const {
-      test, treeDatas, expandedKeys, tableData, showModal, showDelModal, algorithmList, algorithmId
+      test, treeDatas, expandedKeys, tableData, showModal, showDelModal, algorithmList, algorithmId, modalDeviceData
     } = this.state;
     const columns = [
       {
@@ -573,6 +617,21 @@ class Monitor extends Component {
           </span>
         ),
       }
+    ];
+    const modalColumns = [
+      {
+        title: '摄像头名称',
+        dataIndex: 'name',
+        key: 'name',
+        fixed: 'left',
+        render: text => <span>{text.substring(0, 10)}</span>,
+      },
+      {
+        title: '摄像头ID',
+        dataIndex: 'originId',
+        key: 'originId',
+        // fixed: 'left',
+      },
     ];
 
     const drawAlgorithmList = () => algorithmList.map(item => (
@@ -663,9 +722,33 @@ class Monitor extends Component {
           onOk={this.sureImportDevice}
           onCancel={this.cancelImportDevice}
           forceRender
+          className={styles.deviceModal}
+          width="800px"
         >
-          <p>123</p>
-          <Checkbox>213</Checkbox>
+          <span className={styles.areaTitle}>当前区域：</span>
+          <span className={styles.areaName}>区域1/区域1-1/区域1-1-1</span>
+          <div className={styles.searchModalBox}>
+            <div className={styles.searchItme}>
+              <span>摄像头名称：</span>
+              <Input placeholder="请输出摄像头名称" onChange={this.changeModalDeviceName} />
+            </div>
+            <div className={styles.searchItme}>
+              <span>摄像头ID：</span>
+              <Input placeholder="请输入摄像头ID" onChange={this.changeModalDeviceId} />
+            </div>
+            <Button type="primary" className={styles.searchHandleBtn} onClick={this.getModalDeviceList}>查询</Button>
+            <Button className={styles.searchHandleBtn} onClick={this.resetModalSearch}>
+              <Icon type="reload" />
+              <span>重置</span>
+            </Button>
+          </div>
+          <Table
+            dataSource={modalDeviceData}
+            columns={modalColumns}
+            pagination={false}
+          />
+
+
         </Modal>
         <Modal
           title="删除提示"
