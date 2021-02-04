@@ -1,35 +1,40 @@
 import React, { Component } from 'react';
 import {
-  Table, Input, Modal, Pagination, Button
+  Table, Input, Modal, Pagination, Button , message
 } from 'antd';
 import {Link} from 'react-router-dom'
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import { getRoleList , deleteRoles } from '@/redux/reducer/role'
+
 import deletePic from '@/assets/role/delete.png'
 import searchPic from '@/assets/role/search.png'
 import warnPic from '@/assets/role/warn.png'
 
+import 'antd/dist/antd.css';
 import styles from './index.less';
 
 const { Column } = Table;
 const { Search } = Input;
 
 
-const mapStateToProps = state => ({role : state.role});
+const mapStateToProps = state => ({ role : state.role });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  {},
+  { getRoleList , deleteRoles},
   dispatch
 );
 
 
 class Role extends Component {
   state = {
+    roleListInfo:{},
     selectedRowKeys : [], // Check here to configure the default column
+    searchName:"",
     deleteModalVisible : false,
-    recordNumTodelete:null,
-    deleteItems:[]
+    isDeleting : false,
+    deleteItems : []
   };
 
   onSelectChange = selectedRowKeys => {
@@ -37,27 +42,70 @@ class Role extends Component {
     this.setState({ selectedRowKeys });
   };
 
-  onDeleteOneItem = (record) => {
-    this.setState({deleteModalVisible:true,recordNumTodelete:1,deleteItems:[{...record}]});
+  onDeleteItems = () => {
+    this.setState({isDeleting:true});
+    this.props.deleteRoles({
+      roleIdlist : this.state.deleteItems,
+    }).then((data) => {
+      if (data) {
+        message.success('删除成功');
+      } else {
+        message.success('删除失败');
+      }
+      this.setState({deleteModalVisible:false , isDeleting : false });
+      this.onPageNumChange(this.state.roleListInfo.pageNo + 1);
+    }).catch(err => {
+      message.success('删除失败');
+      this.setState({deleteModalVisible:false , isDeleting : false });
+    });
   };
 
-  handleDeleteItems = () => {
+  searchRole = () => {
+    // console.log(this.state.searchName)
+    this.props.getRoleList({
+      name : this.state.searchName,
+      pageNo : 0,
+      pageSize : this.state.roleListInfo.pageSize
+    }).then((data)=>{
+      // console.log(data);
+      this.setState({roleListInfo : data})
+    })
+  }
 
+  onPageNumChange = (pageNo) => {
+    this.props.getRoleList({
+      pageNo : pageNo-1,
+      pageSize : this.state.roleListInfo.pageSize
+    }).then((data)=>{
+      this.setState({roleListInfo : data})
+    })
+  }
+
+  onPageSizeChange = (current , size) => {
+    this.props.getRoleList({
+      pageNo : 0,
+      pageSize : size
+    }).then((data)=>{
+      // console.log(data);
+      this.setState({roleListInfo : data})
+    })
   }
 
   componentDidMount() {
-    // ajax code
-    // console.log(this.props.role);
+    this.props.getRoleList({
+      pageNo : 0,
+      pageSize : 10
+    }).then((data)=>{
+      this.setState({roleListInfo : data})
+    })
   }
 
   render() {
-    const { roleList } = this.props.role;
-    const { selectedRowKeys } = this.state;
+    const { selectedRowKeys , roleListInfo } = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
     };
-
     return (
       <div>
         <div className={styles.searchContainer}>
@@ -67,36 +115,40 @@ class Role extends Component {
             批量删除
           </a>
           <div className={styles.searchInput}>
-            <Search placeholder="请输入角色名称" icon={searchPic}>
-            </Search>
+            <Search placeholder="请输入角色名称" icon={searchPic} onSearch={() => this.searchRole()} onChange={(e) => this.setState({searchName:e.target.value})}/>
           </div>
         </div>
-        <Table rowSelection={rowSelection} dataSource={roleList} pagination={false}>
+        <Table rowSelection={rowSelection} dataSource={roleListInfo.list} pagination={false}>
             <Column title="角色名称" dataIndex="name" key="name" />
-            <Column title="创建时间" dataIndex="age" key="age" />
-            <Column title="修改时间" dataIndex="address" key="address" />
-            <Column title="角色描述" dataIndex="comment" key="comment" />
+            <Column title="创建时间" dataIndex="createTime" key="createTime" />
+            <Column title="修改时间" dataIndex="updateTime" key="updateTime" />
+            <Column title="角色描述" dataIndex="description" key="description" />
             <Column
                 title="操作"
                 key="action"
                 render={(text, record) => (
                   <div className={styles.oprationWrapper}>
-                    <Link to={`/system/role/edit/${record.key}`}>
+                    <Link to={`/system/role/edit/${record.id}`}>
                       编辑
                     </Link>
                     <span className={styles.separator}> | </span>
-                    <span onClick={() => this.onDeleteOneItem([record.key])}><a>删除</a></span>
+                    <span onClick={() => this.setState({deleteModalVisible:true,deleteItems:[record.id]})}><a>删除</a></span>
                   </div>
                 )}
               />
         </Table>
         <div className={styles.paginationWrapper}>
-          <span>总条数: 200</span>
+          <span>总条数: {roleListInfo.recordsTotal}</span>
           <div>
             <Pagination
-              total={200}
+              total={roleListInfo.recordsTotal}
+              onChange={(pageNo) => this.onPageNumChange(pageNo)}
+              current={roleListInfo.pageNo+1}
               showSizeChanger
               showQuickJumper
+              defaultPageSize={10}
+              pageSizeOptions={[10,20]}
+              onShowSizeChange={(current,size) => this.onPageSizeChange(current , size)}
             />
           </div>
         </div>
@@ -107,10 +159,10 @@ class Role extends Component {
           // onOk={() => this.setState({deleteModalVisible:false})}
           // onCancel={() => this.setState({deleteModalVisible:false})}
           footer={[    
-            <Button key="submit" type="primary" onClick={() => this.deleteConfirm()} style={{float:'left',margin:'0 0 0 150px'}}>
+            <Button key="submit" type="primary" disabled={this.state.isDeleting} onClick={() => this.onDeleteItems()} style={{float:'left',margin:'0 0 0 150px'}}>
             确定
            </Button>,        
-            <Button key="back" style={{margin:'0 150px 0 0'}} onClick={() => {this.setState({deleteModalVisible:false,recordNumTodelete:null,deleteItems:[]})}}>
+            <Button key="back" style={{margin:'0 150px 0 0'}} disabled={this.state.isDeleting} onClick={() => {this.setState({deleteModalVisible:false,deleteItems:[]})}}>
               取消
             </Button>,
 
@@ -121,7 +173,7 @@ class Role extends Component {
               <img src={warnPic}/>
             </div>
             <div className={styles.deleteModalInfo}>
-              <span>你确定要删除所选的{this.state.recordNumTodelete}个角色吗？</span>
+              <span>你确定要删除所选的{this.state.deleteItems.length}个角色吗？</span>
               <p>此操作将删除选中角色</p>
               <p>角色删除后，使用删除角色的账号将无法登录系统</p>
             </div>

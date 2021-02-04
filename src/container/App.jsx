@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Route, Switch
+  Route, Switch, Redirect
 } from 'react-router-dom';
 import LoginContainer from 'Common/LoginContainer';
 import Login from 'Views/login';
@@ -11,11 +11,12 @@ import Footer from './Footer/Footer';
 export default () => (
   // <LoginContainer>
   <div style={{ height: '100%' }}>
-    <Header />
+    {/** <Header /> */}
     <Manage />
     {/** <Footer /> */}
     <Switch>
       <Route path="/login" exact component={Login} />
+      <Redirect path="/" to="/monitor" />
     </Switch>
   </div>
   // </LoginContainer>

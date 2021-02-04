@@ -4,4 +4,4 @@ npm run build && echo "=============================打包完成================
 echo "=============================压缩文件============================="
 tar -zvcf dist.tar.gz dist
 echo "=============================开始上传============================="
-# scp dist.tar.gz root@host19.880508.xyz:/opt/
+scp dist.tar.gz ptop@192.168.10.146:/home/ptop/video-analyze-baseline

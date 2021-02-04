@@ -477,6 +477,17 @@ class Monitor extends Component {
 
   }
 
+  sureImportDevice = () => {
+    this.setState({
+      showModal: false
+    });
+  }
+
+  cancelImportDevice = () => {
+    this.setState({
+      showModal: false
+    });
+  }
 
   render() {
     const {
@@ -579,6 +590,7 @@ class Monitor extends Component {
     return (
       <div className={styles.content}>
         <div className={styles.areaTree}>
+          <h1 className={styles.titleText}>区域列表</h1>
           <Search placeholder="请输入关键字" onSearch={this.getAreaList} />
           {
             treeDatas && treeDatas.length ? (
@@ -596,7 +608,7 @@ class Monitor extends Component {
           }
         </div>
         <div className={styles.monitorList}>
-          <h1>视频监控点</h1>
+          <h1 className={styles.titleText}>视频监控点</h1>
           <div className={styles.searchBox}>
             <div className={styles.searchItme}>
               <span>摄像头名称：</span>
@@ -648,8 +660,12 @@ class Monitor extends Component {
           title="导入摄像头"
           visible={showModal}
           getContainer={false}
+          onOk={this.sureImportDevice}
+          onCancel={this.cancelImportDevice}
+          forceRender
         >
           <p>123</p>
+          <Checkbox>213</Checkbox>
         </Modal>
         <Modal
           title="删除提示"
