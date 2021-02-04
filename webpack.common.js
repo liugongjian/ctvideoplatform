@@ -98,7 +98,7 @@ module.exports = {
 
                 return '[name]-[hash:8].[ext]';
               },
-              outputPath: `${prodUrl}images/`
+              outputPath: `${prodUrl}baseLineimages/`
             }
           }
         ],

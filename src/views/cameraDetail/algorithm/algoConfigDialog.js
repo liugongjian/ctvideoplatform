@@ -54,9 +54,11 @@ class CameraDetail extends Component {
     } = this.props;
     if (configTypes.indexOf(ALGO_CONFIG_TYPE.AREA) > -1 && curAlgo) {
       this.setState({ imgLoading: true });
-      getAlgoAreaImage(cameraId).then(imgSrc => this.setState({ imgSrc, imgLoading: false })).catch((e) => {
-        this.setState({ imgLoading: false });
-      });
+      getAlgoAreaImage(cameraId)
+        .then(imgSrc => this.setState({ imgSrc, imgLoading: false }))
+        .catch((e) => {
+          this.setState({ imgLoading: false });
+        });
     }
   }
 
