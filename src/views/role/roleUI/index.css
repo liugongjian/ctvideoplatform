@@ -1,0 +1,43 @@
+.contentWrapper {
+  background: #fff;
+  padding: 20px;
+  position: relative;
+}
+.contentWrapper .subTitle {
+  display: inline-block;
+  font-family: MicrosoftYaHei;
+  font-size: 16px;
+  color: #333333;
+  margin-left: 45px;
+  margin-bottom: 20px;
+}
+.contentWrapper .tree {
+  width: 150%;
+  height: 500px;
+  margin-left: 80px;
+  border: 1px solid #E9E9E9;
+}
+.contentWrapper .tree .treefl {
+  display: inline-block;
+  float: left;
+  width: 25%;
+  height: 100%;
+  border-right: 1px solid #E9E9E9;
+}
+.contentWrapper .tree .treefr {
+  display: inline-block;
+  float: right;
+  width: 75%;
+}
+.contentWrapper .formItemInput {
+  width: 390px;
+  height: 36px;
+}
+.contentWrapper .btnWrapper {
+  margin-left: 58px;
+  height: 32px;
+}
+.contentWrapper .btnWrapper > button {
+  width: 78px;
+  height: 32px;
+}

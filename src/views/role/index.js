@@ -107,7 +107,7 @@ class Role extends Component {
       onChange: this.onSelectChange,
     };
     return (
-      <div>
+      <div className={styles.mainWrapper}>
         <div className={styles.searchContainer}>
           <Link to={'/system/role/add'}><Button type="primary" className={styles.addBtn}>+ 新增角色</Button></Link>
           <a className={styles.deleteBtn} onClick={()=>this.setState({deleteModalVisible:true})}>
@@ -155,17 +155,16 @@ class Role extends Component {
         
         <Modal
           centered
+          width={412}
           visible={this.state.deleteModalVisible}
-          // onOk={() => this.setState({deleteModalVisible:false})}
-          // onCancel={() => this.setState({deleteModalVisible:false})}
+          onCancel={() => this.setState({deleteModalVisible:false})}
           footer={[    
-            <Button key="submit" type="primary" disabled={this.state.isDeleting} onClick={() => this.onDeleteItems()} style={{float:'left',margin:'0 0 0 150px'}}>
+            <Button key="submit" type="primary" disabled={this.state.isDeleting} onClick={() => this.onDeleteItems()} style={{margin:'0 0 0 5px'}}>
             确定
            </Button>,        
-            <Button key="back" style={{margin:'0 150px 0 0'}} disabled={this.state.isDeleting} onClick={() => {this.setState({deleteModalVisible:false,deleteItems:[]})}}>
+            <Button key="back" style={{margin:'0 0 0 30px'}} disabled={this.state.isDeleting} onClick={() => {this.setState({deleteModalVisible:false,deleteItems:[]})}}>
               取消
             </Button>,
-
           ]}
         >
           <div className={styles.deleteModal}>

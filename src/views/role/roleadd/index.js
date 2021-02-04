@@ -22,7 +22,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   dispatch
 );
 
-class RoleEdit extends Component {
+class RoleAdd extends Component {
   state = {
     tempData: [],
     treeDatas : [],
@@ -91,6 +91,41 @@ class RoleEdit extends Component {
       }
     })
   }
+
+  
+  onSearchInput(value){
+    this.setState({serachInputValue : value} , ()=>{
+      if(this.state.activeMenuKey.key === '1'){
+          this.props.getMenuList(this.state.serachInputValue).then(
+            (res) => {
+              console.log(res);
+              const expandKeys = res.map((item)=>item.id);
+              console.log(expandKeys);
+              const treeDatas = this.dataToTree(res);
+              this.setState({
+                tempData: res,
+                treeDatas,
+                expandedKeys:expandKeys
+              });
+            }
+          )
+      }else{
+        this.props.getAreaList(0,this.state.serachInputValue).then((res) => {
+          console.log(res);
+          const expandKeys = res.map((item)=>item.id);
+          console.log(expandKeys);
+          const treeDatas = this.dataToTree(res);
+          this.setState({
+            tempData: res,
+            treeDatas,
+            expandedKeys:expandKeys
+          });
+        });
+      }
+    })
+  }
+
+  
   onCheck(keys){
     console.log('onCheck--',keys);
     if(this.state.activeMenuKey.key === '1'){
@@ -202,6 +237,7 @@ class RoleEdit extends Component {
         onDescriptionChange={(description)=>this.onDescriptionChange(description)}
         onSave={()=>this.onSave()}
         onCancel={()=>this.onCancel()}
+        onSearchInput={(keyword)=>this.onSearchInput(keyword)}
       />
     );
   }
@@ -211,4 +247,4 @@ class RoleEdit extends Component {
 //     roleedit: PropTypes.object.isRequired
 // };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RoleEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(RoleAdd);

@@ -1,117 +1,70 @@
 import React, { Component } from 'react';
 
+import { push } from 'react-router-redux';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
+import { message } from 'antd';
+import { getAreaList , addRole , getMenuList , getRoleInfo , editRoleInfo } from '@/redux/reducer/role'
+import { pathPrefix } from '@/constants/Dictionary';
 import PropTypes from 'prop-types';
 
 import RoleUI from '@/views/role/roleUI'
 
 
-const mapStateToProps = state => ({ roleList: state.monitor });
+const mapStateToProps = state => ({ role: state.role });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  {},
+  {
+    push,
+    getAreaList,
+    addRole,
+    getMenuList,
+    getRoleInfo,
+    editRoleInfo
+  },
   dispatch
 );
 
-
-const treeData = [
-  {
-    title: '0-0',
-    key: '0-0',
-    children: [
-      {
-        title: '0-0-0',
-        key: '0-0-0',
-        children: [
-          {
-            title: '0-0-0-0',
-            key: '0-0-0-0',
-          },
-          {
-            title: '0-0-0-1',
-            key: '0-0-0-1',
-          },
-          {
-            title: '0-0-0-2',
-            key: '0-0-0-2',
-          },
-        ],
-      },
-      {
-        title: '0-0-1',
-        key: '0-0-1',
-        children: [
-          {
-            title: '0-0-1-0',
-            key: '0-0-1-0',
-          },
-          {
-            title: '0-0-1-1',
-            key: '0-0-1-1',
-          },
-          {
-            title: '0-0-1-2',
-            key: '0-0-1-2',
-          },
-        ],
-      },
-      {
-        title: '0-0-2',
-        key: '0-0-2',
-      },
-    ],
-  },
-  {
-    title: '0-1',
-    key: '0-1',
-    children: [
-      {
-        title: '0-1-0-0',
-        key: '0-1-0-0',
-      },
-      {
-        title: '0-1-0-1',
-        key: '0-1-0-1',
-      },
-      {
-        title: '0-1-0-2',
-        key: '0-1-0-2',
-      },
-    ],
-  },
-  {
-    title: '0-2',
-    key: '0-2',
-  },
-  {
-    title: '0-3',
-    key: '0-3',
-  },
-  {
-    title: '0-4',
-    key: '0-4',
-  },
-];
-
-
 class RoleEdit extends Component {
   state = {
-    expandedKeys: ['0-0-0', '0-0-1'],
-    checkedKeys: ['0-0-0'],
+    tempData: [],
+    treeDatas : [],
+    activeMenuKey:{
+      key:'1'
+    },
+    expandedKeys: [],
+    checkedKeys: {
+      menuIds:[],
+      areaIds:[]
+    },
     selectedKeys: [],
     autoExpandParent: true,
+    name:'',
+    description:'',
+    roleid:0,
+    serachInputValue:'',
   };
 
-
-
-  onFinish(values) {
-    console.log('Success:', values);
-  };
-
-  onFinishFailed(errorInfo) {
-    console.log('Failed:', errorInfo);
-  };
+  dataToTree = (data) => {
+    // 下面的forEach写法会改变原数组，所以深度拷贝一次
+    const copy = JSON.parse(JSON.stringify(data));
+    const map = {};
+    copy.forEach((item) => {
+      item.defaultName = item.name;
+      item.key = item.id;
+      item.title = item.name;
+      map[item.id] = item;
+    });
+    const val = [];
+    copy.forEach((item) => {
+      const parent = map[item.pid];
+      if (parent) {
+        (parent.children || (parent.children = [])).push(item);
+      } else {
+        val.push(item);
+      }
+    });
+    return val;
+  }
 
   onExpand(keys) {
     console.log('onExpand', keys); // if not set autoExpandParent to false, if children expanded, parent can not collapse.
@@ -119,41 +72,167 @@ class RoleEdit extends Component {
     this.setState({expandedKeys:keys,autoExpandParent:false});
   };
 
-  onCheck(keys){
-    console.log('onCheck', keys);
-    this.setState({checkedKeys:keys},()=>{console.log(this.state.checkedKeys)});
-  };
 
-  onChange(e) {
-    const { value } = e.target;
-
-    const treeFilter = (tree, func) => {
-        // 使用map复制一下节点，避免修改到原树
-        return tree.map(node => ({ ...node })).filter(node => {
-          node.children = node.children && treeFilter(node.children, func);
-          return func(node) || (node.children && node.children.length)
-        })
-    };
-    const filteredTree = treeFilter(treeData , (node) => { 
-      if( node.title.indexOf(value) > -1 ){
-        return true;
+  onSelectTreeMenu(key){
+    this.setState({activeMenuKey:key} , () => {
+      console.log(key)
+      if(key.key === '1'){
+        this.props.getMenuList().then((res)=>{
+          const treeDatas = this.dataToTree(res);
+          this.setState({
+            tempData: res,
+            treeDatas,
+          });
+        })
+      }else{
+        this.props.getAreaList(0,null).then((res) => {
+          const treeDatas = this.dataToTree(res);
+          this.setState({
+            tempData: res,
+            treeDatas,
+          });
+        });
       }
-      return false;
-    });
-
-    this.setState({
-      checkedKeys:filteredTree,
-      searchValue: value,
-      autoExpandParent: true,
-    });
+    })
+  }
+  onCheck(keys){
+    console.log('onCheck--',keys);
+    if(this.state.activeMenuKey.key === '1'){
+      
+      this.setState({checkedKeys : {...this.state.checkedKeys , menuIds : keys}},() => console.log('onCheck--1',this.state.checkedKeys));
+    }else{
+      this.setState({checkedKeys : {...this.state.checkedKeys , areaIds : keys}},() => console.log('onCheck--2',this.state.checkedKeys));
+    }
   };
+
+  onNameChange(name){
+    this.setState({name})
+  }
+  onDescriptionChange(description){
+    this.setState({description})
+  }
+
+  onSave(){
+    this.props.editRoleInfo({
+      id:this.state.roleid,
+      name:this.state.name,
+      description:this.state.description,
+      menuIds : this.state.checkedKeys.menuIds,
+      areaIds : this.state.checkedKeys.areaIds,
+    }).then((data)=>{
+      if(data){
+        message.success('添加成功')
+        this.props.push(`${pathPrefix}/system/role`);
+
+        this.setState({
+          tempData: [],
+          treeDatas : [],
+          activeMenuKey:{
+            key:'1'
+          },
+          expandedKeys: [],
+          checkedKeys: {
+            menuIds:[],
+            areaIds:[]
+          },
+          selectedKeys: [],
+          autoExpandParent: true,
+          name:'',
+          description:''
+        })
+      }
+    });
+  }
+
+  onCancel(){
+    this.setState({
+        tempData: [],
+        treeDatas : [],
+        activeMenuKey:{
+          key:'1'
+        },
+        expandedKeys: [],
+        checkedKeys: {
+          menuIds:[],
+          areaIds:[]
+        },
+        selectedKeys: [],
+        autoExpandParent: true,
+        name:'',
+        description:''
+    },() => {
+      this.props.push(`${pathPrefix}/system/role`);
+    })
+  }
+
+  onSearchInput(value){
+    this.setState({serachInputValue : value} , ()=>{
+      if(this.state.activeMenuKey.key === '1'){
+          this.props.getMenuList(this.state.serachInputValue).then(
+            (res) => {
+              console.log(res);
+              const expandKeys = res.map((item)=>item.id);
+              console.log(expandKeys);
+              const treeDatas = this.dataToTree(res);
+              this.setState({
+                tempData: res,
+                treeDatas,
+                expandedKeys:expandKeys
+              });
+            }
+          )
+      }else{
+        this.props.getAreaList(0,this.state.serachInputValue).then((res) => {
+          console.log(res);
+          const expandKeys = res.map((item)=>item.id);
+          console.log(expandKeys);
+          const treeDatas = this.dataToTree(res);
+          this.setState({
+            tempData: res,
+            treeDatas,
+            expandedKeys:expandKeys
+          });
+        });
+      }
+    })
+  }
+
 
   componentDidMount() {
-    // console.log(this.props.match.params.roleid); 
+
+    const { roleid } = this.props.match.params;
+    this.props.getRoleInfo( roleid ).then((res)=>{
+      this.setState({
+        roleid : roleid,
+        name : res[0].name,
+        description : res[0].description,
+        checkedKeys:{
+          menuIds: JSON.parse(res[0].menuIds),
+          areaIds : JSON.parse(res[0].areaIds),
+        }
+      });
+    })
+
+    this.setState({ roleid : this.props.match.params.roleid });
+    this.props.getMenuList().then((res)=>{
+      const treeDatas = this.dataToTree(res);
+      this.setState({
+        tempData: res,
+        treeDatas,
+      });
+    })
+    // this.props.getAreaList(0,null).then((res) => {
+    //   // console.log(res)
+    //   const treeDatas = this.dataToTree(res);
+    //   // console.log(treeDatas)
+    //   this.setState({
+    //     tempData: res,
+    //     treeDatas,
+    //   });
+    // });
   }
 
   render() {
-    
     return (
       <RoleUI 
         onExpand={(keys)=>this.onExpand(keys)}
@@ -161,7 +240,16 @@ class RoleEdit extends Component {
         autoExpandParent={this.state.autoExpandParent}
         onCheck={(keys)=>this.onCheck(keys)}
         checkedKeys={this.state.checkedKeys}
-        treeData={treeData}
+        onSelectTreeMenu={(key)=>this.onSelectTreeMenu(key)}
+        activeMenuKey={this.state.activeMenuKey}
+        treeData={this.state.treeDatas}
+        onNameChange={(name)=>this.onNameChange(name)}
+        onDescriptionChange={(description)=>this.onDescriptionChange(description)}
+        onSave={()=>this.onSave()}
+        onCancel={()=>this.onCancel()}
+        name={this.state.name}
+        description={this.state.description}
+        onSearchInput={(keyword)=>this.onSearchInput(keyword)}
       />
     );
   }
