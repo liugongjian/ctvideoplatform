@@ -86,7 +86,7 @@ class Role extends Component {
       pageNo : 0,
       pageSize : size
     }).then((data)=>{
-      console.log(data);
+      // console.log(data);
       this.setState({roleListInfo : data})
     })
   }

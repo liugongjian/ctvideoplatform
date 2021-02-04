@@ -22,8 +22,6 @@ class RoleUI extends Component {
             span: 14,
           },
         }
-    
-
     return (
       <div className={styles.contentWrapper}>
         <span className={styles.subTitle}>基本配置</span>
@@ -36,7 +34,7 @@ class RoleUI extends Component {
                 remember: true,
               }}
             > 
-              <Form.Item label="角色名称" name="rolename"
+              <Form.Item label="角色名称" name="name"
                   rules={[
                     {
                       required: true,
@@ -44,11 +42,11 @@ class RoleUI extends Component {
                     },
                   ]}
                 >
-                  <Input className={styles.formItemInput}/>
+                  <Input className={styles.formItemInput} onChange={(e) => this.props.onNameChange(e.target.value)}/>
               </Form.Item>
             
-              <Form.Item label="角色描述" name="comment">
-                  <Input className={styles.formItemInput}/>
+              <Form.Item label="角色描述" name="description">
+                  <Input className={styles.formItemInput} onChange={(e) => this.props.onDescriptionChange(e.target.value)}/>
               </Form.Item>
           
 
@@ -59,15 +57,15 @@ class RoleUI extends Component {
                 <div className={styles.treefl}>
                     <Menu
                       defaultSelectedKeys={['1']}
-                      defaultOpenKeys={['sub1']}
                       mode="inline"
                       theme="light"
+                      onSelect={(key)=>this.props.onSelectTreeMenu(key)}
                     >
-                      <Menu.Item key="1">
-                        Option 1
+                      <Menu.Item key="1" >
+                        系统管理菜单权限
                       </Menu.Item>
                       <Menu.Item key="2">
-                        Option 2
+                        摄像头点位权限
                       </Menu.Item>
                     </Menu>
                   </div> 
@@ -87,7 +85,7 @@ class RoleUI extends Component {
                       expandedKeys={this.props.expandedKeys}
                       autoExpandParent={this.props.autoExpandParent}
                       onCheck={(keys)=>this.props.onCheck(keys)}
-                      checkedKeys={this.props.checkedKeys}
+                      checkedKeys={this.props.activeMenuKey.key==='1'?this.props.checkedKeys.menuIds:this.props.checkedKeys.areaIds}
                       treeData={this.props.treeData}
                     />
                   </div>
@@ -96,10 +94,10 @@ class RoleUI extends Component {
 
             <Form.Item>
               <div className={styles.btnWrapper}>
-                <Button type="primary" htmlType="submit" style={{margin:'20px'}}>
+                <Button type="primary" htmlType="submit" style={{margin:'20px'}} onClick={() => this.props.onSave()}>
                   保存
                 </Button>
-                <Button>
+                <Button onClick={() => this.props.onCancel()}>
                   取消
                 </Button>
               </div>
