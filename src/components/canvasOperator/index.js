@@ -37,15 +37,28 @@ class CanvasOperator extends Component {
       mode: null,
       ratio: 1,
       isDraw: false,
-      // startPoint: [],
+      imageWidth: '',
+      imageHeight: '',
       points: [], // 当前绘制轨迹,eg:[[x1,y1],[x2,y2]]
       // areas: [],
     };
   }
 
   componentDidMount() {
+    if (this.props.imgSrc) {
+      this.initData(this.props);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.imgSrc && !this.state.canvas) {
+      this.initData(nextProps);
+    }
+  }
+
+  initData = (props) => {
     // 初始化canvas
-    const { id } = this.props;
+    const { id, imgSrc } = props;
     const backgroundLayer = document.getElementById(`configCanvas-${id}-bk`);
     const backgroundCtx = backgroundLayer?.getContext('2d');
     const canvasDom = document.getElementById(`configCanvas-${id}-op`);
@@ -56,14 +69,16 @@ class CanvasOperator extends Component {
     });
     // 初始化背景图片和canvas宽高
     const img = new Image();
-    img.src = testJpg;
+    img.src = `data:image/png;base64,${imgSrc}`;
     // 取消右键默认菜单
     canvasDom.oncontextmenu = e => false;
     img.onload = () => {
       // 图片按比例缩放，保存缩放比
       const ratio = math.divide(img.width, backgroundLayer.width);
       this.setState({
-        ratio
+        ratio,
+        imageHeight: img.height,
+        imageWidth: img.width,
       });
       const wrapperDom = document.getElementById(`configCanvas-${id}-wrapper`);
       const canvasHeight = math.divide(img.height, ratio); // img.height / ratio;
@@ -218,8 +233,8 @@ class CanvasOperator extends Component {
           left, top, width, height
         } = getRectPropFromPoints(points[0], curPoint);
         canvas.beginPath();
-        canvas.lineWidth = '3';
-        canvas.strokeStyle = 'red';
+        canvas.lineWidth = '2';
+        canvas.strokeStyle = '#50E3C2';
         // 清除绘图区域
         canvas.clearRect(0, 0, canvasDom.width, canvasDom.height);
         // 绘制已暂存区域
@@ -231,8 +246,8 @@ class CanvasOperator extends Component {
       }
       case DRAW_MODES.POLYGON: {
         canvas.beginPath();
-        canvas.lineWidth = '3';
-        canvas.strokeStyle = 'red';
+        canvas.lineWidth = '2';
+        canvas.strokeStyle = '#50E3C2';
         // 清除绘图区域
         canvas.clearRect(0, 0, canvasDom.width, canvasDom.height);
         // 绘制已暂存区域

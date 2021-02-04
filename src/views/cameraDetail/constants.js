@@ -46,9 +46,9 @@ const ALGO_CONFIG_TRIGGER_TIME_TYPE = {
 
 // 1:触发规则，2:触发时间 3:触发区域
 const ALGO_CONFIG_TYPE = {
-  RULE: 1,
-  TIME: 2,
-  AREA: 3,
+  RULE: '1',
+  TIME: '2',
+  AREA: '3',
 };
 
 export {

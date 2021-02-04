@@ -25,12 +25,22 @@ const GET_DEVICE = 'GET_DEVICE';
 const GET_DEVICE_SUCCESS = 'GET_DEVICE_SUCCESS';
 const GET_DEVICE_FAIL = 'GET_DEVICE_FAIL';
 
+const DEL_DEVICE = 'DEL_DEVICE';
+const DEL_DEVICE_SUCCESS = 'DEL_DEVICE_SUCCESS';
+const DEL_DEVICE_FAIL = 'DEL_DEVICE_FAIL';
+
+const GET_ALGORITHMLIST = 'GET_ALGORITHMLIST';
+const GET_ALGORITHMLIST_SUCCESS = 'GET_ALGORITHMLIST_SUCCESS';
+const GET_ALGORITHMLIST_FAIL = 'GET_ALGORITHMLIST_FAIL';
+
 const initialState = {
   areaList: [],
   areaListLoading: false,
   renameArea: {},
   addArea: {},
-  deviceList: []
+  deviceList: [],
+  deleteDevice: {},
+  algorithmList: {},
 };
 
 export default function monitor(state = initialState, action = {}) {
@@ -43,8 +53,8 @@ export default function monitor(state = initialState, action = {}) {
     case GET_LIST_SUCCESS:
       return {
         ...state,
-        areaList: action.data,
         areaListLoading: false,
+        areaList: action.data,
       };
     case GET_LIST_FAIL:
       return {
@@ -137,6 +147,38 @@ export default function monitor(state = initialState, action = {}) {
         areaListLoading: false,
         error: action.error
       };
+    case DEL_DEVICE:
+      return {
+        ...state,
+        areaListLoading: true
+      };
+    case DEL_DEVICE_SUCCESS:
+      return {
+        ...state,
+        areaListLoading: false,
+        deleteDevice: action.data
+      };
+    case DEL_DEVICE_FAIL:
+      return {
+        ...state,
+        error: action.error
+      };
+    case GET_ALGORITHMLIST:
+      return {
+        ...state,
+        areaListLoading: true
+      };
+    case GET_ALGORITHMLIST_SUCCESS:
+      return {
+        ...state,
+        algorithmList: action.data,
+        areaListLoading: false
+      };
+    case GET_ALGORITHMLIST_FAIL:
+      return {
+        ...state,
+        error: action.error
+      };
     default:
       return state;
   }
@@ -204,5 +246,21 @@ export function getDeiviceList(data) {
     promise: apiClient => apiClient.post(`${urlPrefix}/device/query`, {
       data
     })
+  };
+}
+
+export function delDeviceById(data) {
+  return {
+    type: [DEL_DEVICE, DEL_DEVICE_SUCCESS, DEL_DEVICE_FAIL],
+    promise: apiClient => apiClient.del(`${urlPrefix}/device`, {
+      data
+    })
+  };
+}
+
+export function getAlgorithmList() {
+  return {
+    type: [GET_ALGORITHMLIST, GET_ALGORITHMLIST_SUCCESS, GET_ALGORITHMLIST_FAIL],
+    promise: apiClient => apiClient.get(`${urlPrefix}/algorithm/list`)
   };
 }

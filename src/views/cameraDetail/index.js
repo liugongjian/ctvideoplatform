@@ -26,7 +26,7 @@ class CameraDetail extends Component {
   constructor() {
     super();
     this.state = {
-      curTab: 'basic',
+      curTab: 'algo',
     };
   }
 

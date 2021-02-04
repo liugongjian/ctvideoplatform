@@ -1,117 +1,66 @@
 import React, { Component } from 'react';
 
+import { push } from 'react-router-redux';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
+import { message } from 'antd';
+import { getAreaList , addRole , getMenuList} from '@/redux/reducer/role'
+import { pathPrefix } from '@/constants/Dictionary';
 import PropTypes from 'prop-types';
 
 import RoleUI from '@/views/role/roleUI'
 
 
-const mapStateToProps = state => ({ roleList: state.monitor });
+const mapStateToProps = state => ({ role: state.role });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  {},
+  {
+    push,
+    getAreaList,
+    addRole,
+    getMenuList
+  },
   dispatch
 );
 
-
-const treeData = [
-  {
-    title: '0-0',
-    key: '0-0',
-    children: [
-      {
-        title: '0-0-0',
-        key: '0-0-0',
-        children: [
-          {
-            title: '0-0-0-0',
-            key: '0-0-0-0',
-          },
-          {
-            title: '0-0-0-1',
-            key: '0-0-0-1',
-          },
-          {
-            title: '0-0-0-2',
-            key: '0-0-0-2',
-          },
-        ],
-      },
-      {
-        title: '0-0-1',
-        key: '0-0-1',
-        children: [
-          {
-            title: '0-0-1-0',
-            key: '0-0-1-0',
-          },
-          {
-            title: '0-0-1-1',
-            key: '0-0-1-1',
-          },
-          {
-            title: '0-0-1-2',
-            key: '0-0-1-2',
-          },
-        ],
-      },
-      {
-        title: '0-0-2',
-        key: '0-0-2',
-      },
-    ],
-  },
-  {
-    title: '0-1',
-    key: '0-1',
-    children: [
-      {
-        title: '0-1-0-0',
-        key: '0-1-0-0',
-      },
-      {
-        title: '0-1-0-1',
-        key: '0-1-0-1',
-      },
-      {
-        title: '0-1-0-2',
-        key: '0-1-0-2',
-      },
-    ],
-  },
-  {
-    title: '0-2',
-    key: '0-2',
-  },
-  {
-    title: '0-3',
-    key: '0-3',
-  },
-  {
-    title: '0-4',
-    key: '0-4',
-  },
-];
-
-
 class RoleEdit extends Component {
   state = {
-    expandedKeys: ['0-0-0', '0-0-1'],
-    checkedKeys: [],
+    tempData: [],
+    treeDatas : [],
+    activeMenuKey:{
+      key:'1'
+    },
+    expandedKeys: [],
+    checkedKeys: {
+      menuIds:[],
+      areaIds:[]
+    },
     selectedKeys: [],
     autoExpandParent: true,
+    name:'',
+    description:''
   };
 
-
-
-  onFinish(values) {
-    console.log('Success:', values);
-  };
-
-  onFinishFailed(errorInfo) {
-    console.log('Failed:', errorInfo);
-  };
+  dataToTree = (data) => {
+    // 下面的forEach写法会改变原数组，所以深度拷贝一次
+    const copy = JSON.parse(JSON.stringify(data));
+    const map = {};
+    copy.forEach((item) => {
+      item.defaultName = item.name;
+      item.key = item.id;
+      item.title = item.name;
+      map[item.id] = item;
+    });
+    const val = [];
+    copy.forEach((item) => {
+      const parent = map[item.pid];
+      if (parent) {
+        (parent.children || (parent.children = [])).push(item);
+      } else {
+        val.push(item);
+      }
+    });
+    return val;
+  }
 
   onExpand(keys) {
     console.log('onExpand', keys); // if not set autoExpandParent to false, if children expanded, parent can not collapse.
@@ -119,10 +68,59 @@ class RoleEdit extends Component {
     this.setState({expandedKeys:keys,autoExpandParent:false});
   };
 
+
+  onSelectTreeMenu(key){
+    this.setState({activeMenuKey:key} , () => {
+      console.log(key)
+      if(key.key === '1'){
+        this.props.getMenuList().then((res)=>{
+          const treeDatas = this.dataToTree(res);
+          this.setState({
+            tempData: res,
+            treeDatas,
+          });
+        })
+      }else{
+        this.props.getAreaList(0,null).then((res) => {
+          const treeDatas = this.dataToTree(res);
+          this.setState({
+            tempData: res,
+            treeDatas,
+          });
+        });
+      }
+    })
+  }
   onCheck(keys){
-    console.log('onCheck', keys);
-    this.setState({checkedKeys:keys},()=>{console.log(this.state.checkedKeys)});
+    console.log('onCheck--',keys);
+    if(this.state.activeMenuKey.key === '1'){
+      
+      this.setState({checkedKeys : {...this.state.checkedKeys , menuIds : keys}},() => console.log('onCheck--1',this.state.checkedKeys));
+    }else{
+      this.setState({checkedKeys : {...this.state.checkedKeys , areaIds : keys}},() => console.log('onCheck--2',this.state.checkedKeys));
+    }
   };
+
+  onNameChange(name){
+    this.setState({name})
+  }
+  onDescriptionChange(description){
+    this.setState({description})
+  }
+
+  onSave(){
+    this.props.addRole({
+      name:this.state.name,
+      description:this.state.description,
+      menuIds : this.state.checkedKeys.menuIds,
+      areaIds : this.state.checkedKeys.areaIds,
+    }).then((data)=>{
+      if(data){
+        message.success('添加成功')
+        this.props.push(`${pathPrefix}/system/role`);
+      }
+    });
+  }
 
   onChange(e) {
     const { value } = e.target;
@@ -148,12 +146,48 @@ class RoleEdit extends Component {
     });
   };
 
+
+  onCancel(){
+    this.setState({
+        tempData: [],
+        treeDatas : [],
+        activeMenuKey:{
+          key:'1'
+        },
+        expandedKeys: [],
+        checkedKeys: {
+          menuIds:[],
+          areaIds:[]
+        },
+        selectedKeys: [],
+        autoExpandParent: true,
+        name:'',
+        description:''
+    },() => {
+      this.props.push(`${pathPrefix}/system/role`);
+    })
+  }
+
   componentDidMount() {
-    // console.log(this.props.match.params.roleid); 
+    this.props.getMenuList().then((res)=>{
+      const treeDatas = this.dataToTree(res);
+      this.setState({
+        tempData: res,
+        treeDatas,
+      });
+    })
+    // this.props.getAreaList(0,null).then((res) => {
+    //   // console.log(res)
+    //   const treeDatas = this.dataToTree(res);
+    //   // console.log(treeDatas)
+    //   this.setState({
+    //     tempData: res,
+    //     treeDatas,
+    //   });
+    // });
   }
 
   render() {
-    
     return (
       <RoleUI 
         onExpand={(keys)=>this.onExpand(keys)}
@@ -161,7 +195,13 @@ class RoleEdit extends Component {
         autoExpandParent={this.state.autoExpandParent}
         onCheck={(keys)=>this.onCheck(keys)}
         checkedKeys={this.state.checkedKeys}
-        treeData={treeData}
+        onSelectTreeMenu={(key)=>this.onSelectTreeMenu(key)}
+        activeMenuKey={this.state.activeMenuKey}
+        treeData={this.state.treeDatas}
+        onNameChange={(name)=>this.onNameChange(name)}
+        onDescriptionChange={(description)=>this.onDescriptionChange(description)}
+        onSave={()=>this.onSave()}
+        onCancel={()=>this.onCancel()}
       />
     );
   }
