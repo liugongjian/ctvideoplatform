@@ -2,6 +2,10 @@
   display: flex;
   height: 100%;
   background: #fff;
+  .contentSpin{
+    width: 100%;
+  }
+  
   .titleText{
     font-size: 16px;
     color: #333333;
@@ -11,10 +15,19 @@
     width: 300px;
     min-width: 300px;
     padding: 15px 0 15px 15px;
-    overflow-x: auto;
+    :global{
+      .ant-tree.ant-tree-block-node li .ant-tree-node-content-wrapper{
+        width: auto;
+      }
+    }
+    .dataTree{
+      overflow-x: auto;
+    }
     .treeTitleInfo{
       .treeBtnBox{
-        padding: 15px 0 0 5px;
+        display: inline-block;
+        // width: 140px;
+        // padding: 3px 0 0 5px;
         color: #999999;
       }
       .checkBtn{
@@ -28,10 +41,12 @@
       }
       .treeBtn{
         margin: 3px 2px;
+        display: inline-block;
+        width: 20px;
       }
       :global{
         .ant-input-sm{
-          width: 50%;
+          // width: 70%;
           padding: 0 1px;
           height: 20px;
           line-height:inherit
@@ -150,5 +165,21 @@
       }
     }
   
+  }
+}
+.popoverInfo{
+  .checkBtn{
+    width: auto;
+    color: #999999;
+    border: none;
+    &:hover{
+      color: #999999;
+      border: none;
+    }
+  }
+  .treeBtn{
+    margin: 3px 4px;
+    display: inline-block;
+    // width: 10px;
   }
 }

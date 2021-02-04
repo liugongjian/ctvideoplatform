@@ -33,6 +33,14 @@ const GET_ALGORITHMLIST = 'GET_ALGORITHMLIST';
 const GET_ALGORITHMLIST_SUCCESS = 'GET_ALGORITHMLIST_SUCCESS';
 const GET_ALGORITHMLIST_FAIL = 'GET_ALGORITHMLIST_FAIL';
 
+const GET_DEVICEPOOL = 'GET_DEVICEPOOL';
+const GET_DEVICEPOOL_SUCCESS = 'GET_DEVICEPOOL_SUCCESS';
+const GET_DEVICEPOOL_FAIL = 'GET_DEVICEPOOL_FAIL';
+
+const GET_AREANAME = 'GET_AREANAME';
+const GET_AREANAME_SUCCESS = 'GET_AREANAME_SUCCESS';
+const GET_AREANAME_FAIL = 'GET_AREANAME_FAIL';
+
 const initialState = {
   areaList: [],
   areaListLoading: false,
@@ -41,6 +49,7 @@ const initialState = {
   deviceList: [],
   deleteDevice: {},
   algorithmList: {},
+  devicepool: [],
 };
 
 export default function monitor(state = initialState, action = {}) {
@@ -179,6 +188,39 @@ export default function monitor(state = initialState, action = {}) {
         ...state,
         error: action.error
       };
+    case GET_DEVICEPOOL:
+      return {
+        ...state,
+        areaListLoading: true
+      };
+    case GET_DEVICEPOOL_SUCCESS:
+      return {
+        ...state,
+        areaListLoading: false,
+        devicepool: action.data
+      };
+    case GET_DEVICEPOOL_FAIL:
+      return {
+        ...state,
+        areaListLoading: false,
+        error: action.error
+      };
+    case GET_AREANAME:
+      return {
+        ...state,
+        areaListLoading: true
+      };
+    case GET_AREANAME_SUCCESS:
+      return {
+        ...state,
+        areaListLoading: false
+      };
+    case GET_AREANAME_FAIL:
+      return {
+        ...state,
+        areaListLoading: false,
+        error: action.error
+      };
     default:
       return state;
   }
@@ -262,5 +304,30 @@ export function getAlgorithmList() {
   return {
     type: [GET_ALGORITHMLIST, GET_ALGORITHMLIST_SUCCESS, GET_ALGORITHMLIST_FAIL],
     promise: apiClient => apiClient.get(`${urlPrefix}/algorithm/list`)
+  };
+}
+
+export function getDevicePoolList(param) {
+  return {
+    type: [GET_DEVICEPOOL, GET_DEVICEPOOL_SUCCESS, GET_DEVICEPOOL_FAIL],
+    promise: apiClient => apiClient.post(`${urlPrefix}/devicepool/query`, {
+      data: param
+    })
+  };
+}
+
+export function setDeviceList(data, id) {
+  return {
+    type: [GET_DEVICEPOOL, GET_DEVICEPOOL_SUCCESS, GET_DEVICEPOOL_FAIL],
+    promise: apiClient => apiClient.post(`${urlPrefix}/devicepool/area/${id}`, {
+      data
+    })
+  };
+}
+
+export function getAreaName(id) {
+  return {
+    type: [GET_AREANAME, GET_AREANAME_SUCCESS, GET_AREANAME_FAIL],
+    promise: apiClient => apiClient.get(`${urlPrefix}//area/${id}/path`)
   };
 }

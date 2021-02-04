@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import {
   Select, Tree, Icon, Input, Button, Table, Divider,
-  Modal, Checkbox, Tooltip
+  Modal, Checkbox, Tooltip, Spin, Popover
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -9,7 +9,7 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import {
   getList, renameArea, addChild, delArea, upArea, downArea,
-  getDeiviceList, delDeviceById, getAlgorithmList
+  getDeiviceList, delDeviceById, getAlgorithmList, getDevicePoolList, setDeviceList, getAreaName
 } from 'Redux/reducer/monitor';
 
 import styles from './index.less';
@@ -31,7 +31,10 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     downArea,
     getDeiviceList,
     delDeviceById,
-    getAlgorithmList
+    getAlgorithmList,
+    getDevicePoolList,
+    setDeviceList,
+    getAreaName
   },
   dispatch
 );
@@ -45,10 +48,10 @@ class Monitor extends Component {
     tempData: [],
     deptHover: {},
     areaId: 1,
-    pageNo: 1,
+    pageNo: 0,
     recursive: false,
     pageSize: 10,
-    tableData: [],
+    tableData: {},
     showModal: false,
     checkedKeys: [],
     showDelModal: false,
@@ -58,30 +61,22 @@ class Monitor extends Component {
     algorithmList: [],
     modalDeviceName: '',
     modalDeviceId: '',
-    modalDeviceData: [
-      {
-        name: '富平县薛镇两门村樊北樊套柱门前17795880465',
-        originId: '61010010001320000021',
-      },
-      {
-        name: '富平县薛镇两门村22217795880465',
-        originId: '61010010001320000022',
-      },
-      {
-        name: '富平wewwww县薛镇两门村22217795880465',
-        originId: '61010010001320000023',
-      },
-      {
-        name: '富平hhhhhw县薛镇两门村22217795880465',
-        originId: '61010010001320000024',
-      }
-    ]
+    modalDeviceData: [],
+    modalCheckedKeys: []
   }
 
   componentDidMount() {
     this.getAreaList();
     this.getDeviceList();
     this.getAlgorithmList();
+  }
+
+  componentDidUpdate() {
+    // console.log(this.treeNode);
+    if (document.querySelector(`.${styles.dataTree}`)) {
+      console.log(document.querySelector(`.${styles.dataTree}`).offsetWidth);
+      document.querySelector(`.${styles.dataTree}`).width = `${document.querySelector(`.${styles.dataTree}`).offsetWidth + 70}px`;
+    }
   }
 
   getAlgorithmList = () => {
@@ -140,7 +135,7 @@ class Monitor extends Component {
             <span className={styles.treeBtnBox}>
               {item.ifEdit
                 ? (
-                  <Button type="link" disabled={item.hasSame} size="small" onClick={(e) => { this.sureEdit(e, item.id, item.addTag, item.pid); }}>
+                  <Button type="link" className={styles.checkBtn} disabled={item.hasSame} size="small" onClick={(e) => { this.sureEdit(e, item.id, item.addTag, item.pid); }}>
                     <Icon type="check" />
                   </Button>
                 )
@@ -174,14 +169,50 @@ class Monitor extends Component {
       }
       return null;
     };
+
+    const getContent = () => {
+      if (item.pid === 0) {
+        return (
+          <span className={styles.treeBtnBox}>
+            {item.ifEdit
+              ? (
+                <Button type="link" className={styles.checkBtn} disabled={item.hasSame} size="small" onClick={(e) => { this.sureEdit(e, item.id, item.addTag, item.pid); }}>
+                  <Icon type="check" />
+                </Button>
+              )
+              : <Icon type="edit" className={styles.treeBtn} onClick={e => this.editThis(e, item.id, item.name)} />}
+
+            <Icon type="plus-square" className={styles.treeBtn} onClick={(e) => { this.onAdd(e, item.id); }} />
+
+          </span>
+
+        );
+      }
+      return (
+        <span className={styles.treeBtnBox}>
+          {item.ifEdit
+            ? (
+              <Button className={styles.checkBtn} type="link" disabled={item.hasSame} size="small" onClick={(e) => { this.sureEdit(e, item.id, item.addTag, item.pid); }}>
+                <Icon type="check" />
+              </Button>
+            )
+            : <Icon type="edit" className={styles.treeBtn} onClick={e => this.editThis(e, item.id, item.name)} />}
+          {!item.addTag
+            ? (
+              <Fragment>
+                <Icon type="delete" className={styles.treeBtn} onClick={(e) => { this.onDelete(e, item.id); }} />
+                <Icon type="plus-square" className={styles.treeBtn} onClick={(e) => { this.onAdd(e, item.id); }} />
+                <Icon type="arrow-up" className={styles.treeBtn} onClick={(e) => { this.upArea(e, item.id); }} />
+                <Icon type="arrow-down" className={styles.treeBtn} onClick={(e) => { this.downArea(e, item.id); }} />
+              </Fragment>
+            ) : <Icon type="delete" className={styles.treeBtn} onClick={(e) => { this.cancel(e, item.id); }} />}
+        </span>
+      );
+    };
+
     const getTitle = val => (
-      <Fragment>
-        <div
-          onMouseEnter={() => { this.onMouseEnter(val.id); }}
-          onMouseLeave={() => { this.onMouseLeave(val.id); }}
-          className={styles.treeTitleInfo}
-          key={val.id}
-        >
+      <Popover placement="topRight" content={getContent()} overlayClassName={styles.popoverInfo}>
+        <div className={styles.treeTitleInfo}>
           {
             val.ifEdit
               ? (
@@ -189,25 +220,54 @@ class Monitor extends Component {
                   value={this.state.editValue}
                   onChange={e => this.onChange(e, val.id, val.name)}
                   size="small"
+                  maxLength={30}
+                  autoFocus
+                  onPressEnter={(e) => { e.stopPropagation(); }}
                 />
               )
               : <span>{val.name}</span>
           }
-          {
-            getBtn()
-          }
+          {item.hasSame ? <div className={styles.hasSame}>节点名称重复，请重新设置</div> : null}
+          <Fragment>
+            {/* <div
+                onMouseEnter={() => { this.onMouseEnter(val.id); }}
+                onMouseLeave={() => { this.onMouseLeave(val.id); }}
+                className={styles.treeTitleInfo}
+                key={val.id}
+              >
+                {
+                  val.ifEdit
+                    ? (
+                      <Input
+                        value={this.state.editValue}
+                        onChange={e => this.onChange(e, val.id, val.name)}
+                        size="small"
+                        maxLength={30}
+                        autoFocus
+                        onPressEnter={(e) => { e.stopPropagation(); }}
+                      />
+                    )
+                    : <span>{val.name}</span>
+                }
+                {
+                  getBtn()
+                }
+              </div>
+              {item.hasSame ? <div className={styles.hasSame}>节点名称重复，请重新设置</div> : null}
+              */}
+          </Fragment>
         </div>
-        {item.hasSame ? <div className={styles.hasSame}>节点名称重复，请重新设置</div> : null}
-      </Fragment>
+      </Popover>
+
     );
     if (item.children && item.children.length) {
       return (
-        <TreeNode key={item.id.toString()} title={getTitle(item)}>
+        <TreeNode key={item.id.toString()} title={getTitle(item)} className={styles.treenode}>
           {this.renderTreeNodes(item.children)}
         </TreeNode>
       );
     }
-    return <TreeNode key={item.id.toString()} title={getTitle(item)} />;
+    return <TreeNode key={item.id.toString()} title={getTitle(item)} className={styles.treenode} />;
   })
 
   editThis = (e, key, name) => {
@@ -363,12 +423,19 @@ class Monitor extends Component {
     });
   }
 
-  onSelect = (keys) => {
-    if (keys && keys.length > 0) {
-      const [a] = keys;
-      this.setState({
-        areaId: a
-      }, () => this.getDeviceList());
+  onSelect = (keys, e) => {
+    const eleName = e.nativeEvent.toElement.localName;
+    if (eleName !== 'input') {
+      if (keys && keys.length > 0) {
+        const [a] = keys;
+        this.setState({
+          areaId: a
+        }, () => this.getDeviceList());
+      } else {
+        this.setState({
+          areaId: 1
+        }, () => this.getDeviceList());
+      }
     }
   }
 
@@ -385,7 +452,7 @@ class Monitor extends Component {
     } = this.state;
     const param = {
       areaId,
-      pageNo: 0,
+      pageNo,
       recursive,
       pageSize,
       name: deviceName,
@@ -394,14 +461,17 @@ class Monitor extends Component {
     };
     getDeiviceList(param).then((res) => {
       this.setState({
-        tableData: res.list || []
+        tableData: res || {}
       });
     });
   }
 
-  getModalDeviceList = () => {
-    console.log('弹框层的列表接口。。。。。');
+  changePageNo = (num) => {
+    this.setState({
+      pageNo: num - 1
+    }, () => this.getDeviceList());
   }
+
 
   selectThisAlgorithm = (value) => {
     this.setState({
@@ -436,7 +506,7 @@ class Monitor extends Component {
   resetSearch = () => {
     this.setState({
       areaId: 1,
-      pageNo: 1,
+      pageNo: 0,
       // recursive: false,
       pageSize: 10,
       deviceName: '',
@@ -445,13 +515,49 @@ class Monitor extends Component {
     }, () => this.getDeviceList());
   }
 
+  getModalDeviceList = () => {
+    const { getDevicePoolList } = this.props;
+    const { modalDeviceId, modalDeviceName } = this.state;
+    const param = {
+      deviceId: modalDeviceId,
+      name: modalDeviceName
+    };
+    getDevicePoolList(param).then((res) => {
+      if (Array.isArray(res.list) && res.list.length) {
+        this.setState({
+          modalDeviceData: res.list
+        });
+      }
+    });
+  }
+
   resetModalSearch = () => {
     this.setState({
-      // areaId: 1,
       modalDeviceName: '',
       modalDeviceId: '',
     }, () => this.getModalDeviceList());
   }
+
+  openModal=() => {
+    const { getDevicePoolList, getAreaName } = this.props;
+    const { areaId } = this.state;
+    const param = {
+      deviceId: '',
+      name: ''
+    };
+    getDevicePoolList(param).then((res) => {
+      getAreaName(areaId).then((data) => {
+        if (Array.isArray(res.list) && res.list.length) {
+          this.setState({
+            modalDeviceData: res.list,
+            showModal: true,
+            showAreaName: data
+          });
+        }
+      });
+    });
+  }
+
 
   changeStatus = (e) => {
     const { checked } = e.target;
@@ -466,15 +572,9 @@ class Monitor extends Component {
     push(`/monitor/${id}`);
   }
 
-  openModal=() => {
-    this.setState({
-      showModal: true
-    });
-  }
 
   changeCheckRowKeys = (arr) => {
     const temp = arr.map(item => item.id);
-    // console.log('temp', temp);
     this.setState({
       checkedKeys: temp
     });
@@ -517,26 +617,47 @@ class Monitor extends Component {
     });
   }
 
-  getImportDevice = () => {
-
-  }
-
   sureImportDevice = () => {
-    this.setState({
-      showModal: false
-    });
+    const { modalCheckedKeys, areaId } = this.state;
+    const { setDeviceList } = this.props;
+    if (modalCheckedKeys.length > 0) {
+      const temp = modalCheckedKeys.map(item => (
+        {
+          deviceid: item.deviceid,
+          sourceId: item.sourceId,
+          devicename: item.devicename
+        }
+      ));
+      setDeviceList(temp, areaId).then((res) => {
+        this.setState({
+          showModal: false,
+          modalCheckedKeys: []
+        }, () => {
+          this.getDeviceList();
+        });
+      });
+    }
   }
 
   cancelImportDevice = () => {
     this.setState({
-      showModal: false
+      showModal: false,
+      modalCheckedKeys: []
+    });
+  }
+
+  changeModalCheckRowKeys =(arr) => {
+    this.setState({
+      modalCheckedKeys: arr
     });
   }
 
   render() {
     const {
-      test, treeDatas, expandedKeys, tableData, showModal, showDelModal, algorithmList, algorithmId, modalDeviceData
+      test, treeDatas, expandedKeys, tableData, showModal, showDelModal,
+      algorithmList, algorithmId, modalDeviceData, pageSize, showAreaName
     } = this.state;
+    const { monitor: { areaListLoading } } = this.props;
     const columns = [
       {
         title: '摄像头名称',
@@ -621,15 +742,15 @@ class Monitor extends Component {
     const modalColumns = [
       {
         title: '摄像头名称',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'devicename',
+        key: 'devicename',
         fixed: 'left',
         render: text => <span>{text.substring(0, 10)}</span>,
       },
       {
         title: '摄像头ID',
-        dataIndex: 'originId',
-        key: 'originId',
+        dataIndex: 'deviceid',
+        key: 'deviceid',
         // fixed: 'left',
       },
     ];
@@ -646,120 +767,142 @@ class Monitor extends Component {
         name: record.name,
       }),
     };
+
+    const modalRowSelection = {
+      onChange: (selectedRowKeys, selectedRows) => {
+        this.changeModalCheckRowKeys(selectedRows);
+      },
+    };
+    const pagination = {
+      total: tableData.recordsTotal,
+      defaultCurrent: 1,
+      pageSize,
+      onChange: this.changePageNo
+    };
+
     return (
-      <div className={styles.content}>
-        <div className={styles.areaTree}>
-          <h1 className={styles.titleText}>区域列表</h1>
-          <Search placeholder="请输入关键字" onSearch={this.getAreaList} />
-          {
-            treeDatas && treeDatas.length ? (
-              <Tree
-                expandedKeys={expandedKeys}
-                defaultExpandAll
-                blockNode
-                showLine
-                onExpand={this.onExpand}
-                onSelect={this.onSelect}
-              >
-                {this.renderTreeNodes(treeDatas)}
-              </Tree>
-            ) : null
-          }
-        </div>
-        <div className={styles.monitorList}>
-          <h1 className={styles.titleText}>视频监控点</h1>
-          <div className={styles.searchBox}>
-            <div className={styles.searchItme}>
-              <span>摄像头名称：</span>
-              <Input placeholder="请输出摄像头名称" onChange={this.changeDeviceName} />
-            </div>
-            <div className={styles.searchItme}>
-              <span>摄像头ID：</span>
-              <Input placeholder="请输入摄像头ID" onChange={this.changeDeviceId} />
-            </div>
-            <div className={styles.searchItme}>
-              <span>算法：</span>
-              <Select
-                defaultValue="all"
-                value={algorithmId}
-                style={{ width: 120 }}
-                onSelect={this.selectThisAlgorithm}
-              >
-                <Option value="all">全部</Option>
-                {drawAlgorithmList()}
-              </Select>
-            </div>
-            <Button type="primary" className={styles.searchHandleBtn} onClick={this.getDeviceList}>查询</Button>
-            <Button className={styles.searchHandleBtn} onClick={this.resetSearch}>
-              <Icon type="reload" />
-              <span>重置</span>
-            </Button>
+      <Spin spinning={areaListLoading} wrapperClassName={styles.contentSpin}>
+        <div className={styles.content}>
+          <div className={styles.areaTree}>
+            <h1 className={styles.titleText}>区域列表</h1>
+            <Search placeholder="请输入关键字" onSearch={this.getAreaList} />
+            {
+              treeDatas && treeDatas.length ? (
+                <Tree
+                  expandedKeys={expandedKeys}
+                  defaultExpandAll
+                  blockNode
+                  showLine
+                  onExpand={this.onExpand}
+                  onSelect={this.onSelect}
+                  defaultSelectedKeys={['1']}
+                  className={styles.dataTree}
+                  ref={ref => this.treeNode = ref}
+                >
+                  {this.renderTreeNodes(treeDatas)}
+                </Tree>
+              ) : null
+            }
           </div>
-          <div className={styles.searchResult}>
-            <div className={styles.handleResult}>
-              <Button type="link" onClick={this.openModal} className={styles.handleBtn}>
-                <Icon type="export" />
-                <span>导入</span>
+          <div className={styles.monitorList}>
+            <h1 className={styles.titleText}>视频监控点</h1>
+            <div className={styles.searchBox}>
+              <div className={styles.searchItme}>
+                <span>摄像头名称：</span>
+                <Input placeholder="请输出摄像头名称" onChange={this.changeDeviceName} />
+              </div>
+              <div className={styles.searchItme}>
+                <span>摄像头ID：</span>
+                <Input placeholder="请输入摄像头ID" onChange={this.changeDeviceId} />
+              </div>
+              <div className={styles.searchItme}>
+                <span>算法：</span>
+                <Select
+                  defaultValue="all"
+                  value={algorithmId}
+                  style={{ width: 120 }}
+                  onSelect={this.selectThisAlgorithm}
+                >
+                  <Option value="all">全部</Option>
+                  {drawAlgorithmList()}
+                </Select>
+              </div>
+              <Button type="primary" className={styles.searchHandleBtn} onClick={this.getDeviceList}>查询</Button>
+              <Button className={styles.searchHandleBtn} onClick={this.resetSearch}>
+                <Icon type="reload" />
+                <span>重置</span>
               </Button>
-              <Button type="link" className={styles.handleBtn} onClick={this.delThisKeys}>
-                <Icon type="delete" />
-                <span>批量删除</span>
+            </div>
+            <div className={styles.searchResult}>
+              <div className={styles.handleResult}>
+                <Button type="link" onClick={this.openModal} className={styles.handleBtn}>
+                  <Icon type="export" />
+                  <span>导入</span>
+                </Button>
+                <Button type="link" className={styles.handleBtn} onClick={this.delThisKeys}>
+                  <Icon type="delete" />
+                  <span>批量删除</span>
+                </Button>
+                <Checkbox onChange={this.changeStatus}>包含下级区域</Checkbox>
+              </div>
+              <Table
+                rowSelection={rowSelection}
+                columns={columns}
+                dataSource={tableData.list || []}
+                scroll={{ x: 'max-content' }}
+                pagination={pagination}
+              />
+            </div>
+          </div>
+
+          <Modal
+            title="导入摄像头"
+            visible={showModal}
+            getContainer={false}
+            onOk={this.sureImportDevice}
+            onCancel={this.cancelImportDevice}
+            forceRender
+            destroyOnClose
+            className={styles.deviceModal}
+            width="800px"
+          >
+            <span className={styles.areaTitle}>当前区域：</span>
+            <span className={styles.areaName}>{showAreaName}</span>
+            <div className={styles.searchModalBox}>
+              <div className={styles.searchItme}>
+                <span>摄像头名称：</span>
+                <Input placeholder="请输出摄像头名称" onChange={this.changeModalDeviceName} />
+              </div>
+              <div className={styles.searchItme}>
+                <span>摄像头ID：</span>
+                <Input placeholder="请输入摄像头ID" onChange={this.changeModalDeviceId} />
+              </div>
+              <Button type="primary" className={styles.searchHandleBtn} onClick={this.getModalDeviceList}>查询</Button>
+              <Button className={styles.searchHandleBtn} onClick={this.resetModalSearch}>
+                <Icon type="reload" />
+                <span>重置</span>
               </Button>
-              <Checkbox onChange={this.changeStatus}>包含下级区域</Checkbox>
             </div>
             <Table
-              rowSelection={rowSelection}
-              columns={columns}
-              dataSource={tableData}
-              scroll={{ x: 'max-content' }}
+              dataSource={modalDeviceData}
+              rowSelection={modalRowSelection}
+              columns={modalColumns}
+              pagination={false}
+              getContainer={false}
             />
-          </div>
+          </Modal>
+
+          <Modal
+            title="删除提示"
+            visible={showDelModal}
+            onOk={this.sureDelThisKeys}
+            onCancel={this.cancelDelthisKeys}
+            getContainer={false}
+          >
+            <p className={styles.delModalText}>您确定要删除所选摄像头吗？</p>
+          </Modal>
         </div>
-        <Modal
-          title="导入摄像头"
-          visible={showModal}
-          getContainer={false}
-          onOk={this.sureImportDevice}
-          onCancel={this.cancelImportDevice}
-          forceRender
-          className={styles.deviceModal}
-          width="800px"
-        >
-          <span className={styles.areaTitle}>当前区域：</span>
-          <span className={styles.areaName}>区域1/区域1-1/区域1-1-1</span>
-          <div className={styles.searchModalBox}>
-            <div className={styles.searchItme}>
-              <span>摄像头名称：</span>
-              <Input placeholder="请输出摄像头名称" onChange={this.changeModalDeviceName} />
-            </div>
-            <div className={styles.searchItme}>
-              <span>摄像头ID：</span>
-              <Input placeholder="请输入摄像头ID" onChange={this.changeModalDeviceId} />
-            </div>
-            <Button type="primary" className={styles.searchHandleBtn} onClick={this.getModalDeviceList}>查询</Button>
-            <Button className={styles.searchHandleBtn} onClick={this.resetModalSearch}>
-              <Icon type="reload" />
-              <span>重置</span>
-            </Button>
-          </div>
-          <Table
-            dataSource={modalDeviceData}
-            columns={modalColumns}
-            pagination={false}
-          />
-
-
-        </Modal>
-        <Modal
-          title="删除提示"
-          visible={showDelModal}
-          onOk={this.sureDelThisKeys}
-          onCancel={this.cancelDelthisKeys}
-          getContainer={false}
-        >
-          <p className={styles.delModalText}>您确定要删除所选摄像头吗？</p>
-        </Modal>
-      </div>
+      </Spin>
     );
   }
 }
