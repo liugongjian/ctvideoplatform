@@ -313,7 +313,6 @@ class Account extends Component {
 
   // 编辑账号
   handleEdit= (val) => {
-    console.log('handleEdit', val);
     this.setState({
       modalVisible: true,
       editXq: {
@@ -778,7 +777,7 @@ class Account extends Component {
           closable={false}
         >
           <Icon type="warning" />
-          <div>{`您确定要删除${selectedRowKeys.length > 0 ? `${delIdsLength}个账号吗？` : `账号：${delUserName}吗？`}`}</div>
+          <div>{`您确定要删除${selectedRowKeys.length > 0 ? `这${delIdsLength}个账号吗？` : `账号：${delUserName}吗？`}`}</div>
         </Modal>
         <Modal
           visible={stopModelVisible}
