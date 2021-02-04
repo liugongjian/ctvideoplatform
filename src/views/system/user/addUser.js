@@ -39,7 +39,6 @@ class AddAccount extends Component {
         this.setState({
           roleData
         });
-        console.log('获取不分页的角色列表', this.state.roleData);
       });
     };
 
@@ -48,12 +47,10 @@ class AddAccount extends Component {
       const { addAccount } = this.props;
       this.props.form.validateFields((errors, values) => {
         if (!errors) {
-          console.log('创建用户的values', values);
           addAccount(values).then(
             (res) => {
               message.success('添加账号成功');
               this.props.form.resetFields();
-              console.log('添加账号成功 返回上一级菜单');
               this.props.history.go(-1);
             }
           ).catch((err) => {
@@ -103,11 +100,11 @@ class AddAccount extends Component {
       };
 
     handleRoleChange = (value) => {
-      console.log(`selected role ${value}`);
+    //   console.log(`selected role ${value}`);
     };
 
     handleRoleSearch = (value) => {
-      console.log('search:', value);
+    //   console.log('search:', value);
     };
 
     pswChange = () => {

@@ -10,21 +10,21 @@ const TRIGGER_ORIGIN = {
 // 2->陌生车辆或者人
 const ALGO_CONFIG_TRIGGER_RULE = {
   ALL: {
-    value: 0,
+    value: '0',
     title: {
       [TRIGGER_ORIGIN.CAR]: '监控区域出现任何机动车均触发告警（全量告警）',
       [TRIGGER_ORIGIN.PEOPLE]: '监控区域出现任何人员均触发告警（全量告警）',
     }
   },
   BLACK: {
-    value: 1,
+    value: '1',
     title: {
       [TRIGGER_ORIGIN.CAR]: '监控区域出现黑名单机动车触发告警（黑名单告警）',
       [TRIGGER_ORIGIN.PEOPLE]: '监控区域出现黑名单人员触发告警（黑名单告警）',
     }
   },
   STRANGER: {
-    value: 2,
+    value: '2',
     title: {
       [TRIGGER_ORIGIN.CAR]: '监控区域出现车牌库外的机动车触发告警（陌生车辆告警）',
       [TRIGGER_ORIGIN.PEOPLE]: '监控区域出现人脸库外人员触发告警（陌生人告警）',

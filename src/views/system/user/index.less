@@ -1,5 +1,6 @@
 .content{
-    // background: yellow;
+    background: #fff;
+    padding: 20px;
     position: relative;
     .operationAssets{
         display: flex;
@@ -49,7 +50,7 @@
         padding: 0 20px;
         .btnContainer{
             position: absolute;
-            right: 20px;
+            right: 40px;
             .resetBtn{
                 margin-left: 10px;    
                 display: flex;
@@ -94,11 +95,8 @@
                 font-size: 14px;
                 color: #333333;
                 text-align: right;
-
             }
-        }
-        
-        
+        }  
     }
     .operation{
         display: flex;
@@ -164,8 +162,13 @@
 }
 
 .pswModal{
-    .username{
+    .userNameItem{
         margin-bottom: 10px;
+        .userName{
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
     }
     .tooltip{
         margin-bottom: 20px;
@@ -198,8 +201,13 @@
             }
         }
     }
-    .username{
+    .userNameItem{
         margin-bottom: 10px;
+        .userName{
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
     }
     .role{
         margin-top: 10px;
@@ -211,25 +219,31 @@
         .ant-modal-body{
             padding-top: 24px !important;
             height: 170px;
-            height: 170px;
             display: flex;
             align-items: center;
             justify-content: center;
-            i{
-                height: 32px;
-                width: 32px;
-            }
-            svg{
-                height: 100%;
-                width: 100%;
-                color: #FFA033;
-            }
             div{
-                margin-left: 20px;
-                font-family: MicrosoftYaHei;
-                font-size: 14px;
-                color: #333333;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                i{
+                    height: 32px;
+                    width: 32px;
+                }
+                svg{
+                    height: 100%;
+                    width: 100%;
+                    color: #FFA033;
+                }
+                div{
+                    margin-left: 20px;
+                    font-family: MicrosoftYaHei;
+                    font-size: 14px;
+                    color: #333333;
+                    flex: 1;
+                }
             }
+            
         }
     }
 }
