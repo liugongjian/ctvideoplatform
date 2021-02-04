@@ -41,14 +41,18 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   {
     push,
     getAlgoAreaImage,
-    addAlgoConf: (deviceId, id, data) => postAlgoConf(deviceId, [{
-      id,
-      taskId: id,
+    addAlgoConf: (deviceId, curAlgo, data) => postAlgoConf(deviceId, [{
+      id: curAlgo.id,
+      // algorithmId: curAlgo.algorithmId,
+      taskId: curAlgo.algorithmId,
+      taskName: curAlgo.name,
       action: 'add',
       ...data
     }]),
-    updateAlgoConf: (deviceId, id, data) => postAlgoConf(deviceId, [{
-      id,
+    updateAlgoConf: (deviceId, curAlgo, data) => postAlgoConf(deviceId, [{
+      id: curAlgo.id,
+      // algorithmId: curAlgo.algorithmId,
+      taskName: curAlgo.name,
       action: 'update',
       ...data
     }]),
@@ -73,12 +77,13 @@ class CameraDetail extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.curAlgo !== nextProps.curAlgo) {
-      this.initAlgoConfig(nextProps.curAlgo);
-      console.log('update algo', nextProps.curAlgo);
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   console.log('no update algo', nextProps.curAlgo);
+  //   if (this.props.curAlgo !== nextProps.curAlgo) {
+  //     this.initAlgoConfig(nextProps.curAlgo);
+  //     console.log('update algo', nextProps.curAlgo);
+  //   }
+  // }
 
   componentDidMount() {
     const {
@@ -89,7 +94,6 @@ class CameraDetail extends Component {
       if (curAlgo.isPick) {
         this.initAlgoConfig(curAlgo);
       }
-
       if (configTypes.indexOf(ALGO_CONFIG_TYPE.AREA) > -1) {
         this.setState({ imgLoading: true });
         getAlgoAreaImage(cameraId)
@@ -111,10 +115,10 @@ class CameraDetail extends Component {
     const nextState = {};
     if (timeSetting !== undefined) {
       nextState.timeSetting = timeSetting;
+      nextState.timeType = ALGO_CONFIG_TRIGGER_TIME_TYPE.BY_SEL.value;
     }
     if (triggerType !== undefined) {
       nextState.ruleConfig = `${triggerType}`;
-      nextState.timeType = ALGO_CONFIG_TRIGGER_TIME_TYPE.BY_SEL.value;
     }
     if (areas !== undefined) {
       nextState.areas = areas.map((item) => {
@@ -137,13 +141,14 @@ class CameraDetail extends Component {
     } = this.state;
     console.log('areas', areas);
     const {
-      curAlgo: { id, isPick },
+      curAlgo,
       cameraId,
       addAlgoConf,
       updateAlgoConf,
       configTypes
     } = this.props;
     const postData = {};
+    const { isPick } = curAlgo;
     // 当前已选中则是更新，否则为新增
     const postApi = isPick ? updateAlgoConf : addAlgoConf;
     const configEnable = {};
@@ -155,10 +160,11 @@ class CameraDetail extends Component {
         shape, points, ratio, origin, ...otherdata
       }) => {
         if (origin) {
-          return {
-            points,
-            ...otherdata
-          };
+          ratio = 1;
+          // return {
+          //   points,
+          //   ...otherdata
+          // };
         }
         if (shape === DRAW_MODES.RECT) {
           const [startPoint, endPoint] = points;
@@ -183,11 +189,13 @@ class CameraDetail extends Component {
       postData.timeSetting = timeSetting;
     }
     console.log(postData);
-    postApi(cameraId, id, postData).then((res) => {
+    postApi(cameraId, curAlgo, postData).then((res) => {
       console.log(res);
       message.success('提交成功');
+      this.props.closeModal();
+    }).catch((err) => {
+      // todo
     });
-    this.props.closeModal();
   }
 
   handleCancel = () => {

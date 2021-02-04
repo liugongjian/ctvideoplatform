@@ -9,7 +9,8 @@ import {
   Input,
   Checkbox,
   Button,
-  message
+  message,
+  Spin,
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -29,9 +30,10 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   {
     push,
     getAlgoList,
-    delAlgoConf: (deviceId, id) => postAlgoConf(deviceId, [{
+    delAlgoConf: (deviceId, id, name) => postAlgoConf(deviceId, [{
       id,
-      action: 'delete'
+      taskName: name,
+      action: 'delete',
     }])
   },
   dispatch
@@ -151,13 +153,13 @@ class AlgorithmSetting extends Component {
   onAlgoCheckedChange = (algo, checked) => {
     const { algoChecked } = this.state;
     const { delAlgoConf, cameraId } = this.props;
-    const { id } = algo;
+    const { id, name } = algo;
     algoChecked[id] = checked;
     this.setState({
       algoChecked
     }, () => { console.log('algoChecked', algoChecked); });
     if (!checked) {
-      delAlgoConf(cameraId, id).then((res) => {
+      delAlgoConf(cameraId, id, name).then((res) => {
         this.initData();
         message.success('删除成功');
       });
@@ -175,37 +177,39 @@ class AlgorithmSetting extends Component {
       configVisible
     } = this.state;
     const {
-      cameraDetail: { algoList },
+      cameraDetail: { algoList, algoListLoading },
       cameraId,
     } = this.props;
     return (
       <div className={styles.algorithmSetting}>
-        <AlgoConfigDialog
-          key={curAlgo?.id}
-          cameraId={cameraId}
-          curAlgo={curAlgo}
-          configTypes={curAlgo?.configTypes?.split(',') || []}
-          visible={configVisible}
-          closeModal={this.closeConfigModal}
-        />
-        <div className={styles.algorithmList}>
-          {
-            algoList.map(item => (
-              <AlgorithmItem
-                key={item.id}
-                curAlgo={item}
-                checked={algoChecked[item.id]}
-                onChange={this.onAlgoCheckedChange}
-                toConfig={this.openAlgoConfigDialog}
-              />
-            ))
-          }
-        </div>
-        <div className={styles.btnWrapper}>
-          <Button onClick={this.backToPre}>
-            返回
-          </Button>
-        </div>
+        <Spin spinning={algoListLoading}>
+          <AlgoConfigDialog
+            key={curAlgo?.id}
+            cameraId={cameraId}
+            curAlgo={curAlgo}
+            configTypes={curAlgo?.configTypes?.split(',') || []}
+            visible={configVisible}
+            closeModal={this.closeConfigModal}
+          />
+          <div className={styles.algorithmList}>
+            {
+              algoList.map(item => (
+                <AlgorithmItem
+                  key={item.id}
+                  curAlgo={item}
+                  checked={algoChecked[item.id]}
+                  onChange={this.onAlgoCheckedChange}
+                  toConfig={this.openAlgoConfigDialog}
+                />
+              ))
+            }
+          </div>
+          <div className={styles.btnWrapper}>
+            <Button onClick={this.backToPre}>
+              返回
+            </Button>
+          </div>
+        </Spin>
       </div>
     );
   }

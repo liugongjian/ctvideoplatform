@@ -176,7 +176,6 @@ class CanvasOperator extends Component {
     this.setState({
       isDraw: false,
       points: [],
-      // areas: [...areas, newArea]
     });
     onAreasChange([...areas, newArea]);
   }
@@ -357,30 +356,6 @@ CanvasOperator.propTypes = {
   id: PropTypes.string.isRequired,
   width: PropTypes.string.isRequired,
   areas: PropTypes.array.isRequired, // 当前已绘制图案, eg:[{shape: 'rect', points:[]]
-  //   [
-  //     {
-  //         "type": 1,
-  //         "points": [
-  //             {
-  //                 "x": 114,
-  //                 "y": 72
-  //             },
-  //             {
-  //                 "x": 1152,
-  //                 "y": 72
-  //             },
-  //             {
-  //                 "x": 1152,
-  //                 "y": 544
-  //             },
-  //             {
-  //                 "x": 114,
-  //                 "y": 544
-  //             }
-  //         ],
-  //         "name": "area-update-1"
-  //     }
-  // ]
   onAreasChange: PropTypes.func.isRequired,
 };
 
