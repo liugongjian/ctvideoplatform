@@ -7,6 +7,7 @@ import {
   Button,
   Cascader,
   message,
+  Spin,
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -38,33 +39,37 @@ class BasicSetting extends Component {
   }
 
   componentDidMount() {
-    this.initData();
-  }
-
-
-  initData = () => {
     const {
-      getAreaList, getBasicConfig, cameraDetail, cameraId,
-      form: { setFieldsValue }
+      getAreaList
     } = this.props;
     // 获取区域层级
     getAreaList(0).then((areaList) => {
       // 获取基础配置
-      getBasicConfig(cameraId).then((data) => {
-        const {
-          name, areaId, latitude, longitude
-        } = data;
+      this.initData(areaList);
+    });
+  }
+
+
+  initData = (areaList) => {
+    const {
+      getBasicConfig, cameraId,
+      form: { setFieldsValue }
+    } = this.props;
+      // 获取基础配置
+    getBasicConfig(cameraId).then((data) => {
+      const {
+        name, areaId, latitude, longitude
+      } = data;
         // 获取当前区域的上层层级
-        const areaPathJson = areaList.find(({ id }) => id === areaId)?.path;
-        const areaPath = JSON.parse(areaPathJson);
-        areaPath.shift(); // 去掉队头的 0
-        // 初始化form
-        setFieldsValue({
-          name,
-          longitude,
-          latitude,
-          area: [...areaPath, areaId]
-        });
+      const areaPathJson = areaList?.find(({ id }) => id === areaId)?.path;
+      const areaPath = JSON.parse(areaPathJson);
+      areaPath.shift(); // 去掉队头的 0
+      // 初始化form
+      setFieldsValue({
+        name,
+        longitude,
+        latitude,
+        area: [...areaPath, areaId]
       });
     });
   }
@@ -74,7 +79,9 @@ class BasicSetting extends Component {
   }
 
   onSubmit = (e) => {
-    const { form: { validateFields }, putBasicConfig, cameraId } = this.props;
+    const {
+      form: { validateFields }, putBasicConfig, cameraId, areaList
+    } = this.props;
     e.preventDefault();
     validateFields((err, values) => {
       if (!err) {
@@ -89,9 +96,7 @@ class BasicSetting extends Component {
           latitude,
           longitude,
         }).then((res) => {
-          console.log(res);
-          message.success('修改成功');
-          this.initData();
+          this.initData(areaList);
         });
       }
     });
@@ -110,80 +115,97 @@ class BasicSetting extends Component {
         basicConfigLoading,
       }
     } = this.props;
-    console.log('areaTree', areaTree);
-    console.log('areaList', areaList);
     return (
       <div className={styles.basicSetting}>
-        <Form onSubmit={this.handleSubmit} className={styles.basicSettingForm}>
-          <Form.Item label="摄像头名称">
-            {getFieldDecorator('name', {
-              rules: [
-                {
-                  required: true,
-                  message: '请输入摄像头名称!',
-                },
-                {
-                  max: 30,
-                  message: '请勿输入超过30个字符!',
-                },
-              ],
-            })(<Input />)}
-          </Form.Item>
-          <Form.Item label="经纬度" style={{ marginBottom: 0 }} className={styles.addItemRequiredIcon}>
-            <Form.Item className={styles.locationInputNumber}>
-              {getFieldDecorator('longitude', {
+        <Spin spinning={areaListLoading || basicConfigLoading}>
+          <Form onSubmit={this.handleSubmit} className={styles.basicSettingForm}>
+            <Form.Item label="摄像头名称">
+              {getFieldDecorator('name', {
                 rules: [
                   {
                     required: true,
-                    message: '请输入经度',
-                  }
+                    message: '请输入摄像头名称!',
+                  },
+                  {
+                    max: 30,
+                    message: '请勿输入超过30个字符!',
+                  },
                 ],
-              })(<Input
-                type="number"
-
-              />)}
+              })(<Input />)}
             </Form.Item>
-            <span className={styles.locationInputSplit} />
-            <Form.Item className={styles.locationInputNumber}>
-              {getFieldDecorator('latitude', {
+            <Form.Item label="经纬度" style={{ marginBottom: 0 }} className={styles.addItemRequiredIcon}>
+              <Form.Item className={styles.locationInputNumber}>
+                {getFieldDecorator('longitude', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请输入经度！',
+                    },
+                    {
+                      validator: (rule, val, callback) => {
+                        const num = parseFloat(val);
+                        if (val < -180 || val > 180) {
+                          callback('请输入正确的经度！');
+                        }
+                        callback();
+                      }
+                    }
+                  ],
+                })(<Input
+                  type="number"
+                />)}
+              </Form.Item>
+              <span className={styles.locationInputSplit} />
+              <Form.Item className={styles.locationInputNumber}>
+                {getFieldDecorator('latitude', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请输入纬度',
+                    },
+                    {
+                      validator: (rule, val, callback) => {
+                        const num = parseFloat(val);
+                        if (val < -90 || val > 90) {
+                          callback('请输入正确的纬度！');
+                        }
+                        callback();
+                      }
+                    }
+                  ],
+                })(<Input
+                  type="number"
+                  onBlur={() => this.props.form.validateFields(['latitude'])}
+                />)}
+              </Form.Item>
+            </Form.Item>
+            <Form.Item label="区域详情">
+              {getFieldDecorator('area', {
                 rules: [
                   {
                     required: true,
-                    message: '请输入纬度',
-                  }
+                    message: '请选择区域!',
+                  },
                 ],
-              })(<Input
-                type="number"
-                onBlur={() => this.props.form.validateFields(['latitude'])}
-              />)}
-            </Form.Item>
-          </Form.Item>
-          <Form.Item label="区域详情">
-            {getFieldDecorator('area', {
-              rules: [
-                {
-                  required: true,
-                  message: '请选择区域!',
-                },
-              ],
-            })(
-              <Cascader
-                changeOnSelect
-                options={areaTree}
+              })(
+                <Cascader
+                  changeOnSelect
+                  options={areaTree}
                 // onChange={this.onAreaChange}
-              />,
-            )}
-          </Form.Item>
-          <Form.Item label=" " colon={false}>
-            <Button type="primary" htmlType="submit" onClick={this.onSubmit}>
-              保存
-            </Button>
-            <span className={styles.span20px} />
-            <Button>
-              取消
-            </Button>
-          </Form.Item>
-        </Form>
+                />,
+              )}
+            </Form.Item>
+            <Form.Item label=" " colon={false}>
+              <Button type="primary" htmlType="submit" onClick={this.onSubmit}>
+                保存
+              </Button>
+              <span className={styles.span20px} />
+              <Button>
+                取消
+              </Button>
+            </Form.Item>
+          </Form>
+        </Spin>
       </div>
     );
   }

@@ -8,12 +8,13 @@ import {
   Input,
   Modal,
   Radio,
+  Spin
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
-import { getSummary, getMonitorMetric } from 'Redux/reducer/monitor';
+import { getAlgoAreaImage } from 'Redux/reducer/cameraDetail';
 import CanvasOperator from 'Components/canvasOperator';
 import {
   TRIGGER_ORIGIN,
@@ -29,7 +30,7 @@ const { Option } = Select;
 const { TabPane } = Tabs;
 const mapStateToProps = state => ({ monitor: state.monitor });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  {},
+  { push, getAlgoAreaImage },
   dispatch
 );
 
@@ -41,12 +42,22 @@ class CameraDetail extends Component {
       timeConfig: '00:00-23:59',
       ruleConfig: 2,
       timeType: 0,
+      imgSrc: null,
+      imgLoading: false,
       // areasConfig: undefined,
     };
   }
 
   componentDidMount() {
-
+    const {
+      configTypes, getAlgoAreaImage, curAlgo, cameraId
+    } = this.props;
+    if (configTypes.indexOf(ALGO_CONFIG_TYPE.AREA) > -1 && curAlgo) {
+      this.setState({ imgLoading: true });
+      getAlgoAreaImage(cameraId).then(imgSrc => this.setState({ imgSrc, imgLoading: false })).catch((e) => {
+        this.setState({ imgLoading: false });
+      });
+    }
   }
 
   handleOk = () => {
@@ -84,15 +95,16 @@ class CameraDetail extends Component {
       timeConfig,
       ruleConfig,
       timeType,
+      imgSrc, imgLoading,
     } = this.state;
     const configEnable = {};
     for (const config of configTypes) {
       configEnable[config] = true;
     }
     const triggerOrigin = (() => {
-      if (curAlgo?.title.indexOf('人')) {
+      if (curAlgo?.cnName.indexOf('人')) {
         return TRIGGER_ORIGIN.PEOPLE;
-      } if (curAlgo?.title.indexOf('车')) {
+      } if (curAlgo?.cnName.indexOf('车')) {
         return TRIGGER_ORIGIN.CAR;
       }
       return '';
@@ -109,22 +121,25 @@ class CameraDetail extends Component {
         <div className={styles['algoConfig-content']}>
           {
             configEnable[ALGO_CONFIG_TYPE.AREA] && (
-              <div className={styles.areaChooose}>
-                <p>请设置电子围栏视频区域:</p>
-                <CanvasOperator
-                  width="550px"
-                  id="1"
-                  areas={areas}
-                  onAreasChange={this.onAreasChange}
-                />
-              </div>
+              <Spin spinning={imgLoading}>
+                <div className={styles.areaChooose}>
+                  <p>请设置电子围栏视频区域:</p>
+                  <CanvasOperator
+                    imgSrc={imgSrc}
+                    width="550px"
+                    id="1"
+                    areas={areas}
+                    onAreasChange={this.onAreasChange}
+                  />
+                </div>
+              </Spin>
             )}
           {
             configEnable[ALGO_CONFIG_TYPE.RULE] && (
               <div className={styles.timeChooose}>
                 <p>
                   请设置
-                  {curAlgo?.title}
+                  {curAlgo?.cnName}
                   算法触发规则：
                 </p>
                 <div>
@@ -143,7 +158,7 @@ class CameraDetail extends Component {
             <div className={styles.timeChooose}>
               <p>
                 请设置
-                {curAlgo?.title}
+                {curAlgo?.cnName}
                 算法触发时间段：
               </p>
               <div>

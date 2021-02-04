@@ -72,14 +72,14 @@ const routesConfig = [
 ];
 
 const menuRoutes = [
-  {
-    path: '/',
-    pageTitle: '控制台',
-    exact: true,
-    component: Dashboard,
-    menuCode: '01',
-    menuTitle: '控制台'
-  },
+  // {
+  //   path: '/',
+  //   pageTitle: '控制台',
+  //   exact: true,
+  //   component: Dashboard,
+  //   menuCode: '01',
+  //   menuTitle: '控制台'
+  // },
   {
     path: '/monitor',
     pageTitle: '设备管理',

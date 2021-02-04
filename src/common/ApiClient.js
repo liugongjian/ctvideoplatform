@@ -60,10 +60,10 @@ class ApiClient {
           }
           request
             .then((res) => {
-              if (res.status === 401) {
-                ifLogin();
-                return;
-              }
+              // if (res.status === 401) {
+              //   ifLogin();
+              //   return;
+              // }
               if (res.status >= 200 && res.status < 300) {
                 if (res.body.code === 302) {
                   const { sso_login_url, params } = res.body.data;
@@ -74,10 +74,12 @@ class ApiClient {
                 if (res.body.code === 0) {
                   return resolve(res.body);
                 }
-                // notification.error({
-                //   message: res.body.message || res.statusText,
-                //   // description: '您暂无权限访问本页面',
-                // });
+
+                if (res.body.code === 10000) {
+                  message.info('正在跳转到登陆页面...');
+                  window.location.href = `${window.location.host}/login`;
+                }
+
                 throw new Error(res.body.msg || res.statusText);
               }
 

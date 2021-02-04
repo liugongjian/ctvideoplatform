@@ -12,6 +12,7 @@ import leftTop from 'Assets/leftTop.png';
 import rightTop from 'Assets/rightTop.png';
 import leftBottom from 'Assets/leftBottom.png';
 import rightBottom from 'Assets/rightBottom.png';
+import loginLogo from 'Assets/loginLogo.png';
 import styles from './index.less';
 
 const FormItem = Form.Item;
@@ -77,7 +78,14 @@ class Login extends Component {
           <div className={styles.rightBottom}>
             <img src={rightBottom} alt="" />
           </div>
-          <div className={styles.logo} />
+          <div className={styles.logoContainer}>
+            <div className={styles.logo}>
+              <img src={loginLogo} alt="" />
+            </div>
+            <span className={styles.productName}>
+              智能视频分析平台
+            </span>
+          </div>
         </div>
         <div className={styles.centerBox} />
         <div className={styles.loginForm}>

@@ -100,31 +100,55 @@ p{
         .algorithmList{
             .algoItem{
                 display:table;
+                font-size: 12px;
                 width: 100%;
                 height: 50px;
+                padding: 0 20px;
+                border: 1px solid #E9E9E9;
+                &:not(:last-child){
+                    border-bottom: 0px;
+                }
                 &-checked, &-title, &-desp, &-configBtn{
                     display: table-cell;
                     vertical-align: middle;
                 }
                 &-checked{
-                    width: 30px;
+                    width: 40px;
                 }
                 &-title{
                     width: 150px;
+                    &-icon{
+                        display: inline-block;
+                        width: 20px;
+                        height: 20px;
+                        margin-right: 10px;
+                    }
                 }
                 &-configBtn{
                     width: 80px;
                     text-align: right;
+                    a{
+                        display: inline-block;
+                        width: 76px;
+                        height: 26px;
+                        line-height: 24px;
+                        border: 1px solid #FF9832;
+                        color: #FF9832;
+                        border-radius: 4px;
+                        font-size: 12px;
+                        text-align: center;
+                    }
                 }
                 &-desp{
-                    width: calc(100% - 260px);
+                    color:#666;
+                    width: calc(100% - 270px);
                 }
             }
         }
         .btnWrapper{
             margin-top: 20px;
             width: 100%;
-            text-align: center;
+            text-align: left;
         }
     }
 }

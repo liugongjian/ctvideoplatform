@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import {
   Select, Tree, Icon, Input, Button, Table, Divider,
-  Modal
+  Modal, Checkbox, Tooltip
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -9,7 +9,7 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import {
   getList, renameArea, addChild, delArea, upArea, downArea,
-  getDeiviceList
+  getDeiviceList, delDeviceById, getAlgorithmList
 } from 'Redux/reducer/monitor';
 
 import styles from './index.less';
@@ -29,7 +29,9 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     delArea,
     upArea,
     downArea,
-    getDeiviceList
+    getDeiviceList,
+    delDeviceById,
+    getAlgorithmList
   },
   dispatch
 );
@@ -37,22 +39,38 @@ class Monitor extends Component {
   state = {
     test: '测试什么的',
     treeDatas: [],
-    expandedKeys: ['0'],
+    expandedKeys: ['1'],
     editValue: '',
     hasSame: '',
     tempData: [],
     deptHover: {},
-    areaId: 0,
+    areaId: 1,
     pageNo: 1,
     recursive: false,
     pageSize: 10,
     tableData: [],
-    showModal: false
+    showModal: false,
+    checkedKeys: [],
+    showDelModal: false,
+    deviceName: '',
+    deviceId: '',
+    algorithmId: 'all',
+    algorithmList: []
   }
 
   componentDidMount() {
     this.getAreaList();
     this.getDeviceList();
+    this.getAlgorithmList();
+  }
+
+  getAlgorithmList = () => {
+    const { getAlgorithmList } = this.props;
+    getAlgorithmList().then((res) => {
+      this.setState({
+        algorithmList: res
+      });
+    });
   }
 
   onExpand = (expandedKeys) => {
@@ -102,13 +120,13 @@ class Monitor extends Component {
             <span className={styles.treeBtnBox}>
               {item.ifEdit
                 ? (
-                  <Button type="link" disabled={item.hasSame} size="small" onClick={() => { this.sureEdit(item.id, item.addTag, item.pid); }}>
+                  <Button type="link" disabled={item.hasSame} size="small" onClick={(e) => { this.sureEdit(e, item.id, item.addTag, item.pid); }}>
                     <Icon type="check" />
                   </Button>
                 )
-                : <Icon type="edit" className={styles.treeBtn} onClick={() => this.editThis(item.id, item.name)} />}
+                : <Icon type="edit" className={styles.treeBtn} onClick={e => this.editThis(e, item.id, item.name)} />}
 
-              <Icon type="plus-square" className={styles.treeBtn} onClick={() => { this.onAdd(item.id); }} />
+              <Icon type="plus-square" className={styles.treeBtn} onClick={(e) => { this.onAdd(e, item.id); }} />
 
             </span>
           );
@@ -117,24 +135,24 @@ class Monitor extends Component {
           <span className={styles.treeBtnBox}>
             {item.ifEdit
               ? (
-                <Button type="link" disabled={item.hasSame} size="small" onClick={() => { this.sureEdit(item.id, item.addTag, item.pid); }}>
+                <Button className={styles.checkBtn} type="link" disabled={item.hasSame} size="small" onClick={(e) => { this.sureEdit(e, item.id, item.addTag, item.pid); }}>
                   <Icon type="check" />
                 </Button>
               )
-              : <Icon type="edit" className={styles.treeBtn} onClick={() => this.editThis(item.id, item.name)} />}
+              : <Icon type="edit" className={styles.treeBtn} onClick={e => this.editThis(e, item.id, item.name)} />}
             {!item.addTag
               ? (
                 <Fragment>
-                  <Icon type="delete" className={styles.treeBtn} onClick={() => { this.onDelete(item.id); }} />
-                  <Icon type="plus-square" className={styles.treeBtn} onClick={() => { this.onAdd(item.id); }} />
-                  <Icon type="arrow-up" className={styles.treeBtn} onClick={() => { this.upArea(item.id); }} />
-                  <Icon type="arrow-down" className={styles.treeBtn} onClick={() => { this.downArea(item.id); }} />
+                  <Icon type="delete" className={styles.treeBtn} onClick={(e) => { this.onDelete(e, item.id); }} />
+                  <Icon type="plus-square" className={styles.treeBtn} onClick={(e) => { this.onAdd(e, item.id); }} />
+                  <Icon type="arrow-up" className={styles.treeBtn} onClick={(e) => { this.upArea(e, item.id); }} />
+                  <Icon type="arrow-down" className={styles.treeBtn} onClick={(e) => { this.downArea(e, item.id); }} />
                 </Fragment>
-              ) : <Icon type="delete" className={styles.treeBtn} onClick={() => { this.cancel(item.id); }} />}
+              ) : <Icon type="delete" className={styles.treeBtn} onClick={(e) => { this.cancel(e, item.id); }} />}
           </span>
         );
       }
-      return '';
+      return null;
     };
     const getTitle = val => (
       <Fragment>
@@ -172,7 +190,8 @@ class Monitor extends Component {
     return <TreeNode key={item.id.toString()} title={getTitle(item)} />;
   })
 
-  editThis = (key, name) => {
+  editThis = (e, key, name) => {
+    e.stopPropagation();
     const editData = this.editNode(key, this.state.treeDatas);
     this.setState({
       treeDatas: editData,
@@ -193,8 +212,8 @@ class Monitor extends Component {
     return item;
   })
 
-  sureEdit = (key, tag, pid) => {
-    console.log(this.state.editValue);
+  sureEdit = (e, key, tag, pid) => {
+    e.stopPropagation();
     if (tag) {
       const { editValue, tempData } = this.state;
       const { addChild } = this.props;
@@ -215,8 +234,8 @@ class Monitor extends Component {
   }
 
   onChange = (e, key, name) => {
+    e.stopPropagation();
     const { tempData, treeDatas } = this.state;
-
     const test = tempData.filter(item => item.name === e.target.value);
     if (test && test.length) {
       const temp = tempData.find(item => item.id === key && item.name !== e.target.value) || {};
@@ -248,7 +267,8 @@ class Monitor extends Component {
     return item;
   })
 
-  onAdd = (key) => {
+  onAdd = (e, key) => {
+    e.stopPropagation();
     this.state.tempData.map((item) => {
       item.ifEdit = false;
       return item;
@@ -273,14 +293,16 @@ class Monitor extends Component {
     });
   }
 
-  cancel = (key) => {
+  cancel = (e, key) => {
+    e.stopPropagation();
     this.state.tempData = this.state.tempData.filter(({ id }) => id !== -1);
     this.setState({
       treeDatas: this.dataToTree(this.state.tempData)
     });
   }
 
-  onDelete = (key) => {
+  onDelete = (e, key) => {
+    e.stopPropagation();
     const { delArea } = this.props;
     delArea(key).then((res) => {
       this.getAreaList();
@@ -305,14 +327,16 @@ class Monitor extends Component {
     }));
   }
 
-  upArea = (key) => {
+  upArea = (e, key) => {
+    e.stopPropagation();
     const { upArea } = this.props;
     upArea(key).then((res) => {
       this.getAreaList();
     });
   }
 
-  downArea =(key) => {
+  downArea =(e, key) => {
+    e.stopPropagation();
     const { downArea } = this.props;
     downArea(key).then((res) => {
       this.getAreaList();
@@ -322,7 +346,9 @@ class Monitor extends Component {
   onSelect = (keys) => {
     if (keys && keys.length > 0) {
       const [a] = keys;
-      console.log(a);
+      this.setState({
+        areaId: a
+      }, () => this.getDeviceList());
     }
   }
 
@@ -332,20 +358,68 @@ class Monitor extends Component {
       areaId,
       pageNo,
       recursive,
-      pageSize
+      pageSize,
+      deviceName,
+      deviceId,
+      algorithmId
     } = this.state;
     const param = {
       areaId,
       pageNo: 0,
-      recursive: true,
-      pageSize
+      recursive,
+      pageSize,
+      name: deviceName,
+      deviceId,
+      algorithm: algorithmId === 'all' ? '' : algorithmId
     };
     getDeiviceList(param).then((res) => {
-      console.log(res);
       this.setState({
-        tableData: res.list
+        tableData: res.list || []
       });
     });
+  }
+
+  selectThisAlgorithm = (value) => {
+    this.setState({
+      algorithmId: value
+    });
+  }
+
+  changeDeviceName = (e) => {
+    this.setState({
+      deviceName: e.target.value
+    });
+  }
+
+  changeDeviceId = (e) => {
+    this.setState({
+      deviceId: e.target.value
+    });
+  }
+
+  resetSearch = () => {
+    this.setState({
+      areaId: 1,
+      pageNo: 1,
+      // recursive: false,
+      pageSize: 10,
+      deviceName: '',
+      deviceId: '',
+      algorithmId: 'all',
+    }, () => this.getDeviceList());
+  }
+
+  changeStatus = (e) => {
+    const { checked } = e.target;
+    this.setState({
+      recursive: checked
+    }, () => this.getDeviceList());
+  }
+
+  toDetail = (record) => {
+    const { id } = record;
+    const { push } = this.props;
+    push(`/monitor/${id}`);
   }
 
   openModal=() => {
@@ -354,59 +428,159 @@ class Monitor extends Component {
     });
   }
 
+  changeCheckRowKeys = (arr) => {
+    const temp = arr.map(item => item.id);
+    // console.log('temp', temp);
+    this.setState({
+      checkedKeys: temp
+    });
+  }
+
+  delThisKeys = () => {
+    const { checkedKeys } = this.state;
+    if (checkedKeys.length > 0) {
+      this.setState({
+        showDelModal: true
+      });
+    }
+  }
+
+  delThisKey = (record) => {
+    const { id } = record;
+    const { delDeviceById } = this.props;
+    const temp = [id];
+    delDeviceById(temp).then((res) => {
+      this.setState({
+        showDelModal: false,
+      }, () => this.getDeviceList());
+    });
+  }
+
+  sureDelThisKeys = (e) => {
+    const { checkedKeys } = this.state;
+    const { delDeviceById } = this.props;
+    delDeviceById(checkedKeys).then((res) => {
+      this.setState({
+        showDelModal: false,
+        checkedKeys: []
+      }, () => this.getDeviceList());
+    });
+  }
+
+  cancelDelthisKeys = () => {
+    this.setState({
+      showDelModal: false
+    });
+  }
+
+  getImportDevice = () => {
+
+  }
+
+  sureImportDevice = () => {
+    this.setState({
+      showModal: false
+    });
+  }
+
+  cancelImportDevice = () => {
+    this.setState({
+      showModal: false
+    });
+  }
+
   render() {
     const {
-      test, treeDatas, expandedKeys, tableData, showModal
+      test, treeDatas, expandedKeys, tableData, showModal, showDelModal, algorithmList, algorithmId
     } = this.state;
     const columns = [
       {
         title: '摄像头名称',
         dataIndex: 'name',
-        render: text => <a>{text}</a>,
+        key: 'name',
+        fixed: 'left',
+        render: text => <span>{text.substring(0, 10)}</span>,
       },
       {
         title: '摄像头ID',
         dataIndex: 'originId',
+        key: 'originId',
+        // fixed: 'left',
       },
       {
         title: '区域名称',
-        dataIndex: 'address',
+        dataIndex: 'areaPath',
+        key: 'areaPath',
+        render: (text) => {
+          const arr = text.split('/');
+          const showText = arr[arr.length - 1];
+          return (
+            <Tooltip placement="topLeft" title={text}>
+              <span className={styles.cursorPoniter}>{showText}</span>
+            </Tooltip>
+          );
+        }
       },
       {
         title: '已配置算法',
         dataIndex: 'algorithms',
+        key: 'algorithms'
       },
       {
         title: '经纬度',
         dataIndex: 'longitude',
+        key: 'longitude',
         render: (text, record) => (
           <span>
-            {text}
+            {text || '-'}
             ,
-            {record.latitude}
+            {record.latitude || '-'}
           </span>
         )
       },
       {
         title: '状态',
         dataIndex: 'online',
+        key: 'online',
+        width: '100px',
+        render: (text) => {
+          if (text === 1) {
+            return (
+              <span className={styles.tableOnlineStatus}>
+                <span className={styles.tableOnline} />
+                <span className={styles.tableOnlineText}>在线</span>
+              </span>
+            );
+          }
+          return (
+            <span className={styles.tableOnlineStatus}>
+              <span className={styles.tableOffline} />
+              <span className={styles.tableOfflineText}>离线</span>
+            </span>
+          );
+        }
       },
       {
         title: '操作',
         dataIndex: 'x',
+        fixed: 'right',
+        width: '120px',
         render: (text, record) => (
           <span>
-            <a>编辑</a>
+            <a onClick={() => { this.toDetail(record); }}>编辑</a>
             <Divider type="vertical" />
-            <a>删除</a>
+            <a onClick={() => { this.delThisKey(record); }}>删除</a>
           </span>
         ),
       }
     ];
 
+    const drawAlgorithmList = () => algorithmList.map(item => (
+      <Option value={item.id} key={item.id}>{item.cnName}</Option>));
+
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
-        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        this.changeCheckRowKeys(selectedRows);
       },
       getCheckboxProps: record => ({
         disabled: record.name === 'Disabled User', // Column configuration not to be checked
@@ -416,54 +590,91 @@ class Monitor extends Component {
     return (
       <div className={styles.content}>
         <div className={styles.areaTree}>
+          <h1 className={styles.titleText}>区域列表</h1>
           <Search placeholder="请输入关键字" onSearch={this.getAreaList} />
-          <Tree
-            className="draggable-tree"
-            expandedKeys={expandedKeys}
-            // expandedKeys={['0']}
-            blockNode
-            showLine
-            onExpand={this.onExpand}
-            onSelect={this.onSelect}
-          >
-            {this.renderTreeNodes(treeDatas)}
-          </Tree>
+          {
+            treeDatas && treeDatas.length ? (
+              <Tree
+                expandedKeys={expandedKeys}
+                defaultExpandAll
+                blockNode
+                showLine
+                onExpand={this.onExpand}
+                onSelect={this.onSelect}
+              >
+                {this.renderTreeNodes(treeDatas)}
+              </Tree>
+            ) : null
+          }
         </div>
         <div className={styles.monitorList}>
-          <h1>视频监控点</h1>
+          <h1 className={styles.titleText}>视频监控点</h1>
           <div className={styles.searchBox}>
             <div className={styles.searchItme}>
-              <span>摄像头名称:</span>
-              <Input />
+              <span>摄像头名称：</span>
+              <Input placeholder="请输出摄像头名称" onChange={this.changeDeviceName} />
             </div>
             <div className={styles.searchItme}>
-              <span>摄像头ID:</span>
-              <Input />
+              <span>摄像头ID：</span>
+              <Input placeholder="请输入摄像头ID" onChange={this.changeDeviceId} />
             </div>
             <div className={styles.searchItme}>
-              <span>算法:</span>
-              <Input />
+              <span>算法：</span>
+              <Select
+                defaultValue="all"
+                value={algorithmId}
+                style={{ width: 120 }}
+                onSelect={this.selectThisAlgorithm}
+              >
+                <Option value="all">全部</Option>
+                {drawAlgorithmList()}
+              </Select>
             </div>
+            <Button type="primary" className={styles.searchHandleBtn} onClick={this.getDeviceList}>查询</Button>
+            <Button className={styles.searchHandleBtn} onClick={this.resetSearch}>
+              <Icon type="reload" />
+              <span>重置</span>
+            </Button>
           </div>
           <div className={styles.searchResult}>
             <div className={styles.handleResult}>
-              <Button type="link" onClick={this.openModal}>
+              <Button type="link" onClick={this.openModal} className={styles.handleBtn}>
                 <Icon type="export" />
                 <span>导入</span>
               </Button>
-              <Button type="link">
+              <Button type="link" className={styles.handleBtn} onClick={this.delThisKeys}>
                 <Icon type="delete" />
                 <span>批量删除</span>
               </Button>
+              <Checkbox onChange={this.changeStatus}>包含下级区域</Checkbox>
             </div>
-            <Table rowSelection={rowSelection} columns={columns} dataSource={tableData} />
+            <Table
+              rowSelection={rowSelection}
+              columns={columns}
+              dataSource={tableData}
+              scroll={{ x: 'max-content' }}
+            />
           </div>
         </div>
         <Modal
           title="导入摄像头"
           visible={showModal}
+          getContainer={false}
+          onOk={this.sureImportDevice}
+          onCancel={this.cancelImportDevice}
+          forceRender
         >
           <p>123</p>
+          <Checkbox>213</Checkbox>
+        </Modal>
+        <Modal
+          title="删除提示"
+          visible={showDelModal}
+          onOk={this.sureDelThisKeys}
+          onCancel={this.cancelDelthisKeys}
+          getContainer={false}
+        >
+          <p className={styles.delModalText}>您确定要删除所选摄像头吗？</p>
         </Modal>
       </div>
     );

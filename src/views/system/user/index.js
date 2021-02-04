@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React, { Component } from 'react';
 import {
-  Select, Button, Modal, Form, Input, Switch, Icon, message
+  Select, Button, Modal, Form, Input, Switch, Icon, message, Table, Pagination
 } from 'antd';
 // import Icon from 'Components/Icon';
 import { Link } from 'react-router-dom';
@@ -149,10 +149,7 @@ class Account extends Component {
   };
 
   validatorRePsw = (rule, value, callback) => {
-    const reNewPassword2 = this.props.form.getFieldValue('reNewPassword2');
-    if (reNewPassword2 && reNewPassword2 !== value && value) {
-      callback(new Error('两次密码输入不一致！'));
-    } else if (!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?])(.{12,26})/.test(value)) && value) {
+    if (!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?])(.{12,26})/.test(value)) && value) {
       callback(new Error('新密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符！'));
     } else {
       callback();
@@ -163,8 +160,6 @@ class Account extends Component {
     const reNewPassword = this.props.form.getFieldValue('reNewPassword');
     if (reNewPassword && reNewPassword !== value && value) {
       callback(new Error('两次密码输入不一致！'));
-    } else if (!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?])(.{12,26})/.test(value)) && value) {
-      callback(new Error('确认密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符！'));
     } else {
       callback();
     }
@@ -342,7 +337,6 @@ class Account extends Component {
       ids = [id];
       userName = val.username;
     }
-    console.log('handleDelete', ids);
     this.setState({
       deleteModelVisible: true,
       delIds: ids,
@@ -541,19 +535,19 @@ class Account extends Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 18, offset: 6, },
     };
-    let pagination;
-    // eslint-disable-next-line prefer-const
-    pagination = {
-      showSizeChanger: true,
-      showQuickJumper: true,
-      total: Number(total),
-      pageSize: Number(pageSize),
-      defaultCurrent: 1,
-      current: Number(pageNum),
-      hideOnSinglePage: false
-    };
-    pagination.onChange = this.onPageChange;
-    pagination.onShowSizeChange = this.onShowSizeChange;
+    // let pagination;
+    // // eslint-disable-next-line prefer-const
+    // pagination = {
+    //   showSizeChanger: true,
+    //   showQuickJumper: true,
+    //   total: Number(total),
+    //   pageSize: Number(pageSize),
+    //   defaultCurrent: 1,
+    //   current: Number(pageNum),
+    //   hideOnSinglePage: false
+    // };
+    // pagination.onChange = this.onPageChange;
+    // pagination.onShowSizeChange = this.onShowSizeChange;
 
     const columns = [
       {
@@ -562,14 +556,15 @@ class Account extends Component {
         ellipsis: true,
         render: text => (
           // <div title={text}>{text}</div>
-          <div title={text}>{text.length > 10 ? `${text.substring(0, 10)}...` : text}</div>
+          <div title={text}>{text && text.length > 10 ? `${text.substring(0, 10)}...` : text}</div>
         )
       },
       {
         title: '角色名称',
         dataIndex: 'roleName',
         render: (text, record) => (
-          <div title={record.roleName}>{record.roleName}</div>
+          // <div title={text}>{text}</div>
+          <div title={text}>{text && text.length > 10 ? `${text.substring(0, 10)}...` : text}</div>
         )
       },
       {
@@ -634,7 +629,7 @@ class Account extends Component {
     };
     return (
       <div className={styles['table-content']}>
-        <ETable
+        {/* <ETable
           loading={loading}
           columns={columns}
           rowKey={record => record.id}
@@ -644,7 +639,33 @@ class Account extends Component {
           pagination={pagination}
           onChange={this.handleTableChange}
           locale={{ emptyText: '暂无数据' }}
+        /> */}
+        <Table
+          loading={loading}
+          columns={columns}
+          rowKey={record => record.id}
+          dataSource={accountData}
+          rowSelection={rowSelection}
+          onChange={this.handleTableChange}
+          pagination={false}
         />
+        <div className={styles.paginationWrapper}>
+          <span>
+            总条数：
+            {total}
+          </span>
+          <div>
+            <Pagination
+              total={total}
+              current={pageNum}
+              showSizeChanger
+              showQuickJumper
+              pageSize={pageSize}
+              onChange={this.onPageChange}
+              onShowSizeChange={this.onShowSizeChange}
+            />
+          </div>
+        </div>
         <Modal
           title="编辑账号"
           visible={this.state.modalVisible}
