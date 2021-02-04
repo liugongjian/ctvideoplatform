@@ -116,7 +116,7 @@ class Manage extends Component {
             defaultSelectedKeys={[pathname]}
             selectedKeys={[pathname]}
             mode="inline"
-            className={collapsed ? `${styles['EMR-manage-menuInline']}` : `${styles['EMR-manage-menu']}`}
+            className={collapsed ? `${styles.menuInline}` : `${styles.menu}`}
             inlineCollapsed={collapsed}
           >
             {leftMenu}

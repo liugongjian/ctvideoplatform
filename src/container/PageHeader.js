@@ -45,10 +45,14 @@ class Contents extends Component {
     const { collapsed } = this.state;
     return (
       <div className={styles.pageHeaderBox}>
-        <Button type="primary" onClick={this.toggleCollapsed}>
+        <Button type="link" onClick={this.toggleCollapsed} className={styles.changeBtn}>
           <Icon type={collapsed ? 'menu-unfold' : 'menu-fold'} />
         </Button>
         <PageHeader routes={pageHeaderRoute} />
+        <Button type="link" className={styles.userBtn}>
+          <Icon type="user" />
+          用户名
+        </Button>
       </div>
     );
   }

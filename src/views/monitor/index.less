@@ -1,5 +1,7 @@
 .content{
   display: flex;
+  height: 100%;
+  background: #fff;
   .titleText{
     font-size: 16px;
     color: #333333;
@@ -8,7 +10,7 @@
   .areaTree{
     width: 300px;
     min-width: 300px;
-    // padding-right: 20px;
+    padding: 15px 0 15px 15px;
     overflow-x: auto;
     .treeTitleInfo{
       .treeBtnBox{
@@ -44,7 +46,10 @@
   .monitorList{
     width: calc(100% - 300px);
     min-width: 900px;
-    margin-left: 20px;
+    // margin-left: 20px;
+    margin:15px 0 15px 20px;
+    padding:0 15px;
+    border-left: 1px solid #EEE;
   }
   .searchBox{
     display: flex;
@@ -62,6 +67,9 @@
     }
     .searchHandleBtn{
       margin: 20px 5px 20px 5px;
+      &:last-child{
+        margin-right: 20px;
+      }
     }
   }
   .searchResult{
@@ -116,5 +124,31 @@
   }
   .cursorPoniter{
     cursor: pointer;
+  }
+  .deviceModal{
+    .searchModalBox{
+      margin: 20px 0;
+      display: flex;
+      .searchItme{
+        flex: 1;
+        :global{
+          .ant-input{
+            width: 60%;
+          }
+        }
+      }
+      .searchHandleBtn{
+        margin: 0 5px;
+      }
+    }
+    :global{
+      .ant-table-tbody > tr > td{
+        padding: 10px;
+      }
+      .ant-table-thead > tr > th{
+        padding: 10px;
+      }
+    }
+  
   }
 }
