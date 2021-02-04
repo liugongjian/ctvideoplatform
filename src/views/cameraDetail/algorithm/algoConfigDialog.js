@@ -43,8 +43,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     getAlgoAreaImage,
     addAlgoConf: (deviceId, curAlgo, data) => postAlgoConf(deviceId, [{
       id: curAlgo.id,
-      // algorithmId: curAlgo.algorithmId,
-      taskId: curAlgo.algorithmId,
+      algorithmId: curAlgo.algorithmId,
+      // taskId: curAlgo.algorithmId,
       taskName: curAlgo.name,
       action: 'add',
       ...data
