@@ -14,6 +14,7 @@ import { pathPrefix } from 'Constants/Dictionary';
 // import Icon from 'Components/Icon';
 import { menuRoutes } from 'Setting/routeconfig';
 import { createRouters } from 'Utils/core';
+import { getMenuList } from 'Redux/reducer/pageHeader';
 
 import { render } from 'less';
 import PageHeader from './PageHeader';
@@ -22,13 +23,23 @@ import styles from './Manage.less';
 const { SubMenu } = Menu;
 
 
-const mapStateToProps = state => state.user;
+const mapStateToProps = state => ({
+  userInfo: state.user.userInfo,
+  menuList: state.pageHeader.menuList || []
+});
 const mapDispathToProps = dispatch => bindActionCreators({
+  getMenuList
 }, dispatch);
 
 class Manage extends Component {
   state = {
     collapsed: false
+  }
+
+  componentDidMount() {
+    this.props.getMenuList().then((res) => {
+      console.log(res);
+    });
   }
 
   changeMenuCollapsed = (collapsed) => {

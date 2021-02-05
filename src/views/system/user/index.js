@@ -605,11 +605,11 @@ class Account extends Component {
               <div className={styles.line} />
             </div>
             <div>
-              <a onClick={() => this.handleDelete(record)}>删除</a>
+              <a onClick={() => this.handlePassword(record)}>重置密码</a>
               <div className={styles.line} />
             </div>
             <div>
-              <a onClick={() => this.handlePassword(record)}>重置密码</a>
+              <a onClick={() => this.handleDelete(record)}>删除</a>
             </div>
           </div>
         ),
