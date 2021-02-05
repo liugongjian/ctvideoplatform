@@ -74,34 +74,28 @@ const routesConfig = [
 const menuRoutes = [
   {
     path: '/monitor',
-    pageTitle: '设备管理',
     exact: true,
     component: Monitor,
-    menuCode: '02',
-    menuTitle: '设备管理',
+    pageTitle: '设备管理',
     children: [
       {
-        hideMenu: true,
+        // hideMenu: true,
         path: '/:cameraId',
         pageTitle: '摄像头详情',
+        exact: true,
         component: CameraDetail,
       }
     ]
   },
   {
     path: '/system',
-    pageTitle: '系统管理',
     exact: true,
-    menuCode: '02',
-    menuTitle: '系统管理',
     children: [
       {
         path: '/role',
-        pageTitle: '角色管理',
         exact: true,
+        pageTitle: '角色管理',
         component: Role,
-        menuCode: '02',
-        menuTitle: '角色管理',
         children: [
           {
             path: '/edit/:roleid',
@@ -110,22 +104,20 @@ const menuRoutes = [
           },
           {
             path: '/add',
-            pageTitle: '添加角色',
+            pageTitle: '新建角色',
             component: RoleAdd,
           },
         ]
       },
       {
         path: '/account',
-        pageTitle: '账号管理',
         exact: true,
+        pageTitle: '账号管理',
         component: Account,
-        menuCode: '02',
-        menuTitle: '账号管理',
         children: [
           {
             path: '/add',
-            pageTitle: '添加账号',
+            pageTitle: '新建账号',
             component: AddAccount,
           }
         ]
@@ -133,6 +125,69 @@ const menuRoutes = [
     ]
   },
 ];
+
+// const menuRoutes = [
+//   {
+//     path: '/monitor',
+//     pageTitle: '设备管理',
+//     exact: true,
+//     component: Monitor,
+//     menuCode: '02',
+//     menuTitle: '设备管理',
+//     children: [
+//       {
+//         hideMenu: true,
+//         path: '/:cameraId',
+//         pageTitle: '摄像头详情',
+//         component: CameraDetail,
+//       }
+//     ]
+//   },
+//   {
+//     path: '/system',
+//     pageTitle: '系统管理',
+//     exact: true,
+//     menuCode: '02',
+//     menuTitle: '系统管理',
+//     children: [
+//       {
+//         path: '/role',
+//         pageTitle: '角色管理',
+//         exact: true,
+//         component: Role,
+//         menuCode: '02',
+//         menuTitle: '角色管理',
+//         children: [
+//           {
+//             path: '/edit/:roleid',
+//             pageTitle: '编辑角色',
+//             component: RoleEdit,
+//           },
+//           {
+//             path: '/add',
+//             pageTitle: '添加角色',
+//             component: RoleAdd,
+//           },
+//         ]
+//       },
+//       {
+//         path: '/account',
+//         pageTitle: '账号管理',
+//         exact: true,
+//         component: Account,
+//         menuCode: '02',
+//         menuTitle: '账号管理',
+//         children: [
+//           {
+//             path: '/add',
+//             pageTitle: '添加账号',
+//             component: AddAccount,
+//           }
+//         ]
+//       }
+//     ]
+//   },
+// ];
 
 const menuRouter = () => createRouters(menuRoutes, true, pathPrefix);
 

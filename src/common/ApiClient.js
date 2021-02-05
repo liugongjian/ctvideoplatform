@@ -65,12 +65,12 @@ class ApiClient {
               //   return;
               // }
               if (res.status >= 200 && res.status < 300) {
-                if (res.body.code === 302) {
-                  const { sso_login_url, params } = res.body.data;
-                  message.info('正在跳转到登陆页面...');
-                  ssoLogin(sso_login_url, params);
-                  return;
-                }
+                // if (res.body.code === 302) {
+                //   const { sso_login_url, params } = res.body.data;
+                //   message.info('正在跳转到登陆页面...');
+                //   ssoLogin(sso_login_url, params);
+                //   return;
+                // }
                 if (res.body.code === 0) {
                   return resolve(res.body);
                 }
@@ -78,6 +78,11 @@ class ApiClient {
                 if (res.body.code === 10000) {
                   message.info('正在跳转到登陆页面...');
                   window.location.href = `${window.location.origin}/login`;
+                }
+
+                if (res.body.code === -1) {
+                  message.info(res.body.msg || '请稍后再试');
+                  return false;
                 }
 
                 throw new Error(res.body.msg || res.statusText);

@@ -79,7 +79,6 @@ const routerHook = (WrappedComponent, condition) => class RouterHook extends Com
         title,
         path,
       }];
-      console.log('1111111', path);
     }
     if (pageHeader) {
       // 没有pageTitle属性的route设置不显示在面包屑中
