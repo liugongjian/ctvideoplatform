@@ -67,78 +67,80 @@ class RoleEdit extends Component {
   }
 
   onExpand(keys) {
-    console.log('onExpand', keys); // if not set autoExpandParent to false, if children expanded, parent can not collapse.
-    // or, you can remove all expanded children keys.
     this.setState({expandedKeys:keys,autoExpandParent:false});
   };
 
 
   onSelectTreeMenu(key){
     this.setState({activeMenuKey:key} , () => {
-      console.log(key)
       if(key.key === '1'){
         this.props.getMenuList().then((res)=>{
           const treeDatas = this.dataToTree(res);
+          const expandedKeys = res.map((item)=>item.id)
           this.setState({
             tempData: res,
             treeDatas,
+            expandedKeys,
           });
         })
       }else{
         this.props.getAreaList(0,null).then((res) => {
           const treeDatas = this.dataToTree(res);
+          const expandedKeys = res.map((item)=>item.id)
           this.setState({
             tempData: res,
             treeDatas,
+            expandedKeys,
           });
         });
       }
     })
   }
   onCheck(keys){
-    console.log('onCheck--',keys);
     if(this.state.activeMenuKey.key === '1'){
-      
-
-      //未选择的选项id
-      let deleteIds = [];
-      if(keys.length===0){
-        deleteIds = this.state.tempData.map((item)=>parseInt(item.id));
-      }else{
-        console.log('this.state.tempData',this.state.tempData)
-        this.state.tempData.map((item) => {
-          for(let i=0;i<keys.length;i++){
-            if(item.id !== keys[i]){
-              deleteIds.push(parseInt(item.id))
-            }
-          }
-        })
-      }
-      console.log('deleteIds---',deleteIds)
-      //操作原来角色的权限
-      let newCheckeKeys = JSON.parse(JSON.stringify(this.state.checkedKeys.menuIds)).map((item)=>{
-        return parseInt(item)
-      });
-      
-      //删除未选择的选项id
-      for(let i=0;i<deleteIds.length;i++){
-        
-        if(newCheckeKeys.indexOf(deleteIds[i]) >= 0){
-          newCheckeKeys.splice(newCheckeKeys.indexOf(deleteIds[i]),1)
-        }
-      }
-      //添加已选择的选项id
-      for(let i=0;i<keys.length;i++){
-        if(newCheckeKeys.indexOf(parseInt(keys[i])) < 0){
-          newCheckeKeys.push(parseInt(keys[i]))
-        }
-      }
-      console.log('newCheckeKeys',newCheckeKeys)
-      this.setState({checkedKeys : {...this.state.checkedKeys,menuIds:newCheckeKeys}},() => console.log('onCheck--1',this.state.checkedKeys));
+      let newCheckeKeys = this.getNewCheckeKeys(keys,'menuIds')
+      this.setState({checkedKeys : {...this.state.checkedKeys,menuIds : newCheckeKeys}});
     }else{
-      this.setState({checkedKeys : {...this.state.checkedKeys , areaIds : keys}},() => console.log('onCheck--2',this.state.checkedKeys));
+      debugger;
+      let newCheckeKeys = this.getNewCheckeKeys(keys,'areaIds')
+      this.setState({checkedKeys : {...this.state.checkedKeys , areaIds : newCheckeKeys}} , console.log('onCheck--this.state.checkedKeys',this.state.checkedKeys));
     }
   };
+
+  getNewCheckeKeys(keys,keytype){
+        //未选择的选项id
+        let deleteIds = [];
+        if(keys.length===0){
+          deleteIds = this.state.tempData.map((item)=>parseInt(item.id));
+        }else{
+          this.state.tempData.map((item) => {
+            for(let i=0;i<keys.length;i++){
+              if(item.id !== keys[i]){
+                deleteIds.push(parseInt(item.id))
+              }
+            }
+          })
+        }
+        //操作原来角色的权限
+        let newCheckeKeys = JSON.parse(JSON.stringify(this.state.checkedKeys[keytype])).map((item)=>{
+          return parseInt(item)
+        });
+        
+        //删除未选择的选项id
+        for(let i=0;i<deleteIds.length;i++){
+          
+          if(newCheckeKeys.indexOf(deleteIds[i]) >= 0){
+            newCheckeKeys.splice(newCheckeKeys.indexOf(deleteIds[i]),1)
+          }
+        }
+        //添加已选择的选项id
+        for(let i=0;i<keys.length;i++){
+          if(newCheckeKeys.indexOf(parseInt(keys[i])) < 0){
+            newCheckeKeys.push(parseInt(keys[i]))
+          }
+        }
+        return newCheckeKeys
+  }
 
   onNameChange(name){
     this.setState({name})
@@ -205,9 +207,7 @@ class RoleEdit extends Component {
       if(this.state.activeMenuKey.key === '1'){
           this.props.getMenuList(this.state.serachInputValue).then(
             (res) => {
-              console.log('searchinput--res--',res);
               const expandKeys = res.map((item)=>item.id);
-              console.log(expandKeys);
               const treeDatas = this.dataToTree(res);
               this.setState({
                 tempData: res,
@@ -218,9 +218,7 @@ class RoleEdit extends Component {
           )
       }else{
         this.props.getAreaList(0,this.state.serachInputValue).then((res) => {
-          console.log(res);
           const expandKeys = res.map((item)=>item.id);
-          console.log(expandKeys);
           const treeDatas = this.dataToTree(res);
           this.setState({
             tempData: res,
@@ -230,11 +228,12 @@ class RoleEdit extends Component {
         });
       }
     })
+
+    console.log('onSearchInput---this.state.checkedKeys',this.state.checkedKeys)
   }
 
 
   componentDidMount() {
-    console.log('componentDidMount')
     const { roleid } = this.props.match.params;
     this.props.getRoleInfo( roleid ).then((res)=>{
       this.setState({
@@ -247,8 +246,6 @@ class RoleEdit extends Component {
         }
       });
     })
-
-    this.setState({ roleid : this.props.match.params.roleid });
     this.props.getMenuList().then((res)=>{
       const treeDatas = this.dataToTree(res);
       this.setState({
@@ -256,15 +253,6 @@ class RoleEdit extends Component {
         treeDatas,
       });
     })
-    // this.props.getAreaList(0,null).then((res) => {
-    //   // console.log(res)
-    //   const treeDatas = this.dataToTree(res);
-    //   // console.log(treeDatas)
-    //   this.setState({
-    //     tempData: res,
-    //     treeDatas,
-    //   });
-    // });
   }
 
   render() {
