@@ -85,6 +85,7 @@ class RoleEdit extends Component {
         })
       }else{
         this.props.getAreaList(0,null).then((res) => {
+          console.log(res);
           const treeDatas = this.dataToTree(res);
           const expandedKeys = res.map((item)=>item.id)
           this.setState({
