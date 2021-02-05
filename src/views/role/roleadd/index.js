@@ -238,6 +238,8 @@ class RoleAdd extends Component {
         onSave={()=>this.onSave()}
         onCancel={()=>this.onCancel()}
         onSearchInput={(keyword)=>this.onSearchInput(keyword)}
+        name={this.state.name}
+        description={this.state.description}
       />
     );
   }

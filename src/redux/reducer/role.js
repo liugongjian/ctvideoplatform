@@ -160,12 +160,12 @@ export function getMenuList(keyword) {
   if (keyword) {
     return {
       type: [GET_MENU_LIST, GET_MENU_LIST_SUCCESS, GET_MENU_LIST_FAIL],
-      promise: apiClient => apiClient.get(`${urlPrefix}/menu/list/?keyword=${keyword}`)
+      promise: apiClient => apiClient.get(`${urlPrefix}/menu/list?keyword=${keyword}`)
     };
   }
   return {
     type: [GET_MENU_LIST, GET_MENU_LIST_SUCCESS, GET_MENU_LIST_FAIL],
-    promise: apiClient => apiClient.get(`${urlPrefix}/menu/list/`)
+    promise: apiClient => apiClient.get(`${urlPrefix}/menu/all/`)
   };
 }
 
