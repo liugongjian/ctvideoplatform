@@ -11,9 +11,14 @@ const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
 const LOGOUT_FAIL = 'LOGOUT_FAIL';
 
 
+const USERINFO = 'USERINFO';
+const USERINFO_SUCCESS = 'USERINFO_SUCCESS';
+const USERINFO_FAIL = 'USERINFO_FAIL';
+
 const initialState = {
   loginInfo: {},
-  logout: {}
+  logout: {},
+  userinfo: {}
 };
 
 
@@ -48,6 +53,20 @@ export default function login(state = initialState, action = {}) {
         ...state,
         error: action.error
       };
+    case USERINFO:
+      return {
+        ...state
+      };
+    case USERINFO_SUCCESS:
+      return {
+        ...state,
+        userinfo: action.data
+      };
+    case USERINFO_FAIL:
+      return {
+        ...state,
+        error: action.error
+      };
     default:
       return {
         ...state
@@ -70,5 +89,12 @@ export function userlogout() {
   return {
     type: [LOGOUT, LOGOUT_SUCCESS, LOGOUT_FAIL],
     promise: apiClient => apiClient.post(`${urlPrefix}/logout`)
+  };
+}
+
+export function userInfo() {
+  return {
+    type: [LOGOUT, LOGOUT_SUCCESS, LOGOUT_FAIL],
+    promise: apiClient => apiClient.get(`${urlPrefix}/userInfo`)
   };
 }
