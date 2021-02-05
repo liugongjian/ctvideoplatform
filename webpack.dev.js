@@ -31,6 +31,14 @@ const proxyServer = {
     secure: false,
     changeOrigin: true
   },
+  '/zhoulingpeng': {
+    target: 'http://192.168.1.199:8670',
+    pathRewrite: {
+      '^/zhoulingpeng': ''
+    },
+    secure: false,
+    changeOrigin: true
+  },
 };
 
 module.exports = merge(common, {

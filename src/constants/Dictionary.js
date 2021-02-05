@@ -23,6 +23,8 @@ export const OPTION_PAGE_LEVEL = {
 export const mockApi = '/mockApi';
 export const devApi = '/devApi';
 export const prodApi = '/prodApi';
+export const zhoulingpeng = '/zhoulingpeng';
+export const lixueping = '/lixueping';
 const prodName = '/';
 
-export const urlPrefix = devApi;
+export const urlPrefix = lixueping;

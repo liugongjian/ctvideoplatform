@@ -72,7 +72,7 @@ export function pushPageHeader(data) {
 export function getMenuList() {
   return {
     type: [GET_MENU_LIST, GET_MENU_LIST_SUCCESS, GET_MENU_LIST_FAIL],
-    promise: apiClient => apiClient.get(`${urlPrefix}/menu/list`)
+    promise: apiClient => apiClient.get(`${urlPrefix}/menu/listbyrole`)
   };
 }
 export default headerReducer;
