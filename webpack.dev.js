@@ -31,17 +31,10 @@ const proxyServer = {
     secure: false,
     changeOrigin: true
   },
-<<<<<<< HEAD
-  '/zhoulinpeng': {
-    target: 'http://192.168.1.199:8670', //
-    pathRewrite: {
-      '^/zhoulinpeng': ''
-=======
   '/zhoulingpeng': {
     target: 'http://192.168.1.199:8670',
     pathRewrite: {
       '^/zhoulingpeng': ''
->>>>>>> 483e77dda474fe1933f273a8a923826336bdfb68
     },
     secure: false,
     changeOrigin: true

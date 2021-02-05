@@ -43,7 +43,9 @@
         opacity: 0;
       }
       :global{
-        .ant-menu-inline-collapsed > .ant-menu-item, .ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-item, .ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-inline-collapsed > .ant-menu-submenu > .ant-menu-submenu-title{
+        
+        .ant-menu-inline-collapsed > .ant-menu-item, .ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-item,
+         .ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-inline-collapsed > .ant-menu-submenu > .ant-menu-submenu-title{
           padding:0 20px !important;
           width: 15px;
           overflow: hidden;
@@ -54,6 +56,9 @@
           a:before{
             width: 50px;
           }
+        }
+        .ant-menu-inline-collapsed> .ant-menu-item-selected{
+          width: auto;
         }
       }
     }
