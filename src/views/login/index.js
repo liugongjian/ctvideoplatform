@@ -48,12 +48,15 @@ class Login extends Component {
           password,
           validate,
         }).then((data) => {
-          if (data) {
+          if (data && data.username) {
             push('/monitor');
           } else {
             this.refreshImg();
           }
-        }).catch(err => console.log(err));
+        }).catch((err) => {
+          this.refreshImg();
+          console.log(err);
+        });
       }
     });
   };

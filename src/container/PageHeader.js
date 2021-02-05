@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
+import { userlogout } from 'Redux/reducer/login';
 // import Icon from 'Components/Icon';
 import PageHeader from 'Components/pageHeader';
 import styles from './pageHeader.less';
@@ -15,7 +16,7 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    push
+    push, userlogout
   },
   dispatch
 );
@@ -41,9 +42,9 @@ class Contents extends Component {
   );
 
   logout = () => {
-    const { userlogout } = this.props;
+    const { userlogout, push } = this.props;
     userlogout().then((data) => {
-
+      push('/login');
     });
   }
 

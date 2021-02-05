@@ -58,7 +58,7 @@ export default function login(state = initialState, action = {}) {
 export function userlogin(params) {
   return {
     type: [LOGIN_DATA, LOGIN_DATA_SUCCESS, LOGIN_DATA_FAIL],
-    promise: apiClient => apiClient.post(`${urlPrefix}/login/`,
+    promise: apiClient => apiClient.post(`${urlPrefix}/login`,
       {
         data: params
         // params
@@ -69,6 +69,6 @@ export function userlogin(params) {
 export function userlogout() {
   return {
     type: [LOGOUT, LOGOUT_SUCCESS, LOGOUT_FAIL],
-    promise: apiClient => apiClient.post(`${urlPrefix}/api/v1/logout/`)
+    promise: apiClient => apiClient.post(`${urlPrefix}/logout`)
   };
 }
