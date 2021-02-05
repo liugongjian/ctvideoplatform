@@ -163,3 +163,15 @@ export function getAlgoAreaImage(id) {
     promise: apiClient => apiClient.get(`${urlPrefix}/device/snapshot/${id}`)
   };
 }
+
+export function postAlgoConf(deviceId, taskInstParams) {
+  return {
+    type: DO_NOTHING,
+    promise: apiClient => apiClient.post(`${urlPrefix}/task/config`, {
+      data: {
+        deviceId,
+        taskInstParams
+      }
+    })
+  };
+}

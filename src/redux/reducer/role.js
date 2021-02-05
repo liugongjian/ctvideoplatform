@@ -18,6 +18,9 @@ const GET_MENU_LIST = 'GET_MENU_LIST';
 const GET_MENU_LIST_SUCCESS = 'GET_MENU_LIST_SUCCESS';
 const GET_MENU_LIST_FAIL = 'GET_MENU_LIST_FAIL';
 
+const GET_ROLE_INFO = 'GET_ROLE_INFO';
+const ROLE_UPDATE = 'ROLE_UPDATE'
+
 // const roleList = [];
 // for (let i = 0; i < 10; i++) {
 //     roleList.push({
@@ -92,6 +95,25 @@ export default function role(state = initialState, action = {}) {
         error: action.error
       };
 
+      case GET_MENU_LIST:
+        return {
+          ...state,
+          menuListLoading: true
+        };
+      case GET_MENU_LIST_SUCCESS:
+        return {
+          ...state,
+          menuListLoading: false,
+        };
+      case GET_ROLE_INFO:
+        return {
+          ...state,
+        };
+
+      case ROLE_UPDATE:
+        return {
+          ...state,
+      };
     default:
       return {
         ...state
@@ -134,7 +156,13 @@ export function getAreaList(pid, keyword) {
   };
 }
 
-export function getMenuList() {
+export function getMenuList(keyword) {
+  if (keyword) {
+    return {
+      type: [GET_MENU_LIST, GET_MENU_LIST_SUCCESS, GET_MENU_LIST_FAIL],
+      promise: apiClient => apiClient.get(`${urlPrefix}/menu/list/?keyword=${keyword}`)
+    };
+  }
   return {
     type: [GET_MENU_LIST, GET_MENU_LIST_SUCCESS, GET_MENU_LIST_FAIL],
     promise: apiClient => apiClient.get(`${urlPrefix}/menu/list/`)
@@ -145,6 +173,23 @@ export function addRole(params) {
   return {
     type: ROLE_ADD,
     promise: apiClient => apiClient.post(`${urlPrefix}/role/add`,
+      {
+        data: params
+      })
+  };
+}
+
+export function getRoleInfo(roleid) {
+  return {
+    type: GET_ROLE_INFO,
+    promise: apiClient => apiClient.get(`${urlPrefix}/role/list/${roleid}/`)
+  };
+}
+
+export function editRoleInfo(params) {
+  return {
+    type: ROLE_UPDATE,
+    promise: apiClient => apiClient.post(`${urlPrefix}/role/update`,
       {
         data: params
       })

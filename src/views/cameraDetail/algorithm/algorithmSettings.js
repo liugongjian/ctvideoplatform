@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable global-require */
 /* eslint-disable import/no-dynamic-require */
 import React, { Component } from 'react';
@@ -8,12 +9,14 @@ import {
   Input,
   Checkbox,
   Button,
+  message,
+  Spin,
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
-import { getAlgoList } from 'Redux/reducer/cameraDetail';
+import { getAlgoList, postAlgoConf } from 'Redux/reducer/cameraDetail';
 import defaultIcon from 'Assets/algorithmIcons/default.png';
 import AlgoConfigDialog from './algoConfigDialog';
 
@@ -25,7 +28,13 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    push, getAlgoList
+    push,
+    getAlgoList,
+    delAlgoConf: (deviceId, id, name) => postAlgoConf(deviceId, [{
+      id,
+      taskName: name,
+      action: 'delete',
+    }])
   },
   dispatch
 );
@@ -105,6 +114,10 @@ class AlgorithmSetting extends Component {
   }
 
   componentDidMount() {
+    this.initData();
+  }
+
+  initData = () => {
     // 初始化algoChecked
     const { algoChecked } = this.state;
     const { getAlgoList, cameraId } = this.props;
@@ -126,6 +139,7 @@ class AlgorithmSetting extends Component {
   }
 
   closeConfigModal = () => {
+    this.initData();
     this.setState({
       configVisible: false,
       curAlgo: undefined,
@@ -133,16 +147,23 @@ class AlgorithmSetting extends Component {
   }
 
   backToPre = () => {
-    this.props.push('/monitor')
+    this.props.push('/monitor');
   }
 
   onAlgoCheckedChange = (algo, checked) => {
     const { algoChecked } = this.state;
-    const { id } = algo;
+    const { delAlgoConf, cameraId } = this.props;
+    const { id, name } = algo;
     algoChecked[id] = checked;
     this.setState({
       algoChecked
     }, () => { console.log('algoChecked', algoChecked); });
+    if (!checked) {
+      delAlgoConf(cameraId, id, name).then((res) => {
+        this.initData();
+        message.success('删除成功');
+      });
+    }
     if (checked) {
       this.openAlgoConfigDialog(algo);
     }
@@ -156,37 +177,39 @@ class AlgorithmSetting extends Component {
       configVisible
     } = this.state;
     const {
-      cameraDetail: { algoList },
+      cameraDetail: { algoList, algoListLoading },
       cameraId,
     } = this.props;
     return (
       <div className={styles.algorithmSetting}>
-        <AlgoConfigDialog
-          key={curAlgo?.id}
-          cameraId={cameraId}
-          curAlgo={curAlgo}
-          configTypes={curAlgo?.configTypes?.split(',') || []}
-          visible={configVisible}
-          closeModal={this.closeConfigModal}
-        />
-        <div className={styles.algorithmList}>
-          {
-            algoList.map(item => (
-              <AlgorithmItem
-                key={item.id}
-                curAlgo={item}
-                checked={algoChecked[item.id]}
-                onChange={this.onAlgoCheckedChange}
-                toConfig={this.openAlgoConfigDialog}
-              />
-            ))
-          }
-        </div>
-        <div className={styles.btnWrapper}>
-          <Button onClick={this.backToPre}>
-            返回
-          </Button>
-        </div>
+        <Spin spinning={algoListLoading}>
+          <AlgoConfigDialog
+            key={curAlgo?.id}
+            cameraId={cameraId}
+            curAlgo={curAlgo}
+            configTypes={curAlgo?.configTypes?.split(',') || []}
+            visible={configVisible}
+            closeModal={this.closeConfigModal}
+          />
+          <div className={styles.algorithmList}>
+            {
+              algoList.map(item => (
+                <AlgorithmItem
+                  key={item.id}
+                  curAlgo={item}
+                  checked={algoChecked[item.id]}
+                  onChange={this.onAlgoCheckedChange}
+                  toConfig={this.openAlgoConfigDialog}
+                />
+              ))
+            }
+          </div>
+          <div className={styles.btnWrapper}>
+            <Button onClick={this.backToPre}>
+              返回
+            </Button>
+          </div>
+        </Spin>
       </div>
     );
   }
