@@ -49,7 +49,7 @@ class Login extends Component {
           validate,
         }).then((data) => {
           if (data) {
-            push(`${pathPrefix}/`);
+            push('/monitor');
           } else {
             this.refreshImg();
           }

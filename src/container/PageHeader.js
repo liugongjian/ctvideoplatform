@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Menu, Button, Icon } from 'antd';
+import {
+  Menu, Button, Icon, Dropdown
+} from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
@@ -30,6 +32,21 @@ class Contents extends Component {
 
   }
 
+  menu = () => (
+    <Menu onClick={this.logout}>
+      <Menu.Item key="0">
+        <a>退出</a>
+      </Menu.Item>
+    </Menu>
+  );
+
+  logout = () => {
+    const { userlogout } = this.props;
+    userlogout().then((data) => {
+
+    });
+  }
+
   toggleCollapsed = () => {
     this.setState({
       collapsed: !this.state.collapsed
@@ -49,10 +66,13 @@ class Contents extends Component {
           <Icon type={collapsed ? 'menu-unfold' : 'menu-fold'} />
         </Button>
         <PageHeader routes={pageHeaderRoute} />
-        <Button type="link" className={styles.userBtn}>
-          <Icon type="user" />
-          用户名
-        </Button>
+        <Dropdown overlay={this.menu} trigger={['click']} className={styles.userBtn}>
+          <a>
+            <Icon type="user" />
+            {/* userInfo.username || '' */}
+            <span className={styles.username}>用户名</span>
+          </a>
+        </Dropdown>
       </div>
     );
   }
