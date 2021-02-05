@@ -72,14 +72,6 @@ const routesConfig = [
 ];
 
 const menuRoutes = [
-  // {
-  //   path: '/',
-  //   pageTitle: '控制台',
-  //   exact: true,
-  //   component: Dashboard,
-  //   menuCode: '01',
-  //   menuTitle: '控制台'
-  // },
   {
     path: '/monitor',
     pageTitle: '设备管理',
@@ -96,14 +88,6 @@ const menuRoutes = [
       }
     ]
   },
-  // {
-  //   path: '/cameraDetail',
-  //   pageTitle: '摄像头详情',
-  //   exact: true,
-  //   component: CameraDetail,
-  //   menuCode: '02',
-  //   menuTitle: '摄像头详情（先放这里后面删）'
-  // },
   {
     path: '/system',
     pageTitle: '系统管理',

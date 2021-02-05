@@ -491,11 +491,6 @@ class Monitor extends Component {
     });
   }
 
-  changeModalDeviceName = (e) => {
-    this.setState({
-      modalDeviceName: e.target.value
-    });
-  }
 
   changeDeviceId = (e) => {
     this.setState({
@@ -506,6 +501,12 @@ class Monitor extends Component {
   changeModalDeviceId = (e) => {
     this.setState({
       modalDeviceId: e.target.value
+    });
+  }
+
+  changeModalDeviceName = (e) => {
+    this.setState({
+      modalDeviceName: e.target.value
     });
   }
 
@@ -529,9 +530,13 @@ class Monitor extends Component {
       name: modalDeviceName
     };
     getDevicePoolList(param).then((res) => {
-      if (Array.isArray(res.list) && res.list.length) {
+      if (Array.isArray(res.list)) {
         this.setState({
           modalDeviceData: res.list
+        });
+      } else {
+        this.setState({
+          modalDeviceData: []
         });
       }
     });
@@ -639,6 +644,7 @@ class Monitor extends Component {
           showModal: false,
           modalCheckedKeys: []
         }, () => {
+          this.getModalDeviceList();
           this.getDeviceList();
         });
       });
@@ -661,7 +667,8 @@ class Monitor extends Component {
   render() {
     const {
       test, treeDatas, expandedKeys, tableData, showModal, showDelModal,
-      algorithmList, algorithmId, modalDeviceData, pageSize, showAreaName
+      algorithmList, algorithmId, modalDeviceData, pageSize, showAreaName,
+      deviceName, deviceId, modalDeviceName, modalDeviceId
     } = this.state;
     const { monitor: { areaListLoading } } = this.props;
     const columns = [
@@ -815,11 +822,11 @@ class Monitor extends Component {
             <div className={styles.searchBox}>
               <div className={styles.searchItme}>
                 <span>摄像头名称：</span>
-                <Input placeholder="请输出摄像头名称" onChange={this.changeDeviceName} />
+                <Input value={deviceName} placeholder="请输出摄像头名称" onChange={this.changeDeviceName} />
               </div>
               <div className={styles.searchItme}>
                 <span>摄像头ID：</span>
-                <Input placeholder="请输入摄像头ID" onChange={this.changeDeviceId} />
+                <Input value={deviceId} placeholder="请输入摄像头ID" onChange={this.changeDeviceId} />
               </div>
               <div className={styles.searchItme}>
                 <span>算法：</span>
@@ -877,11 +884,11 @@ class Monitor extends Component {
             <div className={styles.searchModalBox}>
               <div className={styles.searchItme}>
                 <span>摄像头名称：</span>
-                <Input placeholder="请输出摄像头名称" onChange={this.changeModalDeviceName} />
+                <Input value={modalDeviceName} placeholder="请输出摄像头名称" onChange={this.changeModalDeviceName} />
               </div>
               <div className={styles.searchItme}>
                 <span>摄像头ID：</span>
-                <Input placeholder="请输入摄像头ID" onChange={this.changeModalDeviceId} />
+                <Input value={modalDeviceId} placeholder="请输入摄像头ID" onChange={this.changeModalDeviceId} />
               </div>
               <Button type="primary" className={styles.searchHandleBtn} onClick={this.getModalDeviceList}>查询</Button>
               <Button className={styles.searchHandleBtn} onClick={this.resetModalSearch}>
