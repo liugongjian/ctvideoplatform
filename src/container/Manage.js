@@ -85,15 +85,14 @@ class Manage extends Component {
     const { collapsed } = this.state;
 
     let menuRouter = () => null;
-    try {
-      menuRouter = () => createRouterByApiData(menuRoutes, menuList, true, pathPrefix);
-    } catch (err) {
-      message.error(err.message);
-    }
+    menuRouter = () => createRouterByApiData(menuRoutes, menuList, true, pathPrefix);
 
     console.log('createRouterByApiData', menuRouter());
 
     const menuTree = this.createMenuTree(menuList);
+    if (!menuTree || !menuTree[0]?.path) {
+      return null;
+    }
 
     const leftMenu = menuTree.map((item) => {
       if (item.hide) {
@@ -112,7 +111,7 @@ class Manage extends Component {
         if (showMenu) {
           return (
             <SubMenu
-              key={item.path.split('/')[1]}
+              key={item.path?.split('/')[1] || ''}
               title={(
                 <>
                   <EIcon type={`myicon-menuIcon-${item.id}`} />
@@ -150,7 +149,7 @@ class Manage extends Component {
     });
 
     // 匹配当前选中菜单
-    const split = pathname.split('/');
+    const split = pathname?.split('/');
     if (split && split.length > 3) {
       const reg = /^(\/[\w-_]+\/[\w-_]+)\/(.)*$/.exec(pathname);
       pathname = reg && reg[1];
