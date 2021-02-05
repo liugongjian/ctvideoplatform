@@ -19,7 +19,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     addRole,
     getMenuList,
     getRoleInfo,
-    editRoleInfo
+    editRoleInfo,
   },
   dispatch
 );
@@ -99,7 +99,42 @@ class RoleEdit extends Component {
     console.log('onCheck--',keys);
     if(this.state.activeMenuKey.key === '1'){
       
-      this.setState({checkedKeys : {...this.state.checkedKeys , menuIds : keys}},() => console.log('onCheck--1',this.state.checkedKeys));
+
+      //未选择的选项id
+      let deleteIds = [];
+      if(keys.length===0){
+        deleteIds = this.state.tempData.map((item)=>parseInt(item.id));
+      }else{
+        console.log('this.state.tempData',this.state.tempData)
+        this.state.tempData.map((item) => {
+          for(let i=0;i<keys.length;i++){
+            if(item.id !== keys[i]){
+              deleteIds.push(parseInt(item.id))
+            }
+          }
+        })
+      }
+      console.log('deleteIds---',deleteIds)
+      //操作原来角色的权限
+      let newCheckeKeys = JSON.parse(JSON.stringify(this.state.checkedKeys.menuIds)).map((item)=>{
+        return parseInt(item)
+      });
+      
+      //删除未选择的选项id
+      for(let i=0;i<deleteIds.length;i++){
+        
+        if(newCheckeKeys.indexOf(deleteIds[i]) >= 0){
+          newCheckeKeys.splice(newCheckeKeys.indexOf(deleteIds[i]),1)
+        }
+      }
+      //添加已选择的选项id
+      for(let i=0;i<keys.length;i++){
+        if(newCheckeKeys.indexOf(parseInt(keys[i])) < 0){
+          newCheckeKeys.push(parseInt(keys[i]))
+        }
+      }
+      console.log('newCheckeKeys',newCheckeKeys)
+      this.setState({checkedKeys : {...this.state.checkedKeys,menuIds:newCheckeKeys}},() => console.log('onCheck--1',this.state.checkedKeys));
     }else{
       this.setState({checkedKeys : {...this.state.checkedKeys , areaIds : keys}},() => console.log('onCheck--2',this.state.checkedKeys));
     }
@@ -170,14 +205,14 @@ class RoleEdit extends Component {
       if(this.state.activeMenuKey.key === '1'){
           this.props.getMenuList(this.state.serachInputValue).then(
             (res) => {
-              console.log(res);
+              console.log('searchinput--res--',res);
               const expandKeys = res.map((item)=>item.id);
               console.log(expandKeys);
               const treeDatas = this.dataToTree(res);
               this.setState({
                 tempData: res,
                 treeDatas,
-                expandedKeys:expandKeys
+                expandedKeys:expandKeys,
               });
             }
           )
@@ -199,7 +234,7 @@ class RoleEdit extends Component {
 
 
   componentDidMount() {
-
+    console.log('componentDidMount')
     const { roleid } = this.props.match.params;
     this.props.getRoleInfo( roleid ).then((res)=>{
       this.setState({

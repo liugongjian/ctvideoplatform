@@ -16,6 +16,9 @@ class RoleUI extends Component {
   constructor(props){
     super(props);
   }
+  componentWillReceiveProps(nextProps){
+    console.log('nextProps', nextProps.checkedKeys)
+  }
   onSearchInput(){
     console.log('ui--',this.state.searchValue)
     this.props.onSearchInput(this.state.searchValue);
@@ -29,6 +32,8 @@ class RoleUI extends Component {
             span: 14,
           },
         }
+        console.log('treedata', this.props.treeData)
+        console.log('render checked', this.props.checkedKeys)
     return (
       <div className={styles.contentWrapper}>
         <span className={styles.subTitle}>基本配置</span>
@@ -95,6 +100,7 @@ class RoleUI extends Component {
                       autoExpandParent={this.props.autoExpandParent}
                       onCheck={(keys)=>this.props.onCheck(keys)}
                       checkedKeys={this.props.activeMenuKey.key==='1'?this.props.checkedKeys.menuIds:this.props.checkedKeys.areaIds}
+                      // checkedKeys={this.state.checkedKeys}
                       treeData={this.props.treeData}
                     />
                   </div>
