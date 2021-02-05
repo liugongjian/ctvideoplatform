@@ -33,10 +33,34 @@
       width: 240px;
     }
     .menuInline{
-      width: 100px;
+      width: 50px;
     }
   }
   &-tab {
+    &-collapsed{
+      width: 50px;
+      .@{manage-prefix-cls}-name{
+        opacity: 0;
+      }
+      :global{
+        .ant-menu-inline-collapsed > .ant-menu-item, .ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-item, .ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-inline-collapsed > .ant-menu-submenu > .ant-menu-submenu-title{
+          padding:0 20px !important;
+          width: 15px;
+          overflow: hidden;
+          a{
+            width: 15px;
+            overflow: hidden;
+          }
+          a:before{
+            width: 50px;
+          }
+        }
+      }
+    }
+    .span10px{
+      display: inline-block;
+      width: 10px;
+    }
     // width: 240px;
     // position: fixed;
     // padding-top: 50px;

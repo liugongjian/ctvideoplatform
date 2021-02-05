@@ -17,8 +17,9 @@ import { pathPrefix } from 'Constants/Dictionary';
 import { menuRoutes } from 'Setting/routeconfig';
 import { createRouters, createRouterByApiData } from 'Utils/core';
 import { getMenuList } from 'Redux/reducer/pageHeader';
-
+import EIcon from 'Components/Icon';
 import { render } from 'less';
+
 import PageHeader from './PageHeader';
 import styles from './Manage.less';
 
@@ -110,12 +111,23 @@ class Manage extends Component {
         }
         if (showMenu) {
           return (
-            <SubMenu key={item.path.split('/')[1]} title={item.name}>
+            <SubMenu
+              key={item.path.split('/')[1]}
+              title={(
+                <>
+                  <EIcon type={`myicon-menuIcon-${item.id}`} />
+                  <span className={styles.span10px} />
+                  {item.name}
+                </>
+              )}
+            >
               {
                 item.children.map(val => (
                   <Menu.Item key={`${pathPrefix}${item.path}${val.path}`}>
                     <Link to={`${pathPrefix}${item.path}${val.path}`}>
                       {/* <Icon type="anticon-service-Cloudhostconsole" /> */}
+                      <EIcon type={`myicon-menuIcon-${val.id}`} />
+                      <span className={styles.span10px} />
                       <span>{val.name}</span>
                     </Link>
                   </Menu.Item>
@@ -129,6 +141,8 @@ class Manage extends Component {
         <Menu.Item key={`${pathPrefix}${item.path}`}>
           <Link to={`${pathPrefix}${item.path}`}>
             {/* <Icon type="desktop" /> */}
+            <EIcon type={`myicon-menuIcon-${item.id}`} />
+            <span className={styles.span10px} />
             <span className={styles['EMR-manage-menuicon']}>{item.name}</span>
           </Link>
         </Menu.Item>
@@ -147,7 +161,7 @@ class Manage extends Component {
     }
     return (
       <div className={styles['EMR-manage-container']}>
-        <div className={styles['EMR-manage-tab']}>
+        <div className={`${styles['EMR-manage-tab']} ${collapsed ? styles['EMR-manage-tab-collapsed'] : ''}`}>
           <Spin spinning={menuListLoading}>
             <div className={styles['EMR-manage-avatar']}>
               {/* <img src="" alt="视频云" className={styles['EMR-manage-img']} /> */}

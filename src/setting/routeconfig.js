@@ -90,7 +90,6 @@ const menuRoutes = [
   {
     path: '/system',
     exact: true,
-    pageTitle: '系统管理',
     children: [
       {
         path: '/role',
