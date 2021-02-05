@@ -44,15 +44,14 @@ class Role extends Component {
 
   onDeleteItems = () => {
     this.setState({isDeleting:true});
+    this.setState({deleteModalVisible:false , isDeleting : false });
     this.props.deleteRoles({
       roleIdlist : this.state.deleteItems,
     }).then((data) => {
+      console.log(data);
       if (data) {
         message.success('删除成功');
-      } else {
-        message.success('删除失败');
       }
-      this.setState({deleteModalVisible:false , isDeleting : false });
       this.onPageNumChange(this.state.roleListInfo.pageNo + 1);
     }).catch(err => {
       message.success('删除失败');
