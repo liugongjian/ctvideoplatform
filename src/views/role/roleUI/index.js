@@ -10,8 +10,15 @@ import infoPic from '@/assets/role/info.png'
 
 
 class RoleUI extends Component {
+  state={
+    searchValue:'',
+  }
   constructor(props){
     super(props);
+  }
+  onSearchInput(){
+    console.log('ui--',this.state.searchValue)
+    this.props.onSearchInput(this.state.searchValue);
   }
   render() {
     const formItemLayout = {
@@ -42,11 +49,11 @@ class RoleUI extends Component {
                     },
                   ]}
                 >
-                  <Input className={styles.formItemInput} onChange={(e) => this.props.onNameChange(e.target.value)}/>
+                  <Input className={styles.formItemInput} onChange={(e) => this.props.onNameChange(e.target.value)} value={this.props.name}/>
               </Form.Item>
             
               <Form.Item label="角色描述" name="description">
-                  <Input className={styles.formItemInput} onChange={(e) => this.props.onDescriptionChange(e.target.value)}/>
+                  <Input className={styles.formItemInput} onChange={(e) => this.props.onDescriptionChange(e.target.value)} value={this.props.description}/>
               </Form.Item>
           
 
@@ -76,7 +83,9 @@ class RoleUI extends Component {
                         <img style={{width:"20px",height:"20px",display:"inline-block"}} src={infoPic}/>
                         <span>请配置当前角色能够访问的系统管理菜单</span>
                       </div>
-                      <Search placeholder="请输入菜单名称" style={{ display:'inline-block',float:'right',width:'25%',margin:'5px 5px 0 0'}} onChange={(e)=>this.onChange(e)} />
+                      <Search placeholder="请输入菜单名称" style={{ display:'inline-block',float:'right',width:'25%',margin:'5px 5px 0 0'}} 
+                      onChange={(e)=>this.setState({searchValue:e.target.value})}
+                      onSearch={()=>this.onSearchInput()} />
                     </div>
                     <Tree
                       checkable
@@ -94,7 +103,7 @@ class RoleUI extends Component {
 
             <Form.Item>
               <div className={styles.btnWrapper}>
-                <Button type="primary" htmlType="submit" style={{margin:'20px'}} onClick={() => this.props.onSave()}>
+                <Button type="primary" style={{margin:'20px'}} onClick={() => this.props.onSave()}>
                   保存
                 </Button>
                 <Button onClick={() => this.props.onCancel()}>
