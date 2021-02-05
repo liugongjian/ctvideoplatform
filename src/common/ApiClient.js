@@ -77,7 +77,7 @@ class ApiClient {
 
                 if (res.body.code === 10000) {
                   message.info('正在跳转到登陆页面...');
-                  window.location.href = `${window.location.host}/login`;
+                  window.location.href = `${window.location.origin}/login`;
                 }
 
                 throw new Error(res.body.msg || res.statusText);
