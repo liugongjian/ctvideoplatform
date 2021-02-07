@@ -17,10 +17,10 @@ class RoleUI extends Component {
     super(props);
   }
   componentWillReceiveProps(nextProps){
-    console.log('nextProps', nextProps.checkedKeys)
+    // console.log('nextProps', nextProps.checkedKeys)
   }
   onSearchInput(){
-    console.log('ui--',this.state.searchValue)
+    // console.log('ui--',this.state.searchValue)
     this.props.onSearchInput(this.state.searchValue);
   }
   render() {
@@ -32,8 +32,6 @@ class RoleUI extends Component {
             span: 14,
           },
         }
-        console.log('treedata', this.props.treeData)
-        console.log('render checked', this.props.checkedKeys)
     return (
       <div className={styles.contentWrapper}>
         <span className={styles.subTitle}>基本配置</span>
@@ -88,21 +86,23 @@ class RoleUI extends Component {
                         <img style={{width:"20px",height:"20px",display:"inline-block"}} src={infoPic}/>
                         <span>请配置当前角色能够访问的系统管理菜单</span>
                       </div>
-                      {/* <Search placeholder="请输入菜单名称" style={{ display:'inline-block',float:'right',width:'25%',margin:'5px 5px 0 0'}} 
+                      <Search placeholder="请输入菜单名称" style={{ display:'inline-block',float:'right',width:'25%',margin:'5px 5px 0 0'}} 
                       onChange={(e)=>this.setState({searchValue:e.target.value})}
-                      onSearch={()=>this.onSearchInput()} /> */}
+                      onSearch={()=>this.onSearchInput()} />
                     </div>
-                    <Tree
-                      checkable
-                      height={300}
-                      onExpand={(keys)=>this.props.onExpand(keys)}
-                      expandedKeys={this.props.expandedKeys}
-                      autoExpandParent={this.props.autoExpandParent}
-                      onCheck={(keys)=>this.props.onCheck(keys)}
-                      checkedKeys={this.props.activeMenuKey.key==='1'?this.props.checkedKeys.menuIds:this.props.checkedKeys.areaIds}
-                      // checkedKeys={this.state.checkedKeys}
-                      treeData={this.props.treeData}
-                    />
+                    <div className={styles.treeRegion}>
+                      <Tree
+                        checkable
+                        height={300}
+                        onExpand={(keys)=>this.props.onExpand(keys)}
+                        expandedKeys={this.props.expandedKeys}
+                        autoExpandParent={this.props.autoExpandParent}
+                        onCheck={(keys)=>this.props.onCheck(keys)}
+                        checkedKeys={this.props.activeMenuKey.key==='1'?this.props.checkedKeys.menuIds:this.props.checkedKeys.areaIds}
+                        // checkedKeys={this.state.checkedKeys}
+                        treeData={this.props.treeData}
+                      />
+                    </div>
                   </div>
                 </div>
               </Form.Item>
