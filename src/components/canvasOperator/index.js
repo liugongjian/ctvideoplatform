@@ -7,6 +7,7 @@ import {
   Form,
   Input,
   Button,
+  Icon,
 } from 'antd';
 import PropTypes from 'prop-types';
 import { constant } from 'lodash';
@@ -33,7 +34,7 @@ class CanvasOperator extends Component {
       imageWidth: '',
       imageHeight: '',
       points: [], // 当前绘制轨迹,eg:[[x1,y1],[x2,y2]]
-      // areas: [],
+      preArea: [],
     };
   }
 
@@ -44,7 +45,9 @@ class CanvasOperator extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.imgSrc && !this.state.canvas) {
+    console.log('nextProps', nextProps);
+    if ((nextProps.imgSrc && !this.state.canvas)
+     || this.state.areas?.length !== nextProps.areas?.length) {
       this.initData(nextProps);
     }
   }
@@ -75,10 +78,8 @@ class CanvasOperator extends Component {
       });
       const wrapperDom = document.getElementById(`configCanvas-${id}-wrapper`);
       const canvasHeight = math.divide(img.height, ratio); // img.height / ratio;
-      console.log('canvasHeight', canvasHeight);
       backgroundLayer.height = canvasHeight;
       canvasDom.height = canvasHeight;
-      console.log('wrapperDom', wrapperDom);
       wrapperDom.style = { height: canvasHeight, width: backgroundLayer.width };
       // wrapperDom.style.width = backgroundLayer.width;
       // 图片按缩放比例绘制
@@ -272,6 +273,20 @@ class CanvasOperator extends Component {
     }
   }
 
+  reset =() => {
+    const {
+      areas,
+      initalAreas,
+      onAreasChange,
+    } = this.props;
+    // const newArea = areas.filter(area => area.origin);
+    onAreasChange(initalAreas);
+  }
+
+  clearAll =() => {
+    this.props.onAreasChange([]);
+  }
+
   onMouseUp = (e) => {
     console.log('onMouseUp');
     const {
@@ -320,14 +335,30 @@ class CanvasOperator extends Component {
           <div
             className={`${styles.optButton} ${mode === DRAW_MODES.RECT ? styles['optButton-selected'] : ''}`}
             onClick={() => this.setDrawMode(DRAW_MODES.RECT)}
+            title="矩形选框"
           >
             <EIcon type="myicon-rect" />
           </div>
           <div
             className={`${styles.optButton} ${mode === DRAW_MODES.POLYGON ? styles['optButton-selected'] : ''}`}
             onClick={() => this.setDrawMode(DRAW_MODES.POLYGON)}
+            title="多边形选框"
           >
             <EIcon type="myicon-polygon" />
+          </div>
+          <div
+            className={`${styles.optButton}`}
+            onClick={() => this.reset()}
+            title="重置"
+          >
+            <Icon type="undo" />
+          </div>
+          <div
+            className={`${styles.optButton}`}
+            onClick={() => this.clearAll()}
+            title="清空"
+          >
+            <Icon type="delete" />
           </div>
         </div>
         <div id={`configCanvas-${id}-wrapper`} className={styles.canvasWrapper}>

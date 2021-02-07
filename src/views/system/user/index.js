@@ -123,7 +123,6 @@ class Account extends Component {
   updateUser = () => {
     const { updateUser } = this.props;
     this.props.form.validateFields((errors, values) => {
-      console.log('errors', errors);
       if (values.roleId) {
         const data = {
           id: this.state.editXq.userId,
@@ -479,7 +478,7 @@ class Account extends Component {
   updatePassword = () => {
     const { updatePassword } = this.props;
     this.props.form.validateFields((errors, values) => {
-      if (!errors) {
+      if (!errors.rentpassword && !errors.reNewPassword && !errors.reNewPassword1 && errors.roleId.errors.length === 1) {
         const data = {
           rentpassword: values.rentpassword,
           renewpassword: values.reNewPassword,

@@ -23,6 +23,7 @@ import CanvasOperator from 'Components/canvasOperator';
 import { DRAW_MODES } from 'Components/canvasOperator/constants';
 import moment from 'moment';
 import { formGetFieldDecorator } from '@/components/FormPopover';
+import { times } from 'lodash';
 import {
   TRIGGER_ORIGIN,
   ALGO_CONFIG_TRIGGER_RULE,
@@ -60,15 +61,18 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   dispatch
 );
 
+const ALL_TIME_START = '0:00';
+const ALL_TIME_END = '23:59';
+const allTimeSetting = {
+  start: ALL_TIME_START,
+  end: ALL_TIME_END,
+};
 class CameraDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
       areas: [],
-      timeSetting: {
-        start: '00:00',
-        end: '23:59',
-      },
+      timeSetting: allTimeSetting,
       ruleConfig: '0',
       timeType: ALGO_CONFIG_TRIGGER_TIME_TYPE.ALL_TIME.value,
       imgSrc: null,
@@ -115,7 +119,11 @@ class CameraDetail extends Component {
     const nextState = {};
     if (timeSetting !== undefined) {
       nextState.timeSetting = timeSetting;
-      nextState.timeType = ALGO_CONFIG_TRIGGER_TIME_TYPE.BY_SEL.value;
+      if (timeSetting.start === ALL_TIME_START && timeSetting.end === ALL_TIME_END) {
+        nextState.timeType = ALGO_CONFIG_TRIGGER_TIME_TYPE.ALL_TIME.value;
+      } else {
+        nextState.timeType = ALGO_CONFIG_TRIGGER_TIME_TYPE.BY_SEL.value;
+      }
     }
     if (triggerType !== undefined) {
       nextState.ruleConfig = `${triggerType}`;
@@ -131,13 +139,15 @@ class CameraDetail extends Component {
           origin: true, // 代表是原始尺寸
         });
       });
+      // 拷贝一份最初版本
+      nextState.initalAreas = JSON.parse(JSON.stringify(nextState.areas));
     }
     this.setState(nextState);
   }
 
   handleOk = () => {
     const {
-      areas, timeSetting, ruleConfig
+      areas, timeSetting, ruleConfig, timeType
     } = this.state;
     console.log('areas', areas);
     const {
@@ -145,7 +155,7 @@ class CameraDetail extends Component {
       cameraId,
       addAlgoConf,
       updateAlgoConf,
-      configTypes
+      configTypes,
     } = this.props;
     const postData = {};
     const { isPick } = curAlgo;
@@ -186,7 +196,16 @@ class CameraDetail extends Component {
       postData.triggerType = ruleConfig;
     }
     if (configEnable[ALGO_CONFIG_TYPE.TIME]) {
-      postData.timeSetting = timeSetting;
+      switch (timeType) {
+        case ALGO_CONFIG_TRIGGER_TIME_TYPE.BY_SEL.value:
+          postData.timeSetting = timeSetting;
+          break;
+        case ALGO_CONFIG_TRIGGER_TIME_TYPE.ALL_TIME.value:
+          postData.timeSetting = allTimeSetting;
+          break;
+        default:
+          break;
+      }
     }
     console.log(postData);
     postApi(cameraId, curAlgo, postData).then((res) => {
@@ -215,7 +234,22 @@ class CameraDetail extends Component {
 
   onTimeTypeChange = (e) => {
     console.log('onTimeTypeChange', e);
-    this.setState({ timeType: e.target.value });
+    const newVal = e.target.value;
+    switch (newVal) {
+      case ALGO_CONFIG_TRIGGER_TIME_TYPE.BY_SEL.value:
+        this.setState({
+          timeType: newVal,
+        });
+        break;
+      case ALGO_CONFIG_TRIGGER_TIME_TYPE.ALL_TIME.value:
+        this.setState({
+          timeSetting: allTimeSetting,
+          timeType: newVal,
+        });
+        break;
+      default:
+        break;
+    }
   }
 
   onTimeChange = (type, val) => {
@@ -234,6 +268,7 @@ class CameraDetail extends Component {
     } = this.props;
     const {
       areas = [],
+      initalAreas = [],
       ruleConfig,
       timeType,
       imgSrc, imgLoading,
@@ -272,6 +307,7 @@ class CameraDetail extends Component {
                     width="550px"
                     id="1"
                     areas={areas}
+                    initalAreas={initalAreas}
                     onAreasChange={this.onAreasChange}
                   />
                 </div>
