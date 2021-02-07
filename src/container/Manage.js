@@ -114,9 +114,10 @@ class Manage extends Component {
               key={item.path?.split('/')[1] || ''}
               title={(
                 <>
-                  <EIcon type={`myicon-menuIcon-${item.id}`} />
-                  <span className={styles.span10px} />
-                  {item.name}
+                  <EIcon type={`myicon-menuIcon-${item.id} ${styles['EMR-manage-tab-iconFs']}`} />
+                  <span className={styles.span10px}>
+                    {item.name}
+                  </span>
                 </>
               )}
             >
@@ -125,9 +126,8 @@ class Manage extends Component {
                   <Menu.Item key={`${pathPrefix}${item.path}${val.path}`}>
                     <Link to={`${pathPrefix}${item.path}${val.path}`}>
                       {/* <Icon type="anticon-service-Cloudhostconsole" /> */}
-                      <EIcon type={`myicon-menuIcon-${val.id}`} />
-                      <span className={styles.span10px} />
-                      <span>{val.name}</span>
+                      <EIcon type={`myicon-menuIcon-${val.id} ${styles['EMR-manage-tab-iconFs']}`} />
+                      <span className={styles.span10px}>{val.name}</span>
                     </Link>
                   </Menu.Item>
                 ))
@@ -140,9 +140,8 @@ class Manage extends Component {
         <Menu.Item key={`${pathPrefix}${item.path}`}>
           <Link to={`${pathPrefix}${item.path}`}>
             {/* <Icon type="desktop" /> */}
-            <EIcon type={`myicon-menuIcon-${item.id}`} />
-            <span className={styles.span10px} />
-            <span className={styles['EMR-manage-menuicon']}>{item.name}</span>
+            <EIcon type={`myicon-menuIcon-${item.id} ${styles['EMR-manage-tab-iconFs']}`} />
+            <span className={styles.span10px}>{item.name}</span>
           </Link>
         </Menu.Item>
       );
