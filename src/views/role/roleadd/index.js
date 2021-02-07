@@ -68,52 +68,54 @@ class RoleAdd extends Component {
     this.setState({expandedKeys:keys,autoExpandParent:false});
   };
 
-
   onSelectTreeMenu(key){
     this.setState({activeMenuKey:key} , () => {
-      console.log(key)
       if(key.key === '1'){
         this.props.getMenuList().then((res)=>{
           const treeDatas = this.dataToTree(res);
+          const expandedKeys = res.map((item)=>item.id)
           this.setState({
             tempData: res,
             treeDatas,
+            expandedKeys,
           });
         })
       }else{
         this.props.getAreaList(0,null).then((res) => {
           const treeDatas = this.dataToTree(res);
+          const expandedKeys = res.map((item)=>item.id)
           this.setState({
             tempData: res,
             treeDatas,
+            expandedKeys,
           });
         });
       }
     })
   }
 
-  
-  onSearchInput(value){
+onSearchInput(value){
     this.setState({serachInputValue : value} , ()=>{
       if(this.state.activeMenuKey.key === '1'){
           this.props.getMenuList(this.state.serachInputValue).then(
             (res) => {
-              console.log(res);
+              res = res.map((item) => {
+                if(item.configurable){
+                  return item
+                }
+              })
               const expandKeys = res.map((item)=>item.id);
-              console.log(expandKeys);
               const treeDatas = this.dataToTree(res);
               this.setState({
                 tempData: res,
                 treeDatas,
-                expandedKeys:expandKeys
+                expandedKeys:expandKeys,
               });
             }
           )
       }else{
         this.props.getAreaList(0,this.state.serachInputValue).then((res) => {
-          console.log(res);
           const expandKeys = res.map((item)=>item.id);
-          console.log(expandKeys);
           const treeDatas = this.dataToTree(res);
           this.setState({
             tempData: res,
@@ -206,9 +208,11 @@ class RoleAdd extends Component {
   componentDidMount() {
     this.props.getMenuList().then((res)=>{
       const treeDatas = this.dataToTree(res);
+      const expandedKeys = res.map((item)=>item.id)
       this.setState({
         tempData: res,
         treeDatas,
+        expandedKeys
       });
     })
     // this.props.getAreaList(0,null).then((res) => {

@@ -39,23 +39,22 @@ class Role extends Component {
 
   onSelectChange = selectedRowKeys => {
     console.log('selectedRowKeys changed: ', selectedRowKeys);
-    this.setState({ selectedRowKeys });
+    this.setState({ selectedRowKeys , deleteItems:selectedRowKeys });
   };
 
   onDeleteItems = () => {
-    this.setState({isDeleting:true});
     this.setState({deleteModalVisible:false , isDeleting : false });
     this.props.deleteRoles({
       roleIdlist : this.state.deleteItems,
     }).then((data) => {
-      console.log(data);
+      this.setState({deleteItems:[] , selectedRowKeys:[]})
       if (data) {
         message.success('删除成功');
       }
       this.onPageNumChange(this.state.roleListInfo.pageNo + 1);
     }).catch(err => {
-      message.success('删除失败');
-      this.setState({deleteModalVisible:false , isDeleting : false });
+      message.error('删除失败');
+      this.setState({deleteModalVisible:false , isDeleting : false});
     });
   };
 
@@ -117,11 +116,11 @@ class Role extends Component {
             <Search placeholder="请输入角色名称" icon={searchPic} onSearch={() => this.searchRole()} onChange={(e) => this.setState({searchName:e.target.value})}/>
           </div>
         </div>
-        <Table rowSelection={rowSelection} dataSource={roleListInfo.list} pagination={false}>
-            <Column title="角色名称" dataIndex="name" key="name" />
-            <Column title="创建时间" dataIndex="createTime" key="createTime" />
-            <Column title="修改时间" dataIndex="updateTime" key="updateTime" />
-            <Column title="角色描述" dataIndex="description" key="description" />
+        <Table rowSelection={rowSelection} dataSource={roleListInfo.list} pagination={false} rowKey={(record) => record.id}>
+            <Column title="角色名称" dataIndex="name"/>
+            <Column title="创建时间" dataIndex="createTime"/>
+            <Column title="修改时间" dataIndex="updateTime"/>
+            <Column title="角色描述" dataIndex="description"/>
             <Column
                 title="操作"
                 key="action"
@@ -173,7 +172,7 @@ class Role extends Component {
             <div className={styles.deleteModalInfo}>
               <span>你确定要删除所选的{this.state.deleteItems.length}个角色吗？</span>
               <p>此操作将删除选中角色</p>
-              <p>角色删除后，使用删除角色的账号将无法登录系统</p>
+              <p>如果删除的角色，已有账号关联，则无法被删除！</p>
             </div>
           </div>
         </Modal>

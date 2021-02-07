@@ -85,7 +85,6 @@ class RoleEdit extends Component {
         })
       }else{
         this.props.getAreaList(0,null).then((res) => {
-          console.log(res);
           const treeDatas = this.dataToTree(res);
           const expandedKeys = res.map((item)=>item.id)
           this.setState({
@@ -104,7 +103,7 @@ class RoleEdit extends Component {
     }else{
       debugger;
       let newCheckeKeys = this.getNewCheckeKeys(keys,'areaIds')
-      this.setState({checkedKeys : {...this.state.checkedKeys , areaIds : newCheckeKeys}} , console.log('onCheck--this.state.checkedKeys',this.state.checkedKeys));
+      this.setState({checkedKeys : {...this.state.checkedKeys , areaIds : newCheckeKeys}});
     }
   };
 
@@ -208,6 +207,11 @@ class RoleEdit extends Component {
       if(this.state.activeMenuKey.key === '1'){
           this.props.getMenuList(this.state.serachInputValue).then(
             (res) => {
+              res = res.map((item) => {
+                if(item.configurable){
+                  return item
+                }
+              })
               const expandKeys = res.map((item)=>item.id);
               const treeDatas = this.dataToTree(res);
               this.setState({
@@ -229,8 +233,6 @@ class RoleEdit extends Component {
         });
       }
     })
-
-    console.log('onSearchInput---this.state.checkedKeys',this.state.checkedKeys)
   }
 
 
@@ -248,10 +250,13 @@ class RoleEdit extends Component {
       });
     })
     this.props.getMenuList().then((res)=>{
+      const expandedKeys = res.map((item)=>item.id)
+      // console.log('expandedKeys',expandedKeys)
       const treeDatas = this.dataToTree(res);
       this.setState({
         tempData: res,
         treeDatas,
+        expandedKeys
       });
     })
   }

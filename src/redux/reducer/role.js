@@ -147,7 +147,7 @@ export function getAreaList(pid, keyword) {
   if (keyword) {
     return {
       type: [GET_AREA_LIST, GET_AREA_LIST_SUCCESS, GET_AREA_LIST_FAIL],
-      promise: apiClient => apiClient.get(`${urlPrefix}/area/list/${pid}/?keyword=${keyword}`)
+      promise: apiClient => apiClient.get(`${urlPrefix}/area/list/${pid}?keyword=${keyword}`)
     };
   }
   return {
@@ -160,7 +160,7 @@ export function getMenuList(keyword) {
   if (keyword) {
     return {
       type: [GET_MENU_LIST, GET_MENU_LIST_SUCCESS, GET_MENU_LIST_FAIL],
-      promise: apiClient => apiClient.get(`${urlPrefix}/menu/list?keyword=${keyword}`)
+      promise: apiClient => apiClient.get(`${urlPrefix}/menu/all?keyword=${keyword}`)
     };
   }
   return {
