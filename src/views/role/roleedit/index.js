@@ -238,17 +238,7 @@ class RoleEdit extends Component {
 
   componentDidMount() {
     const { roleid } = this.props.match.params;
-    this.props.getRoleInfo( roleid ).then((res)=>{
-      this.setState({
-        roleid : roleid,
-        name : res[0].name,
-        description : res[0].description,
-        checkedKeys:{
-          menuIds: JSON.parse(res[0].menuIds),
-          areaIds : JSON.parse(res[0].areaIds),
-        }
-      });
-    })
+
     this.props.getMenuList().then((res)=>{
       const expandedKeys = res.map((item)=>item.id)
       // console.log('expandedKeys',expandedKeys)
@@ -257,6 +247,19 @@ class RoleEdit extends Component {
         tempData: res,
         treeDatas,
         expandedKeys
+      },()=>{
+        this.props.getRoleInfo( roleid ).then((res)=>{
+          const checkedKeys = {
+            menuIds : JSON.parse(res[0].menuIds),
+            areaIds : JSON.parse(res[0].areaIds),
+          }
+          this.setState({
+            roleid : roleid,
+            name : res[0].name,
+            description : res[0].description,
+            checkedKeys,
+          });
+        })
       });
     })
   }
