@@ -497,6 +497,14 @@ class Monitor extends Component {
     });
   }
 
+  getModalDeviceListByAll = () => {
+    this.setState({
+      modalPageNo: 0
+    }, () => {
+      this.getModalDeviceList();
+    });
+  }
+
   selectThisAlgorithm = (value) => {
     this.setState({
       algorithmId: value
@@ -921,7 +929,7 @@ class Monitor extends Component {
                 <span>摄像头ID：</span>
                 <Input value={modalDeviceId} placeholder="请输入摄像头ID" onChange={this.changeModalDeviceId} />
               </div>
-              <Button type="primary" className={styles.searchHandleBtn} onClick={this.getModalDeviceList}>查询</Button>
+              <Button type="primary" className={styles.searchHandleBtn} onClick={this.getModalDeviceListByAll}>查询</Button>
               <Button className={styles.searchHandleBtn} onClick={this.resetModalSearch}>
                 <Icon type="reload" />
                 <span>重置</span>
