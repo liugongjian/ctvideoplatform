@@ -147,6 +147,7 @@ class Manage extends Component {
         </Menu.Item>
       );
     });
+    console.log('!!!!', menuTree);
 
     // 匹配当前选中菜单
     const split = pathname?.split('/');

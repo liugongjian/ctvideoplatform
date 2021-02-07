@@ -124,6 +124,11 @@ const menuRoutes = [
       }
     ]
   },
+  {
+    path: '/',
+    exact: true,
+    component: Monitor,
+  }
 ];
 
 // const menuRoutes = [
