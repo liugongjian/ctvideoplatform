@@ -58,6 +58,7 @@ class Monitor extends Component {
     showDelModal: false,
     deviceName: '',
     deviceId: '',
+    originId: '',
     algorithmId: 'all',
     algorithmList: [],
     modalDeviceName: '',
@@ -455,6 +456,7 @@ class Monitor extends Component {
       pageSize,
       deviceName,
       deviceId,
+      originId,
       algorithmId
     } = this.state;
     const param = {
@@ -463,7 +465,8 @@ class Monitor extends Component {
       recursive,
       pageSize,
       name: deviceName,
-      deviceId,
+      // deviceId,
+      originId,
       algorithm: algorithmId === 'all' ? '' : algorithmId
     };
     getDeiviceList(param).then((res) => {
@@ -503,7 +506,8 @@ class Monitor extends Component {
 
   changeDeviceId = (e) => {
     this.setState({
-      deviceId: e.target.value
+      // deviceId: e.target.value
+      originId: e.target.value
     });
   }
 
@@ -526,7 +530,8 @@ class Monitor extends Component {
       // recursive: false,
       pageSize: 10,
       deviceName: '',
-      deviceId: '',
+      // deviceId: '',
+      originId: '',
       algorithmId: 'all',
     }, () => this.getDeviceList());
   }
@@ -681,7 +686,7 @@ class Monitor extends Component {
     const {
       test, treeDatas, expandedKeys, tableData, showModal, showDelModal,
       algorithmList = [], algorithmId, modalDeviceData, pageSize, showAreaName,
-      deviceName, deviceId, modalDeviceName, modalDeviceId
+      deviceName, deviceId, modalDeviceName, modalDeviceId, originId
     } = this.state;
     const { monitor: { areaListLoading } } = this.props;
     const columns = [
@@ -846,7 +851,7 @@ class Monitor extends Component {
               </div>
               <div className={styles.searchItme}>
                 <span>摄像头ID：</span>
-                <Input value={deviceId} placeholder="请输入摄像头ID" onChange={this.changeDeviceId} />
+                <Input value={originId} placeholder="请输入摄像头ID" onChange={this.changeDeviceId} />
               </div>
               <div className={styles.searchItme}>
                 <span>算法：</span>
