@@ -63,8 +63,6 @@ class RoleAdd extends Component {
   }
 
   onExpand(keys) {
-    console.log('onExpand', keys); // if not set autoExpandParent to false, if children expanded, parent can not collapse.
-    // or, you can remove all expanded children keys.
     this.setState({expandedKeys:keys,autoExpandParent:false});
   };
 
@@ -155,6 +153,22 @@ onSearchInput(value){
       if(data){
         message.success('添加成功')
         this.props.push(`${pathPrefix}/system/role`);
+        this.setState({
+          tempData: [],
+          treeDatas : [],
+          activeMenuKey:{
+            key:'1'
+          },
+          expandedKeys: [],
+          checkedKeys: {
+            menuIds:[],
+            areaIds:[]
+          },
+          selectedKeys: [],
+          autoExpandParent: true,
+          name:'',
+          description:''
+        })
       }
     });
   }

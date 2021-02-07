@@ -571,13 +571,13 @@ class Monitor extends Component {
     };
     getDevicePoolList(param).then((res) => {
       getAreaName(areaId).then((data) => {
-        if (Array.isArray(res.list) && res.list.length) {
-          this.setState({
-            modalDeviceData: res,
-            showModal: true,
-            showAreaName: data
-          });
-        }
+        // if (Array.isArray(res.list) && res.list.length) {
+        this.setState({
+          modalDeviceData: res,
+          showModal: true,
+          showAreaName: data
+        });
+        // }
       });
     });
   }
@@ -647,9 +647,9 @@ class Monitor extends Component {
     if (modalCheckedKeys.length > 0) {
       const temp = modalCheckedKeys.map(item => (
         {
-          deviceid: item.deviceid,
+          deviceId: item.deviceId,
           sourceId: item.sourceId,
-          devicename: item.devicename
+          deviceName: item.deviceName
         }
       ));
       setDeviceList(temp, areaId).then((res) => {
@@ -680,7 +680,7 @@ class Monitor extends Component {
   render() {
     const {
       test, treeDatas, expandedKeys, tableData, showModal, showDelModal,
-      algorithmList, algorithmId, modalDeviceData, pageSize, showAreaName,
+      algorithmList = [], algorithmId, modalDeviceData, pageSize, showAreaName,
       deviceName, deviceId, modalDeviceName, modalDeviceId
     } = this.state;
     const { monitor: { areaListLoading } } = this.props;
@@ -715,7 +715,7 @@ class Monitor extends Component {
       {
         title: '已配置算法',
         dataIndex: 'algorithms',
-        key: 'algorithms'
+        key: 'algorithms',
       },
       {
         title: '经纬度',
@@ -768,15 +768,15 @@ class Monitor extends Component {
     const modalColumns = [
       {
         title: '摄像头名称',
-        dataIndex: 'devicename',
-        key: 'devicename',
+        dataIndex: 'deviceName',
+        key: 'deviceName',
         fixed: 'left',
         render: text => <span>{text.substring(0, 10)}</span>,
       },
       {
         title: '摄像头ID',
-        dataIndex: 'deviceid',
-        key: 'deviceid',
+        dataIndex: 'deviceId',
+        key: 'deviceId',
         // fixed: 'left',
       },
     ];
