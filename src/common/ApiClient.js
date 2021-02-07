@@ -80,10 +80,10 @@ class ApiClient {
                   window.location.href = `${window.location.origin}/login`;
                 }
 
-                if (res.body.code === -1) {
-                  message.info(res.body.msg || '请稍后再试');
-                  return false;
-                }
+                // if (res.body.code === -1) {
+                //   message.info(res.body.msg || '请稍后再试');
+                //   return false;
+                // }
 
                 throw new Error(res.body.msg || res.statusText);
               }
