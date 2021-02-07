@@ -91,10 +91,23 @@
       position: relative;
     }
   }
+  .Menu-menuItem{
+    span{
+      display: inline-block;
+      
+    }
+  }
   &-avatar {
-    // height: 120px;
-    height: 70px;
-    line-height: 70px;
+    text-align: center;
+    height: 42px;
+    line-height: 42px;
+    margin: 15px 0;
+    font-size: 28px;
+    vertical-align: middle;
+    &>span{
+      display: inline-block;
+      vertical-align: middle;
+    }
   }
   &-img {
     display: block;
@@ -104,9 +117,11 @@
   }
   &-name {
     font-family: 'Microsoft Yahei', sans-serif;
-    font-size: 20px;
-    margin-top: 12px;
-    text-align: center;
+    font-size: 18px;
+    line-height: 42px;
+    margin-left: 10px;
+    display: inline-block;
+    vertical-align: middle;
   }
  
   &-main {

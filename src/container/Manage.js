@@ -165,7 +165,8 @@ class Manage extends Component {
           <Spin spinning={menuListLoading}>
             <div className={styles['EMR-manage-avatar']}>
               {/* <img src="" alt="视频云" className={styles['EMR-manage-img']} /> */}
-              <div className={styles['EMR-manage-name']}>视频云平台</div>
+              <EIcon type="myicon-menuIcon-4" />
+              <div className={styles['EMR-manage-name']}>智能视频分析平台</div>
             </div>
             <Menu
               defaultOpenKeys={[]}

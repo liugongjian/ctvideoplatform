@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'cloudFont';
   src:
-    url('fonts/cloudFont.ttf?y2bc7q') format('truetype'),
-    url('fonts/cloudFont.woff?y2bc7q') format('woff'),
-    url('fonts/cloudFont.svg?y2bc7q#cloudFont') format('svg');
+    url('fonts/cloudFont.ttf?muksev') format('truetype'),
+    url('fonts/cloudFont.woff?muksev') format('woff'),
+    url('fonts/cloudFont.svg?muksev#cloudFont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -26,7 +26,6 @@
 
 .myicon-menuIcon-1:before {
   content: "\eb3f";
-  color: #515151;
 }
 .myicon-menuIcon-2:before {
   content: "\eb40";
@@ -57,30 +56,12 @@
 }
 .myicon-menuIcon-11:before {
   content: "\eb49";
-  color: #515151;
 }
 .myicon-menuIcon-12:before {
   content: "\eb4a";
-  color: #6f6d6d;
 }
-.myicon-menuIcon-13 .path1:before {
+.myicon-menuIcon-13:before {
   content: "\eb4b";
-  color: rgb(255, 255, 255);
-}
-.myicon-menuIcon-13 .path2:before {
-  content: "\eb4c";
-  margin-left: -1em;
-  color: rgb(0, 0, 0);
-}
-.myicon-menuIcon-13 .path3:before {
-  content: "\eb4d";
-  margin-left: -1em;
-  color: rgb(0, 0, 0);
-}
-.myicon-menuIcon-13 .path4:before {
-  content: "\eb4e";
-  margin-left: -1em;
-  color: rgb(0, 0, 0);
 }
 .myicon-menuIcon-15:before {
   content: "\eb4f";
