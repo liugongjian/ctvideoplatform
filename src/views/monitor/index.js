@@ -709,7 +709,16 @@ class Monitor extends Component {
         dataIndex: 'name',
         key: 'name',
         fixed: 'left',
-        render: text => <span>{text.substring(0, 10)}</span>,
+        render: (text) => {
+          if (text.length > 10) {
+            return (
+              <Tooltip title={text}>
+                <span>{`${text.substring(0, 10)}...`}</span>
+              </Tooltip>
+            );
+          }
+          return <span>{text.substring(0, 10)}</span>;
+        },
       },
       {
         title: '摄像头ID',
