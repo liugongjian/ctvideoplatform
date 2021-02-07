@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'cloudFont';
   src:
-    url('fonts/cloudFont.ttf?p0tnyg') format('truetype'),
-    url('fonts/cloudFont.woff?p0tnyg') format('woff'),
-    url('fonts/cloudFont.svg?p0tnyg#cloudFont') format('svg');
+    url('fonts/cloudFont.ttf?y2bc7q') format('truetype'),
+    url('fonts/cloudFont.woff?y2bc7q') format('woff'),
+    url('fonts/cloudFont.svg?y2bc7q#cloudFont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -26,6 +26,7 @@
 
 .myicon-menuIcon-1:before {
   content: "\eb3f";
+  color: #515151;
 }
 .myicon-menuIcon-2:before {
   content: "\eb40";
@@ -33,8 +34,62 @@
 .myicon-menuIcon-3:before {
   content: "\eb41";
 }
-.myicon-menuIcon-5:before {
+.myicon-menuIcon-4:before {
   content: "\eb42";
+}
+.myicon-menuIcon-5:before {
+  content: "\eb43";
+}
+.myicon-menuIcon-6:before {
+  content: "\eb44";
+}
+.myicon-menuIcon-7:before {
+  content: "\eb45";
+}
+.myicon-menuIcon-8:before {
+  content: "\eb46";
+}
+.myicon-menuIcon-9:before {
+  content: "\eb47";
+}
+.myicon-menuIcon-10:before {
+  content: "\eb48";
+}
+.myicon-menuIcon-11:before {
+  content: "\eb49";
+  color: #515151;
+}
+.myicon-menuIcon-12:before {
+  content: "\eb4a";
+  color: #6f6d6d;
+}
+.myicon-menuIcon-13 .path1:before {
+  content: "\eb4b";
+  color: rgb(255, 255, 255);
+}
+.myicon-menuIcon-13 .path2:before {
+  content: "\eb4c";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.myicon-menuIcon-13 .path3:before {
+  content: "\eb4d";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.myicon-menuIcon-13 .path4:before {
+  content: "\eb4e";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.myicon-menuIcon-15:before {
+  content: "\eb4f";
+}
+.myicon-menuIcon-16:before {
+  content: "\eb50";
+}
+.myicon-menuIcon-17:before {
+  content: "\eb51";
 }
 .myicon-polygon:before {
   content: "\eb3c";

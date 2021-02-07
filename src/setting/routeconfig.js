@@ -45,6 +45,7 @@ import { createRouters } from '../utils/core'; // eslint-disable-line
 import App from 'Container/App';
 import Login from 'Views/login';
 import Dashboard from 'Views/dashboard';
+import DefaultPage from 'Views/defaultPage';
 import Monitor from 'Views/monitor';
 
 import Role from 'Views/role';
@@ -92,6 +93,12 @@ const menuRoutes = [
     exact: true,
     children: [
       {
+        path: '/monitorArea',
+        pageTitle: '监控区域',
+        exact: true,
+        component: DefaultPage,
+      },
+      {
         path: '/role',
         exact: true,
         pageTitle: '角色管理',
@@ -124,10 +131,68 @@ const menuRoutes = [
       }
     ]
   },
+  // 视频服务
+  {
+    path: '/videoService',
+    exact: true,
+    children: [
+      {
+        path: '/realtime',
+        exact: true,
+        component: DefaultPage,
+      },
+      {
+        path: '/replay',
+        exact: true,
+        component: DefaultPage,
+      },
+    ]
+  },
+  // 智能分析
+  {
+    path: '/analyze',
+    exact: true,
+    component: DefaultPage,
+    children: [
+      {
+        path: '/videoAnalyze',
+        exact: true,
+        component: DefaultPage,
+      },
+      {
+        path: '/alarm',
+        exact: true,
+        component: DefaultPage,
+      },
+      {
+        path: '/intelligentSearch',
+        exact: true,
+        component: DefaultPage,
+      },
+    ]
+  },
+  // 图库管理
+  {
+    path: '/gallery',
+    exact: true,
+    component: DefaultPage,
+    children: [
+      {
+        path: '/face',
+        exact: true,
+        component: DefaultPage,
+      },
+      {
+        path: '/carLicense',
+        exact: true,
+        component: DefaultPage,
+      },
+    ]
+  },
   {
     path: '/',
     exact: true,
-    component: Monitor,
+    component: DefaultPage,
   }
 ];
 
