@@ -447,6 +447,12 @@ class Monitor extends Component {
     }
   }
 
+  getDeviceListByAll = () => {
+    this.setState({
+      pageNo: 0
+    }, () => { this.getDeviceList(); });
+  }
+
   getDeviceList = () => {
     const { getDeiviceList } = this.props;
     const {
@@ -865,7 +871,7 @@ class Monitor extends Component {
                   {drawAlgorithmList()}
                 </Select>
               </div>
-              <Button type="primary" className={styles.searchHandleBtn} onClick={this.getDeviceList}>查询</Button>
+              <Button type="primary" className={styles.searchHandleBtn} onClick={this.getDeviceListByAll}>查询</Button>
               <Button className={styles.searchHandleBtn} onClick={this.resetSearch}>
                 <Icon type="reload" />
                 <span>重置</span>
