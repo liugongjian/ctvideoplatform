@@ -124,6 +124,41 @@ class CanvasOperator extends Component {
     return curPoint;
   }
 
+  drawPoint = (canvas, x, y) => {
+    console.log('point', x, y);
+    canvas.beginPath();
+    canvas.arc(x, y, 3, 0, 2 * Math.PI, true);
+    canvas.fillStyle = 'white';
+    canvas.fill();
+    canvas.lineWidth = lineWidth;
+    canvas.fillStyle = 'white';
+    canvas.strokeStyle = strokeStyle;
+    canvas.stroke();// 画空心圆
+    // canvas.moveTo(x, y);
+    canvas.closePath();
+    // this.clearPointInner(canvas, x, y);
+  }
+
+  // 如果要画空心的需要去掉路径
+  // clearPointInner = (canvas, x, y) => {
+  //   const { canvasDom } = this.state;
+  //   canvas.save();
+  //   canvas.beginPath();
+  //   canvas.arc(x, y, 2, 0, 2 * Math.PI, true);
+  //   canvas.closePath();
+  //   canvas.clip();
+  //   // canvas.clearRect(0, 0, canvasDom.width, canvasDom.width);
+  //   canvas.fillStyle = 'white';
+  //   canvas.fillRect(0, 0, canvasDom.width, canvasDom.width);
+  //   canvas.restore();
+  // }
+
+  getRectPoints = (startPoint, endPoint) => {
+    const point2 = [endPoint[0], startPoint[1]];
+    const point4 = [startPoint[0], endPoint[1]];
+    return [startPoint, point2, endPoint, point4];
+  }
+
   // 绘制已暂存在areas中的区域
   renderBeforeAreas = () => {
     const { canvas, ratio } = this.state;
@@ -131,32 +166,45 @@ class CanvasOperator extends Component {
     console.log(areas);
     if (areas?.length) {
       for (const area of areas) {
-        canvas.beginPath();
         canvas.lineWidth = lineWidth;
         canvas.strokeStyle = strokeStyle;
         const { points, origin } = area;
         switch (area.shape) {
           case DRAW_MODES.RECT: {
+            canvas.beginPath();
             const {
               left, top, width, height
             } = getRectPropFromPoints(points[0], points[1]);
             canvas.strokeRect(left, top, width, height);
+            canvas.closePath();
+            const rectPoints = this.getRectPoints(points[0], points[1]);
+            for (const point of rectPoints) {
+              this.drawPoint(canvas, point[0], point[1]);
+            }
             break;
           }
           case DRAW_MODES.POLYGON: {
             const curRatio = area.origin ? ratio : 1;
             const toRatio = x => math.divide(x, curRatio);
-            canvas.moveTo(toRatio(points[0][0]), toRatio(points[0][1]));
+            const startPoint = [toRatio(points[0][0]), toRatio(points[0][1])];
+            canvas.beginPath();
+            canvas.moveTo(startPoint[0], startPoint[1]);
             for (const point of points) {
-              canvas.lineTo(toRatio(point[0]), toRatio(point[1]));
+              const pointXY = [toRatio(point[0]), toRatio(point[1])];
+              canvas.lineTo(pointXY[0], pointXY[1]);
+              // this.drawPoint(canvas, pointXY[0], pointXY[1]);
             }
-            canvas.lineTo(toRatio(points[0][0]), toRatio(points[0][1]));
+            canvas.lineTo(startPoint[0], startPoint[1]);
             canvas.stroke();
+            canvas.closePath();
+            for (const point of points) {
+              const pointXY = [toRatio(point[0]), toRatio(point[1])];
+              this.drawPoint(canvas, pointXY[0], pointXY[1]);
+            }
             break;
           }
           default: break;
         }
-        canvas.closePath();
       }
     }
   }
