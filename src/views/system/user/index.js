@@ -123,22 +123,25 @@ class Account extends Component {
   updateUser = () => {
     const { updateUser } = this.props;
     this.props.form.validateFields((errors, values) => {
-      const data = {
-        id: this.state.editXq.userId,
-        roleId: values.roleId
-      };
-      delete values.reNewPassword;
-      delete values.reNewPassword1;
-      delete values.rentpassword;
-      updateUser(data).then(
-        (res) => {
-          message.success('修改成功');
-          this.setState({
-            modalVisible: false
-          });
-          this.getTableList();
-        }
-      );
+      console.log('errors', errors);
+      if (values.roleId) {
+        const data = {
+          id: this.state.editXq.userId,
+          roleId: values.roleId
+        };
+        delete values.reNewPassword;
+        delete values.reNewPassword1;
+        delete values.rentpassword;
+        updateUser(data).then(
+          (res) => {
+            message.success('修改成功');
+            this.setState({
+              modalVisible: false
+            });
+            this.getTableList();
+          }
+        );
+      }
     });
   };
 
@@ -251,13 +254,11 @@ class Account extends Component {
             this.state.selectedRowKeys.length > 0
               ? (
                 <>
-                  {/* <Icon type={`anticon-delete ${styles.iconActive}`} ></Icon> */}
                   <Icon type="delete" className={styles.iconActive} />
                   <a onClick={this.handleDelete}>批量删除</a>
                 </>
               ) : (
                 <>
-                  {/* <Icon type={`anticon-delete ${styles.iconDisabled}`} ></Icon> */}
                   <Icon type="delete" className={styles.iconDisabled} />
                   <a disabled>批量删除</a>
                 </>
@@ -268,13 +269,11 @@ class Account extends Component {
             this.state.selectedRowKeys.length > 0
               ? (
                 <>
-                  {/* <Icon type={`anticon-status-start ${styles.iconActive}`} ></Icon> */}
                   <Icon type="play-circle" className={styles.iconActive} />
                   <a onClick={this.handleEnable}>批量启用</a>
                 </>
               ) : (
                 <>
-                  {/* <Icon type={`anticon-status-start ${styles.iconDisabled}`} ></Icon> */}
                   <Icon type="play-circle" className={styles.iconDisabled} />
                   <a disabled>批量启用</a>
                 </>
@@ -285,13 +284,11 @@ class Account extends Component {
             this.state.selectedRowKeys.length > 0
               ? (
                 <>
-                  {/* <Icon type={`anticon-status-stop ${styles.iconActive}`} ></Icon> */}
                   <Icon type="stop" className={styles.iconActive} />
                   <a onClick={this.handleStop}>批量禁用</a>
                 </>
               ) : (
                 <>
-                  {/* <Icon type={`anticon-status-stop ${styles.iconDisabled}`} ></Icon> */}
                   <Icon type="stop" className={styles.iconDisabled} />
                   <a disabled>批量禁用</a>
                 </>
@@ -313,6 +310,9 @@ class Account extends Component {
 
   // 编辑账号
   handleEdit= (val) => {
+    const {
+      form: { setFieldsValue }
+    } = this.props;
     this.setState({
       modalVisible: true,
       editXq: {
@@ -321,6 +321,9 @@ class Account extends Component {
         initialRoleIdValue: val.roleId,
         initialRoleNameValue: val.roleName
       }
+    });
+    setFieldsValue({
+      roleId: val.roleName
     });
   };
 
@@ -360,8 +363,6 @@ class Account extends Component {
   handleDelCancel = () => {
     this.setState({
       deleteModelVisible: false,
-      // delIds: [],
-      // delUserName: ''
     });
   };
 
@@ -403,8 +404,6 @@ class Account extends Component {
   handleStopCancel = () => {
     this.setState({
       stopModelVisible: false,
-      // stopIds: [],
-      // stopUserName: ''
     });
   };
 
@@ -465,7 +464,12 @@ class Account extends Component {
   };
 
   handleRoleChange = (value) => {
-    // console.log(`selected role ${value}`);
+    const {
+      form: { setFieldsValue }
+    } = this.props;
+    setFieldsValue({
+      roleId: value
+    });
   };
 
   handleRoleSearch = (value) => {
@@ -661,12 +665,20 @@ class Account extends Component {
         <Modal
           title="编辑账号"
           visible={this.state.modalVisible}
-          okText="保存"
-          cancelText="取消"
-          onOk={this.updateUser}
+          // okText="保存"
+          // cancelText="取消"
+          // onOk={this.updateUser}
           onCancel={this.handleCancel}
           className={styles.editModal}
           width="600px"
+          footer={[
+            <Button key="submit" type="primary" onClick={this.updateUser}>
+              保存
+            </Button>,
+            <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleCancel}>
+              取消
+            </Button>,
+          ]}
         >
           <Form horizontal="true">
             <div className={styles.editSecTitle}>基本配置</div>
@@ -676,14 +688,17 @@ class Account extends Component {
             <div className={styles.editSecTitle}>关联权限</div>
             <FormItem label="选择角色" {...formItemLayout} className={styles.role}>
               {
-                getFieldDecorator('roleId', { initialValue: editXq.initialRoleNameValue })(
+                getFieldDecorator('roleId', {
+                  rules: [
+                    { required: true, message: '角色不能为空' }
+                  ]
+                })(
                   <Select
                     placeholder="请选择角色"
                     showSearch
                     optionFilterProp="children"
                     onChange={this.handleRoleChange}
                     onSearch={this.handleRoleSearch}
-                    initialValue={editXq.initialRoleNameValue}
                     // eslint-disable-next-line max-len
                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
@@ -700,12 +715,20 @@ class Account extends Component {
         <Modal
           title="重置密码"
           visible={this.state.pswModalVisible}
-          okText="保存"
-          cancelText="取消"
-          onOk={this.updatePassword}
+          // okText="保存"
+          // cancelText="取消"
+          // onOk={this.updatePassword}
           onCancel={this.handlePswCancel}
           className={styles.pswModal}
           width="600px"
+          footer={[
+            <Button key="submit" type="primary" onClick={this.updatePassword}>
+              保存
+            </Button>,
+            <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handlePswCancel}>
+              取消
+            </Button>,
+          ]}
         >
           <Form horizontal="true">
             <FormItem label="用户名" {...formItemLayout} className={styles.userNameItem}>
@@ -762,13 +785,21 @@ class Account extends Component {
         </Modal>
         <Modal
           visible={deleteModelVisible}
-          okText="确定"
-          cancelText="取消"
-          onOk={this.delAccount}
-          onCancel={this.handleDelCancel}
+          // okText="确定"
+          // cancelText="取消"
+          // onOk={this.delAccount}
+          // onCancel={this.handleDelCancel}
           className={styles.delComfirmModal}
           width="400px"
           closable={false}
+          footer={[
+            <Button key="submit" type="primary" onClick={this.delAccount}>
+              确定
+            </Button>,
+            <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleDelCancel}>
+              取消
+            </Button>,
+          ]}
         >
           <div>
             <Icon type="warning" />
@@ -777,13 +808,21 @@ class Account extends Component {
         </Modal>
         <Modal
           visible={stopModelVisible}
-          okText="确定"
-          cancelText="取消"
-          onOk={this.stopAccount}
-          onCancel={this.handleStopCancel}
+          // okText="确定"
+          // cancelText="取消"
+          // onOk={this.stopAccount}
+          // onCancel={this.handleStopCancel}
           className={styles.stopComfirmModal}
           width="400px"
           closable={false}
+          footer={[
+            <Button key="submit" type="primary" onClick={this.stopAccount}>
+              确定
+            </Button>,
+            <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleStopCancel}>
+              取消
+            </Button>,
+          ]}
         >
           <div>
             <Icon type="warning" />
@@ -792,13 +831,21 @@ class Account extends Component {
         </Modal>
         <Modal
           visible={enableModelVisible}
-          okText="确定"
-          cancelText="取消"
-          onOk={this.enableAccount}
-          onCancel={this.handleEnableCancel}
+          // okText="确定"
+          // cancelText="取消"
+          // onOk={this.enableAccount}
+          // onCancel={this.handleEnableCancel}
           className={styles.enableComfirmModal}
           width="400px"
           closable={false}
+          footer={[
+            <Button key="submit" type="primary" onClick={this.enableAccount}>
+              确定
+            </Button>,
+            <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleEnableCancel}>
+              取消
+            </Button>,
+          ]}
         >
           <div>
             <Icon type="exclamation-circle" />
