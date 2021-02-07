@@ -680,7 +680,7 @@ class Monitor extends Component {
   render() {
     const {
       test, treeDatas, expandedKeys, tableData, showModal, showDelModal,
-      algorithmList, algorithmId, modalDeviceData, pageSize, showAreaName,
+      algorithmList = [], algorithmId, modalDeviceData, pageSize, showAreaName,
       deviceName, deviceId, modalDeviceName, modalDeviceId
     } = this.state;
     const { monitor: { areaListLoading } } = this.props;
