@@ -55,6 +55,9 @@ class CanvasOperator extends Component {
   initData = (props) => {
     // 初始化canvas
     const { id, imgSrc } = props;
+    if (!imgSrc) {
+      return;
+    }
     const backgroundLayer = document.getElementById(`configCanvas-${id}-bk`);
     const backgroundCtx = backgroundLayer?.getContext('2d');
     const canvasDom = document.getElementById(`configCanvas-${id}-op`);
@@ -67,7 +70,7 @@ class CanvasOperator extends Component {
     const img = new Image();
     img.src = `data:image/png;base64,${imgSrc}`;
     // 取消右键默认菜单
-    canvasDom.oncontextmenu = e => false;
+    if (canvasDom) canvasDom.oncontextmenu = e => false;
     img.onload = () => {
       // 图片按比例缩放，保存缩放比
       const ratio = math.divide(img.width, backgroundLayer.width);
@@ -327,56 +330,61 @@ class CanvasOperator extends Component {
   }
 
   render() {
-    const { id, width } = this.props;
+    const { id, width, imgSrc } = this.props;
     const { mode } = this.state;
     return (
       <div className={styles.canvasOperator}>
-        <div className={styles.optButtonWrapper} style={{ width }}>
-          <div
-            className={`${styles.optButton} ${mode === DRAW_MODES.RECT ? styles['optButton-selected'] : ''}`}
-            onClick={() => this.setDrawMode(DRAW_MODES.RECT)}
-            title="矩形选框"
-          >
-            <EIcon type="myicon-rect" />
+        <div style={{ opacity: imgSrc ? '1' : '0' }}>
+          <div className={styles.optButtonWrapper} style={{ width }}>
+            <div
+              className={`${styles.optButton} ${mode === DRAW_MODES.RECT ? styles['optButton-selected'] : ''}`}
+              onClick={() => this.setDrawMode(DRAW_MODES.RECT)}
+              title="矩形选框"
+            >
+              <EIcon type="myicon-rect" />
+            </div>
+            <div
+              className={`${styles.optButton} ${mode === DRAW_MODES.POLYGON ? styles['optButton-selected'] : ''}`}
+              onClick={() => this.setDrawMode(DRAW_MODES.POLYGON)}
+              title="多边形选框"
+            >
+              <EIcon type="myicon-polygon" />
+            </div>
+            <div
+              className={`${styles.optButton}`}
+              onClick={() => this.reset()}
+              title="重置"
+            >
+              <Icon type="undo" />
+            </div>
+            <div
+              className={`${styles.optButton}`}
+              onClick={() => this.clearAll()}
+              title="清空"
+            >
+              <Icon type="delete" />
+            </div>
           </div>
-          <div
-            className={`${styles.optButton} ${mode === DRAW_MODES.POLYGON ? styles['optButton-selected'] : ''}`}
-            onClick={() => this.setDrawMode(DRAW_MODES.POLYGON)}
-            title="多边形选框"
-          >
-            <EIcon type="myicon-polygon" />
-          </div>
-          <div
-            className={`${styles.optButton}`}
-            onClick={() => this.reset()}
-            title="重置"
-          >
-            <Icon type="undo" />
-          </div>
-          <div
-            className={`${styles.optButton}`}
-            onClick={() => this.clearAll()}
-            title="清空"
-          >
-            <Icon type="delete" />
+          <div id={`configCanvas-${id}-wrapper`} className={styles.canvasWrapper}>
+            <canvas
+              id={`configCanvas-${id}-bk`}
+              className={`${styles.canvasLayer} ${styles['canvasLayer-bk']}`}
+              width={width}
+            >
+              您的浏览器不支持canvas
+            </canvas>
+            <canvas
+              id={`configCanvas-${id}-op`}
+              className={`${styles.canvasLayer} ${styles['canvasLayer-op']}`}
+              width={width}
+              onMouseDown={this.onMouseDown}
+              onMouseMove={this.onMouseMove}
+              onMouseUp={this.onMouseUp}
+            />
           </div>
         </div>
-        <div id={`configCanvas-${id}-wrapper`} className={styles.canvasWrapper}>
-          <canvas
-            id={`configCanvas-${id}-bk`}
-            className={`${styles.canvasLayer} ${styles['canvasLayer-bk']}`}
-            width={width}
-          >
-            您的浏览器不支持canvas
-          </canvas>
-          <canvas
-            id={`configCanvas-${id}-op`}
-            className={`${styles.canvasLayer} ${styles['canvasLayer-op']}`}
-            width={width}
-            onMouseDown={this.onMouseDown}
-            onMouseMove={this.onMouseMove}
-            onMouseUp={this.onMouseUp}
-          />
+        <div style={{ dispay: imgSrc ? 'none' : 'block' }} className={styles.noImgDataWrapper}>
+          暂无快照
         </div>
       </div>
     );
