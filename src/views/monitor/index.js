@@ -571,13 +571,13 @@ class Monitor extends Component {
     };
     getDevicePoolList(param).then((res) => {
       getAreaName(areaId).then((data) => {
-        if (Array.isArray(res.list) && res.list.length) {
-          this.setState({
-            modalDeviceData: res,
-            showModal: true,
-            showAreaName: data
-          });
-        }
+        // if (Array.isArray(res.list) && res.list.length) {
+        this.setState({
+          modalDeviceData: res,
+          showModal: true,
+          showAreaName: data
+        });
+        // }
       });
     });
   }
