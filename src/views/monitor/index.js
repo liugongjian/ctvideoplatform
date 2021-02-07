@@ -49,6 +49,7 @@ class Monitor extends Component {
     deptHover: {},
     areaId: 1,
     pageNo: 0,
+    modalPageNo: 0,
     recursive: false,
     pageSize: 10,
     tableData: {},
@@ -61,7 +62,7 @@ class Monitor extends Component {
     algorithmList: [],
     modalDeviceName: '',
     modalDeviceId: '',
-    modalDeviceData: [],
+    modalDeviceData: {},
     modalCheckedKeys: []
   }
 
@@ -314,7 +315,7 @@ class Monitor extends Component {
         temp.name = res.name;
         this.setState({
           treeDatas: this.dataToTree(tempData)
-        });
+        }, () => { this.getAreaList(); });
       });
     }
   }
@@ -478,6 +479,14 @@ class Monitor extends Component {
     }, () => this.getDeviceList());
   }
 
+  modalChangePageNo = (num) => {
+    this.setState({
+      modalPageNo: num - 1,
+      modalCheckedKeys: []
+    }, () => {
+      this.getModalDeviceList();
+    });
+  }
 
   selectThisAlgorithm = (value) => {
     this.setState({
@@ -524,19 +533,21 @@ class Monitor extends Component {
 
   getModalDeviceList = () => {
     const { getDevicePoolList } = this.props;
-    const { modalDeviceId, modalDeviceName } = this.state;
+    const { modalDeviceId, modalDeviceName, modalPageNo } = this.state;
     const param = {
       deviceId: modalDeviceId,
-      name: modalDeviceName
+      name: modalDeviceName,
+      pageSize: 10,
+      pageNo: modalPageNo
     };
     getDevicePoolList(param).then((res) => {
       if (Array.isArray(res.list)) {
         this.setState({
-          modalDeviceData: res.list
+          modalDeviceData: res,
         });
       } else {
         this.setState({
-          modalDeviceData: []
+          modalDeviceData: {}
         });
       }
     });
@@ -551,16 +562,18 @@ class Monitor extends Component {
 
   openModal=() => {
     const { getDevicePoolList, getAreaName } = this.props;
-    const { areaId } = this.state;
+    const { areaId, modalPageNo } = this.state;
     const param = {
       deviceId: '',
-      name: ''
+      name: '',
+      pageSize: 10,
+      pageNo: modalPageNo
     };
     getDevicePoolList(param).then((res) => {
       getAreaName(areaId).then((data) => {
         if (Array.isArray(res.list) && res.list.length) {
           this.setState({
-            modalDeviceData: res.list,
+            modalDeviceData: res,
             showModal: true,
             showAreaName: data
           });
@@ -793,6 +806,13 @@ class Monitor extends Component {
       onChange: this.changePageNo
     };
 
+    const modalPagination = {
+      total: modalDeviceData.recordsTotal,
+      defaultCurrent: 1,
+      pageSize: 10,
+      onChange: this.modalChangePageNo
+    };
+
     return (
       <Spin spinning={areaListLoading} wrapperClassName={styles.contentSpin}>
         <div className={styles.content}>
@@ -897,10 +917,10 @@ class Monitor extends Component {
               </Button>
             </div>
             <Table
-              dataSource={modalDeviceData}
+              dataSource={modalDeviceData.list}
               rowSelection={modalRowSelection}
               columns={modalColumns}
-              pagination={false}
+              pagination={modalPagination}
               getContainer={false}
             />
           </Modal>
