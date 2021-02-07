@@ -49,7 +49,7 @@ class Login extends Component {
           validate,
         }).then((data) => {
           if (data && data.username) {
-            push('/monitor');
+            push('/');
           } else {
             this.refreshImg();
           }
