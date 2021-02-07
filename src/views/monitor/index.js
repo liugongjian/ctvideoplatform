@@ -58,6 +58,7 @@ class Monitor extends Component {
     showDelModal: false,
     deviceName: '',
     deviceId: '',
+    originId: '',
     algorithmId: 'all',
     algorithmList: [],
     modalDeviceName: '',
@@ -446,6 +447,12 @@ class Monitor extends Component {
     }
   }
 
+  getDeviceListByAll = () => {
+    this.setState({
+      pageNo: 0
+    }, () => { this.getDeviceList(); });
+  }
+
   getDeviceList = () => {
     const { getDeiviceList } = this.props;
     const {
@@ -455,6 +462,7 @@ class Monitor extends Component {
       pageSize,
       deviceName,
       deviceId,
+      originId,
       algorithmId
     } = this.state;
     const param = {
@@ -463,7 +471,8 @@ class Monitor extends Component {
       recursive,
       pageSize,
       name: deviceName,
-      deviceId,
+      // deviceId,
+      originId,
       algorithm: algorithmId === 'all' ? '' : algorithmId
     };
     getDeiviceList(param).then((res) => {
@@ -488,6 +497,14 @@ class Monitor extends Component {
     });
   }
 
+  getModalDeviceListByAll = () => {
+    this.setState({
+      modalPageNo: 0
+    }, () => {
+      this.getModalDeviceList();
+    });
+  }
+
   selectThisAlgorithm = (value) => {
     this.setState({
       algorithmId: value
@@ -503,7 +520,8 @@ class Monitor extends Component {
 
   changeDeviceId = (e) => {
     this.setState({
-      deviceId: e.target.value
+      // deviceId: e.target.value
+      originId: e.target.value
     });
   }
 
@@ -526,7 +544,8 @@ class Monitor extends Component {
       // recursive: false,
       pageSize: 10,
       deviceName: '',
-      deviceId: '',
+      // deviceId: '',
+      originId: '',
       algorithmId: 'all',
     }, () => this.getDeviceList());
   }
@@ -681,7 +700,7 @@ class Monitor extends Component {
     const {
       test, treeDatas, expandedKeys, tableData, showModal, showDelModal,
       algorithmList = [], algorithmId, modalDeviceData, pageSize, showAreaName,
-      deviceName, deviceId, modalDeviceName, modalDeviceId
+      deviceName, deviceId, modalDeviceName, modalDeviceId, originId
     } = this.state;
     const { monitor: { areaListLoading } } = this.props;
     const columns = [
@@ -690,7 +709,16 @@ class Monitor extends Component {
         dataIndex: 'name',
         key: 'name',
         fixed: 'left',
-        render: text => <span>{text.substring(0, 10)}</span>,
+        render: (text) => {
+          if (text.length > 10) {
+            return (
+              <Tooltip title={text}>
+                <span>{`${text.substring(0, 10)}...`}</span>
+              </Tooltip>
+            );
+          }
+          return <span>{text.substring(0, 10)}</span>;
+        },
       },
       {
         title: '摄像头ID',
@@ -846,7 +874,7 @@ class Monitor extends Component {
               </div>
               <div className={styles.searchItme}>
                 <span>摄像头ID：</span>
-                <Input value={deviceId} placeholder="请输入摄像头ID" onChange={this.changeDeviceId} />
+                <Input value={originId} placeholder="请输入摄像头ID" onChange={this.changeDeviceId} />
               </div>
               <div className={styles.searchItme}>
                 <span>算法：</span>
@@ -860,7 +888,7 @@ class Monitor extends Component {
                   {drawAlgorithmList()}
                 </Select>
               </div>
-              <Button type="primary" className={styles.searchHandleBtn} onClick={this.getDeviceList}>查询</Button>
+              <Button type="primary" className={styles.searchHandleBtn} onClick={this.getDeviceListByAll}>查询</Button>
               <Button className={styles.searchHandleBtn} onClick={this.resetSearch}>
                 <Icon type="reload" />
                 <span>重置</span>
@@ -910,7 +938,7 @@ class Monitor extends Component {
                 <span>摄像头ID：</span>
                 <Input value={modalDeviceId} placeholder="请输入摄像头ID" onChange={this.changeModalDeviceId} />
               </div>
-              <Button type="primary" className={styles.searchHandleBtn} onClick={this.getModalDeviceList}>查询</Button>
+              <Button type="primary" className={styles.searchHandleBtn} onClick={this.getModalDeviceListByAll}>查询</Button>
               <Button className={styles.searchHandleBtn} onClick={this.resetModalSearch}>
                 <Icon type="reload" />
                 <span>重置</span>
