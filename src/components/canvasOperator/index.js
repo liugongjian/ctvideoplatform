@@ -383,7 +383,7 @@ class CanvasOperator extends Component {
             />
           </div>
         </div>
-        <div style={{ dispay: imgSrc ? 'none' : 'block' }} className={styles.noImgDataWrapper}>
+        <div style={{ display: imgSrc ? 'none' : 'block' }} className={styles.noImgDataWrapper}>
           暂无快照
         </div>
       </div>
