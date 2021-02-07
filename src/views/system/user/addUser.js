@@ -66,15 +66,6 @@ class AddAccount extends Component {
     };
 
     validatorPsw = (rule, value, callback) => {
-      //   const rePassword = this.props.form.getFieldValue('rePassword');
-      //   if (rePassword && rePassword !== value && value) {
-      //     callback(new Error('两次密码输入不一致'));
-      // eslint-disable-next-line max-len
-      //   } else if (!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?])(.{12,26})/.test(value)) && value) {
-      //     callback(new Error('密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符'));
-      //   } else {
-      //     callback();
-      //   }
       if (!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?])(.{12,26})/.test(value)) && value) {
         callback(new Error('密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符'));
       } else {
@@ -84,14 +75,6 @@ class AddAccount extends Component {
 
       validatorRePsw = (rule, value, callback) => {
         const password = this.props.form.getFieldValue('password');
-        // if (password && password !== value && value) {
-        //   callback(new Error('两次密码输入不一致'));
-        // eslint-disable-next-line max-len
-        // } else if (!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?])(.{12,26})/.test(value)) && value) {
-        //   callback(new Error('确认密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符'));
-        // } else {
-        //   callback();
-        // }
         if (password && password !== value && value) {
           callback(new Error('两次密码输入不一致'));
         } else {
@@ -181,7 +164,12 @@ class AddAccount extends Component {
             <div className={styles.editSecTitle}>关联权限</div>
             <FormItem label="选择角色" {...formItemLayout}>
               {
-                getFieldDecorator('roleId', { initialValue: '' })(
+                getFieldDecorator('roleId', {
+                  rules: [
+                    { required: true, message: '角色不能为空' }
+                  ]
+                },
+                { initialValue: '' })(
                   <Select
                     placeholder="请为账号选择角色"
                     showSearch
