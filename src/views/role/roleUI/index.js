@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Form, Input, Button, Tree, Menu, Card
+  Form, Input, Button, Tree, Menu
 } from 'antd';
 
 const { Search } = Input;
@@ -31,7 +31,8 @@ class RoleUI extends Component {
           wrapperCol: {
             span: 14,
           },
-        }
+        };
+    const { getFieldDecorator } = this.props.form;
     return (
       <div className={styles.contentWrapper}>
         <span className={styles.subTitle}>基本配置</span>
@@ -44,16 +45,13 @@ class RoleUI extends Component {
                 remember: true,
               }}
             > 
-              <Form.Item label="角色名称" name="name"
-                  rules={[
-                    {
-                      required: true,
-                      message: '请输入角色名',
-                    },
-                  ]}
-                >
-                  <Input className={styles.formItemInput} onChange={(e) => this.props.onNameChange(e.target.value)} value={this.props.name}/>
-              </Form.Item>
+              <Form.Item label="角色名称" name="name">
+                  {getFieldDecorator('input', {
+                      rules: [{ required: true, message: '请输入用户名' }],
+                    })(
+                        <Input className={styles.formItemInput} onChange={(e) => this.props.onNameChange(e.target.value)} value={this.props.name}/>
+                  )}
+                </Form.Item>
             
               <Form.Item label="角色描述" name="description">
                   <Input className={styles.formItemInput} onChange={(e) => this.props.onDescriptionChange(e.target.value)} value={this.props.description}/>
@@ -81,7 +79,7 @@ class RoleUI extends Component {
                   </div> 
 
                   <div className={styles.treefr}>
-                    <div>
+                    <div style={{padding:'0 20px 0 0'}}>
                       <div style={{display:'inline-block',margin:'5px 0 0 5px'}}>
                         <img style={{width:"20px",height:"20px",display:"inline-block"}} src={infoPic}/>
                         <span>请配置当前角色能够访问的系统管理菜单</span>
@@ -125,6 +123,4 @@ class RoleUI extends Component {
     );
   }
 }
-
-
-export default RoleUI;
+export default  Form.create()(RoleUI)
