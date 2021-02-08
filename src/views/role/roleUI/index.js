@@ -45,18 +45,20 @@ class RoleUI extends Component {
                 remember: true,
               }}
             > 
+            <div className={styles.basicInfoWrapper}>
               <Form.Item label="角色名称" name="name">
                   {getFieldDecorator('input', {
+                      initialValue: this.props.name || '',
                       rules: [{ required: true, message: '请输入用户名' }],
                     })(
-                        <Input className={styles.formItemInput} onChange={(e) => this.props.onNameChange(e.target.value)} value={this.props.name}/>
+                        <Input className={styles.formItemInput} onChange={(e) => this.props.onNameChange(e.target.value)}/>
                   )}
                 </Form.Item>
             
               <Form.Item label="角色描述" name="description">
                   <Input className={styles.formItemInput} onChange={(e) => this.props.onDescriptionChange(e.target.value)} value={this.props.description}/>
               </Form.Item>
-          
+            </div>
 
             <span className={styles.subTitle}>权限配置</span>
               <Form.Item name="rights">
@@ -84,7 +86,7 @@ class RoleUI extends Component {
                         <img style={{width:"20px",height:"20px",display:"inline-block"}} src={infoPic}/>
                         <span>请配置当前角色能够访问的系统管理菜单</span>
                       </div>
-                      <Search placeholder={this.props.activeMenuKey.key==='1' ? "请输入菜单名称" : "请输入区域名称"} style={{ display:'inline-block',float:'right',width:'25%',margin:'5px 5px 0 0'}} 
+                      <Search placeholder={this.props.activeMenuKey.key==='1' ? "请输入菜单名称" : "请输入区域名称"} style={{ display:'inline-block',float:'right',width:'25%',margin:'10px 20px 0 0'}} 
                       onChange={(e)=>this.setState({searchValue:e.target.value})}
                       onSearch={()=>this.onSearchInput()} />
                     </div>

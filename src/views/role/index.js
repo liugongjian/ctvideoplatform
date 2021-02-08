@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import { getRoleList , deleteRoles } from '@/redux/reducer/role'
 
 import deletePic from '@/assets/role/delete.png'
+import deletePic2 from '@/assets/role/delete2.png'
 import searchPic from '@/assets/role/search.png'
 import warnPic from '@/assets/role/warn.png'
 
@@ -108,10 +109,20 @@ class Role extends Component {
       <div className={styles.mainWrapper}>
         <div className={styles.searchContainer}>
           <Link to={'/system/role/add'}><Button type="primary" className={styles.addBtn}>+ 新增角色</Button></Link>
-          <a className={styles.deleteBtn} onClick={()=>this.setState({deleteModalVisible:true})}>
-            <img src={deletePic}className={styles.deletePic}/>
-            批量删除
-          </a>
+          {
+            this.state.selectedRowKeys.length > 0 ? (
+              <a className={styles.deleteBtn} onClick={()=>this.setState({deleteModalVisible:true})}>
+              <img src={deletePic} className={styles.deletePic}/>
+              批量删除
+              </a>
+            ):(
+              <a className={styles.deleteBtnDisabled}>
+              <img src={deletePic2} className={styles.deletePic}/>
+              批量删除
+              </a>
+            )
+          }
+
           <div className={styles.searchInput}>
             <Search placeholder="请输入角色名称" icon={searchPic} onSearch={() => this.searchRole()} onChange={(e) => this.setState({searchName:e.target.value})}/>
           </div>
@@ -120,7 +131,15 @@ class Role extends Component {
             <Column title="角色名称" dataIndex="name"/>
             <Column title="创建时间" dataIndex="createTime"/>
             <Column title="修改时间" dataIndex="updateTime"/>
-            <Column title="角色描述" dataIndex="description"/>
+            <Column title="角色描述" dataIndex="description" 
+              render={
+                (text, record) => (
+                  <div style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}>
+                    {text}
+                  </div>
+                )
+              }
+            />
             <Column
                 title="操作"
                 key="action"

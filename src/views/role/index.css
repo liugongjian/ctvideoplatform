@@ -26,6 +26,16 @@
   margin-left: 20px;
   font-size: 14px;
 }
+.searchContainer .deleteBtnDisabled,
+.searchContainer .deleteBtnDisabled:link,
+.searchContainer .deleteBtnDisabled:hover,
+.searchContainer .deleteBtnDisabled:visited,
+.searchContainer .deleteBtnDisabled:active {
+  margin-left: 20px;
+  font-size: 14px;
+  text-decoration: none;
+  color: #666666;
+}
 .searchContainer .deletePic {
   margin-top: -2px;
   margin-right: 8px;

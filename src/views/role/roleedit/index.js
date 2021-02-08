@@ -258,7 +258,7 @@ class RoleEdit extends Component {
             name : res[0].name,
             description : res[0].description,
             checkedKeys,
-          });
+          },console.log());
         })
       });
     })
