@@ -18,6 +18,7 @@ import { menuRoutes } from 'Setting/routeconfig';
 import { createRouters, createRouterByApiData } from 'Utils/core';
 import { getMenuList } from 'Redux/reducer/pageHeader';
 import EIcon from 'Components/Icon';
+import LOGO from 'Assets/main_logo.png';
 import { render } from 'less';
 
 import PageHeader from './PageHeader';
@@ -146,7 +147,6 @@ class Manage extends Component {
         </Menu.Item>
       );
     });
-    console.log('!!!!', menuTree);
 
     // 匹配当前选中菜单
     const split = pathname?.split('/');
@@ -164,7 +164,8 @@ class Manage extends Component {
           <Spin spinning={menuListLoading}>
             <div className={styles['EMR-manage-avatar']}>
               {/* <img src="" alt="视频云" className={styles['EMR-manage-img']} /> */}
-              <EIcon type="myicon-menuIcon-4" />
+              {/* <EIcon type="myicon-menuIcon-4" /> */}
+              <img src={LOGO} alt="logo" />
               <div className={styles['EMR-manage-name']}>智能视频分析平台</div>
             </div>
             <Menu
