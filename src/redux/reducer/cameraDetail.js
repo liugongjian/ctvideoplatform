@@ -1,3 +1,4 @@
+import React from 'react';
 import { urlPrefix } from 'Constants/Dictionary';
 import { message } from 'antd';
 
@@ -39,6 +40,20 @@ const dataToTree = (data) => {
   copy.forEach((item) => {
     // item.defaultName = item.name;
     item.label = item.name;
+    // item.label = (
+    //   <span
+    //     style={{
+    //       display: 'inline-block',
+    //       width: '150px',
+    //       overflow: 'hidden',
+    //       textOverflow: 'ellipsis',
+    //       whiteSpace: 'nowrap'
+    //     }}
+    //     title={item.name}
+    //   >
+    //     {item.name}
+    //   </span>
+    // );
     item.value = item.id;
     map[item.id] = item;
   });

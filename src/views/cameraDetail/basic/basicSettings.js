@@ -192,11 +192,27 @@ class BasicSetting extends Component {
                     required: true,
                     message: '请选择区域!',
                   },
-                ],
+                ]
               })(
                 <Cascader
                   changeOnSelect
+                  popupClassName={styles.areaCascader}
                   options={areaTree}
+                  allowClear={false}
+                  // displayRender={label => (
+                  //   <span
+                  //     style={{
+                  //       display: 'inline-block',
+                  //       width: '150px',
+                  //       overflow: 'hidden',
+                  //       textOverflow: 'ellipsis',
+                  //       whiteSpace: 'nowrap'
+                  //     }}
+                  //     title={label}
+                  //   >
+                  //     {label}
+                  //   </span>
+                  // )}
                 // onChange={this.onAreaChange}
                 />,
               )}
