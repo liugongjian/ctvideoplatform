@@ -39,37 +39,37 @@ class BasicSetting extends Component {
   }
 
   componentDidMount() {
-    const {
-      getAreaList
-    } = this.props;
-    // 获取区域层级
-    getAreaList(0).then((areaList) => {
-      // 获取基础配置
-      this.initData(areaList);
-    });
+    this.initData();
   }
 
 
-  initData = (areaList) => {
+  initData = () => {
     const {
-      getBasicConfig, cameraId,
-      form: { setFieldsValue }
+      getBasicConfig, getAreaList,
+      cameraId,
+      form: { setFieldsValue },
     } = this.props;
+    getAreaList(0).then((areaList) => {
       // 获取基础配置
-    getBasicConfig(cameraId).then((data) => {
-      const {
-        name, areaId, latitude, longitude
-      } = data;
+      getBasicConfig(cameraId).then((data) => {
+        const {
+          name, areaId, latitude, longitude
+        } = data;
         // 获取当前区域的上层层级
-      const areaPathJson = areaList?.find(({ id }) => id === areaId)?.path;
-      const areaPath = JSON.parse(areaPathJson);
-      areaPath.shift(); // 去掉队头的 0
-      // 初始化form
-      setFieldsValue({
-        name,
-        longitude,
-        latitude,
-        area: [...areaPath, areaId]
+        const areaPathJson = areaList?.find(({ id }) => id === areaId)?.path;
+        try {
+          const areaPath = JSON.parse(areaPathJson);
+          areaPath.shift(); // 去掉队头的 0
+          // 初始化form
+          setFieldsValue({
+            name,
+            longitude,
+            latitude,
+            area: [...areaPath, areaId]
+          });
+        } catch (e) {
+          console.log('e', e);
+        }
       });
     });
   }
@@ -80,7 +80,7 @@ class BasicSetting extends Component {
 
   onSubmit = (e) => {
     const {
-      form: { validateFields }, putBasicConfig, cameraId, areaList
+      form: { validateFields }, putBasicConfig, cameraId
     } = this.props;
     e.preventDefault();
     validateFields((err, values) => {
@@ -96,7 +96,7 @@ class BasicSetting extends Component {
           latitude,
           longitude,
         }).then((res) => {
-          this.initData(areaList);
+          this.initData();
         });
       }
     });
@@ -139,28 +139,6 @@ class BasicSetting extends Component {
             </Form.Item>
             <Form.Item label="经纬度" style={{ marginBottom: 0 }} className={styles.addItemRequiredIcon}>
               <Form.Item className={styles.locationInputNumber}>
-                {getFieldDecorator('longitude', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请输入经度！',
-                    },
-                    {
-                      validator: (rule, val, callback) => {
-                        const num = parseFloat(val);
-                        if (val < -180 || val > 180) {
-                          callback('请输入正确的经度！');
-                        }
-                        callback();
-                      }
-                    }
-                  ],
-                })(<Input
-                  type="number"
-                />)}
-              </Form.Item>
-              <span className={styles.locationInputSplit} />
-              <Form.Item className={styles.locationInputNumber}>
                 {getFieldDecorator('latitude', {
                   rules: [
                     {
@@ -179,7 +157,31 @@ class BasicSetting extends Component {
                   ],
                 })(<Input
                   type="number"
+                  placeholder="请输入纬度"
                   onBlur={() => this.props.form.validateFields(['latitude'])}
+                />)}
+              </Form.Item>
+              <span className={styles.locationInputSplit}>&nbsp;,</span>
+              <Form.Item className={styles.locationInputNumber}>
+                {getFieldDecorator('longitude', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请输入经度！',
+                    },
+                    {
+                      validator: (rule, val, callback) => {
+                        const num = parseFloat(val);
+                        if (val < -180 || val > 180) {
+                          callback('请输入正确的经度！');
+                        }
+                        callback();
+                      }
+                    }
+                  ],
+                })(<Input
+                  type="number"
+                  placeholder="请输入经度"
                 />)}
               </Form.Item>
             </Form.Item>

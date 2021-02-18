@@ -83,7 +83,7 @@ class CanvasOperator extends Component {
       const canvasHeight = math.divide(img.height, ratio); // img.height / ratio;
       backgroundLayer.height = canvasHeight;
       canvasDom.height = canvasHeight;
-      wrapperDom.style = { height: canvasHeight, width: backgroundLayer.width };
+      if (wrapperDom) wrapperDom.style = { height: canvasHeight, width: backgroundLayer.width };
       // wrapperDom.style.width = backgroundLayer.width;
       // 图片按缩放比例绘制
       backgroundCtx?.drawImage(img, 0, 0, backgroundLayer.width, backgroundLayer.height);

@@ -279,9 +279,9 @@ class CameraDetail extends Component {
       configEnable[config] = true;
     }
     const triggerOrigin = (() => {
-      if (curAlgo?.cnName.indexOf('人')) {
+      if (curAlgo?.cnName.indexOf('人') > -1) {
         return TRIGGER_ORIGIN.PEOPLE;
-      } if (curAlgo?.cnName.indexOf('车')) {
+      } if (curAlgo?.cnName.indexOf('车') > -1) {
         return TRIGGER_ORIGIN.CAR;
       }
       return '';
@@ -301,7 +301,11 @@ class CameraDetail extends Component {
             && (
               <Spin spinning={imgLoading}>
                 <div className={styles.areaChooose}>
-                  <p>请设置电子围栏视频区域:</p>
+                  <p>
+                    请设置
+                    {curAlgo?.cnName}
+                    视频区域:
+                  </p>
                   <CanvasOperator
                     imgSrc={imgSrc}
                     width="550px"
