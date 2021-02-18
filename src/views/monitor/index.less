@@ -56,7 +56,11 @@
     .hasSame{
       font-size: 12px;
       margin-top: -4px;
+      color: #F5222D;
     }
+  }
+  .toolPointer{
+    cursor: pointer;
   }
   .monitorList{
     width: calc(100% - 300px);
@@ -65,6 +69,7 @@
     margin:15px 0 15px 20px;
     padding:0 15px;
     border-left: 1px solid #EEE;
+    background: #fff;
   }
   .searchBox{
     display: flex;
@@ -129,6 +134,10 @@
         &:hover{
           color: #4095E3;
           border: none;
+        }
+        &:disabled{
+          background: #fff;
+          color: #999;
         }
     }
   }
