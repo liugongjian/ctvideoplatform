@@ -26,7 +26,23 @@ p{
     background-color: white;
     min-height: calc(100% - 30px);
     margin: 10px 10px 20px 10px;
+    border-radius: 2px;
     :global{
+        .ant-tabs-nav-wrap{
+            margin-top: 10px;
+        }
+        .ant-tabs-ink-bar {
+            height: 2px;
+        }
+        .ant-tabs-tab{
+            font-family: PingFangSC-Medium;
+            font-size: 16px;
+            line-height: 22px;
+            margin: 0 20px;
+        }
+        .ant-tabs-tab-active, .ant-tabs-tab-active:hover{
+            color: #FA8334;
+        }
         .ant-form-item-required::before{
             color:#ff8833;
         }
