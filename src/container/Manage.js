@@ -167,7 +167,7 @@ class Manage extends Component {
               collapsed
                 ? (
                   <div className={`${styles['EMR-manage-avatar']} ${styles['EMR-manage-avatar-collapsed']}`}>
-                    <img src={CollapseLogo} alt="logo" />
+                    <img src={CollapseLogo} alt="logo" style={{ width: '34px' }} />
                   </div>
                 )
                 : (
