@@ -167,14 +167,14 @@ class Manage extends Component {
               collapsed
                 ? (
                   <div className={`${styles['EMR-manage-avatar']} ${styles['EMR-manage-avatar-collapsed']}`}>
-                    <img src={CollapseLogo} alt="logo" />
+                    <img key="collapsed-img" src={CollapseLogo} alt="logo" style={{ width: '34px' }} />
                   </div>
                 )
                 : (
                   <div className={styles['EMR-manage-avatar']}>
                     {/* <img src="" alt="视频云" className={styles['EMR-manage-img']} /> */}
                     {/* <EIcon type="myicon-menuIcon-4" /> */}
-                    <img src={LOGO} alt="logo" />
+                    <img key="strech-img" src={LOGO} alt="logo" />
                     <div className={styles['EMR-manage-name']}>智能视频分析平台</div>
                   </div>
                 )
