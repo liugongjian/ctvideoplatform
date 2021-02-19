@@ -182,9 +182,10 @@ class CameraDetail extends Component {
           const point4 = [startPoint[0], endPoint[1]];
           points = [startPoint, point2, endPoint, point4];
         }
+        // 四舍五入
         const realPoints = points.map(point => ({
-          x: math.multiply(point[0], ratio),
-          y: math.multiply(point[1], ratio)
+          x: math.round(math.multiply(point[0], ratio)),
+          y: math.round(math.multiply(point[1], ratio))
         }));
         return {
           points: realPoints,
