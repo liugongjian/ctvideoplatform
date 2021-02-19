@@ -120,7 +120,7 @@ class Monitor extends Component {
     return val;
   }
 
-  renderTreeNodes = data => data.map((item) => {
+  renderTreeNodes = data => data.map((item, index) => {
     const { deptHover } = this.state;
     const getBtn = () => {
       if (deptHover && deptHover[item.id]) {
@@ -228,37 +228,13 @@ class Monitor extends Component {
                   onPressEnter={(e) => { e.stopPropagation(); }}
                 />
               )
-              : <span>{val.name}</span>
+              : (
+                <span>
+                  {val.name}
+                </span>
+              )
           }
-          {item.hasSame ? <div className={styles.hasSame}>节点名称重复，请重新设置</div> : null}
-          <Fragment>
-            {/* <div
-                onMouseEnter={() => { this.onMouseEnter(val.id); }}
-                onMouseLeave={() => { this.onMouseLeave(val.id); }}
-                className={styles.treeTitleInfo}
-                key={val.id}
-              >
-                {
-                  val.ifEdit
-                    ? (
-                      <Input
-                        value={this.state.editValue}
-                        onChange={e => this.onChange(e, val.id, val.name)}
-                        size="small"
-                        maxLength={30}
-                        autoFocus
-                        onPressEnter={(e) => { e.stopPropagation(); }}
-                      />
-                    )
-                    : <span>{val.name}</span>
-                }
-                {
-                  getBtn()
-                }
-              </div>
-              {item.hasSame ? <div className={styles.hasSame}>节点名称重复，请重新设置</div> : null}
-              */}
-          </Fragment>
+          {item.hasSame ? <div className={styles.hasSame}>区域名称重复，请重新设置</div> : null}
         </div>
       </Popover>
 
@@ -383,9 +359,14 @@ class Monitor extends Component {
 
   cancel = (e, key) => {
     e.stopPropagation();
-    this.state.tempData = this.state.tempData.filter(({ id }) => id !== -1);
+    const temp = this.state.tempData.filter(({ id }) => id !== -1);
+    const tempData = temp.map((item) => {
+      item.ifEdit = false;
+      item.hasSame = false;
+      return item;
+    });
     this.setState({
-      treeDatas: this.dataToTree(this.state.tempData)
+      treeDatas: this.dataToTree(tempData)
     });
   }
 
@@ -433,9 +414,13 @@ class Monitor extends Component {
 
   onSelect = (keys, e) => {
     const eleName = e.nativeEvent.toElement.localName;
-    if (eleName !== 'input') {
+    const eleCls = e.nativeEvent.toElement.className;
+    if (eleName !== 'input' && eleCls.indexOf('popover') === -1) {
       if (keys && keys.length > 0) {
         const [a] = keys;
+        if (a === '-1') {
+          return false;
+        }
         this.setState({
           areaId: a
         }, () => this.getDeviceList());
@@ -637,6 +622,14 @@ class Monitor extends Component {
     const { delDeviceById } = this.props;
     const temp = [id];
     delDeviceById(temp).then((res) => {
+      if (res.recordsTotal % 10 === 0) {
+        this.setState({
+          showDelModal: false,
+          checkedKeys: [],
+          pageNo: 0,
+          pageSize: 10,
+        }, () => this.getDeviceList());
+      }
       this.setState({
         showDelModal: false,
       }, () => this.getDeviceList());
@@ -647,6 +640,14 @@ class Monitor extends Component {
     const { checkedKeys } = this.state;
     const { delDeviceById } = this.props;
     delDeviceById(checkedKeys).then((res) => {
+      if (res.recordsTotal % 10 === 0) {
+        this.setState({
+          showDelModal: false,
+          checkedKeys: [],
+          pageNo: 0,
+          pageSize: 10,
+        }, () => this.getDeviceList());
+      }
       this.setState({
         showDelModal: false,
         checkedKeys: []
@@ -674,7 +675,9 @@ class Monitor extends Component {
       setDeviceList(temp, areaId).then((res) => {
         this.setState({
           showModal: false,
-          modalCheckedKeys: []
+          modalCheckedKeys: [],
+          modalDeviceName: '',
+          modalDeviceId: '',
         }, () => {
           this.getModalDeviceList();
           this.getDeviceList();
@@ -686,7 +689,9 @@ class Monitor extends Component {
   cancelImportDevice = () => {
     this.setState({
       showModal: false,
-      modalCheckedKeys: []
+      modalCheckedKeys: [],
+      modalDeviceName: '',
+      modalDeviceId: '',
     });
   }
 
@@ -700,7 +705,7 @@ class Monitor extends Component {
     const {
       test, treeDatas, expandedKeys, tableData, showModal, showDelModal,
       algorithmList = [], algorithmId, modalDeviceData, pageSize, showAreaName,
-      deviceName, deviceId, modalDeviceName, modalDeviceId, originId
+      deviceName, deviceId, modalDeviceName, modalDeviceId, originId, checkedKeys
     } = this.state;
     const { monitor: { areaListLoading } } = this.props;
     const columns = [
@@ -713,7 +718,7 @@ class Monitor extends Component {
           if (text.length > 10) {
             return (
               <Tooltip title={text}>
-                <span>{`${text.substring(0, 10)}...`}</span>
+                <span className={styles.toolPointer}>{`${text.substring(0, 10)}...`}</span>
               </Tooltip>
             );
           }
@@ -799,7 +804,16 @@ class Monitor extends Component {
         dataIndex: 'deviceName',
         key: 'deviceName',
         fixed: 'left',
-        render: text => <span>{text.substring(0, 10)}</span>,
+        render: (text) => {
+          if (text.length > 10) {
+            return (
+              <Tooltip title={text}>
+                <span className={styles.toolPointer}>{`${text.substring(0, 10)}...`}</span>
+              </Tooltip>
+            );
+          }
+          return <span>{text.substring(0, 10)}</span>;
+        },
       },
       {
         title: '摄像头ID',
@@ -841,6 +855,7 @@ class Monitor extends Component {
       onChange: this.modalChangePageNo
     };
 
+
     return (
       <Spin spinning={areaListLoading} wrapperClassName={styles.contentSpin}>
         <div className={styles.content}>
@@ -870,7 +885,7 @@ class Monitor extends Component {
             <div className={styles.searchBox}>
               <div className={styles.searchItme}>
                 <span>摄像头名称：</span>
-                <Input value={deviceName} placeholder="请输出摄像头名称" onChange={this.changeDeviceName} />
+                <Input value={deviceName} placeholder="请输入摄像头名称" onChange={this.changeDeviceName} />
               </div>
               <div className={styles.searchItme}>
                 <span>摄像头ID：</span>
@@ -900,7 +915,7 @@ class Monitor extends Component {
                   <Icon type="export" />
                   <span>导入</span>
                 </Button>
-                <Button type="link" className={styles.handleBtn} onClick={this.delThisKeys}>
+                <Button type="link" className={styles.handleBtn} onClick={this.delThisKeys} disabled={!checkedKeys.length}>
                   <Icon type="delete" />
                   <span>批量删除</span>
                 </Button>
@@ -932,7 +947,7 @@ class Monitor extends Component {
             <div className={styles.searchModalBox}>
               <div className={styles.searchItme}>
                 <span>摄像头名称：</span>
-                <Input value={modalDeviceName} placeholder="请输出摄像头名称" onChange={this.changeModalDeviceName} />
+                <Input value={modalDeviceName} placeholder="请输入摄像头名称" onChange={this.changeModalDeviceName} />
               </div>
               <div className={styles.searchItme}>
                 <span>摄像头ID：</span>

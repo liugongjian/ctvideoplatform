@@ -128,14 +128,22 @@ class Role extends Component {
           </div>
         </div>
         <Table rowSelection={rowSelection} dataSource={roleListInfo.list} pagination={false} rowKey={(record) => record.id}>
-            <Column title="角色名称" dataIndex="name"/>
-            <Column title="创建时间" dataIndex="createTime"/>
-            <Column title="修改时间" dataIndex="updateTime"/>
-            <Column title="角色描述" dataIndex="description" 
+            <Column title="角色名称" dataIndex="name" width={'25%'} className="tabble-row"
               render={
                 (text, record) => (
-                  <div style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}>
-                    {text}
+                  <div>
+                    {text.length > 10 ? text.substring(0,10) + '...' : text }
+                  </div>
+                )
+              }
+            />
+            <Column title="创建时间" dataIndex="createTime" width={'20%'}/>
+            <Column title="修改时间" dataIndex="updateTime" width={'22%'}/>
+            <Column title="角色描述" dataIndex="description" width={'22%'}
+              render={
+                (text, record) => (
+                  <div>
+                    {text.length > 10 ? text.substring(0,10) + '...' : text }
                   </div>
                 )
               }
@@ -143,6 +151,7 @@ class Role extends Component {
             <Column
                 title="操作"
                 key="action"
+                width={'9%'}
                 render={(text, record) => (
                   <div className={styles.oprationWrapper}>
                     <Link to={`/system/role/edit/${record.id}`}>
