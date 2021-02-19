@@ -627,7 +627,10 @@ class Monitor extends Component {
     const { id } = record;
     const { delDeviceById } = this.props;
     const temp = [id];
-    delDeviceById(temp).then((res) => {
+    const param = {
+      deviceIds: temp
+    };
+    delDeviceById(param).then((res) => {
       // if (res.recordsTotal % 10 === 0) {
       //   this.setState({
       //     showDelModal: false,
@@ -646,6 +649,9 @@ class Monitor extends Component {
   sureDelThisKeys = (e) => {
     const { checkedKeys, pageNo, tableData } = this.state;
     const { delDeviceById } = this.props;
+    const param = {
+      deviceIds: checkedKeys
+    };
     const ifLastPage = () => {
       if (pageNo === tableData.pageTotal - 1) {
         if (checkedKeys.length !== 10 && checkedKeys.length === tableData.recordsTotal % 10) {
@@ -658,7 +664,7 @@ class Monitor extends Component {
       }
     };
     if (ifLastPage()) {
-      delDeviceById(checkedKeys).then((res) => {
+      delDeviceById(param).then((res) => {
         this.setState({
           showDelModal: false,
           checkedKeys: [],
@@ -667,7 +673,7 @@ class Monitor extends Component {
         }, () => this.getDeviceList());
       });
     } else {
-      delDeviceById(checkedKeys).then((res) => {
+      delDeviceById(param).then((res) => {
         this.setState({
           showDelModal: false,
           checkedKeys: [],
