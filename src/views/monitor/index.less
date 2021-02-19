@@ -1,6 +1,6 @@
 .content{
   display: flex;
-  height: 100%;
+  height: calc(100% - 75px);
   background: #fff;
   .contentSpin{
     width: 100%;
@@ -14,7 +14,9 @@
   .areaTree{
     width: 300px;
     min-width: 300px;
-    padding: 15px 0 15px 15px;
+    padding: 15px 15px 0 15px;
+    margin: 15px 0;
+    border-right: 1px solid #EEE;
     :global{
       .ant-tree.ant-tree-block-node li .ant-tree-node-content-wrapper{
         width: auto;
@@ -22,6 +24,7 @@
     }
     .dataTree{
       overflow-x: auto;
+      height: calc(100% - 135px);
     }
     .treeTitleInfo{
       .treeBtnBox{
@@ -66,9 +69,9 @@
     width: calc(100% - 300px);
     min-width: 900px;
     // margin-left: 20px;
-    margin:15px 0 15px 20px;
-    padding:0 15px;
-    border-left: 1px solid #EEE;
+    // margin: 0 0 15px 20px;
+    padding:15px 15px;
+    // height: calc(100% - 60px);
     background: #fff;
   }
   .searchBox{

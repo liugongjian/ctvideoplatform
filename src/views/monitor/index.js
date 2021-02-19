@@ -64,7 +64,9 @@ class Monitor extends Component {
     modalDeviceName: '',
     modalDeviceId: '',
     modalDeviceData: {},
-    modalCheckedKeys: []
+    modalCheckedKeys: [],
+    selectedKeys: [],
+    modalSelectedKeys: [],
   }
 
   componentDidMount() {
@@ -462,21 +464,24 @@ class Monitor extends Component {
     };
     getDeiviceList(param).then((res) => {
       this.setState({
-        tableData: res || {}
+        tableData: res || {},
+        selectedKeys: [],
+        checkedKeys: []
       });
     });
   }
 
   changePageNo = (num) => {
     this.setState({
-      pageNo: num - 1
+      pageNo: num - 1,
+      // checkedKeys: []
     }, () => this.getDeviceList());
   }
 
   modalChangePageNo = (num) => {
     this.setState({
       modalPageNo: num - 1,
-      modalCheckedKeys: []
+      modalCheckedKeys: [],
     }, () => {
       this.getModalDeviceList();
     });
@@ -575,13 +580,13 @@ class Monitor extends Component {
     };
     getDevicePoolList(param).then((res) => {
       getAreaName(areaId).then((data) => {
-        // if (Array.isArray(res.list) && res.list.length) {
-        this.setState({
-          modalDeviceData: res,
-          showModal: true,
-          showAreaName: data
-        });
-        // }
+        if (res && Array.isArray(res.list) && res.list.length) {
+          this.setState({
+            modalDeviceData: res,
+            showModal: true,
+            showAreaName: data
+          });
+        }
       });
     });
   }
@@ -601,10 +606,11 @@ class Monitor extends Component {
   }
 
 
-  changeCheckRowKeys = (arr) => {
+  changeCheckRowKeys = (selected, arr) => {
     const temp = arr.map(item => item.id);
     this.setState({
-      checkedKeys: temp
+      checkedKeys: temp,
+      selectedKeys: selected
     });
   }
 
@@ -622,14 +628,15 @@ class Monitor extends Component {
     const { delDeviceById } = this.props;
     const temp = [id];
     delDeviceById(temp).then((res) => {
-      if (res.recordsTotal % 10 === 0) {
-        this.setState({
-          showDelModal: false,
-          checkedKeys: [],
-          pageNo: 0,
-          pageSize: 10,
-        }, () => this.getDeviceList());
-      }
+      // if (res.recordsTotal % 10 === 0) {
+      //   this.setState({
+      //     showDelModal: false,
+      //     checkedKeys: [],
+      //     selectedKeys: [],
+      //     pageNo: 0,
+      //     pageSize: 10,
+      //   }, () => this.getDeviceList());
+      // }
       this.setState({
         showDelModal: false,
       }, () => this.getDeviceList());
@@ -637,22 +644,37 @@ class Monitor extends Component {
   }
 
   sureDelThisKeys = (e) => {
-    const { checkedKeys } = this.state;
+    const { checkedKeys, pageNo, tableData } = this.state;
     const { delDeviceById } = this.props;
-    delDeviceById(checkedKeys).then((res) => {
-      if (res.recordsTotal % 10 === 0) {
+    const ifLastPage = () => {
+      if (pageNo === tableData.pageTotal - 1) {
+        if (checkedKeys.length !== 10 && checkedKeys.length === tableData.recordsTotal % 10) {
+          return true;
+        } if (checkedKeys.length === 10 && tableData.recordsTotal % 10 === 0) {
+          return true;
+        }
+      } else {
+        return false;
+      }
+    };
+    if (ifLastPage()) {
+      delDeviceById(checkedKeys).then((res) => {
         this.setState({
           showDelModal: false,
           checkedKeys: [],
-          pageNo: 0,
-          pageSize: 10,
+          selectedKeys: [],
+          pageNo: tableData.pageTotal - 2
         }, () => this.getDeviceList());
-      }
-      this.setState({
-        showDelModal: false,
-        checkedKeys: []
-      }, () => this.getDeviceList());
-    });
+      });
+    } else {
+      delDeviceById(checkedKeys).then((res) => {
+        this.setState({
+          showDelModal: false,
+          checkedKeys: [],
+          selectedKeys: []
+        }, () => this.getDeviceList());
+      });
+    }
   }
 
   cancelDelthisKeys = () => {
@@ -678,6 +700,7 @@ class Monitor extends Component {
           modalCheckedKeys: [],
           modalDeviceName: '',
           modalDeviceId: '',
+          modalSelectedKeys: []
         }, () => {
           this.getModalDeviceList();
           this.getDeviceList();
@@ -692,20 +715,27 @@ class Monitor extends Component {
       modalCheckedKeys: [],
       modalDeviceName: '',
       modalDeviceId: '',
+      modalSelectedKeys: []
     });
   }
 
-  changeModalCheckRowKeys =(arr) => {
+  changeModalCheckRowKeys =(selected, arr) => {
     this.setState({
-      modalCheckedKeys: arr
+      modalCheckedKeys: arr,
+      modalSelectedKeys: selected
     });
+  }
+
+  tableChange = (page, filter, sorter, extra) => {
+    console.log(page, filter, sorter, extra);
   }
 
   render() {
     const {
       test, treeDatas, expandedKeys, tableData, showModal, showDelModal,
       algorithmList = [], algorithmId, modalDeviceData, pageSize, showAreaName,
-      deviceName, deviceId, modalDeviceName, modalDeviceId, originId, checkedKeys
+      deviceName, deviceId, modalDeviceName, modalDeviceId, originId, checkedKeys,
+      selectedKeys, modalSelectedKeys
     } = this.state;
     const { monitor: { areaListLoading } } = this.props;
     const columns = [
@@ -827,18 +857,20 @@ class Monitor extends Component {
       <Option value={item.id} key={item.id}>{item.cnName}</Option>));
 
     const rowSelection = {
+      selectedRowKeys: selectedKeys,
       onChange: (selectedRowKeys, selectedRows) => {
-        this.changeCheckRowKeys(selectedRows);
+        this.changeCheckRowKeys(selectedRowKeys, selectedRows);
       },
-      getCheckboxProps: record => ({
-        disabled: record.name === 'Disabled User', // Column configuration not to be checked
-        name: record.name,
-      }),
+      // getCheckboxProps: record => ({
+      //   disabled: record.name === 'Disabled User', // Column configuration not to be checked
+      //   name: record.name,
+      // }),
     };
 
     const modalRowSelection = {
+      selectedRowKeys: modalSelectedKeys,
       onChange: (selectedRowKeys, selectedRows) => {
-        this.changeModalCheckRowKeys(selectedRows);
+        this.changeModalCheckRowKeys(selectedRowKeys, selectedRows);
       },
     };
     const pagination = {
@@ -927,6 +959,7 @@ class Monitor extends Component {
                 dataSource={tableData.list || []}
                 scroll={{ x: 'max-content' }}
                 pagination={pagination}
+                onChange={this.tableChange}
               />
             </div>
           </div>
