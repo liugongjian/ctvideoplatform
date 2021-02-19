@@ -125,7 +125,7 @@ class Manage extends Component {
             >
               {
                 item.children.map(val => (
-                  <Menu.Item key={`${pathPrefix}${item.path}${val.path}`}>
+                  <Menu.Item key={`${pathPrefix}${item.path}${val.path}`} className={collapsed ? styles.menuCollapsedSubItem : ''}>
                     <Link to={`${pathPrefix}${item.path}${val.path}`}>
                       {/* <Icon type="anticon-service-Cloudhostconsole" /> */}
                       <EIcon type={`myicon-menuIcon-${val.id} ${styles['EMR-manage-tab-iconFs']}`} />

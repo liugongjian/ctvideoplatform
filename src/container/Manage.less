@@ -1,6 +1,18 @@
 @import '~Styles/index.less';
 @manage-prefix-cls: ~'@{emr-prefix}-manage';
 
+.menuCollapsedSubItem{
+  .@{manage-prefix-cls}-tab-iconFs{
+    vertical-align: middle;
+    color:black;
+  }
+  &:hover{
+    color:#2A89E0;
+    .@{manage-prefix-cls}-tab-iconFs{
+      color:#2A89E0;
+    }
+  }
+}
 .@{manage-prefix-cls} {
   &-container {
     // position: relative;
@@ -86,7 +98,7 @@
         .ant-menu-inline-collapsed > .ant-menu-item, .ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-item,
          .ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-inline-collapsed > .ant-menu-submenu > .ant-menu-submenu-title{
           padding:0 20px !important;
-          width: 15px;
+          // width: 15px;
           overflow: hidden;
           a{
             width: 15px;
@@ -115,10 +127,11 @@
     &-iconFs{
       color:white;
       font-size: 16px;
-      padding-right: 12px;
+      padding-right: 13px;
       display: inline-block;
       vertical-align: middle;
     }
+
     // width: 240px;
     // position: fixed;
     // padding-top: 50px;
