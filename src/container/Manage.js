@@ -18,7 +18,8 @@ import { menuRoutes } from 'Setting/routeconfig';
 import { createRouters, createRouterByApiData } from 'Utils/core';
 import { getMenuList } from 'Redux/reducer/pageHeader';
 import EIcon from 'Components/Icon';
-import LOGO from 'Assets/main_logo.png';
+import CollapseLogo from 'Assets/main_logo.png';
+import LOGO from 'Assets/loginLogo.png';
 import { render } from 'less';
 
 import PageHeader from './PageHeader';
@@ -162,12 +163,23 @@ class Manage extends Component {
       <div className={styles['EMR-manage-container']}>
         <div className={`${styles['EMR-manage-tab']} ${collapsed ? styles['EMR-manage-tab-collapsed'] : ''}`}>
           <Spin spinning={menuListLoading}>
-            <div className={styles['EMR-manage-avatar']}>
-              {/* <img src="" alt="视频云" className={styles['EMR-manage-img']} /> */}
-              {/* <EIcon type="myicon-menuIcon-4" /> */}
-              <img src={LOGO} alt="logo" />
-              <div className={styles['EMR-manage-name']}>智能视频分析平台</div>
-            </div>
+            {
+              collapsed
+                ? (
+                  <div className={`${styles['EMR-manage-avatar']} ${styles['EMR-manage-avatar-collapsed']}`}>
+                    <img src={CollapseLogo} alt="logo" />
+                  </div>
+                )
+                : (
+                  <div className={styles['EMR-manage-avatar']}>
+                    {/* <img src="" alt="视频云" className={styles['EMR-manage-img']} /> */}
+                    {/* <EIcon type="myicon-menuIcon-4" /> */}
+                    <img src={LOGO} alt="logo" />
+                    <div className={styles['EMR-manage-name']}>智能视频分析平台</div>
+                  </div>
+                )
+            }
+
             <Menu
               defaultOpenKeys={[]}
               defaultSelectedKeys={[pathname]}
