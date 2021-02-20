@@ -641,7 +641,7 @@ class Monitor extends Component {
       delDeviceById(param).then((res) => {
         this.setState({
           showDelModal: false,
-          pageNo: tableData.pageTotal - 2
+          pageNo: tableData.pageTotal - 2 >= 0 ? tableData.pageTotal - 2 : 0
         }, () => this.getDeviceList());
       });
     } else {
@@ -676,7 +676,7 @@ class Monitor extends Component {
           showDelModal: false,
           checkedKeys: [],
           selectedKeys: [],
-          pageNo: tableData.pageTotal - 2
+          pageNo: tableData.pageTotal - 2 >= 0 ? tableData.pageTotal - 2 : 0
         }, () => this.getDeviceList());
       });
     } else {
