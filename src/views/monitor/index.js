@@ -48,6 +48,7 @@ class Monitor extends Component {
     tempData: [],
     deptHover: {},
     areaId: 1,
+    selectAreaKeys: ['1'],
     pageNo: 0,
     modalPageNo: 0,
     recursive: false,
@@ -417,6 +418,7 @@ class Monitor extends Component {
   onSelect = (keys, e) => {
     const eleName = e.nativeEvent.toElement.localName;
     const eleCls = e.nativeEvent.toElement.className;
+    console.log(keys);
     if (eleName !== 'input' && eleCls.indexOf('popover') === -1) {
       if (keys && keys.length > 0) {
         const [a] = keys;
@@ -424,11 +426,13 @@ class Monitor extends Component {
           return false;
         }
         this.setState({
-          areaId: a
+          areaId: a,
+          selectAreaKeys: keys
         }, () => this.getDeviceList());
       } else {
         this.setState({
-          areaId: 1
+          areaId: 1,
+          selectAreaKeys: ['1']
         }, () => this.getDeviceList());
       }
     }
@@ -537,6 +541,7 @@ class Monitor extends Component {
       // deviceId: '',
       originId: '',
       algorithmId: 'all',
+      selectAreaKeys: ['1']
     }, () => this.getDeviceList());
   }
 
@@ -748,7 +753,7 @@ class Monitor extends Component {
       test, treeDatas, expandedKeys, tableData, showModal, showDelModal,
       algorithmList = [], algorithmId, modalDeviceData, pageSize, showAreaName,
       deviceName, deviceId, modalDeviceName, modalDeviceId, originId, checkedKeys,
-      selectedKeys, modalSelectedKeys
+      selectedKeys, modalSelectedKeys, selectAreaKeys
     } = this.state;
     const { monitor: { areaListLoading } } = this.props;
     const columns = [
@@ -918,6 +923,7 @@ class Monitor extends Component {
                   onSelect={this.onSelect}
                   defaultSelectedKeys={['1']}
                   className={styles.dataTree}
+                  selectedKeys={selectAreaKeys}
                   ref={ref => this.treeNode = ref}
                 >
                   {this.renderTreeNodes(treeDatas)}
