@@ -638,14 +638,14 @@ class Monitor extends Component {
       return false;
     };
     if (ifLastPage()) {
-      delDeviceById(temp).then((res) => {
+      delDeviceById(param).then((res) => {
         this.setState({
           showDelModal: false,
           pageNo: tableData.pageTotal - 2
         }, () => this.getDeviceList());
       });
     } else {
-      delDeviceById(temp).then((res) => {
+      delDeviceById(param).then((res) => {
         this.setState({
           showDelModal: false,
         }, () => this.getDeviceList());
