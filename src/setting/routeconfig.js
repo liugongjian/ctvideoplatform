@@ -150,26 +150,28 @@ const menuRoutes = [
   },
   // 智能分析
   {
-    path: '/analyze',
+    path: '/alarms',
     exact: true,
+    pageTitle: '告警信息',
     component: DefaultPage,
-    children: [
-      {
-        path: '/videoAnalyze',
-        exact: true,
-        component: DefaultPage,
-      },
-      {
-        path: '/alarm',
-        exact: true,
-        component: DefaultPage,
-      },
-      {
-        path: '/intelligentSearch',
-        exact: true,
-        component: DefaultPage,
-      },
-    ]
+    // children: [
+    //   {
+    //     path: '/videoAnalyze',
+    //     exact: true,
+    //     component: DefaultPage,
+    //   },
+    //   {
+    //     path: '/alarm',
+    //     pageTitle: '告警信息',
+    //     exact: true,
+    //     component: DefaultPage,
+    //   },
+    //   {
+    //     path: '/intelligentSearch',
+    //     exact: true,
+    //     component: DefaultPage,
+    //   },
+    // ]
   },
   // 图库管理
   {
