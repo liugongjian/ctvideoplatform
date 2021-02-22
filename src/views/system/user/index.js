@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React, { Component } from 'react';
 import {
-  Select, Button, Modal, Form, Input, Switch, Icon, message, Table, Pagination
+  Select, Button, Modal, Form, Input, Switch, Icon, message, Table, Pagination, Tooltip
 } from 'antd';
 // import Icon from 'Components/Icon';
 import { Link } from 'react-router-dom';
@@ -532,35 +532,41 @@ class Account extends Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 18, offset: 6, },
     };
-    // let pagination;
-    // // eslint-disable-next-line prefer-const
-    // pagination = {
-    //   showSizeChanger: true,
-    //   showQuickJumper: true,
-    //   total: Number(total),
-    //   pageSize: Number(pageSize),
-    //   defaultCurrent: 1,
-    //   current: Number(pageNum),
-    //   hideOnSinglePage: false
-    // };
-    // pagination.onChange = this.onPageChange;
-    // pagination.onShowSizeChange = this.onShowSizeChange;
 
     const columns = [
       {
         title: '用户名', // 列名称
         dataIndex: 'username', // 数据源的字段名
-        ellipsis: true,
-        render: text => (
-          <div title={text}>{text && text.length > 10 ? `${text.substring(0, 10)}...` : text}</div>
-        )
+        // render: text => (
+        //   <div title={text}>{text && text.length > 10 ? `${text.substring(0, 10)}...` : text}</div>
+        // )
+        render: (text) => {
+          if (text.length > 10) {
+            return (
+              <Tooltip title={text}>
+                <span className={styles.toolPointer}>{`${text.substring(0, 10)}...`}</span>
+              </Tooltip>
+            );
+          }
+          return <span>{text.substring(0, 10)}</span>;
+        },
       },
       {
         title: '角色名称',
         dataIndex: 'roleName',
-        render: (text, record) => (
-          <div title={text}>{text && text.length > 10 ? `${text.substring(0, 10)}...` : text}</div>
-        )
+        // render: (text, record) => (
+        //   <div title={text}>{text && text.length > 10 ? `${text.substring(0, 10)}...` : text}</div>
+        // )
+        render: (text) => {
+          if (text.length > 10) {
+            return (
+              <Tooltip title={text}>
+                <span className={styles.toolPointer}>{`${text.substring(0, 10)}...`}</span>
+              </Tooltip>
+            );
+          }
+          return <span>{text.substring(0, 10)}</span>;
+        },
       },
       {
         title: '在线状态', // 状态0 在线 1离线
