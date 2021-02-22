@@ -54,6 +54,7 @@ import RoleAdd from 'Views/role/roleadd';
 import CameraDetail from 'Views/cameraDetail';
 import Account from 'Views/system/user';
 import AddAccount from 'Views/system/user/addUser';
+import Alarms from 'Views/alarms';
 import { pathPrefix } from 'Constants/Dictionary';
 
 const routesConfig = [
@@ -153,7 +154,7 @@ const menuRoutes = [
     path: '/alarms',
     exact: true,
     pageTitle: '告警信息',
-    component: DefaultPage,
+    component: Alarms,
     // children: [
     //   {
     //     path: '/videoAnalyze',
