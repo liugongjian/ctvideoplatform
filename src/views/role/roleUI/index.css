@@ -32,6 +32,7 @@
 .contentWrapper .tree .treefr .treeRegion {
   overflow-y: scroll;
   height: 90%;
+  width: 100%;
 }
 .contentWrapper .formItemInput {
   width: 390px;
