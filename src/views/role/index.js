@@ -30,7 +30,10 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 
 class Role extends Component {
   state = {
-    roleListInfo:{},
+    roleListInfo:{
+      pageSize:10,
+      pageNo:0
+    },
     selectedRowKeys : [], // Check here to configure the default column
     searchName:"",
     deleteModalVisible : false,
@@ -128,7 +131,7 @@ class Role extends Component {
           </div>
         </div>
         <Table rowSelection={rowSelection} dataSource={roleListInfo.list} pagination={false} rowKey={(record) => record.id}>
-            <Column title="角色名称" dataIndex="name" width={'25%'} className="tabble-row"
+            <Column title="角色名称" dataIndex="name" width={'20%'} className="tabble-row"
               render={
                 (text, record) => (
                   <div>
@@ -155,7 +158,7 @@ class Role extends Component {
             <Column
                 title="操作"
                 key="action"
-                width={'9%'}
+                width={'14%'}
                 render={(text, record) => (
                   <div className={styles.oprationWrapper}>
                     <Link to={`/system/role/edit/${record.id}`}>
@@ -176,8 +179,7 @@ class Role extends Component {
               current={roleListInfo.pageNo+1}
               showSizeChanger
               showQuickJumper
-              defaultPageSize={10}
-              pageSizeOptions={[10,20]}
+              pageSize={this.state.roleListInfo.pageSize}
               onShowSizeChange={(current,size) => this.onPageSizeChange(current , size)}
             />
           </div>
