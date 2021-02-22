@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Table, Input, Modal, Pagination, Button , message
+  Table, Input, Modal, Pagination, Button , message ,Tooltip , Icon
 } from 'antd';
 import {Link} from 'react-router-dom'
 import { bindActionCreators } from 'redux';
@@ -30,7 +30,10 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 
 class Role extends Component {
   state = {
-    roleListInfo:{},
+    roleListInfo:{
+      pageSize:10,
+      pageNo:0
+    },
     selectedRowKeys : [], // Check here to configure the default column
     searchName:"",
     deleteModalVisible : false,
@@ -112,12 +115,12 @@ class Role extends Component {
           {
             this.state.selectedRowKeys.length > 0 ? (
               <a className={styles.deleteBtn} onClick={()=>this.setState({deleteModalVisible:true})}>
-              <img src={deletePic} className={styles.deletePic}/>
+              <Icon type="delete" className={styles.deletePic}/>
               批量删除
               </a>
             ):(
-              <a className={styles.deleteBtnDisabled}>
-              <img src={deletePic2} className={styles.deletePic}/>
+              <a disabled className={styles.deleteBtnDisabled}>
+              <Icon type="delete" className={styles.deletePic}/>
               批量删除
               </a>
             )
@@ -128,11 +131,13 @@ class Role extends Component {
           </div>
         </div>
         <Table rowSelection={rowSelection} dataSource={roleListInfo.list} pagination={false} rowKey={(record) => record.id}>
-            <Column title="角色名称" dataIndex="name" width={'25%'} className="tabble-row"
+            <Column title="角色名称" dataIndex="name" width={'20%'} className="tabble-row"
               render={
                 (text, record) => (
                   <div>
-                    {text.length > 10 ? text.substring(0,10) + '...' : text }
+                    { text.length > 10 ? 
+                    (<Tooltip title={text}> {text.substring(0,10) + '...'} </Tooltip>) 
+                    : text }
                   </div>
                 )
               }
@@ -143,7 +148,9 @@ class Role extends Component {
               render={
                 (text, record) => (
                   <div>
-                    {text.length > 10 ? text.substring(0,10) + '...' : text }
+                    { text.length > 10 ? 
+                    (<Tooltip title={text}> {text.substring(0,10) + '...'} </Tooltip>) 
+                    : text }
                   </div>
                 )
               }
@@ -151,7 +158,7 @@ class Role extends Component {
             <Column
                 title="操作"
                 key="action"
-                width={'9%'}
+                width={'14%'}
                 render={(text, record) => (
                   <div className={styles.oprationWrapper}>
                     <Link to={`/system/role/edit/${record.id}`}>
@@ -172,8 +179,7 @@ class Role extends Component {
               current={roleListInfo.pageNo+1}
               showSizeChanger
               showQuickJumper
-              defaultPageSize={10}
-              pageSizeOptions={[10,20]}
+              pageSize={this.state.roleListInfo.pageSize}
               onShowSizeChange={(current,size) => this.onPageSizeChange(current , size)}
             />
           </div>
