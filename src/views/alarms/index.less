@@ -48,6 +48,10 @@
         &-btnWrapper{
             float: right;
         }
+        &>div, &>span{
+            vertical-align: top;
+        }
+        height: 32px;
         margin-bottom: 20px;
     }
     &-listWrapper{
@@ -121,8 +125,8 @@
         display: none;
     }
     &>div:not(&-imgWrapper){
-        padding-left: 15px;
-        padding-right: 15px;
+        padding-left: 12px;
+        padding-right: 12px;
     }
     &-title{
         width: 100%;
@@ -141,7 +145,7 @@
         }
         &-time{
             font-family: PingFangSC-Regular;
-            font-size: 12px;
+            font-size: 10px;
             color: #8C8C8C;
             float: right;
         }
@@ -174,6 +178,9 @@
             background-color: #FA8334;
             color:white;
             text-align: right;
+            a{
+                color:white;
+            }
             &-split{
                 display: inline-block;
                 border-right: 1px solid white;
