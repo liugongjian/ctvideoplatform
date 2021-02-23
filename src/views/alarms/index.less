@@ -59,10 +59,10 @@
         }
         @media screen and (min-width: 1501px) {
             .AlarmCard{
-                height: 400px;
+                height: 370px;
                 width: calc((100% - 15px * 4) / 5 );
                 &-imgWrapper{
-                    height: 235px;
+                    height: 240px;
                 }
             }
             .AlarmCard:not(:nth-of-type(5n+0)){
@@ -71,10 +71,10 @@
         }
         @media screen and (max-width: 1500px) {
             .AlarmCard{
-                height: 300px;
+                height: 270px;
                 width: calc((100% - 15px * 3) / 4 );
                 &-imgWrapper{
-                    height: 135px;
+                    height: 140px;
                 }
             }
             .AlarmCard:not(:nth-of-type(4n+0)){
@@ -102,6 +102,8 @@
         }
         .ant-select-selection--single{
             min-width: 100px;
+            height: 32px;
+            line-height: 32px;
         }
         .ant-select-selection__rendered{
             line-height: 32px;
@@ -110,20 +112,75 @@
 }
 .AlarmCard{
     display: inline-block;
-    border:1px solid  rgba(0,0,0,.15);
-    box-shadow: 0 2px 8px rgba(0,0,0,.15);
-    border-radius: 2px;
+    position: relative;
+    border:1px solid #EDEDED;
     background-color: white;
-    padding: 15px;
-    &>div:not(:first-child){
-        margin-top: 5px;
+    // padding: 15px;
+    border-radius: 4px 4px 0 0;
+    &-operatorWrapper{
+        display: none;
+    }
+    &>div:not(&-imgWrapper){
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    &-title{
+        width: 100%;
+        height: 44px;
+        line-height: 44px;
+        border-radius: 4px 4px 0px 0px;
+        background-color: #EDEDED;
+        &-icon{
+            height: 20px;
+            width: 20px;
+        }
+        &-name{
+            font-family: PingFangSC-Regular;
+            font-size: 12px;
+            color: #000000;
+        }
+        &-time{
+            font-family: PingFangSC-Regular;
+            font-size: 12px;
+            color: #8C8C8C;
+            float: right;
+        }
     }
     &-imgWrapper{
         background-color: rgba(0,0,0,.05);
         img{
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: fill;
+        }
+    }
+    &-contentWrapper{
+        &>div{
+            margin-top: 5px;
+            font-size: 12px;
+        }
+    }
+    &:hover{
+        border: 1px solid #FA8334;
+        .AlarmCard-operatorWrapper{
+            display: block;
+            position: absolute;
+            z-index:100;
+            height: 30px;
+            line-height: 30px;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+            background-color: #FA8334;
+            color:white;
+            text-align: right;
+            &-split{
+                display: inline-block;
+                border-right: 1px solid white;
+                width: 10px;
+                height: 14px;
+                margin-right: 10px;
+            }
         }
     }
 }

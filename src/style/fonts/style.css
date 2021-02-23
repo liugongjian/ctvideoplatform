@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'cloudFont';
   src:
-    url('fonts/cloudFont.ttf?7kc3st') format('truetype'),
-    url('fonts/cloudFont.woff?7kc3st') format('woff'),
-    url('fonts/cloudFont.svg?7kc3st#cloudFont') format('svg');
+    url('fonts/cloudFont.ttf?ujp8mj') format('truetype'),
+    url('fonts/cloudFont.woff?ujp8mj') format('woff'),
+    url('fonts/cloudFont.svg?ujp8mj#cloudFont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -24,6 +24,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.myicon-import:before {
+  content: "\eb4c";
+}
 .myicon-menuIcon-1:before {
   content: "\eb3f";
 }

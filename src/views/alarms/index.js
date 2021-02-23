@@ -37,7 +37,7 @@ class Alarms extends Component {
           name: '移动侦测',
           rule: '',
           detail: 'blabla',
-
+          time: '2021/02/30 01:30'
         },
         {
           id: 2,
