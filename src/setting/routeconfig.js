@@ -55,6 +55,7 @@ import RoleAdd from 'Views/role/roleadd';
 import CameraDetail from 'Views/cameraDetail';
 import Account from 'Views/system/user';
 import AddAccount from 'Views/system/user/addUser';
+import Alarms from 'Views/alarms';
 import { pathPrefix } from 'Constants/Dictionary';
 
 const routesConfig = [
@@ -151,26 +152,28 @@ const menuRoutes = [
   },
   // 智能分析
   {
-    path: '/analyze',
+    path: '/alarms',
     exact: true,
-    component: DefaultPage,
-    children: [
-      {
-        path: '/videoAnalyze',
-        exact: true,
-        component: DefaultPage,
-      },
-      {
-        path: '/alarm',
-        exact: true,
-        component: DefaultPage,
-      },
-      {
-        path: '/intelligentSearch',
-        exact: true,
-        component: DefaultPage,
-      },
-    ]
+    pageTitle: '告警信息',
+    component: Alarms,
+    // children: [
+    //   {
+    //     path: '/videoAnalyze',
+    //     exact: true,
+    //     component: DefaultPage,
+    //   },
+    //   {
+    //     path: '/alarm',
+    //     pageTitle: '告警信息',
+    //     exact: true,
+    //     component: DefaultPage,
+    //   },
+    //   {
+    //     path: '/intelligentSearch',
+    //     exact: true,
+    //     component: DefaultPage,
+    //   },
+    // ]
   },
   // 图库管理
   {
