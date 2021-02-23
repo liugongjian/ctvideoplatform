@@ -39,36 +39,41 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   dispatch
 );
 class Monitor extends Component {
-  state = {
-    test: '测试什么的',
-    treeDatas: [],
-    expandedKeys: ['1'],
-    editValue: '',
-    hasSame: '',
-    tempData: [],
-    deptHover: {},
-    areaId: 1,
-    selectAreaKeys: ['1'],
-    pageNo: 0,
-    modalPageNo: 0,
-    recursive: false,
-    pageSize: 10,
-    tableData: {},
-    showModal: false,
-    checkedKeys: [],
-    showDelModal: false,
-    deviceName: '',
-    deviceId: '',
-    originId: '',
-    algorithmId: 'all',
-    algorithmList: [],
-    modalDeviceName: '',
-    modalDeviceId: '',
-    modalDeviceData: {},
-    modalCheckedKeys: [],
-    selectedKeys: [],
-    modalSelectedKeys: [],
+  constructor(props) {
+    super(props);
+    this.state = {
+      test: '测试什么的',
+      treeDatas: [],
+      expandedKeys: ['1'],
+      editValue: '',
+      hasSame: '',
+      tempData: [],
+      deptHover: {},
+      areaId: 1,
+      selectAreaKeys: ['1'],
+      pageNo: 0,
+      modalPageNo: 0,
+      recursive: false,
+      pageSize: 10,
+      tableData: {},
+      showModal: false,
+      checkedKeys: [],
+      showDelModal: false,
+      deviceName: '',
+      deviceId: '',
+      originId: '',
+      algorithmId: 'all',
+      algorithmList: [],
+      modalDeviceName: '',
+      modalDeviceId: '',
+      modalDeviceData: {},
+      modalCheckedKeys: [],
+      selectedKeys: [],
+      modalSelectedKeys: [],
+    };
+    this.timer = null;
   }
+
 
   componentDidMount() {
     this.getAreaList();
@@ -244,12 +249,22 @@ class Monitor extends Component {
     );
     if (item.children && item.children.length) {
       return (
-        <TreeNode key={item.id.toString()} title={getTitle(item)} className={styles.treenode}>
+        <TreeNode
+          key={item.id.toString()}
+          title={getTitle(item)}
+          className={styles.treenode}
+        >
           {this.renderTreeNodes(item.children)}
         </TreeNode>
       );
     }
-    return <TreeNode key={item.id.toString()} title={getTitle(item)} className={styles.treenode} />;
+    return (
+      <TreeNode
+        key={item.id.toString()}
+        title={getTitle(item)}
+        className={styles.treenode}
+      />
+    );
   })
 
   editThis = (e, key, name) => {

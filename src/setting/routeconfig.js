@@ -47,6 +47,7 @@ import Login from 'Views/login';
 import Dashboard from 'Views/dashboard';
 import DefaultPage from 'Views/defaultPage';
 import Monitor from 'Views/monitor';
+import Preview from 'Views/preview';
 
 import Role from 'Views/role';
 import RoleEdit from 'Views/role/roleedit';
@@ -139,7 +140,7 @@ const menuRoutes = [
       {
         path: '/realtime',
         exact: true,
-        component: DefaultPage,
+        component: Preview,
       },
       {
         path: '/replay',
