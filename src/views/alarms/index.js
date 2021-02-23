@@ -5,6 +5,7 @@ import {
   DatePicker,
   Cascader,
   Button,
+  Pagination,
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -65,8 +66,63 @@ class Alarms extends Component {
           rule: '',
           detail: 'blabla',
 
-        }
+        },
+        {
+          id: 6,
+          name: '移动侦测5',
+          rule: '',
+          detail: 'blabla',
 
+        },
+        {
+          id: 7,
+          name: '移动侦测5',
+          rule: '',
+          detail: 'blabla',
+
+        },
+        {
+          id: 8,
+          name: '移动侦测5',
+          rule: '',
+          detail: 'blabla',
+
+        },
+        {
+          id: 9,
+          name: '移动侦测5',
+          rule: '',
+          detail: 'blabla',
+
+        },
+        {
+          id: 10,
+          name: '移动侦测5',
+          rule: '',
+          detail: 'blabla',
+
+        },
+        {
+          id: 11,
+          name: '移动侦测5',
+          rule: '',
+          detail: 'blabla',
+
+        },
+        {
+          id: 12,
+          name: '移动侦测5',
+          rule: '',
+          detail: 'blabla',
+
+        },
+        {
+          id: 13,
+          name: '移动侦测5',
+          rule: '',
+          detail: 'blabla',
+
+        },
       ]
     };
   }
@@ -91,6 +147,8 @@ class Alarms extends Component {
     onReset = () => {
 
     }
+
+    showTotal = total => `总计 ${total} 条`
 
     render() {
       const { listData } = this.state;
@@ -128,8 +186,21 @@ class Alarms extends Component {
           </div>
           <div className={styles['alarms-listWrapper']}>
             {
-              listData.map(item => <AlarmCard data={item} />)
+              listData.map(item => (
+                <AlarmCard
+                  key={item.id}
+                  data={item}
+                />
+              ))
             }
+          </div>
+          <div className={styles['alarms-paginationWrapper']}>
+            <Pagination
+              total={50}
+              showSizeChanger
+              showQuickJumper
+              showTotal={this.showTotal}
+            />
           </div>
         </div>
       );

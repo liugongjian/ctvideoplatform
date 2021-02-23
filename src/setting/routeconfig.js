@@ -151,7 +151,7 @@ const menuRoutes = [
   },
   // 智能分析
   {
-    path: '/alarms',
+    path: '/analyze',
     exact: true,
     pageTitle: '告警信息',
     component: Alarms,

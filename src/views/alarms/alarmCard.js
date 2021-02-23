@@ -5,6 +5,7 @@ import {
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import TestJpg from './test.jpg';
 // import { push } from 'react-router-redux';
 // import PropTypes from 'prop-types';
 // import {
@@ -55,6 +56,12 @@ const AlarmCard = ({ data, onDelete }) => {
   const hasDetail = true;
   return (
     <div className={styles.AlarmCard}>
+      <div className={styles['AlarmCard-imgWrapper']}>
+        <img
+          src={TestJpg}
+          alt="图片"
+        />
+      </div>
       <div>
         布控规则：
         {rule}
