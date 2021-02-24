@@ -10,6 +10,7 @@ import monitor from './monitor';
 import account from './account';
 import role from './role';
 import cameraDetail from './cameraDetail';
+import face from './face';
 import alarms from './alarms';
 import preview from './preview';
 
@@ -23,6 +24,7 @@ export default {
   account,
   role,
   cameraDetail,
+  face,
   alarms,
   preview
 };
