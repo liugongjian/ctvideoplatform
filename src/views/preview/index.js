@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import {
   Tree, Input, Select, Icon
 } from 'antd';
+import EIcon from 'Components/Icon';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
@@ -97,11 +98,9 @@ class Preview extends PureComponent {
         return val.name;
       };
       const getIcon = (val) => {
-        // console.log('props', props);
-        console.log('val', val);
         if (val.type === 1) {
           return (
-            <Icon type="video-camera" />
+            <EIcon type="myicon-monitorIcon" />
           );
         }
         return (<Icon type="folder" />);
@@ -112,7 +111,7 @@ class Preview extends PureComponent {
             key={item.id.toString()}
             title={item.name}
             className={styles.treenode}
-            // icon={getIcon(item)}
+            icon={<EIcon type="myicon-folderopen" />}
           >
             {this.renderTreeNodes(item.children)}
           </TreeNode>
