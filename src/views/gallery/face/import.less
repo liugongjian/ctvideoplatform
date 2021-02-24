@@ -2,4 +2,83 @@
     background: #fff;
     padding: 20px;
     position: relative;
+    min-height: 100%;
+    .importContainer{
+        width: 60%;
+        margin: 0 auto;
+        :global{
+            .ant-steps-item-active{
+                .ant-steps-item-title{
+                    font-family: PingFangSC-Medium;
+                    font-size: 16px;
+                    color: rgba(0,0,0);
+                }
+            }
+            .ant-steps-item-wait{
+                .ant-steps-item-title{
+                    font-family: PingFangSC-Regular;
+                    font-size: 16px;
+                    color: rgba(0,0,0,0.45);
+                }
+            }
+            .ant-steps-item-finish{
+                .ant-steps-item-title{
+                    font-family: PingFangSC-Regular;
+                    font-size: 16px;
+                    color: rgba(0,0,0,0.85);
+                }
+            }
+            
+        }
+        .selectContainer .selectType{
+            width: 50%;
+            margin: 0 auto;
+            margin-top: 150px;
+            .selectLabel{
+                font-family: PingFangSC-Regular;
+                font-size: 14px;
+                color: #333333;
+            }
+            :global{
+                .ant-select{
+                    width: 50%;
+                }
+            }
+        }
+        .selectContainer .nextStep,.draggerContainer .nextStep{
+            margin-top: 45px;
+            .btn{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                :global{
+                    .ant-btn-button{
+                        margin-left: 20px;
+                    }
+                }
+            }
+        }
+        .draggerContainer{
+            margin: 0 auto;
+            margin-top: 150px;
+            :global{
+                .ant-upload-text{
+                    font-family: PingFangSC-Regular;
+                    font-size: 16px;
+                    color: rgba(0,0,0,0.85);
+                }
+                .ant-upload-hint{
+                    font-family: PingFangSC-Regular;
+                    font-size: 14px;
+                    color: rgba(0,0,0,0.4);
+                    margin-top: 10px;
+    
+                }
+
+            }
+            
+            
+
+        }
+    }
 }
