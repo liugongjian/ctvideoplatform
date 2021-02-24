@@ -51,7 +51,6 @@ class Face extends Component {
           name: 'lizhiyonglizhiyonglizhiyonglizhiyong',
           nameList: 1,
           updateTime: '2021-01-20T17:26:58.000+0800',
-          checkboxShow: false,
           isChecked: false,
         },
         {
@@ -63,7 +62,6 @@ class Face extends Component {
           name: 'lxp',
           nameList: 2,
           updateTime: '2021-01-20T17:34:24.000+0800',
-          checkboxShow: false,
           isChecked: false,
         },
         {
@@ -75,7 +73,6 @@ class Face extends Component {
           name: 'llll',
           nameList: 2,
           updateTime: '2021-01-20T17:34:24.000+0800',
-          checkboxShow: false,
           isChecked: false,
         },
         {
@@ -87,7 +84,6 @@ class Face extends Component {
           name: 'hhhh',
           nameList: 2,
           updateTime: '2021-01-20T17:34:24.000+0800',
-          checkboxShow: false,
           isChecked: false,
         },
         {
@@ -99,7 +95,6 @@ class Face extends Component {
           name: 'lxp',
           nameList: 1,
           updateTime: '2021-01-20T17:34:24.000+0800',
-          checkboxShow: false,
           isChecked: false,
         },
         {
@@ -111,7 +106,6 @@ class Face extends Component {
           name: 'lxpffff',
           nameList: 1,
           updateTime: '2021-01-20T17:34:24.000+0800',
-          checkboxShow: false,
           isChecked: false,
         },
         {
@@ -123,12 +117,11 @@ class Face extends Component {
           name: 'lxpffffjjj',
           nameList: 1,
           updateTime: '2021-01-20T17:34:24.000+0800',
-          checkboxShow: false,
           isChecked: false,
         }
       ],
       name: '',
-      imgaeLoading: false,
+      imageLoading: false,
       imageUrl: '',
       delName: '',
       delIds: [],
@@ -293,14 +286,14 @@ class Face extends Component {
 
     handleChange = (info) => {
       if (info.file.status === 'uploading') {
-        this.setState({ imgaeLoading: true });
+        this.setState({ imageLoading: true });
         return;
       }
       if (info.file.status === 'done') {
         // Get this url from response in real world.
         // getBase64(info.file.originFileObj, imageUrl => this.setState({
         //   imageUrl,
-        //   imgaeLoading: false,
+        //   imageLoading: false,
         // }),);
       }
     };
@@ -368,7 +361,6 @@ class Face extends Component {
       let faceDataTemp = [];
       faceDataTemp = faceData.map((i) => {
         if (i.aid === item.aid) {
-          i.checkboxShow = true;
           i.isChecked = e.target.checked;
           return i;
         }
@@ -388,40 +380,6 @@ class Face extends Component {
       });
 
       console.log('选择的批量删除的ids', this.state.selectedRowKeys);
-    };
-
-    handleMouseEnter = (item) => {
-      console.log('鼠标移入', item);
-      const { faceData } = this.state;
-      let faceDataTemp = [];
-      faceDataTemp = faceData.map((i) => {
-        if (i.aid === item.aid) {
-          i.checkboxShow = true;
-          return i;
-        }
-        return i;
-      });
-
-      this.setState({
-        faceData: faceDataTemp
-      });
-    };
-
-    handleMouseLeave = (item) => {
-      console.log('鼠标移出', item);
-      const { faceData } = this.state;
-      let faceDataTemp = [];
-      faceDataTemp = faceData.map((i) => {
-        if (i.aid === item.aid) {
-          i.checkboxShow = false;
-          return i;
-        }
-        return i;
-      });
-
-      this.setState({
-        faceData: faceDataTemp
-      });
     };
 
     onPageChange = (current, pageSize) => {
@@ -474,70 +432,25 @@ class Face extends Component {
             renderItem={item => (
               <List.Item>
                 <Card bordered={false} hoverable>
-                  {
-                    item.isChecked ? (
-                      <div onMouseEnter={() => this.handleMouseEnter(item)} className={styles.cardContanierChecked}>
-                        <div className={styles.imgContainerChecked}>
-                          <img src={item.image} onError={e => this.handleImageError(e)} alt="" />
-                          <Checkbox className={styles.checkbox} checked={item.isChecked} onChange={e => this.onChange(item, e)} />
-                        </div>
-                        <div className={styles.btn}>
-                          <Icon type="edit" className={styles.iconEdit} onClick={() => this.handleEditFace(item)} />
-                          <div className={styles.line} />
-                          <Icon type="delete" className={styles.iconDel} onClick={() => this.handleDelFace(item)} />
-                        </div>
-                        <div className={styles.footerContanier}>
-                          <div className={styles.info}>
-                            <div title={item.name} className={styles.name}>{item.name}</div>
-                            {
-                              item.nameList === 1 ? <div className={styles.tagContainer}><Tag color="green">白名单</Tag></div> : <div className={styles.tagContainer}><Tag color="red">黑名单</Tag></div>
-                            }
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div onMouseEnter={() => this.handleMouseEnter(item)} onMouseLeave={() => this.handleMouseLeave(item)} className={styles.cardContanier}>
+                  <div className={item.isChecked ? styles.cardContanierChecked : styles.cardContanier}>
+                    <div className={styles.imgContainer}>
+                      <img src={item.image} onError={e => this.handleImageError(e)} alt="" />
+                      <Checkbox className={item.isChecked ? styles.checkedbox : styles.checkbox} onChange={e => this.onChange(item, e)} />
+                    </div>
+                    <div className={item.isChecked ? styles.btnChecked : styles.btn}>
+                      <Icon type="edit" className={styles.iconEdit} onClick={() => this.handleEditFace(item)} />
+                      <div className={styles.line} />
+                      <Icon type="delete" className={styles.iconDel} onClick={() => this.handleDelFace(item)} />
+                    </div>
+                    <div className={styles.footerContanier}>
+                      <div className={styles.info}>
+                        <div title={item.name} className={styles.name}>{item.name}</div>
                         {
-                          item.checkboxShow ? (
-                            <div>
-                              <div className={styles.imgContainerChecked}>
-                                <img src={item.image} onError={e => this.handleImageError(e)} alt="" />
-                                <Checkbox className={styles.checkbox} onChange={e => this.onChange(item, e)} />
-                              </div>
-                              <div className={styles.btn}>
-                                <Icon type="edit" className={styles.iconEdit} onClick={() => this.handleEditFace(item)} />
-                                <div className={styles.line} />
-                                <Icon type="delete" className={styles.iconDel} onClick={() => this.handleDelFace(item)} />
-                              </div>
-                              <div className={styles.footerContanier}>
-                                <div className={styles.info}>
-                                  <div title={item.name} className={styles.name}>{item.name}</div>
-                                  {
-                                    item.nameList === 1 ? <div className={styles.tagContainer}><Tag color="green">白名单</Tag></div> : <div className={styles.tagContainer}><Tag color="red">黑名单</Tag></div>
-                                  }
-                                </div>
-                              </div>
-                            </div>
-                          ) : (
-                            <div>
-                              <div className={styles.imgContainer}>
-                                <img src={item.image} onError={e => this.handleImageError(e)} alt="" />
-                              </div>
-                              <div className={styles.footerContanier}>
-                                <div className={styles.info}>
-                                  <div title={item.name} className={styles.name}>{item.name}</div>
-                                  {
-                                    item.nameList === 1 ? <div className={styles.tagContainer}><Tag color="green">白名单</Tag></div> : <div className={styles.tagContainer}><Tag color="red">黑名单</Tag></div>
-                                  }
-                                </div>
-                              </div>
-
-                            </div>
-                          )
+                          item.nameList === 1 ? <div className={styles.tagContainer}><Tag color="green">白名单</Tag></div> : <div className={styles.tagContainer}><Tag color="red">黑名单</Tag></div>
                         }
                       </div>
-                    )
-                  }
+                    </div>
+                  </div>
 
                 </Card>
               </List.Item>

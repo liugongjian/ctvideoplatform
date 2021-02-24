@@ -190,7 +190,7 @@ const menuRoutes = [
         children: [
           {
             path: '/import',
-            pageTitle: '批量导入人脸数据',
+            pageTitle: '人脸导入',
             component: ImportFace,
           }
         ]
