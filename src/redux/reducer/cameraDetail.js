@@ -129,7 +129,6 @@ export default function cameraDetail(state = initialState, action = {}) {
         error: action.error
       };
     case PUT_DATA_SUCCESS:
-      message.success('修改成功');
       return {
         ...state
       };

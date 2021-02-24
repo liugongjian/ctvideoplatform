@@ -47,6 +47,7 @@ import Login from 'Views/login';
 import Dashboard from 'Views/dashboard';
 import DefaultPage from 'Views/defaultPage';
 import Monitor from 'Views/monitor';
+import Preview from 'Views/preview';
 
 import Role from 'Views/role';
 import RoleEdit from 'Views/role/roleedit';
@@ -56,6 +57,7 @@ import Account from 'Views/system/user';
 import AddAccount from 'Views/system/user/addUser';
 import Face from 'Views/gallery/face';
 import ImportFace from 'Views/gallery/face/import';
+import Alarms from 'Views/alarms';
 import { pathPrefix } from 'Constants/Dictionary';
 
 const routesConfig = [
@@ -141,7 +143,7 @@ const menuRoutes = [
       {
         path: '/realtime',
         exact: true,
-        component: DefaultPage,
+        component: Preview,
       },
       {
         path: '/replay',
@@ -154,24 +156,26 @@ const menuRoutes = [
   {
     path: '/analyze',
     exact: true,
-    component: DefaultPage,
-    children: [
-      {
-        path: '/videoAnalyze',
-        exact: true,
-        component: DefaultPage,
-      },
-      {
-        path: '/alarm',
-        exact: true,
-        component: DefaultPage,
-      },
-      {
-        path: '/intelligentSearch',
-        exact: true,
-        component: DefaultPage,
-      },
-    ]
+    pageTitle: '告警信息',
+    component: Alarms,
+    // children: [
+    //   {
+    //     path: '/videoAnalyze',
+    //     exact: true,
+    //     component: DefaultPage,
+    //   },
+    //   {
+    //     path: '/alarm',
+    //     pageTitle: '告警信息',
+    //     exact: true,
+    //     component: DefaultPage,
+    //   },
+    //   {
+    //     path: '/intelligentSearch',
+    //     exact: true,
+    //     component: DefaultPage,
+    //   },
+    // ]
   },
   // 图库管理
   {

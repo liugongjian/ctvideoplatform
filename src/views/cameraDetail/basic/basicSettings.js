@@ -92,11 +92,14 @@ class BasicSetting extends Component {
         putBasicConfig({
           id: cameraId,
           areaId: area[area.length - 1],
-          name,
+          name: name.trim(),
           latitude,
           longitude,
         }).then((res) => {
+          message.success('修改成功');
           this.initData();
+        }).catch((err) => {
+          // todo
         });
       }
     });
@@ -126,14 +129,23 @@ class BasicSetting extends Component {
             <Form.Item label="摄像头名称">
               {getFieldDecorator('name', {
                 rules: [
-                  {
-                    required: true,
-                    message: '请输入摄像头名称!',
-                  },
+                  // {
+                  //   required: true,
+                  //   message: '请输入摄像头名称!',
+                  // },
                   {
                     max: 30,
                     message: '请勿输入超过30个字符!',
                   },
+                  {
+                    validator: (rule, val, callback) => {
+                      val = val.trim();
+                      if (val.length <= 0) {
+                        callback('请输入摄像头名称！');
+                      }
+                      callback();
+                    }
+                  }
                 ],
               })(<Input />)}
             </Form.Item>

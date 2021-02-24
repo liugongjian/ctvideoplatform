@@ -11,6 +11,7 @@ import account from './account';
 import role from './role';
 import cameraDetail from './cameraDetail';
 import face from './face';
+import alarms from './alarms';
 
 export default {
   routing: routerReducer, // 其中之一reducer   用来管理路由
@@ -23,4 +24,5 @@ export default {
   role,
   cameraDetail,
   face,
+  alarms,
 };
