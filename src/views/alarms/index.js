@@ -34,10 +34,10 @@ class Alarms extends Component {
       listData: [
         {
           id: 1,
-          name: '移动侦测',
+          name: '安全帽识别',
           rule: '',
           detail: 'blabla',
-          time: '2021/02/30 01:30'
+          time: '2021/02/30 01:30:30'
         },
         {
           id: 2,
@@ -148,41 +148,44 @@ class Alarms extends Component {
 
     }
 
-    showTotal = total => `总计 ${total} 条`
+    showTotal = total => (<span className={styles.totalText}>{`总条数： ${total}`}</span>)
 
     render() {
       const { listData } = this.state;
       return (
         <div className={styles.alarms}>
           <div className={styles['alarms-filterWrapper']}>
-            <RangePicker
-              showTime={{ format: 'HH:mm' }}
-              format="YYYY-MM-DD HH:mm"
-              onChange={this.onChange}
-              onOk={this.onOk}
-              allowClear={false}
-            />
-            <span className={styles.span10px} />
-            <Select
-              style={{ width: '150px' }}
-              placeholder="请选择告警类型"
-            >
-              <Option value="1">移动侦测</Option>
-              <Option value="2">人脸布控</Option>
-            </Select>
-            <span className={styles.span10px} />
-            <Cascader
-              changeOnSelect
-              placeholder="请选择设备"
-              popupClassName={styles.cameraCascader}
-              options={[]}
-              allowClear={false}
-            />
-            <span className={styles['alarms-filterWrapper-btnWrapper']}>
-              <Button type="primary" onClick={this.onSearch}>搜索</Button>
+            <div className={styles['alarms-filterWrapper-inner']}>
+              <RangePicker
+                style={{ width: '310px' }}
+                showTime={{ format: 'HH:mm' }}
+                format="YYYY-MM-DD HH:mm"
+                onChange={this.onChange}
+                onOk={this.onOk}
+                allowClear={false}
+              />
               <span className={styles.span10px} />
-              <Button onClick={this.onReset}>重置</Button>
-            </span>
+              <Select
+                style={{ width: '150px' }}
+                placeholder="请选择告警类型"
+              >
+                <Option value="1">移动侦测</Option>
+                <Option value="2">人脸布控</Option>
+              </Select>
+              <span className={styles.span10px} />
+              <Cascader
+                changeOnSelect
+                placeholder="请选择设备"
+                popupClassName={styles.cameraCascader}
+                options={[]}
+                allowClear={false}
+              />
+              <span className={styles['alarms-filterWrapper-btnWrapper']}>
+                <Button type="primary" onClick={this.onSearch}>搜索</Button>
+                <span className={styles.span10px} />
+                <Button onClick={this.onReset}>重置</Button>
+              </span>
+            </div>
           </div>
           <div className={styles['alarms-listWrapper']}>
             {
