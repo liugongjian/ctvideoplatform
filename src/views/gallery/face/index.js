@@ -363,7 +363,7 @@ class Face extends Component {
     };
 
     onChange = (item, e) => {
-      console.log('>>>>checkbox选中', item, e);
+      console.log('>>>>checkbox', item, e);
       const { faceData, selectedRowKeys } = this.state;
       let faceDataTemp = [];
       faceDataTemp = faceData.map((i) => {
@@ -473,68 +473,13 @@ class Face extends Component {
             pagination={false}
             renderItem={item => (
               <List.Item>
-                {/* <Card bordered={false}>
-                  {
-                    item.isChecked ? (
-                      <div className={styles.imgContainerChecked} onMouseEnter={() => this.handleMouseEnter(item)}>
-                        <img src={item.image} onError={e => this.handleImageError(e)} alt="" />
-                        {
-                          item.checkboxShow ? <Checkbox className={styles.checkbox} onChange={e => this.onChange(item, e)} /> : ''
-                        }
-                      </div>
-                    ) : (
-                      <div className={item.checkboxShow ? styles.imgContainerChecked : styles.imgContainer} onMouseEnter={() => this.handleMouseEnter(item)} onMouseLeave={() => this.handleMouseLeave(item)}>
-                        <img src={item.image} onError={e => this.handleImageError(e)} alt="" />
-                        {
-                          item.checkboxShow ? <Checkbox className={styles.checkbox} onChange={e => this.onChange(item, e)} /> : ''
-                        }
-                      </div>
-                    )
-                  }
-                  {
-                    item.isChecked ? (
-                      <div>
-                        <div className={styles.whiteBlock} />
-                        <div className={styles.btn}>
-                          <Icon type="edit" className={styles.iconEdit} onClick={() => this.handleEditFace(item)} />
-                          <div className={styles.line} />
-                          <Icon type="delete" className={styles.iconDel} onClick={() => this.handleDelFace(item)} />
-                        </div>
-                      </div>
-                    ) : (
-                      <div className={styles.footerContanier}>
-                        {
-                          item.checkboxShow ? (
-                            <div>
-                              <div className={styles.whiteBlock} />
-                              <div className={styles.btn}>
-                                <Icon type="edit" className={styles.iconEdit} onClick={() => this.handleEditFace(item)} />
-                                <div className={styles.line} />
-                                <Icon type="delete" className={styles.iconDel} onClick={() => this.handleDelFace(item)} />
-                              </div>
-                            </div>
-                          ) : (
-                            <div className={styles.info}>
-                              <div title={item.name} className={styles.name}>{item.name}</div>
-                              {
-                                item.nameList === 1 ? <div className={styles.tagContainer}><Tag color="green">白名单</Tag></div> : <div className={styles.tagContainer}><Tag color="red">黑名单</Tag></div>
-                              }
-                            </div>
-                          )
-                        }
-                      </div>
-                    )
-                  }
-                </Card> */}
-
-
-                <Card bordered={false}>
+                <Card bordered={false} hoverable>
                   {
                     item.isChecked ? (
                       <div onMouseEnter={() => this.handleMouseEnter(item)} className={styles.cardContanierChecked}>
                         <div className={styles.imgContainerChecked}>
                           <img src={item.image} onError={e => this.handleImageError(e)} alt="" />
-                          <Checkbox className={styles.checkbox} onChange={e => this.onChange(item, e)} />
+                          <Checkbox className={styles.checkbox} checked={item.isChecked} onChange={e => this.onChange(item, e)} />
                         </div>
                         <div className={styles.btn}>
                           <Icon type="edit" className={styles.iconEdit} onClick={() => this.handleEditFace(item)} />
