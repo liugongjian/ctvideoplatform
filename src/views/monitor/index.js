@@ -71,7 +71,6 @@ class Monitor extends Component {
       selectedKeys: [],
       modalSelectedKeys: [],
     };
-    this.timer = null;
   }
 
 
@@ -600,7 +599,7 @@ class Monitor extends Component {
     };
     getDevicePoolList(param).then((res) => {
       getAreaName(areaId).then((data) => {
-        if (res && Array.isArray(res.list) && res.list.length) {
+        if (res && Array.isArray(res.list)) {
           this.setState({
             modalDeviceData: res,
             showModal: true,
@@ -815,13 +814,13 @@ class Monitor extends Component {
       },
       {
         title: '经纬度',
-        dataIndex: 'longitude',
-        key: 'longitude',
+        dataIndex: 'latitude',
+        key: 'latitude',
         render: (text, record) => (
           <span>
             {text || '-'}
             ,
-            {record.latitude || '-'}
+            {record.longitude || '-'}
           </span>
         )
       },
