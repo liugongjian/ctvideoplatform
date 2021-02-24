@@ -51,6 +51,7 @@ import Monitor from 'Views/monitor';
 import Role from 'Views/role';
 import RoleEdit from 'Views/role/roleedit';
 import RoleAdd from 'Views/role/roleadd';
+import Plate from 'Views/plate';
 import CameraDetail from 'Views/cameraDetail';
 import Account from 'Views/system/user';
 import AddAccount from 'Views/system/user/addUser';
@@ -188,7 +189,7 @@ const menuRoutes = [
       {
         path: '/carLicense',
         exact: true,
-        component: DefaultPage,
+        component: Plate,
       },
     ]
   },
