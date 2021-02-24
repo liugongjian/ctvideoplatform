@@ -1,0 +1,214 @@
+.content{
+    background: #fff;
+    padding: 20px;
+    position: relative;
+    .listHeader{
+        display: flex;
+        .operationAssets{
+            display: flex;
+            align-items: center;
+            :global{
+                .ant-btn{
+                    margin-right: 10px;
+                }
+            }
+            .add{
+                :global{
+                    .ant-btn{
+                        width: 124px;
+                        height: 36px;
+                    }
+    
+                }
+                
+            }
+            .del{
+                display: flex;
+                align-items: center;
+                .iconDisabled{
+                    color: #999
+                }
+                .iconActive{
+                    color: #44A1F6
+                }
+                i{
+                    height: 18px;
+                    line-height: 18px;
+                }
+                svg{
+                    height: 18px;
+                    line-height: 18px;
+                    margin: 0 6px;
+                }
+            }
+            .import{
+                display: flex;
+                align-items: center;
+                margin-right: 10px;
+                .importLink{
+                    display: flex;
+                    align-items: center;
+                }
+                .iconActive{
+                    color: #44A1F6;
+                    display: block;
+                }
+                svg{
+                    height: 18px;
+                    line-height: 18px;
+                    margin: 0 6px;
+                }
+            }
+
+        }
+        .query{ 
+            position: absolute;
+            right: 20px;
+            width: 250px;
+            .ant-input-affix-wrapper{
+                height: 36px;
+            }
+        }
+
+    }
+    .mainContanier{
+        margin-top: 20px;
+        :global{
+            .ant-card-body{
+                padding: 0px;
+            }
+        }
+        .cardContanier{
+            border: 1px solid #E9E9E9;  
+            // border: 1px solid #FA8334;
+            .imgContainer,.imgContainerChecked{
+                cursor: pointer;
+                height: 225px;
+                position: relative;
+                
+                .checkbox{
+                    position: absolute;
+                    top: 5px;
+                    left: 5px;
+                }
+            }
+
+        }
+        
+        .cardContanierChecked{
+            border: 1px solid #FA8334;;  
+            border-bottom: 0px;
+        }
+        .info{
+            height: 40px;
+            padding: 0 10px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #FAFAFA;
+            border: 1px solid #E9E9E9;  
+            border-top: 0px;
+            .name{
+                width: auto;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                padding: 7px 0;
+                font-size: 12px;
+                margin-right: 5px;
+            }
+            .tagContainer{
+                :global{
+                    .ant-tag{
+                        margin-right: 0px;
+                    }
+                }
+            }
+            
+        }
+        // .whiteBlock{
+        //     height: 10px;
+        //     border: 1px solid #FA8334;;  
+        //     border-bottom: 0px;
+        //     border-top: 0px;
+        //     background: white;
+        // }
+        .btn{
+            height: 30px;
+            padding: 0 10px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            background: #FA8334;
+            justify-content: flex-end;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            .iconEdit,.iconDel{
+                cursor: pointer;
+                color: white;
+            }
+            .line{
+                margin: 0 8px;
+                height: 14px;
+                border-left: 1px solid white;
+                opacity: 0.3;
+            }
+        }
+        .paginationWrapper{
+            &>*{
+              display: inline-block;
+            }
+            &>div{
+              margin-top: 10px;
+              float: right;
+              font-family: HelveticaNeue;
+              font-size: 12px;
+            }
+            &>span{
+              margin-top: 15px;
+              font-family: PingFangSC-Regular;
+              font-size: 12px;
+              color: #666666;
+              text-align: left;
+              line-height: 18px;
+            }
+        }
+    }
+    
+}
+
+.delModal{
+    :global{
+        .ant-modal-body{
+            padding-top: 24px !important;
+            height: 170px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            div{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                i{
+                    height: 32px;
+                    width: 32px;
+                }
+                svg{
+                    height: 100%;
+                    width: 100%;
+                    color: #FFA033;
+                }
+                div{
+                    margin-left: 20px;
+                    font-family: MicrosoftYaHei;
+                    font-size: 14px;
+                    color: #333333;
+                    flex: 1;
+                }
+            }
+            
+        }
+    }
+}

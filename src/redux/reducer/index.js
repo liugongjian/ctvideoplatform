@@ -10,6 +10,7 @@ import monitor from './monitor';
 import account from './account';
 import role from './role';
 import cameraDetail from './cameraDetail';
+import face from './face';
 
 export default {
   routing: routerReducer, // 其中之一reducer   用来管理路由
@@ -20,5 +21,6 @@ export default {
   monitor,
   account,
   role,
-  cameraDetail
+  cameraDetail,
+  face,
 };

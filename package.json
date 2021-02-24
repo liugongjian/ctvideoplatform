@@ -63,6 +63,7 @@
     "chrome >= 52"
   ],
   "dependencies": {
+    "@ant-design/icons": "^4.5.0",
     "@antv/data-set": "^0.10.0",
     "@babel/plugin-transform-modules-commonjs": "^7.9.0",
     "@babel/polyfill": "^7.0.0",
