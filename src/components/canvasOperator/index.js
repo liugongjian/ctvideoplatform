@@ -15,7 +15,6 @@ import EIcon from 'Components/Icon';
 import math from 'Utils/math';
 import { DRAW_MODES } from './constants';
 import { getRectPropFromPoints } from './utils';
-import testJpg from './test.jpg';
 
 import styles from './index.less';
 
