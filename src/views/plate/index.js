@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Table, Input, Modal, Pagination, Button , message ,Tooltip , Icon
+  Table, Input, Modal, Pagination, Button , message ,Tooltip , Icon , Tag
 } from 'antd';
 import {Link} from 'react-router-dom'
 import { bindActionCreators } from 'redux';
@@ -112,6 +112,10 @@ class Plate extends Component {
       <div className={styles.mainWrapper}>
         <div className={styles.searchContainer}>
           <Link to=''><Button type="primary" className={styles.addBtn}>+ 新增车牌数据</Button></Link>
+          <a className={styles.deleteBtn}>
+            <Icon type="export" className={styles.deletePic}/>
+            批量导入
+          </a>
           {
             this.state.selectedRowKeys.length > 0 ? (
               <a className={styles.deleteBtn} onClick={()=>this.setState({deleteModalVisible:true})}>
@@ -127,11 +131,11 @@ class Plate extends Component {
           }
 
           <div className={styles.searchInput}>
-            <Search placeholder="请输入角色名称" icon={searchPic} onSearch={() => this.searchRole()} onChange={(e) => this.setState({searchName:e.target.value})}/>
+            <Search placeholder="请输入车牌号" icon={searchPic} onSearch={() => this.searchRole()} onChange={(e) => this.setState({searchName:e.target.value})}/>
           </div>
         </div>
         <Table rowSelection={rowSelection} dataSource={roleListInfo.list} pagination={false} rowKey={(record) => record.id}>
-            <Column title="车牌号" dataIndex="name" width={'20%'} className="tabble-row"
+            <Column title="车牌号" dataIndex="name" width={'27%'} className="tabble-row"
               render={
                 (text, record) => (
                   <div>
@@ -142,8 +146,14 @@ class Plate extends Component {
                 )
               }
             />
-            <Column title="布控标签" dataIndex="createTime" width={'20%'}/>
-            <Column title="车牌颜色" dataIndex="updateTime" width={'22%'}/>
+            <Column title="布控标签" dataIndex="createTime" width={'31%'}
+                  render={(text, record) => (
+                    <div>
+                        <Tag color="green">{text.substring(0,4)}</Tag>
+                    </div>
+                  )}
+            />
+            <Column title="车牌颜色" dataIndex="updateTime" width={'33%'}/>
             <Column
                 title="操作"
                 key="action"
@@ -208,7 +218,7 @@ class Plate extends Component {
 }
 
 Plate.propTypes = {
-  plate: PropTypes.object.isRequired
+  // plate: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Plate);

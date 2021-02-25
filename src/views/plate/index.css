@@ -25,8 +25,14 @@
   height: 40px;
 }
 .searchContainer .addBtn {
-  width: 120px;
+  width: 128px;
   height: 36px;
+  border-radius: 2px;
+}
+.searchContainer .addBtn span {
+  font-family: MicrosoftYaHei;
+  font-size: 14px;
+  color: #FFFFFF;
 }
 .searchContainer .deleteBtn {
   margin-left: 20px;
