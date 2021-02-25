@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-// import PropTypes from 'prop-types';
 import {
   getFaceList, addFace, editFace, delFace
 } from 'Redux/reducer/face';
@@ -14,6 +13,7 @@ import {
   LoadingOutlined, PlusOutlined, ImportOutlined, SearchOutlined
 } from '@ant-design/icons';
 import noImg from '@/assets/bg.png';
+import { urlPrefix } from '../../../constants/Dictionary';
 
 import styles from './index.less';
 
@@ -29,6 +29,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 
 class Face extends Component {
     state = {
+      uploadUrl: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+      // uploadUrl: `${urlPrefix}/role/list/`,
       modalVisible: false,
       modalStatus: 'add',
       textMap: {
@@ -42,6 +44,83 @@ class Face extends Component {
       pageNum: 1,
       loading: false,
       faceData: [
+        {
+          aid: 416099,
+          createTimeime: '2021-01-20T17:26:57.000+0800',
+          enable: 'y',
+          id: 3299604200531968,
+          image: 'http://192.168.10.146:8666/images/uid/573ad394c1e4408696223d5d7982ce11',
+          name: 'lizhiyonglizhiyonglizhiyonglizhiyong',
+          nameList: 1,
+          updateTime: '2021-01-20T17:26:58.000+0800',
+          isChecked: false,
+        },
+        {
+          aid: 532611,
+          createTimeime: '2021-01-20T17:34:24.000+0800',
+          enable: 'y',
+          id: 3299605114097664,
+          image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
+          name: 'lxp',
+          nameList: 2,
+          updateTime: '2021-01-20T17:34:24.000+0800',
+          isChecked: false,
+        },
+        {
+          aid: 532612,
+          createTimeime: '2021-01-20T17:34:24.000+0800',
+          enable: 'y',
+          id: 3299605114097665,
+          image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
+          name: 'llll',
+          nameList: 2,
+          updateTime: '2021-01-20T17:34:24.000+0800',
+          isChecked: false,
+        },
+        {
+          aid: 532613,
+          createTimeime: '2021-01-20T17:34:24.000+0800',
+          enable: 'y',
+          id: 3299605114097666,
+          image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
+          name: 'hhhh',
+          nameList: 2,
+          updateTime: '2021-01-20T17:34:24.000+0800',
+          isChecked: false,
+        },
+        {
+          aid: 532614,
+          createTimeime: '2021-01-20T17:34:24.000+0800',
+          enable: 'y',
+          id: 3299605114097667,
+          image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
+          name: 'lxp',
+          nameList: 1,
+          updateTime: '2021-01-20T17:34:24.000+0800',
+          isChecked: false,
+        },
+        {
+          aid: 532615,
+          createTimeime: '2021-01-20T17:34:24.000+0800',
+          enable: 'y',
+          id: 3299605114097668,
+          image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
+          name: 'lxpffff',
+          nameList: 1,
+          updateTime: '2021-01-20T17:34:24.000+0800',
+          isChecked: false,
+        },
+        {
+          aid: 532616,
+          createTimeime: '2021-01-20T17:34:24.000+0800',
+          enable: 'y',
+          id: 3299605114097669,
+          image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
+          name: 'lxpffffjjj',
+          nameList: 1,
+          updateTime: '2021-01-20T17:34:24.000+0800',
+          isChecked: false,
+        },
         {
           aid: 416099,
           createTimeime: '2021-01-20T17:26:57.000+0800',
@@ -145,9 +224,14 @@ class Face extends Component {
       });
       console.log('data', data);
       // 这里要给list 加一个checkbox 显示与否的 flag
-    //   getFaceList(data).then((res) => {
+      // getFaceList(data).then((res) => {
+      // let faceDataTemp = [];
+      // faceDataTemp = res.list && res.list.map((item) => {
+      //   item.isChecked = false;
+      //   return item;
+      // });
     //     this.setState({
-    //       faceData: res.list,
+    //       faceData: faceDataTemp,
     //       total: res.recordsTotal,
     //       pageNum: res.pageNo + 1,
     //       pageSize: res.pageSize,
@@ -399,7 +483,7 @@ class Face extends Component {
 
     renderTable = () => {
       const {
-        faceData, modalVisible, textMap, modalStatus, imageLoading, imageUrl, delModalVisible, selectedRowKeys, delName, delIds, total, pageNum, pageSize
+        uploadUrl, faceData, modalVisible, textMap, modalStatus, imageLoading, imageUrl, delModalVisible, selectedRowKeys, delName, delIds, total, pageNum, pageSize
       } = this.state;
       const delIdsLength = delIds.length;
       const {
@@ -425,7 +509,7 @@ class Face extends Component {
               md: 4,
               lg: 4,
               xl: 6,
-              xxl: 3,
+              xxl: 8,
             }}
             dataSource={faceData}
             pagination={false}
@@ -514,7 +598,7 @@ class Face extends Component {
                     name="pic"
                     listType="picture-card"
                     showUploadList={false}
-                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    action={uploadUrl}
                     beforeUpload={this.beforeUpload}
                     onChange={this.handleChange}
                   >
@@ -574,8 +658,5 @@ class Face extends Component {
     }
 }
 
-// Face.propTypes = {
-//   face: PropTypes.object.isRequired
-// };
 
 export default Form.create()(connect(mapStateToProps, mapDispatchToProps)(Face));
