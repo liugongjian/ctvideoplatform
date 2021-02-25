@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { bindActionCreators } from 'redux';
 import {
-  Tree, Input, Select, Icon
+  Tree, Input, Select, Icon, Card
 } from 'antd';
 import EIcon from 'Components/Icon';
 import { connect } from 'react-redux';
@@ -12,6 +12,8 @@ import {
 } from 'Redux/reducer/preview';
 
 import { getAlgorithmList } from 'Redux/reducer/monitor';
+
+import VideoPlayer from './VideoPlayer';
 
 import styles from './index.less';
 
@@ -28,6 +30,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 const { TreeNode } = Tree;
 const { Search } = Input;
 const { Option } = Select;
+const { Meta } = Card;
 
 class Preview extends PureComponent {
   constructor(props) {
@@ -37,7 +40,8 @@ class Preview extends PureComponent {
       treeDatas: [],
       expandedKeys: ['1'],
       selectAreaKeys: ['1'],
-      algorithmList: []
+      algorithmList: [],
+      keyword: ''
     };
   }
 
@@ -49,9 +53,10 @@ class Preview extends PureComponent {
 
     getTreeData = () => {
       const { getAreaList } = this.props;
+      const { keyword, algorithmIds } = this.state;
       const param = {
-        keyword: '',
-        algorithmIds: []
+        keyword,
+        algorithmIds
       };
       getAreaList(param).then((res) => {
         const treeDatas = this.dataToTree(res);
@@ -150,6 +155,23 @@ class Preview extends PureComponent {
       });
     }
 
+    algorithmChangeHandle = (val) => {
+      console.log('val', val);
+      this.setState({
+        algorithmIds: val
+      }, () => {
+        this.getTreeData();
+      });
+    }
+
+    searchByKeyword = (val) => {
+      this.setState({
+        keyword: val
+      }, () => {
+        this.getTreeData();
+      });
+    }
+
     render() {
       const {
         treeDatas, selectAreaKeys, expandedKeys, algorithmList
@@ -167,10 +189,11 @@ class Preview extends PureComponent {
         <div className={styles.content}>
           <div className={styles.areaBox}>
             <div className={styles.searchBox}>
-              <Search placeholder="请输入点位或区域" onSearch={this.getAreaList} />
+              <Search placeholder="请输入点位或区域" onSearch={this.searchByKeyword} />
               <Select
                 defaultValue={[]}
                 style={{ width: '100%' }}
+                placeholder="请选择已配置算法"
                 mode="multiple"
                 onChange={this.algorithmChangeHandle}
                 optionLabelProp="label"
@@ -178,25 +201,46 @@ class Preview extends PureComponent {
                 {drawAlgorithmList()}
               </Select>
             </div>
-            {
-              treeDatas && treeDatas.length ? (
-                <Tree
-                  expandedKeys={expandedKeys}
-                  defaultExpandAll
-                  blockNode
-                  //   showLine
-                  showIcon
-                  onExpand={this.onExpand}
-                  onSelect={this.onSelect}
-                  //   defaultSelectedKeys={['1']}
-                  className={styles.dataTree}
-                  //   selectedKeys={selectAreaKeys}
-                  ref={ref => this.treeNode = ref}
-                >
-                  {this.renderTreeNodes(treeDatas)}
-                </Tree>
-              ) : null
-            }
+            <div className={styles.areaList}>
+              {
+                treeDatas && treeDatas.length ? (
+                  <Tree
+                    expandedKeys={expandedKeys}
+                    defaultExpandAll
+                    blockNode
+                    showIcon
+                    onExpand={this.onExpand}
+                    onSelect={this.onSelect}
+                    className={styles.dataTree}
+                    ref={ref => this.treeNode = ref}
+                  >
+                    {this.renderTreeNodes(treeDatas)}
+                  </Tree>
+                ) : null
+              }
+            </div>
+          </div>
+          <div className={styles.videoBox}>
+            <VideoPlayer src="http://ivi.bupt.edu.cn/hls/cctv3hd.m3u8" />
+          </div>
+          <div className={styles.historyList}>
+            <div className={styles.historyTitle}>
+              <p>
+                实时告警记录
+                <a>历史记录</a>
+              </p>
+
+            </div>
+            <div className={styles.historyCard}>
+              <Card
+                hoverable
+                style={{ width: 240 }}
+                cover={<img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
+              >
+                {/* } <Meta title="Europe Street beat" description="www.instagram.com" /> */}
+                <p>Card content</p>
+              </Card>
+            </div>
           </div>
         </div>
       );

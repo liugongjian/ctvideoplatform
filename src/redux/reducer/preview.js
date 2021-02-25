@@ -36,8 +36,6 @@ export default function preview(state = initialState, action = {}) {
   }
 }
 
-// type 0 - 区域 1 - 摄像头
-// arr是[]  默认全部
 export function getAreaList(data) {
   return {
     type: [GET_AREALIST, GET_AREALIST_SUCCESS, GET_AREALIST_FAIL],
