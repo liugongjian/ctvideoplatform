@@ -6,7 +6,7 @@ import {
   getImportFaceList
 } from 'Redux/reducer/face';
 import {
-  Form, Steps, Select, Button, Upload, message, List, Card, Tag, Pagination
+  Form, Steps, Select, Button, Upload, message, List, Card, Tag, Pagination, Modal, Icon
 } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import noImg from '@/assets/bg.png';
@@ -29,6 +29,8 @@ class ImportFace extends Component {
     type: undefined,
     stepCurrent: 0,
     uploadStatus: 'todo',
+    repeatModalVisible: false,
+    repeatNum: 3,
     total: 4,
     pageSize: 10,
     pageNum: 1,
@@ -117,25 +119,35 @@ class ImportFace extends Component {
 
   }
 
-  getTableList = () => {
+  getTableList = (isReplaced) => {
     const { getImportFaceList } = this.props;
     const data = {
       pageSize: this.state.pageSize,
-      pageNo: this.state.pageNum - 1
+      pageNo: this.state.pageNum - 1,
+      isReplaced,
     };
+    const { stepCurrent } = this.state;
     this.setState({
       loading: true
     });
     console.log('data', data);
-  //   getImportFaceList(data).then((res) => {
-  //     this.setState({
-  //       faceData: res.list,
-  //       total: res.recordsTotal,
-  //       pageNum: res.pageNo + 1,
-  //       pageSize: res.pageSize,
-  //       loading: false
-  //     });
-  //   });
+    //   getImportFaceList(data).then((res) => {
+    //   if 有重复的 todo
+    // this.setState({
+    //   repeatModalVisible: true,
+    //   faceData: [],
+    //   repeatNum: 3,
+    // });
+    //   if 没有重复的 todo
+    this.setState({
+    //   faceData: res.list,
+    //   total: res.recordsTotal,
+    //   pageNum: res.pageNo + 1,
+    //   pageSize: res.pageSize,
+      loading: false,
+      stepCurrent: stepCurrent + 1
+    });
+    //   });
   };
 
   selectType = (val) => {
@@ -143,6 +155,20 @@ class ImportFace extends Component {
       type: val
     });
   };
+
+  //   handleNextStep = () => {
+  //     this.getTableList();
+  //   };
+
+  //   replaceFace = () => {
+  //     this.getTableList(true);
+  //   };
+
+  //   handleReplaceCancel = () => {
+  //     this.setState({
+  //       repeatModalVisible: false
+  //     }, () => this.addFace(false));
+  //   };
 
   handleImageError = (e) => {
     console.log('>>>>>image', e, e.target);
@@ -176,7 +202,7 @@ class ImportFace extends Component {
 
   render() {
     const {
-      stepCurrent, type, uploadStatus, faceData, total, pageNum, pageSize
+      stepCurrent, type, uploadStatus, faceData, total, pageNum, pageSize, repeatModalVisible, repeatNum
     } = this.state;
     const props = {
       name: 'file',
@@ -270,7 +296,7 @@ class ImportFace extends Component {
                         </p>
                       </Dragger>
                       <div className={styles.nextStep}>
-                        {/* {uploadStatus === 'done'
+                        {/* {uploadStatus === 'done' && !repeatModalVisible
                           ? (
                             <div className={styles.btn}>
                               <Button type="primary" onClick={() => this.setState({ stepCurrent: stepCurrent + 1 })}>下一步</Button>
@@ -283,7 +309,8 @@ class ImportFace extends Component {
                             </div>
                           )} */}
                         <div className={styles.btn}>
-                          <Button type="primary" onClick={() => { this.setState({ stepCurrent: stepCurrent + 1 }); this.getTableList(); }}>下一步</Button>
+                          {/* <Button type="primary" onClick={() => { this.setState({ stepCurrent: stepCurrent + 1 }); this.getTableList(); }}>下一步</Button> */}
+                          <Button type="primary" onClick={() => this.getTableList()}>下一步</Button>
                           <Button type="button" onClick={() => this.setState({ stepCurrent: stepCurrent - 1 })}>上一步</Button>
                         </div>
                       </div>
@@ -355,6 +382,25 @@ class ImportFace extends Component {
             )
           }
         </div>
+        <Modal
+          visible={repeatModalVisible}
+          className={styles.repeatModal}
+          width="400px"
+          closable={false}
+          footer={[
+            <Button key="submit" type="primary" onClick={() => this.getTableList(true)}>
+              确定
+            </Button>,
+            <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={() => { this.setState({ repeatModalVisible: false }, () => { this.getTableList(false); }); }}>
+              取消
+            </Button>,
+          ]}
+        >
+          <div>
+            <Icon type="warning" />
+            <div>{`您添加的${repeatNum}条人脸数据已存在，是否要覆盖？`}</div>
+          </div>
+        </Modal>
 
       </div>
     );
