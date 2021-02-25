@@ -185,11 +185,17 @@ class Alarms extends Component {
         val.push(item);
       }
     });
-    val.forEach((item) => {
-      if (!item.children || item.children.length === 0) {
-        item.disabled = item.type == 0;
-      }
-    });
+    // 子节点为区域，不是设备，不可选
+    const setAreaNodeDisabled = (tree) => {
+      tree.forEach((item) => {
+        if (item.children) {
+          setAreaNodeDisabled(item.children);
+        } else {
+          item.disabled = item.type == 0;
+        }
+      });
+    };
+    setAreaNodeDisabled(val);
     return val;
   };
 
