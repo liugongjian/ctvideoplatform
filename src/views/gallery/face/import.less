@@ -1,0 +1,212 @@
+.content{
+    background: #fff;
+    padding: 20px;
+    position: relative;
+    min-height: 100%;
+    .importContainer{
+        width:100%;
+        margin: 0 auto;
+        margin-top: 20px;
+        :global{
+            .ant-steps{
+                width: 60%;
+                margin: 0 auto;
+
+            }
+            .ant-steps-item-active{
+                .ant-steps-item-title{
+                    font-family: PingFangSC-Medium;
+                    font-size: 16px;
+                    color: rgba(0,0,0);
+                }
+            }
+            .ant-steps-item-wait{
+                .ant-steps-item-title{
+                    font-family: PingFangSC-Regular;
+                    font-size: 16px;
+                    color: rgba(0,0,0,0.45);
+                }
+            }
+            .ant-steps-item-finish{
+                .ant-steps-item-title{
+                    font-family: PingFangSC-Regular;
+                    font-size: 16px;
+                    color: rgba(0,0,0,0.85);
+                }
+            }
+            
+        }
+        .selectContainer {
+            width: 60%;
+            margin: 0 auto;
+            margin-top: 130px;
+            .selectType{
+                width: 60%;
+                margin: 0 auto;
+                .selectLabel{
+                    font-family: PingFangSC-Regular;
+                    font-size: 14px;
+                    color: #333333;
+                }
+                :global{
+                    .ant-select{
+                        width: 50%;
+                    }
+                }
+            }
+
+        }
+        
+        .selectContainer .nextStep,.draggerContainer .nextStep{
+            margin-top: 45px;
+            .btn{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                :global{
+                    .ant-btn-button{
+                        margin-left: 20px;
+                    }
+                }
+            }
+        }
+        .draggerContainer{
+            margin: 0 auto;
+            margin-top: 130px;
+            width: 60%;
+            :global{
+                .ant-upload-text{
+                    font-family: PingFangSC-Regular;
+                    font-size: 16px;
+                    color: rgba(0,0,0,0.85);
+                }
+                .ant-upload-hint{
+                    font-family: PingFangSC-Regular;
+                    font-size: 14px;
+                    color: rgba(0,0,0,0.4);
+                    margin-top: 10px;
+    
+                }
+                .ant-upload-list-item-info{
+                    padding: 0px;
+                    line-height: 22px;
+                    i{
+                        padding-left: 6px;
+                    }
+                }
+
+            }
+            
+            
+
+        }
+        .previewContainer{
+            width: 100%;
+            margin-top: 40px;
+            :global{
+                .ant-card-body{
+                    padding: 0px;
+                }
+            }
+            .cardContanier{
+                border: 1px solid #E9E9E9;  
+                border-radius: 4px 4px 0 0;
+                position: relative;
+                .imgContainer{
+                    height: 225px;
+                }
+            }
+            .info{
+                height: 40px;
+                padding: 0 10px;
+                font-size: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: #FAFAFA;
+                .name{
+                    width: auto;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    padding: 7px 0;
+                    font-size: 12px;
+                    color: rgba(0,0,0,0.85);
+                    margin-right: 5px;
+                    font-family: PingFangSC-Regular;
+                }
+                .tagContainer{
+                    :global{
+                        .ant-tag{
+                            margin-right: 0px;
+                        }
+                    }
+                }
+                
+            }
+            .paginationWrapper{
+                &>*{
+                  display: inline-block;
+                }
+                &>div{
+                  margin-top: 10px;
+                  float: right;
+                  font-family: HelveticaNeue;
+                  font-size: 12px;
+                }
+                &>span{
+                  margin-top: 15px;
+                  font-family: PingFangSC-Regular;
+                  font-size: 12px;
+                  color: #666666;
+                  text-align: left;
+                  line-height: 18px;
+                }
+            }
+            .btn{
+                margin-top: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                :global{
+                    .ant-btn-button{
+                        margin-left: 20px;
+                    }
+                }
+            }
+        }
+    }
+}
+.repeatModal{
+    :global{
+        .ant-modal-body{
+            padding-top: 24px !important;
+            height: 170px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            div{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                i{
+                    height: 32px;
+                    width: 32px;
+                }
+                svg{
+                    height: 100%;
+                    width: 100%;
+                    color: #FFA033;
+                }
+                div{
+                    margin-left: 20px;
+                    font-family: MicrosoftYaHei;
+                    font-size: 14px;
+                    color: #333333;
+                    flex: 1;
+                }
+            }
+            
+        }
+    }
+}

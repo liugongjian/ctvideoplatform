@@ -3,9 +3,7 @@ import React, { Component } from 'react';
 import {
   Select, Button, Modal, Form, Input, Switch, Icon, message, Table, Pagination, Tooltip
 } from 'antd';
-// import Icon from 'Components/Icon';
 import { Link } from 'react-router-dom';
-import ETable from 'Components/ETable';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
@@ -225,17 +223,17 @@ class Account extends Component {
         <div className={styles.queryStatus}>
           <span className={styles.queryLabel}>在线状态：</span>
           <Select value={this.state.searchParams.isOnline} onChange={this.queryStatus}>
+            <Option value={2}>全部</Option>
             <Option value={0}>在线</Option>
             <Option value={1}>离线</Option>
-            <Option value={2}>全部</Option>
           </Select>
         </div>
         <div className={styles.queryEnabled}>
           <span className={styles.queryLabel}>启用状态：</span>
           <Select value={this.state.searchParams.active} onChange={this.queryEnabled}>
+            <Option value={2}>全部</Option>
             <Option value={0}>启用</Option>
             <Option value={1}>禁用</Option>
-            <Option value={2}>全部</Option>
           </Select>
         </div>
 
@@ -630,17 +628,6 @@ class Account extends Component {
     };
     return (
       <div className={styles['table-content']}>
-        {/* <ETable
-          loading={loading}
-          columns={columns}
-          rowKey={record => record.id}
-          rowClassName={() => 'dark-row'}
-          rowSelection={rowSelection}
-          dataSource={accountData}
-          pagination={pagination}
-          onChange={this.handleTableChange}
-          locale={{ emptyText: '暂无数据' }}
-        /> */}
         <Table
           loading={loading}
           columns={columns}
@@ -670,9 +657,6 @@ class Account extends Component {
         <Modal
           title="编辑账号"
           visible={this.state.modalVisible}
-          // okText="保存"
-          // cancelText="取消"
-          // onOk={this.updateUser}
           onCancel={this.handleCancel}
           className={styles.editModal}
           width="600px"
@@ -720,9 +704,6 @@ class Account extends Component {
         <Modal
           title="重置密码"
           visible={this.state.pswModalVisible}
-          // okText="保存"
-          // cancelText="取消"
-          // onOk={this.updatePassword}
           onCancel={this.handlePswCancel}
           className={styles.pswModal}
           width="600px"
@@ -790,10 +771,6 @@ class Account extends Component {
         </Modal>
         <Modal
           visible={deleteModelVisible}
-          // okText="确定"
-          // cancelText="取消"
-          // onOk={this.delAccount}
-          // onCancel={this.handleDelCancel}
           className={styles.delComfirmModal}
           width="400px"
           closable={false}
@@ -813,10 +790,6 @@ class Account extends Component {
         </Modal>
         <Modal
           visible={stopModelVisible}
-          // okText="确定"
-          // cancelText="取消"
-          // onOk={this.stopAccount}
-          // onCancel={this.handleStopCancel}
           className={styles.stopComfirmModal}
           width="400px"
           closable={false}
@@ -836,10 +809,6 @@ class Account extends Component {
         </Modal>
         <Modal
           visible={enableModelVisible}
-          // okText="确定"
-          // cancelText="取消"
-          // onOk={this.enableAccount}
-          // onCancel={this.handleEnableCancel}
           className={styles.enableComfirmModal}
           width="400px"
           closable={false}

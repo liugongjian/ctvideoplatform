@@ -1,25 +1,37 @@
 import React, { PureComponent, Fragment } from 'react';
 import { bindActionCreators } from 'redux';
-import { Tree } from 'antd';
+import {
+  Tree, Input, Select, Icon, Card
+} from 'antd';
+import EIcon from 'Components/Icon';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
 import {
-  getList
-} from 'Redux/reducer/monitor';
+  getAreaList
+} from 'Redux/reducer/preview';
+
+import { getAlgorithmList } from 'Redux/reducer/monitor';
+
+import VideoPlayer from './VideoPlayer';
 
 import styles from './index.less';
 
-const mapStateToProps = state => ({ monitor: state.monitor });
+const mapStateToProps = state => ({ preview: state.preview });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
     push,
-    getList
+    getAreaList,
+    getAlgorithmList
   },
   dispatch
 );
 
 const { TreeNode } = Tree;
+const { Search } = Input;
+const { Option } = Select;
+const { Meta } = Card;
+
 class Preview extends PureComponent {
   constructor(props) {
     super(props);
@@ -27,25 +39,26 @@ class Preview extends PureComponent {
       text: '啊啊啊',
       treeDatas: [],
       expandedKeys: ['1'],
-      selectAreaKeys: ['1']
+      selectAreaKeys: ['1'],
+      algorithmList: [],
+      keyword: ''
     };
-    this.count = 0;
-    this.timer = null;
   }
 
 
   componentDidMount() {
     this.getTreeData();
-  }
-
-  componentWillUnmount() {
-    window.setTimeout(this.timer);
-    this.timer = null;
+    this.getAlgorithmList();
   }
 
     getTreeData = () => {
-      const { getList } = this.props;
-      getList(0).then((res) => {
+      const { getAreaList } = this.props;
+      const { keyword, algorithmIds } = this.state;
+      const param = {
+        keyword,
+        algorithmIds
+      };
+      getAreaList(param).then((res) => {
         const treeDatas = this.dataToTree(res);
         this.setState({
           treeDatas
@@ -79,17 +92,31 @@ class Preview extends PureComponent {
     }
 
     renderTreeNodes = data => data.map((item, index) => {
-      const getTitle = val => (
-        <div onDoubleClick={e => this.doubleClickHandle(e, val)}>
-          {val.name}
-        </div>
-      );
+      const getTitle = (val) => {
+        if (val.type === 1) {
+          return (
+            <span onDoubleClick={e => this.doubleClickHandle(e, val)}>
+              {val.name}
+            </span>
+          );
+        }
+        return val.name;
+      };
+      const getIcon = (val) => {
+        if (val.type === 1) {
+          return (
+            <EIcon type="myicon-monitorIcon" />
+          );
+        }
+        return (<Icon type="folder" />);
+      };
       if (item.children && item.children.length) {
         return (
           <TreeNode
             key={item.id.toString()}
-            title={getTitle(item)}
+            title={item.name}
             className={styles.treenode}
+            icon={<EIcon type="myicon-folderopen" />}
           >
             {this.renderTreeNodes(item.children)}
           </TreeNode>
@@ -100,6 +127,8 @@ class Preview extends PureComponent {
           key={item.id.toString()}
           title={getTitle(item)}
           className={styles.treenode}
+          //   icon={props => getIcon(props, item)}
+          icon={getIcon(item)}
         />
       );
     })
@@ -111,55 +140,107 @@ class Preview extends PureComponent {
     }
 
     onSelect = (keys, eve) => {
-      const { selectAreaKeys: [a] } = this.state;
-      const [b] = keys;
-      //   if (b && a === b) {
-
-      //   }
-      //   console.log('selectAreaKeys---------->', a, 'keys--------->', keys);
-      //   if (this.timer && this.count > 0 && this.count < 3) {
-      //     window.clearTimeout(this.timer);
-      //     this.timer = null;
-      //   }
-      //   this.count++;
-      //   if (this.count === 2) {
-      //     console.log('芜湖');
-      //     console.log('好几ble click here');
-      //   }
-      //   console.log(this.count);
-      //   window.setTimeout(() => {
-      //     window.clearTimeout(this.timer);
-      //     this.timer = null;
-      //     this.count = 0;
-      //   }, 2000);
       this.setState({
         selectAreaKeys: keys
       });
     }
 
+
+    getAlgorithmList = () => {
+      const { getAlgorithmList } = this.props;
+      getAlgorithmList().then((res) => {
+        this.setState({
+          algorithmList: res
+        });
+      });
+    }
+
+    algorithmChangeHandle = (val) => {
+      console.log('val', val);
+      this.setState({
+        algorithmIds: val
+      }, () => {
+        this.getTreeData();
+      });
+    }
+
+    searchByKeyword = (val) => {
+      this.setState({
+        keyword: val
+      }, () => {
+        this.getTreeData();
+      });
+    }
+
     render() {
-      const { treeDatas, selectAreaKeys, expandedKeys } = this.state;
+      const {
+        treeDatas, selectAreaKeys, expandedKeys, algorithmList
+      } = this.state;
+
+      const drawAlgorithmList = () => algorithmList.map(item => (
+        <Option value={item.id} key={item.id} label={item.cnName}>
+          <span aria-label={item.id}>
+            {item.cnName}
+          </span>
+        </Option>
+      ));
+
       return (
-        <div>
-          <div>
-            {
-              treeDatas && treeDatas.length ? (
-                <Tree
-                  expandedKeys={expandedKeys}
-                  defaultExpandAll
-                  blockNode
-                  showLine
-                  onExpand={this.onExpand}
-                  onSelect={this.onSelect}
-                  //   defaultSelectedKeys={['1']}
-                  className={styles.dataTree}
-                  //   selectedKeys={selectAreaKeys}
-                  ref={ref => this.treeNode = ref}
-                >
-                  {this.renderTreeNodes(treeDatas)}
-                </Tree>
-              ) : null
-            }
+        <div className={styles.content}>
+          <div className={styles.areaBox}>
+            <div className={styles.searchBox}>
+              <Search placeholder="请输入点位或区域" onSearch={this.searchByKeyword} />
+              <Select
+                defaultValue={[]}
+                style={{ width: '100%' }}
+                placeholder="请选择已配置算法"
+                mode="multiple"
+                onChange={this.algorithmChangeHandle}
+                optionLabelProp="label"
+              >
+                {drawAlgorithmList()}
+              </Select>
+            </div>
+            <div className={styles.areaList}>
+              {
+                treeDatas && treeDatas.length ? (
+                  <Tree
+                    expandedKeys={expandedKeys}
+                    defaultExpandAll
+                    blockNode
+                    showIcon
+                    onExpand={this.onExpand}
+                    onSelect={this.onSelect}
+                    className={styles.dataTree}
+                    ref={ref => this.treeNode = ref}
+                  >
+                    {this.renderTreeNodes(treeDatas)}
+                  </Tree>
+                ) : null
+              }
+            </div>
+          </div>
+          <div className={styles.videoBox}>
+            <VideoPlayer src="http://ivi.bupt.edu.cn/hls/cctv3hd.m3u8" />
+          </div>
+          <div className={styles.historyList}>
+            <div className={styles.historyTitle}>
+              <p>
+                实时告警记录
+                <a>历史记录</a>
+              </p>
+
+            </div>
+            <div className={styles.historyCard}>
+              <Card
+                hoverable
+                style={{ width: 240 }}
+                cover={<img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
+              >
+                {/* } <Meta title="Europe Street beat" description="www.instagram.com" /> */}
+                <p>Card content</p>
+              </Card>
+            </div>
           </div>
         </div>
       );

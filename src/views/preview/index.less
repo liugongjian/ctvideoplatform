@@ -1,0 +1,50 @@
+.content{
+    display: flex;
+    background: #fff;
+    // width: 70%;
+    height: 100%;
+}
+
+.areaBox{
+    width: 240px;
+    height: calc(100% - 40px);
+    padding: 20px 10px;
+    :global{
+        .ant-tree{
+            font-size: 12px;
+        }
+    }
+    .areaList{
+        width: 100%;
+        overflow: auto;
+    }
+}
+
+.videoBox{
+    flex: 1;
+    padding: 10px;
+    // max-width: 1080px;
+    // margin: 10px auto;
+    height: 100%;
+}
+.historyList{
+    width: 240px;
+    background: #fff;
+    .historyTitle{
+        display: flex;
+        a{
+            // display: inline-block;
+            margin-left: 90px;
+        }
+    }
+    p{
+        margin: 0;
+    }
+    .historyCard{
+        :global{
+            .ant-card-body{
+                padding: 10px;
+            }
+        }
+    }
+}
