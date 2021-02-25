@@ -143,6 +143,7 @@ const menuRoutes = [
       {
         path: '/realtime',
         exact: true,
+        pageTitle: '实时预览',
         component: Preview,
       },
       {
