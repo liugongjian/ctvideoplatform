@@ -76,3 +76,13 @@ export function delFace(data) {
 //       })
 //   };
 }
+
+export function getImportFaceList(data) {
+//   return {
+//     type: [GET_LIST, GET_LIST_SUCCESS, GET_LIST_FAIL],
+//     promise: apiClient => apiClient.post(`${urlPrefix}/face/list/`,
+//       {
+//         data
+//       })
+//   };
+}
