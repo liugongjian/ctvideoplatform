@@ -6,14 +6,16 @@ import {
   Cascader,
   Button,
   Pagination,
+  Modal,
+  Icon,
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import {
-  getSummary, getMonitorMetric,
-} from 'Redux/reducer/dashboard';
+  getSummary, getMonitorMetric, getAlgoList, getDeviceTree
+} from 'Redux/reducer/alarms';
 import AlarmCard from './alarmCard';
 
 import styles from './index.less';
@@ -23,7 +25,9 @@ const { Option } = Select;
 
 const mapStateToProps = state => ({ alarms: state.alarms });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  {},
+  {
+    getAlgoList, getDeviceTree
+  },
   dispatch
 );
 
@@ -31,6 +35,11 @@ class Alarms extends Component {
   constructor() {
     super();
     this.state = {
+      algoList: [],
+      algoListLoading: false,
+      deviceList: [],
+      deviceTree: [],
+      devicesLoading: false,
       listData: [
         {
           id: 1,
@@ -128,8 +137,61 @@ class Alarms extends Component {
   }
 
   componentDidMount() {
-
+    this.setState({
+      algoListLoading: true,
+      devicesLoading: true,
+    });
+    this.props.getAlgoList().then((res) => {
+      this.setState({
+        algoListLoading: false,
+        algoList: res,
+      });
+    }).catch((err) => {
+      this.setState({
+        algoListLoading: false,
+      });
+    });
+    this.props.getDeviceTree().then((res) => {
+      console.log('getDeviceTree', res);
+      const tree = this.dataToTree(res);
+      console.log('DeviceTree', tree);
+      this.setState({
+        devicesLoading: false,
+        deviceList: res,
+        deviceTree: tree
+      });
+    }).catch((err) => {
+      this.setState({
+        devicesLoading: false,
+      });
+    });
   }
+
+  dataToTree = (data) => {
+    // 下面的forEach写法会改变原数组，所以深度拷贝一次
+    const copy = JSON.parse(JSON.stringify(data));
+    const map = {};
+    copy.forEach((item) => {
+      item.label = item.name;
+      item.value = item.id;
+      map[item.id] = item;
+    });
+    const val = [];
+    copy.forEach((item) => {
+      const parent = map[item.pid];
+      if (parent) {
+        (parent.children || (parent.children = [])).push(item);
+      } else {
+        val.push(item);
+      }
+    });
+    val.forEach((item) => {
+      if (!item.children || item.children.length === 0) {
+        item.disabled = item.type == 0;
+      }
+    });
+    return val;
+  };
 
   onChange = (value, dateString) => {
     console.log('Selected Time: ', value);
@@ -151,7 +213,9 @@ class Alarms extends Component {
     showTotal = total => (<span className={styles.totalText}>{`总条数： ${total}`}</span>)
 
     render() {
-      const { listData } = this.state;
+      const {
+        listData, algoList, algoListLoading, deviceTree
+      } = this.state;
       return (
         <div className={styles.alarms}>
           <div className={styles['alarms-filterWrapper']}>
@@ -169,21 +233,25 @@ class Alarms extends Component {
                 style={{ width: '150px' }}
                 placeholder="请选择告警类型"
               >
-                <Option value="1">移动侦测</Option>
-                <Option value="2">人脸布控</Option>
+                {
+                  algoList.map(item => (<Option value={item.id}>{item.cnName}</Option>))
+                }
               </Select>
               <span className={styles.span10px} />
               <Cascader
-                changeOnSelect
                 placeholder="请选择设备"
                 popupClassName={styles.cameraCascader}
-                options={[]}
+                options={deviceTree}
                 allowClear={false}
+                // onChange={this.onAreaChange}
               />
               <span className={styles['alarms-filterWrapper-btnWrapper']}>
                 <Button type="primary" onClick={this.onSearch}>搜索</Button>
                 <span className={styles.span10px} />
-                <Button onClick={this.onReset}>重置</Button>
+                <Button onClick={this.onReset}>
+                  <Icon type="redo" />
+                  重置
+                </Button>
               </span>
             </div>
           </div>
