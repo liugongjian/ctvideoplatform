@@ -56,6 +56,8 @@ import Plate from 'Views/plate';
 import CameraDetail from 'Views/cameraDetail';
 import Account from 'Views/system/user';
 import AddAccount from 'Views/system/user/addUser';
+import Face from 'Views/gallery/face';
+import ImportFace from 'Views/gallery/face/import';
 import Alarms from 'Views/alarms';
 import { pathPrefix } from 'Constants/Dictionary';
 
@@ -142,6 +144,7 @@ const menuRoutes = [
       {
         path: '/realtime',
         exact: true,
+        pageTitle: '实时预览',
         component: Preview,
       },
       {
@@ -180,12 +183,19 @@ const menuRoutes = [
   {
     path: '/gallery',
     exact: true,
-    component: DefaultPage,
     children: [
       {
         path: '/face',
         exact: true,
-        component: DefaultPage,
+        pageTitle: '人脸库',
+        component: Face,
+        children: [
+          {
+            path: '/import',
+            pageTitle: '人脸导入',
+            component: ImportFace,
+          }
+        ]
       },
       {
         path: '/carLicense',
