@@ -106,9 +106,11 @@ export function isLicenseExist(licenseNo) {
   };
 }
 
-export function getAlarmList() {
+export function getAlarmList(postData) {
   return {
     type: DO_NOTHING,
-    promise: apiClient => apiClient.get(`${urlPrefix}/task/result/query`)
+    promise: apiClient => apiClient.post(`${urlPrefix}/task/result/query`, {
+      data: postData
+    })
   };
 }
