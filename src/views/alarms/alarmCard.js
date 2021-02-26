@@ -4,18 +4,26 @@ import React, { Component } from 'react';
 import {
   Select,
   Result,
+  Modal
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import EIcon from 'Components/Icon';
 import { connect } from 'react-redux';
 import { random } from 'lodash';
+import {
+  importLicense, isLicenseExist
+} from 'Redux/reducer/alarms';
+import {
+  LicenseImportModal,
+  DeleteModal,
+  ImageModal,
+} from './Modals';
 import TestJpg from './test.jpg';
 // import { push } from 'react-router-redux';
 // import PropTypes from 'prop-types';
 // import {
 //   getSummary, getMonitorMetric,
 // } from 'Redux/reducer/dashboard';
-
 import styles from './index.less';
 
 // const { Option } = Select;
@@ -49,7 +57,9 @@ const Tag = ({
 
 const mapStateToProps = state => ({ alarms: state.alarms });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  {},
+  {
+    importLicense, isLicenseExist
+  },
   dispatch
 );
 /**
@@ -63,6 +73,7 @@ class AlarmCard extends Component {
     this.state = {
       importDialogVisible: false,
       imgDialogVisible: false,
+      delVisible: false,
     };
   }
 
@@ -73,28 +84,77 @@ class AlarmCard extends Component {
     this.setState({ importDialogVisible: true });
   };
 
+  handleImport = (data) => {
+    this.props.importLicense(data).then((res) => {
+      console.log('import', res);
+      this.closeImportDialog();
+    });
+  }
+
+  closeImportDialog = () => {
+    this.setState({ importDialogVisible: false });
+  };
+
+  showDelDialog = () => {
+    this.setState({ delVisible: true });
+  };
+
+  handleDelete = () => {
+    // 1.删除操作 2.刷新列表（外部传入？emit？
+  }
+
+  closeDelDialog = () => {
+    this.setState({ delVisible: false });
+  };
+
   showImgDialog = () => {
     this.setState({ imgDialogVisible: true });
   };
 
+  closeImgDialog = () => {
+    this.setState({ imgDialogVisible: false });
+  };
+
   render() {
-    const { data, onDelete } = this.props;
+    const { data, onDelete, isLicenseExist } = this.props;
     const {
-      name, rule, detail, area, time
+      importDialogVisible,
+      imgDialogVisible,
+      delVisible,
+    } = this.state;
+    const {
+      AlgorithmName, controlRule, details, resTime, deviceArea
     } = data;
     const type = 'car';
     const hasDetail = Math.random() > 0.5;
     const hasImport = Math.random() > 0.5;
     return (
       <div className={styles.AlarmCard}>
+        <LicenseImportModal
+          visible={importDialogVisible}
+          handleImport={this.handleImport}
+          closeModal={this.closeImportDialog}
+          isLicenseExist={isLicenseExist}
+          initailVal={{}}
+        />
+        <DeleteModal
+          visible={delVisible}
+          onOk={this.handleDelete}
+          closeModal={this.closeDelDialog}
+        />
+        <ImageModal
+          visible={imgDialogVisible}
+          closeModal={this.closeImgDialog}
+          src={TestJpg}
+        />
         <div className={styles['AlarmCard-title']}>
           {/*
           // 头部空间不足 先删除icon
            <img src={getImgUrl('carPersonCheck')}
           alt="icon" className={styles['AlarmCard-title-icon']} />
         &nbsp; */}
-          <span className={styles['AlarmCard-title-name']}>{name || ''}</span>
-          <span className={styles['AlarmCard-title-time']}>{time || ''}</span>
+          <span className={styles['AlarmCard-title-name']}>{AlgorithmName || ''}</span>
+          <span className={styles['AlarmCard-title-time']}>{resTime || ''}</span>
         </div>
         <div className={styles['AlarmCard-imgWrapper']} onClick={this.showImgDialog}>
           <img
@@ -105,7 +165,7 @@ class AlarmCard extends Component {
         <div className={styles['AlarmCard-contentWrapper']}>
           <div>
             布控规则：
-            {rule}
+            <span title={controlRule}>{controlRule}</span>
           </div>
           {
             hasDetail ? (
@@ -120,13 +180,13 @@ class AlarmCard extends Component {
             ) : (
               <div>
                 告警详情：
-                {detail}
+                <span title={details}>{details}</span>
               </div>
             )
           }
           <div>
             设备区域：
-            {area}
+            <span title={deviceArea}>{deviceArea}</span>
           </div>
         </div>
         <div className={styles['AlarmCard-operatorWrapper']}>
@@ -138,7 +198,7 @@ class AlarmCard extends Component {
               </React.Fragment>
             ) : null
           }
-          <a><EIcon type="myicon-delete" /></a>
+          <a onClick={this.showDelDialog}><EIcon type="myicon-delete" /></a>
         </div>
       </div>
     );
@@ -150,13 +210,3 @@ class AlarmCard extends Component {
 // };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AlarmCard);
-
-/**
- * props
- * @param {*} data
- * @param {*} onDelete
- */
-// const AlarmCard = ({ data, onDelete }) => {
-// };
-
-// export default AlarmCard;

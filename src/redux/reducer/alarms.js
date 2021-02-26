@@ -71,3 +71,44 @@ export function putBasicConfig(data) {
     })
   };
 }
+
+export function getAlgoList() {
+  return {
+    type: DO_NOTHING,
+    promise: apiClient => apiClient.get(`${urlPrefix}/algorithm/list`)
+  };
+}
+
+export function getDeviceTree() {
+  return {
+    type: DO_NOTHING,
+    promise: apiClient => apiClient.post(`${urlPrefix}/device/tree`, {
+      data: {
+        keyword: '',
+        algorithmIds: []
+      }
+    })
+  };
+}
+export function importLicense(postData) {
+  return {
+    type: DO_NOTHING,
+    promise: apiClient => apiClient.post(`${urlPrefix}/license/add`, {
+      data: postData
+    })
+  };
+}
+
+export function isLicenseExist(licenseNo) {
+  return {
+    type: DO_NOTHING,
+    promise: apiClient => apiClient.get(`${urlPrefix}/license/exist?license=${licenseNo}`)
+  };
+}
+
+export function getAlarmList() {
+  return {
+    type: DO_NOTHING,
+    promise: apiClient => apiClient.get(`${urlPrefix}/task/result/query`)
+  };
+}

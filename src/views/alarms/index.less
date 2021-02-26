@@ -52,6 +52,12 @@
         margin-bottom: 20px;
         &-btnWrapper{
             float: right;
+            vertical-align: middle;
+            :global{
+                .ant-btn>span, .ant-btn>i{
+                    vertical-align: middle;
+                }
+            }
         }
         &-inner{
             width: 100%;
@@ -103,10 +109,21 @@
     }
     &-paginationWrapper{
         position: absolute;
+        width: calc(100% - 40px);
         bottom: 20px;
-        right: 20px;
+        text-align: right;
+        :global{
+            .ant-pagination>.ant-pagination-options{
+                text-align: left;
+            }
+        }
         .totalText{
-            float: left;
+            position: absolute;
+            left:0;
+            font-family: PingFangSC-Regular;
+            font-size: 12px;
+            color: #666666;
+            line-height: 18px;
         }
     }
     :global{
@@ -114,6 +131,7 @@
             vertical-align: baseline;
         }
         .ant-select-selection--single{
+            text-align: left;
             min-width: 100px;
             height: 32px;
             line-height: 32px;
@@ -175,6 +193,9 @@
             margin-top: 5px;
             font-size: 12px;
             line-height: 20px;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
         }
     }
     &:hover{
@@ -202,6 +223,7 @@
                 width: 10px;
                 height: 14px;
                 margin-right: 10px;
+                margin-bottom: 2px;
             }
         }
     }
@@ -213,4 +235,78 @@
     height: 20px;
     text-align: center;
     border-radius:4px;
+}
+
+.delModal{
+    .content{
+        height: 48px;
+        text-align: center;
+        &>span{
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 48px;
+        }
+        .iconWrapper{
+            font-size: 48px;
+            color:#FA8334;
+            margin-right: 15px;
+        }
+    }
+}
+.LicenseImport{
+    .existMsg{
+        margin-left: 20px;
+        color:#FA8334;
+        font-size: 12px;
+        &-icon{
+            // color:#FA8334;
+            // font-size: 16px;
+            margin-right: 5px;
+        }
+    }
+    &-formWrapper{
+        :global{
+            .ant-form{
+                .ant-form-item{
+                    margin-bottom: 12px;
+                }
+                & > .ant-form-item > .ant-form-item-label{
+                    width: 100px;
+                    vertical-align: top;
+                }
+                &>.ant-form-item>.ant-form-item-control-wrapper{
+                    width: calc(100% - 180px); 
+                    display: inline-block;
+                }
+            }
+        }
+        .licenseSplit{
+            display: inline-block;
+            width:8px;
+        }
+        .licenseSel{
+            display: inline-block;
+            width: 80px;
+            :global{
+                .ant-form-explain{
+                    width: 150px;
+                }
+            }
+        }
+        .licenseInput{
+            display: inline-block;
+            width: calc(100% - 88px);
+        }
+        .addItemRequiredIcon{
+            label::before {
+                display: inline-block;
+                margin-right: 4px;
+                color: #FF8836;
+                font-size: 14px;
+                font-family: SimSun, sans-serif;
+                line-height: 1;
+                content: '*';
+            }
+        }
+    }
 }
