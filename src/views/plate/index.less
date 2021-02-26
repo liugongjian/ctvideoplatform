@@ -109,10 +109,10 @@ tr.ant-table-row{
 }
 
 .deleteModal{
-  width: 350px;
-  height: 190px;
+  width: 565px;
+  height: 280px;
   &>div{
-    margin-top: 80px;
+    margin-top: 43px;
   }
   .deleteModalImg{
     display: inline-block;
@@ -144,5 +144,53 @@ tr.ant-table-row{
       color: #999999;
       margin-bottom: 11px;
     }
+  }
+}
+
+.LicenseImport{
+  &-formWrapper{
+      :global{
+          .ant-form{
+              .ant-form-item{
+                  margin-bottom: 12px;
+              }
+              & > .ant-form-item > .ant-form-item-label{
+                  width: 100px;
+                  vertical-align: top;
+              }
+              &>.ant-form-item>.ant-form-item-control-wrapper{
+                  width: calc(100% - 180px); 
+                  display: inline-block;
+              }
+          }
+      }
+      .licenseSplit{
+          display: inline-block;
+          width:8px;
+      }
+      .licenseSel{
+          display: inline-block;
+          width: 80px;
+          :global{
+              .ant-form-explain{
+                  width: 150px;
+              }
+          }
+      }
+      .licenseInput{
+          display: inline-block;
+          width: calc(100% - 88px);
+      }
+      .addItemRequiredIcon{
+          label::before {
+              display: inline-block;
+              margin-right: 4px;
+              color: #FF8836;
+              font-size: 14px;
+              font-family: SimSun, sans-serif;
+              line-height: 1;
+              content: '*';
+          }
+      }
   }
 }

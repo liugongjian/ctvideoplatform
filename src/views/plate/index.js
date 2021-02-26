@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {
-  Table, Input, Modal, Pagination, Button , message ,Tooltip , Icon , Tag , Form , Select
+  Table, Input, Modal, Pagination, Button , message ,Tooltip , Icon , Tag , Form , Select , Radio
 } from 'antd';
 import {Link} from 'react-router-dom'
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { getRoleList , deleteRoles } from '@/redux/reducer/role'
+import { getPlateList } from '@/redux/reducer/plate'
 
 import searchPic from '@/assets/role/search.png'
 import warnPic from '@/assets/role/warn.png'
@@ -19,16 +19,16 @@ const { Column } = Table;
 const { Search } = Input;
 
 
-const mapStateToProps = state => ({ role : state.role });
+const mapStateToProps = state => ({ plate : state.plate });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  { getRoleList , deleteRoles},
+  { getPlateList },
   dispatch
 );
 
 
 class Plate extends Component {
   state = {
-    roleListInfo:{
+    plateListInfo:{
       pageSize:10,
       pageNo:0
     },
@@ -45,64 +45,65 @@ class Plate extends Component {
     this.setState({ selectedRowKeys , deleteItems:selectedRowKeys });
   };
 
-  onDeleteItems = () => {
-    this.setState({deleteModalVisible:false , isDeleting : false });
-    this.props.deleteRoles({
-      roleIdlist : this.state.deleteItems,
-    }).then((data) => {
-      this.setState({deleteItems:[] , selectedRowKeys:[]})
-      if (data) {
-        message.success('删除成功');
-      }
-      this.onPageNumChange(this.state.roleListInfo.pageNo + 1);
-    }).catch(err => {
-      message.error('删除失败');
-      this.setState({deleteModalVisible:false , isDeleting : false});
-    });
-  };
+  // onDeleteItems = () => {
+  //   this.setState({deleteModalVisible:false , isDeleting : false });
+  //   this.props.deleteRoles({
+  //     roleIdlist : this.state.deleteItems,
+  //   }).then((data) => {
+  //     this.setState({deleteItems:[] , selectedRowKeys:[]})
+  //     if (data) {
+  //       message.success('删除成功');
+  //     }
+  //     this.onPageNumChange(this.state.roleListInfo.pageNo + 1);
+  //   }).catch(err => {
+  //     message.error('删除失败');
+  //     this.setState({deleteModalVisible:false , isDeleting : false});
+  //   });
+  // };
 
-  searchRole = () => {
-    // console.log(this.state.searchName)
-    this.props.getRoleList({
-      name : this.state.searchName,
-      pageNo : 0,
-      pageSize : this.state.roleListInfo.pageSize
-    }).then((data)=>{
-      // console.log(data);
-      this.setState({roleListInfo : data})
-    })
-  }
+  // searchRole = () => {
+  //   // console.log(this.state.searchName)
+  //   this.props.getRoleList({
+  //     name : this.state.searchName,
+  //     pageNo : 0,
+  //     pageSize : this.state.roleListInfo.pageSize
+  //   }).then((data)=>{
+  //     // console.log(data);
+  //     this.setState({roleListInfo : data})
+  //   })
+  // }
 
-  onPageNumChange = (pageNo) => {
-    this.props.getRoleList({
-      pageNo : pageNo-1,
-      pageSize : this.state.roleListInfo.pageSize
-    }).then((data)=>{
-      this.setState({roleListInfo : data})
-    })
-  }
+  // onPageNumChange = (pageNo) => {
+  //   this.props.getRoleList({
+  //     pageNo : pageNo-1,
+  //     pageSize : this.state.roleListInfo.pageSize
+  //   }).then((data)=>{
+  //     this.setState({roleListInfo : data})
+  //   })
+  // }
 
-  onPageSizeChange = (current , size) => {
-    this.props.getRoleList({
-      pageNo : 0,
-      pageSize : size
-    }).then((data)=>{
-      // console.log(data);
-      this.setState({roleListInfo : data})
-    })
-  }
+  // onPageSizeChange = (current , size) => {
+  //   this.props.getRoleList({
+  //     pageNo : 0,
+  //     pageSize : size
+  //   }).then((data)=>{
+  //     // console.log(data);
+  //     this.setState({roleListInfo : data})
+  //   })
+  // }
 
   componentDidMount() {
-    this.props.getRoleList({
+    this.props.getPlateList({
       pageNo : 0,
       pageSize : 10
     }).then((data)=>{
-      this.setState({roleListInfo : data})
+      console.log('plate data:',data)
+      this.setState({plateListInfo:data})
     })
   }
 
   render() {
-    const { selectedRowKeys , roleListInfo } = this.state;
+    const { selectedRowKeys , plateListInfo } = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -138,26 +139,18 @@ class Plate extends Component {
             <Search placeholder="请输入车牌号" icon={searchPic} onSearch={() => this.searchRole()} onChange={(e) => this.setState({searchName:e.target.value})}/>
           </div>
         </div>
-        <Table rowSelection={rowSelection} dataSource={roleListInfo.list} pagination={false} rowKey={(record) => record.id}>
-            <Column title="车牌号" dataIndex="name" width={'27%'} className="tabble-row"
-              render={
-                (text, record) => (
-                  <div>
-                    { text.length > 10 ? 
-                    (<Tooltip title={text}> {text.substring(0,10) + '...'} </Tooltip>) 
-                    : text }
-                  </div>
-                )
-              }
-            />
-            <Column title="布控标签" dataIndex="createTime" width={'31%'}
+        <Table rowSelection={rowSelection} dataSource={plateListInfo.list} pagination={false} rowKey={(record) => record.id}>
+            <Column title="车牌号" dataIndex="licenseNo" width={'27%'} className="tabble-row"/>
+            <Column title="布控标签" dataIndex="label" width={'31%'}
                   render={(text, record) => (
                     <div>
-                        <Tag color="green">{text.substring(0,4)}</Tag>
+                      {
+                        text==="WHITE" ? (<Tag color="green">白名单</Tag>) : (<Tag color="red">黑名单</Tag>)
+                      }          
                     </div>
                   )}
             />
-            <Column title="车牌颜色" dataIndex="updateTime" width={'33%'}/>
+            <Column title="车牌颜色" dataIndex="color" width={'33%'}/>
             <Column
                 title="操作"
                 key="action"
@@ -174,15 +167,15 @@ class Plate extends Component {
               />
         </Table>
         <div className={styles.paginationWrapper}>
-          <span>总条数: {roleListInfo.recordsTotal}</span>
+          <span>总条数: {plateListInfo.recordsTotal}</span>
           <div>
             <Pagination
-              total={roleListInfo.recordsTotal}
+              total={plateListInfo.recordsTotal}
               onChange={(pageNo) => this.onPageNumChange(pageNo)}
-              current={roleListInfo.pageNo+1}
+              current={plateListInfo.pageNo+1}
               showSizeChanger
               showQuickJumper
-              pageSize={this.state.roleListInfo.pageSize}
+              pageSize={this.state.plateListInfo.pageSize}
               onShowSizeChange={(current,size) => this.onPageSizeChange(current , size)}
             />
           </div>
@@ -190,38 +183,94 @@ class Plate extends Component {
 
 
         <Modal
-          centered
-          width={565}
-          visible={this.state.plateModalVisible}
-          onCancel={() => this.setState({plateModalVisible:false})}
-          footer={[    
-            <Button key="submit" type="primary" disabled={this.state.isDeleting} onClick={() => this.onDeleteItems()} style={{margin:'0 0 0 5px'}}>
-            确定
-           </Button>,        
-            <Button key="back" style={{margin:'0 0 0 30px'}} disabled={this.state.isDeleting} onClick={() => {this.setState({deleteModalVisible:false,deleteItems:[]})}}>
-              取消
-            </Button>
-          ]}
+        className={styles.LicenseImport}
+        title="新增车牌数据"
+        visible={this.state.plateModalVisible}
+        width="500px"
         >
-          <div className={styles.deleteModal}>
-
-              <Form {...formItemLayout} onSubmit={this.handleSubmit}>
-                <Form.Item label="Plain Text">
-                  <span className="ant-form-text">China</span>
-                </Form.Item>
-                <Form.Item label="Select" hasFeedback>
-                  {getFieldDecorator('select', {
-                    rules: [{ required: true, message: 'Please select your country!' }],
-                  })(
-                    <Select placeholder="Please select a country">
-                      <Option value="china">China</Option>
-                      <Option value="usa">U.S.A</Option>
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Form>
-          </div>
-        </Modal>
+        <div className={styles['LicenseImport-formWrapper']}>
+          <Form>
+            <Form.Item label="车牌号" style={{ marginBottom: 0 }} className={styles.addItemRequiredIcon}>
+              <Form.Item className={styles.licenseSel}>
+                {getFieldDecorator('licenseProvince', {
+                  rules: [
+                    {
+                      validator: (rule, val, callback) => {
+                        if (!val || !form.getFieldValue('licenseNo')) {
+                          callback('请补充车牌号！');
+                        }
+                        callback();
+                      }
+                    }
+                  ],
+                })(
+                  <Select
+                    onSelect={() => { form.validateFields(['licenseNo']); }}
+                    placeholder="-"
+                  >
+                    <Select.Option value="浙">浙</Select.Option>
+                  </Select>
+                )}
+              </Form.Item>
+              <span className={styles.licenseSplit}>&nbsp;</span>
+              <Form.Item className={styles.licenseInput}>
+                {getFieldDecorator('licenseNo', {
+                  rules: [
+                    {
+                      required: true,
+                      message: ' ',
+                    },
+                    {
+                      validator: (rule, val, callback) => {
+                        form.validateFields(['licenseProvince']);
+                        if (!val || !form.getFieldValue('licenseProvince')) {
+                          callback(' ');
+                        }
+                        callback();
+                      }
+                    }
+                  ],
+                })(<Input
+                  placeholder="请输入车牌号"
+                />)}
+              </Form.Item>
+            </Form.Item>
+            <Form.Item label="布控标签">
+              {getFieldDecorator('label', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择布控标签!',
+                  },
+                ],
+              })(
+                <Radio.Group>
+                  <Radio value={1}>白名单</Radio>
+                  <Radio value={2}>黑名单</Radio>
+                </Radio.Group>
+              )}
+            </Form.Item>
+            <Form.Item label="车牌颜色">
+              {getFieldDecorator('color', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择车牌颜色!',
+                  },
+                ],
+              })(
+                <Select>
+                  <Select.Option value="蓝色">蓝色</Select.Option>
+                  <Select.Option value="绿色">绿色</Select.Option>
+                  <Select.Option value="黄色">黄色</Select.Option>
+                  <Select.Option value="白色">白色</Select.Option>
+                  <Select.Option value="黑色">黑色</Select.Option>
+                </Select>
+              )}
+            </Form.Item>
+          </Form>
+        </div>
+      </Modal>
 
 
         

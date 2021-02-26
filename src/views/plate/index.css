@@ -90,11 +90,11 @@ tr.ant-table-row {
   color: #E9E9E9;
 }
 .deleteModal {
-  width: 350px;
-  height: 190px;
+  width: 565px;
+  height: 280px;
 }
 .deleteModal > div {
-  margin-top: 80px;
+  margin-top: 43px;
 }
 .deleteModal .deleteModalImg {
   display: inline-block;
@@ -124,4 +124,39 @@ tr.ant-table-row {
   font-size: 12px;
   color: #999999;
   margin-bottom: 11px;
+}
+.LicenseImport-formWrapper :global .ant-form .ant-form-item {
+  margin-bottom: 12px;
+}
+.LicenseImport-formWrapper :global .ant-form > .ant-form-item > .ant-form-item-label {
+  width: 100px;
+  vertical-align: top;
+}
+.LicenseImport-formWrapper :global .ant-form > .ant-form-item > .ant-form-item-control-wrapper {
+  width: calc(100% - 180px);
+  display: inline-block;
+}
+.LicenseImport-formWrapper .licenseSplit {
+  display: inline-block;
+  width: 8px;
+}
+.LicenseImport-formWrapper .licenseSel {
+  display: inline-block;
+  width: 80px;
+}
+.LicenseImport-formWrapper .licenseSel :global .ant-form-explain {
+  width: 150px;
+}
+.LicenseImport-formWrapper .licenseInput {
+  display: inline-block;
+  width: calc(100% - 88px);
+}
+.LicenseImport-formWrapper .addItemRequiredIcon label::before {
+  display: inline-block;
+  margin-right: 4px;
+  color: #FF8836;
+  font-size: 14px;
+  font-family: SimSun, sans-serif;
+  line-height: 1;
+  content: '*';
 }
