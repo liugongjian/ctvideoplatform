@@ -3,14 +3,15 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import {
-  getImportFaceList
+  getImportFaceList, submitLabel, saveUploadList
 } from 'Redux/reducer/face';
 import {
   Form, Steps, Select, Button, Upload, message, List, Card, Tag, Pagination, Modal, Icon
 } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
-import noImg from '@/assets/bg.png';
+import noImg from '@/assets/defaultFace.png';
 import styles from './import.less';
+import { urlPrefix } from '../../../constants/Dictionary';
 
 const { Step } = Steps;
 const { Option } = Select;
@@ -19,99 +20,100 @@ const { Dragger } = Upload;
 const mapStateToProps = state => ({ face: state.face });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    push, getImportFaceList
+    push, getImportFaceList, submitLabel, saveUploadList
   },
   dispatch
 );
 
 class ImportFace extends Component {
   state = {
-    type: undefined,
+    label: undefined,
     stepCurrent: 0,
     uploadStatus: 'todo',
     repeatModalVisible: false,
     repeatNum: 3,
-    total: 4,
+    total: 0,
     pageSize: 10,
     pageNum: 1,
+    uploadZipUrl: `${urlPrefix}/face/upload/`,
     faceData: [
-      {
-        aid: 416099,
-        createTimeime: '2021-01-20T17:26:57.000+0800',
-        enable: 'y',
-        id: 3299604200531968,
-        image: 'http://192.168.10.146:8666/images/uid/573ad394c1e4408696223d5d7982ce11',
-        name: 'lizhiyonglizhiyonglizhiyonglizhiyong',
-        nameList: 1,
-        updateTime: '2021-01-20T17:26:58.000+0800',
-        isChecked: false,
-      },
-      {
-        aid: 532611,
-        createTimeime: '2021-01-20T17:34:24.000+0800',
-        enable: 'y',
-        id: 3299605114097664,
-        image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-        name: 'lxp',
-        nameList: 2,
-        updateTime: '2021-01-20T17:34:24.000+0800',
-        isChecked: false,
-      },
-      {
-        aid: 532612,
-        createTimeime: '2021-01-20T17:34:24.000+0800',
-        enable: 'y',
-        id: 3299605114097665,
-        image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-        name: 'llll',
-        nameList: 2,
-        updateTime: '2021-01-20T17:34:24.000+0800',
-        isChecked: false,
-      },
-      {
-        aid: 532613,
-        createTimeime: '2021-01-20T17:34:24.000+0800',
-        enable: 'y',
-        id: 3299605114097666,
-        image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-        name: 'hhhh',
-        nameList: 2,
-        updateTime: '2021-01-20T17:34:24.000+0800',
-        isChecked: false,
-      },
-      {
-        aid: 532614,
-        createTimeime: '2021-01-20T17:34:24.000+0800',
-        enable: 'y',
-        id: 3299605114097667,
-        image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-        name: 'lxp',
-        nameList: 1,
-        updateTime: '2021-01-20T17:34:24.000+0800',
-        isChecked: false,
-      },
-      {
-        aid: 532615,
-        createTimeime: '2021-01-20T17:34:24.000+0800',
-        enable: 'y',
-        id: 3299605114097668,
-        image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-        name: 'lxpffff',
-        nameList: 1,
-        updateTime: '2021-01-20T17:34:24.000+0800',
-        isChecked: false,
-      },
-      {
-        aid: 532616,
-        createTimeime: '2021-01-20T17:34:24.000+0800',
-        enable: 'y',
-        id: 3299605114097669,
-        image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-        name: 'lxpffffjjj',
-        nameList: 1,
-        updateTime: '2021-01-20T17:34:24.000+0800',
-        isChecked: false,
-      }
+    //   {
+    //     aid: 416099,
+    //     createTimeime: '2021-01-20T17:26:57.000+0800',
+    //     enable: 'y',
+    //     id: 3299604200531968,
+    //     image: 'http://192.168.10.146:8666/images/uid/573ad394c1e4408696223d5d7982ce11',
+    //     name: 'lizhiyonglizhiyonglizhiyonglizhiyong',
+    //     nameList: 1,
+    //     updateTime: '2021-01-20T17:26:58.000+0800',
+    //     isChecked: false,
+    //   },
+    //   {
+    //     aid: 532611,
+    //     createTimeime: '2021-01-20T17:34:24.000+0800',
+    //     enable: 'y',
+    //     id: 3299605114097664,
+    //     image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
+    //     name: 'lxp',
+    //     nameList: 2,
+    //     updateTime: '2021-01-20T17:34:24.000+0800',
+    //     isChecked: false,
+    //   },
+    //   {
+    //     aid: 532612,
+    //     createTimeime: '2021-01-20T17:34:24.000+0800',
+    //     enable: 'y',
+    //     id: 3299605114097665,
+    //     image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
+    //     name: 'llll',
+    //     nameList: 2,
+    //     updateTime: '2021-01-20T17:34:24.000+0800',
+    //     isChecked: false,
+    //   },
+    //   {
+    //     aid: 532613,
+    //     createTimeime: '2021-01-20T17:34:24.000+0800',
+    //     enable: 'y',
+    //     id: 3299605114097666,
+    //     image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
+    //     name: 'hhhh',
+    //     nameList: 2,
+    //     updateTime: '2021-01-20T17:34:24.000+0800',
+    //     isChecked: false,
+    //   },
+    //   {
+    //     aid: 532614,
+    //     createTimeime: '2021-01-20T17:34:24.000+0800',
+    //     enable: 'y',
+    //     id: 3299605114097667,
+    //     image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
+    //     name: 'lxp',
+    //     nameList: 1,
+    //     updateTime: '2021-01-20T17:34:24.000+0800',
+    //     isChecked: false,
+    //   },
+    //   {
+    //     aid: 532615,
+    //     createTimeime: '2021-01-20T17:34:24.000+0800',
+    //     enable: 'y',
+    //     id: 3299605114097668,
+    //     image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
+    //     name: 'lxpffff',
+    //     nameList: 1,
+    //     updateTime: '2021-01-20T17:34:24.000+0800',
+    //     isChecked: false,
+    //   },
+    //   {
+    //     aid: 532616,
+    //     createTimeime: '2021-01-20T17:34:24.000+0800',
+    //     enable: 'y',
+    //     id: 3299605114097669,
+    //     image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
+    //     name: 'lxpffffjjj',
+    //     nameList: 1,
+    //     updateTime: '2021-01-20T17:34:24.000+0800',
+    //     isChecked: false,
+    //   }
     ],
   };
 
@@ -131,7 +133,7 @@ class ImportFace extends Component {
       loading: true
     });
     console.log('data', data);
-    //   getImportFaceList(data).then((res) => {
+    getImportFaceList(data).then((res) => {
     //   if 有重复的 todo
     // this.setState({
     //   repeatModalVisible: true,
@@ -139,43 +141,42 @@ class ImportFace extends Component {
     //   repeatNum: 3,
     // });
     //   if 没有重复的 todo
-    this.setState({
-    //   faceData: res.list,
-    //   total: res.recordsTotal,
-    //   pageNum: res.pageNo + 1,
-    //   pageSize: res.pageSize,
-      loading: false,
-      stepCurrent: stepCurrent + 1
+      console.log('>>>>>>======', res);
+      this.setState({
+        faceData: res.list,
+        total: res.recordsTotal,
+        pageNum: res.pageNo + 1,
+        pageSize: res.pageSize,
+        loading: false,
+        stepCurrent: stepCurrent + 1
+      });
     });
-    //   });
   };
 
   selectType = (val) => {
     this.setState({
-      type: val
+      label: val
     });
   };
 
-  //   handleNextStep = () => {
-  //     this.getTableList();
-  //   };
-
-  //   replaceFace = () => {
-  //     this.getTableList(true);
-  //   };
-
-  //   handleReplaceCancel = () => {
-  //     this.setState({
-  //       repeatModalVisible: false
-  //     }, () => this.addFace(false));
-  //   };
+  submitLabel = () => {
+    const { submitLabel } = this.props;
+    const { label } = this.state;
+    const data = {
+      label,
+    };
+    submitLabel(data).then((res) => {
+      this.getTableList();
+    });
+  }
 
   handleImageError = (e) => {
     console.log('>>>>>image', e, e.target);
     const image = e.target;
     image.src = noImg;
-    image.style.height = '225px';
-    image.style.width = '100%';
+    image.style.height = '109px';
+    image.style.width = '94px';
+    image.style.marginTop = '58px';
     image.onerror = null;
   };
 
@@ -197,17 +198,21 @@ class ImportFace extends Component {
   submit= () => {
     // 导入人脸的最后一步 提交
     console.log('>>>>>>submit');
-    this.props.history.go(-1);
+    const { saveUploadList } = this.props;
+    saveUploadList().then((res) => {
+      this.props.history.go(-1);
+    });
   }
 
   render() {
+    const that = this;
     const {
-      stepCurrent, type, uploadStatus, faceData, total, pageNum, pageSize, repeatModalVisible, repeatNum
+      uploadZipUrl, stepCurrent, label, uploadStatus, faceData, total, pageNum, pageSize, repeatModalVisible, repeatNum
     } = this.state;
     const props = {
       name: 'file',
       multiple: false,
-      action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+      action: uploadZipUrl,
       beforeUpload: file => new Promise((resolve, reject) => {
         const isZip = file.type === 'application/zip';
         if (!isZip) {
@@ -224,18 +229,18 @@ class ImportFace extends Component {
         return reject(false);
       }),
       onChange(info) {
-        console.log('>>>>>上传zip压缩包的信息', info.file);
+        console.log('>>>>>上传zip压缩包的信息', that, info.file);
         const { status } = info.file;
         if (status !== 'uploading') {
           console.log(info.file, info.fileList);
         }
         if (status === 'done') {
-          this.setState({
+          that.setState({
             uploadStatus: 'done',
           });
-          message.success(`${info.file.name} file uploaded successfully.`);
+        //   message.success(`${info.file.name} file uploaded successfully.`);
         } else if (status === 'error') {
-          message.error(`${info.file.name} file upload failed.`);
+          message.error(`${info.file.name}上传失败！`);
         }
       },
     };
@@ -254,14 +259,14 @@ class ImportFace extends Component {
               <div className={styles.selectContainer}>
                 <div className={styles.selectType}>
                   <span className={styles.selectLabel}>选择图片标签类型：</span>
-                  <Select value={type} onChange={this.selectType}>
-                    <Option value={1}>白名单</Option>
-                    <Option value={2}>黑名单</Option>
+                  <Select value={label} onChange={this.selectType}>
+                    <Option value={0}>白名单</Option>
+                    <Option value={1}>黑名单</Option>
                   </Select>
                 </div>
 
                 <div className={styles.nextStep}>
-                  {type
+                  {label === 0 || label === 1
                     ? (
                       <div className={styles.btn}>
                         <Button type="primary" onClick={() => this.setState({ stepCurrent: stepCurrent + 1 })}>下一步</Button>
@@ -296,10 +301,10 @@ class ImportFace extends Component {
                         </p>
                       </Dragger>
                       <div className={styles.nextStep}>
-                        {/* {uploadStatus === 'done' && !repeatModalVisible
+                        {uploadStatus === 'done' && !repeatModalVisible
                           ? (
                             <div className={styles.btn}>
-                              <Button type="primary" onClick={() => this.setState({ stepCurrent: stepCurrent + 1 })}>下一步</Button>
+                              <Button type="primary" onClick={this.submitLabel}>下一步</Button>
                               <Button type="button" onClick={() => this.setState({ stepCurrent: stepCurrent - 1 })}>上一步</Button>
                             </div>
                           ) : (
@@ -307,12 +312,11 @@ class ImportFace extends Component {
                               <Button type="primary" disabled>下一步</Button>
                               <Button type="button" onClick={() => this.setState({ stepCurrent: stepCurrent - 1 })}>上一步</Button>
                             </div>
-                          )} */}
-                        <div className={styles.btn}>
-                          {/* <Button type="primary" onClick={() => { this.setState({ stepCurrent: stepCurrent + 1 }); this.getTableList(); }}>下一步</Button> */}
+                          )}
+                        {/* <div className={styles.btn}>
                           <Button type="primary" onClick={() => this.getTableList()}>下一步</Button>
                           <Button type="button" onClick={() => this.setState({ stepCurrent: stepCurrent - 1 })}>上一步</Button>
-                        </div>
+                        </div> */}
                       </div>
 
                     </div>
@@ -336,13 +340,13 @@ class ImportFace extends Component {
                             <Card bordered={false}>
                               <div className={styles.cardContanier}>
                                 <div className={styles.imgContainer}>
-                                  <img src={item.image} onError={e => this.handleImageError(e)} alt="" />
+                                  <img src={`${urlPrefix}/face/displayupimage/${item.temporaryId}`} onError={e => this.handleImageError(e)} alt="" />
                                 </div>
                                 <div className={styles.footerContanier}>
                                   <div className={styles.info}>
-                                    <div title={item.name} className={styles.name}>{item.name}</div>
+                                    <div title={item.name} className={styles.name}>{item.name.split('.')[0]}</div>
                                     {
-                                      item.nameList === 1 ? <div className={styles.tagContainer}><Tag color="green">白名单</Tag></div> : <div className={styles.tagContainer}><Tag color="red">黑名单</Tag></div>
+                                      item.labelCode === 0 ? <div className={styles.tagContainer}><Tag color="green">白名单</Tag></div> : <div className={styles.tagContainer}><Tag color="red">黑名单</Tag></div>
                                     }
                                   </div>
                                 </div>

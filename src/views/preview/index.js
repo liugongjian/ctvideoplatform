@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
 import {
-  getAreaList
+  getAreaList, getHistoryListTopTen
 } from 'Redux/reducer/preview';
 
 import { getAlgorithmList } from 'Redux/reducer/monitor';
@@ -22,7 +22,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   {
     push,
     getAreaList,
-    getAlgorithmList
+    getAlgorithmList,
+    getHistoryListTopTen
   },
   dispatch
 );
@@ -89,6 +90,17 @@ class Preview extends PureComponent {
 
     doubleClickHandle = (e, val) => {
       console.log('曲线救国思密达----->', val);
+      this.getHistory(val.id);
+    }
+
+    getHistory=(id) => {
+      const { getHistoryListTopTen } = this.props;
+      const param = {
+        pageSize: 10,
+        pageNo: 0,
+        deviceId: id
+      };
+      getHistoryListTopTen(param).then(res => console.log('res', res));
     }
 
     renderTreeNodes = data => data.map((item, index) => {
@@ -105,7 +117,7 @@ class Preview extends PureComponent {
       const getIcon = (val) => {
         if (val.type === 1) {
           return (
-            <EIcon type="myicon-monitorIcon" />
+            <EIcon type={val.online ? `${styles.monitorOnline} myicon-monitorIcon` : `${styles.monitorOffline} myicon-monitorIcon`} />
           );
         }
         return (<Icon type="folder" />);
@@ -156,7 +168,6 @@ class Preview extends PureComponent {
     }
 
     algorithmChangeHandle = (val) => {
-      console.log('val', val);
       this.setState({
         algorithmIds: val
       }, () => {
@@ -189,6 +200,7 @@ class Preview extends PureComponent {
         <div className={styles.content}>
           <div className={styles.areaBox}>
             <div className={styles.searchBox}>
+              <h2>监控点</h2>
               <Search placeholder="请输入点位或区域" onSearch={this.searchByKeyword} />
               <Select
                 defaultValue={[]}
@@ -221,6 +233,11 @@ class Preview extends PureComponent {
             </div>
           </div>
           <div className={styles.videoBox}>
+            <div className={styles.videoHandle}>
+              <EIcon type="myicon-monitoring" />
+              <div>监控点位</div>
+              <EIcon type="myicon-cancel" />
+            </div>
             <VideoPlayer src="http://ivi.bupt.edu.cn/hls/cctv3hd.m3u8" />
           </div>
           <div className={styles.historyList}>
@@ -229,7 +246,6 @@ class Preview extends PureComponent {
                 实时告警记录
                 <a>历史记录</a>
               </p>
-
             </div>
             <div className={styles.historyCard}>
               <Card

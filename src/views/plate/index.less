@@ -1,0 +1,196 @@
+.mainWrapper{
+  background: #fff;
+  padding: 20px;
+  position: relative;
+  .ant-table-thead {
+    tr {
+      th {
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
+        color: #333333;
+        line-height: 18px;
+      }
+    }
+  }
+}
+
+
+
+.searchContainer {
+  height: 50px;
+  margin-bottom: 5px;
+  img{
+    margin-top: 5px;
+    margin-right: 10px;
+    height: 25px;
+  }
+  .searchInput{
+    display: inline-block;
+    float: right;
+    width: 250px;
+    height: 40px;
+  }
+  .addBtn{
+    width: 128px;
+    height: 36px;
+    border-radius: 2px;
+    span{
+      font-family: MicrosoftYaHei;
+      font-size: 14px;
+      color: #FFFFFF;
+
+    }
+  }
+
+  .deleteBtn{
+    margin-left: 20px;
+    font-size: 14px;
+  }
+  .deleteBtnDisabled,
+  .deleteBtnDisabled:link,
+  .deleteBtnDisabled:hover,
+  .deleteBtnDisabled:visited,
+  .deleteBtnDisabled:active{
+    margin-left: 20px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #999;
+  }
+
+  .deletePic{
+    margin-top: -2px;
+    margin-right: 8px;
+    width: 15px;
+    height: 15px;
+  }
+}
+
+.oprationWrapper{
+  img{
+    margin-left: 8px;
+    height: 30px;
+    width: 30px;
+  }
+}
+
+.paginationWrapper{
+  &>*{
+    display: inline-block;
+  }
+  &>div{
+    margin-top: 10px;
+    float: right;
+    font-family: HelveticaNeue;
+    font-size: 12px;
+  }
+  &>span{
+    margin-top: 15px;
+    font-family: PingFangSC-Regular;
+    font-size: 12px;
+    color: #666666;
+    text-align: left;
+    line-height: 18px;
+  }
+}
+tr.ant-table-row{
+  font-family: MicrosoftYaHei;
+  font-size: 14px;
+  color: #333333;
+}
+
+.ant-table-thead .ant-table-column-title{
+  font-family: PingFangSC-Semibold;
+  font-size: 14px;
+  color: #666666;
+}
+
+.separator{
+  color: #E9E9E9;
+}
+
+.deleteModal{
+  width: 565px;
+  height: 280px;
+  &>div{
+    margin-top: 43px;
+  }
+  .deleteModalImg{
+    display: inline-block;
+    float: left;
+    margin-left: 20px;
+    &>img{
+      margin-top: 10px;
+      width: 32px;
+      height: 27px;
+    }
+
+  }
+  .deleteModalInfo{
+    display: inline-block;
+    // float: right;
+    margin-left: 30px;
+    &>span{
+      display: block;
+      font-family: MicrosoftYaHei;
+      font-size: 14px;
+      color: #333333;
+      text-align: left;
+      font-weight: bold;
+      margin-bottom: 21px;
+    }
+    &>p{
+      font-family: MicrosoftYaHei;
+      font-size: 12px;
+      color: #999999;
+      margin-bottom: 11px;
+    }
+  }
+}
+
+.LicenseImport{
+  &-formWrapper{
+      :global{
+          .ant-form{
+              .ant-form-item{
+                  margin-bottom: 12px;
+              }
+              & > .ant-form-item > .ant-form-item-label{
+                  width: 100px;
+                  vertical-align: top;
+              }
+              &>.ant-form-item>.ant-form-item-control-wrapper{
+                  width: calc(100% - 180px); 
+                  display: inline-block;
+              }
+          }
+      }
+      .licenseSplit{
+          display: inline-block;
+          width:8px;
+      }
+      .licenseSel{
+          display: inline-block;
+          width: 80px;
+          :global{
+              .ant-form-explain{
+                  width: 150px;
+              }
+          }
+      }
+      .licenseInput{
+          display: inline-block;
+          width: calc(100% - 88px);
+      }
+      .addItemRequiredIcon{
+          label::before {
+              display: inline-block;
+              margin-right: 4px;
+              color: #FF8836;
+              font-size: 14px;
+              font-family: SimSun, sans-serif;
+              line-height: 1;
+              content: '*';
+          }
+      }
+  }
+}
