@@ -14,8 +14,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
+import EIcon from 'Components/Icon';
 import {
-  getSummary, getMonitorMetric, getAlgoList, getDeviceTree
+  getAlgoList, getDeviceTree
 } from 'Redux/reducer/alarms';
 import AlarmCard from './alarmCard';
 
@@ -174,6 +175,16 @@ class Alarms extends Component {
     const map = {};
     copy.forEach((item) => {
       item.label = item.name;
+      // if (item.type == 0) {
+      //   item.label = item.name;
+      // } else {
+      //   item.label = (
+      //     <span>
+      //       <EIcon type="myicon-monitorIcon" />
+      //       {item.name}
+      //     </span>
+      //   );
+      // }
       item.value = item.id;
       map[item.id] = item;
     });

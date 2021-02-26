@@ -90,3 +90,25 @@ export function getDeviceTree() {
     })
   };
 }
+export function importLicense(postData) {
+  return {
+    type: DO_NOTHING,
+    promise: apiClient => apiClient.post(`${urlPrefix}/license/add`, {
+      data: postData
+    })
+  };
+}
+
+export function isLicenseExist(licenseNo) {
+  return {
+    type: DO_NOTHING,
+    promise: apiClient => apiClient.get(`${urlPrefix}/license/exist?license=${licenseNo}`)
+  };
+}
+
+export function getAlarmList() {
+  return {
+    type: DO_NOTHING,
+    promise: apiClient => apiClient.get(`${urlPrefix}/task/result/query`)
+  };
+}

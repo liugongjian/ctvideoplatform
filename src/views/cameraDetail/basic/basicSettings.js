@@ -126,7 +126,7 @@ class BasicSetting extends Component {
       <div className={styles.basicSetting}>
         <Spin spinning={areaListLoading || basicConfigLoading}>
           <Form onSubmit={this.handleSubmit} className={styles.basicSettingForm}>
-            <Form.Item label="摄像头名称">
+            <Form.Item label="摄像头名称" className={styles.addItemRequiredIcon}>
               {getFieldDecorator('name', {
                 rules: [
                   // {
