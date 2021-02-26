@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import React, { Component } from 'react';
 import {
   Select,
@@ -43,93 +44,93 @@ class Alarms extends Component {
       listData: [
         {
           id: 1,
-          name: '安全帽识别',
-          rule: '',
-          detail: 'blabla',
-          time: '2021/02/30 01:30:30'
+          AlgorithmName: '安全帽识别',
+          controlRule: 'testtesttest',
+          details: 'blablablablablablablablablablablablablablablablablablablabla',
+          resTime: '2021/02/30 01:30:30',
+          algorithmId: '111',
+          imageCompress: '...',
+          deviceArea: '区域1/区域2/区域3/区域4/摄像头某某某某某某某某'
         },
         {
           id: 2,
-          name: '移动侦测2',
-          rule: '',
-          detail: 'blabla',
-
+          AlgorithmName: '移动侦测',
+          controlRule: '',
+          details: 'blabla',
+          deviceArea: '区域NNN/区域1/区域2/区域3/区域4/摄像头某某某某某某某某'
         },
         {
           id: 3,
-          name: '移动侦测3',
-          rule: '',
-          detail: 'blabla',
+          AlgorithmName: '电子围栏',
+          controlRule: '',
+          details: 'blabla',
 
         },
         {
           id: 4,
-          name: '移动侦测4',
-          rule: '',
-          detail: 'blabla',
+          AlgorithmName: '人员布控',
+          controlRule: '',
+          details: 'blabla',
 
         },
         {
           id: 5,
-          name: '移动侦测5',
-          rule: '',
-          detail: 'blabla',
-
+          AlgorithmName: '电子围栏',
+          controlRule: '',
+          details: 'blabla',
         },
         {
           id: 6,
-          name: '移动侦测5',
-          rule: '',
-          detail: 'blabla',
-
+          AlgorithmName: '电子围栏',
+          controlRule: '',
+          details: 'blabla',
         },
         {
           id: 7,
-          name: '移动侦测5',
-          rule: '',
-          detail: 'blabla',
-
+          AlgorithmName: '车辆布控',
+          controlRule: '',
+          details: 'blabla',
         },
         {
           id: 8,
-          name: '移动侦测5',
-          rule: '',
-          detail: 'blabla',
+          AlgorithmName: '移动侦测5',
+          controlRule: '',
+          details: 'blabla',
 
         },
         {
           id: 9,
-          name: '移动侦测5',
-          rule: '',
-          detail: 'blabla',
+          AlgorithmName: '车辆布控',
+          controlRule: '',
+          details: 'blabla',
 
         },
         {
           id: 10,
-          name: '移动侦测5',
-          rule: '',
-          detail: 'blabla',
+          AlgorithmName: '车辆布控',
+          controlRule: '',
+          details: 'blabla',
 
         },
         {
           id: 11,
-          name: '移动侦测5',
-          rule: '',
-          detail: 'blabla',
+          AlgorithmName: '人员布控',
+          controlRule: '',
+          details: 'blabla',
 
         },
         {
           id: 12,
-          name: '移动侦测5',
-          rule: '',
-          detail: 'blabla',
+          AlgorithmName: '电子围栏',
+          controlRule: '',
+          details: 'blabla',
 
         },
         {
           id: 13,
-          name: '移动侦测5',
-          rule: '',
-          detail: 'blabla',
+          AlgorithmName: '口罩检测',
+          controlRule: '',
+          details: 'blabla',
 
         },
       ]
@@ -273,6 +274,7 @@ class Alarms extends Component {
           </div>
           <div className={styles['alarms-paginationWrapper']}>
             <Pagination
+              // size="small"
               total={50}
               showSizeChanger
               showQuickJumper

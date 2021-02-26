@@ -21,7 +21,6 @@ import TestJpg from './test.jpg';
 // import {
 //   getSummary, getMonitorMetric,
 // } from 'Redux/reducer/dashboard';
-
 import styles from './index.less';
 
 // const { Option } = Select;
@@ -114,7 +113,7 @@ class AlarmCard extends Component {
       delVisible,
     } = this.state;
     const {
-      name, rule, detail, area, time
+      AlgorithmName, controlRule, details, resTime, deviceArea
     } = data;
     const type = 'car';
     const hasDetail = Math.random() > 0.5;
@@ -143,8 +142,8 @@ class AlarmCard extends Component {
            <img src={getImgUrl('carPersonCheck')}
           alt="icon" className={styles['AlarmCard-title-icon']} />
         &nbsp; */}
-          <span className={styles['AlarmCard-title-name']}>{name || ''}</span>
-          <span className={styles['AlarmCard-title-time']}>{time || ''}</span>
+          <span className={styles['AlarmCard-title-name']}>{AlgorithmName || ''}</span>
+          <span className={styles['AlarmCard-title-time']}>{resTime || ''}</span>
         </div>
         <div className={styles['AlarmCard-imgWrapper']} onClick={this.showImgDialog}>
           <img
@@ -155,7 +154,7 @@ class AlarmCard extends Component {
         <div className={styles['AlarmCard-contentWrapper']}>
           <div>
             布控规则：
-            {rule}
+            <span title={controlRule}>{controlRule}</span>
           </div>
           {
             hasDetail ? (
@@ -170,13 +169,13 @@ class AlarmCard extends Component {
             ) : (
               <div>
                 告警详情：
-                {detail}
+                <span title={details}>{details}</span>
               </div>
             )
           }
           <div>
             设备区域：
-            {area}
+            <span title={deviceArea}>{deviceArea}</span>
           </div>
         </div>
         <div className={styles['AlarmCard-operatorWrapper']}>

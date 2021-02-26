@@ -7,6 +7,7 @@ import {
   Radio,
   Input,
 } from 'antd';
+import { LicenseProvinces } from './constants';
 import styles from './index.less';
 
 class LicenseImportModalComp extends Component {
@@ -76,7 +77,11 @@ class LicenseImportModalComp extends Component {
                     onSelect={() => { form.validateFields(['licenseNo']); }}
                     placeholder="-"
                   >
-                    <Select.Option value="浙">浙</Select.Option>
+                    {
+                      LicenseProvinces.map(item => (
+                        <Select.Option value={item}>{item}</Select.Option>
+                      ))
+                    }
                   </Select>
                 )}
               </Form.Item>
