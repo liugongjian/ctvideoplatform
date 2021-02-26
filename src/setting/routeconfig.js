@@ -52,6 +52,8 @@ import Preview from 'Views/preview';
 import Role from 'Views/role';
 import RoleEdit from 'Views/role/roleedit';
 import RoleAdd from 'Views/role/roleadd';
+import Plate from 'Views/plate';
+import AddPlate from 'Views/plate/add';
 import CameraDetail from 'Views/cameraDetail';
 import Account from 'Views/system/user';
 import AddAccount from 'Views/system/user/addUser';
@@ -198,8 +200,15 @@ const menuRoutes = [
       },
       {
         path: '/carLicense',
-        exact: true,
-        component: DefaultPage,
+        exact:true,
+        component: Plate,
+        children: [
+          {
+            path: '/import',
+            pageTitle: '车牌导入',
+            component: AddPlate,
+          },
+        ]
       },
     ]
   },
