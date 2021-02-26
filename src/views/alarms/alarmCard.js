@@ -4,11 +4,17 @@ import React, { Component } from 'react';
 import {
   Select,
   Result,
+  Modal
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import EIcon from 'Components/Icon';
 import { connect } from 'react-redux';
 import { random } from 'lodash';
+import {
+  LicenseImportModal,
+  DeleteModal,
+  ImageModal,
+} from './Modals';
 import TestJpg from './test.jpg';
 // import { push } from 'react-router-redux';
 // import PropTypes from 'prop-types';
@@ -63,6 +69,7 @@ class AlarmCard extends Component {
     this.state = {
       importDialogVisible: false,
       imgDialogVisible: false,
+      delVisible: false,
     };
   }
 
@@ -73,12 +80,39 @@ class AlarmCard extends Component {
     this.setState({ importDialogVisible: true });
   };
 
+  handleImport = () => {}
+
+  closeImportDialog = () => {
+    this.setState({ importDialogVisible: false });
+  };
+
+  showDelDialog = () => {
+    this.setState({ delVisible: true });
+  };
+
+  handleDelete = () => {
+    // 1.删除操作 2.刷新列表（外部传入？emit？
+  }
+
+  closeDelDialog = () => {
+    this.setState({ delVisible: false });
+  };
+
   showImgDialog = () => {
     this.setState({ imgDialogVisible: true });
   };
 
+  closeImgDialog = () => {
+    this.setState({ imgDialogVisible: false });
+  };
+
   render() {
     const { data, onDelete } = this.props;
+    const {
+      importDialogVisible,
+      imgDialogVisible,
+      delVisible,
+    } = this.state;
     const {
       name, rule, detail, area, time
     } = data;
@@ -87,6 +121,22 @@ class AlarmCard extends Component {
     const hasImport = Math.random() > 0.5;
     return (
       <div className={styles.AlarmCard}>
+        <LicenseImportModal
+          visible={importDialogVisible}
+          handleImport={this.handleImport}
+          closeModal={this.closeImportDialog}
+          initailVal={{}}
+        />
+        <DeleteModal
+          visible={delVisible}
+          onOk={this.handleDelete}
+          closeModal={this.closeDelDialog}
+        />
+        <ImageModal
+          visible={imgDialogVisible}
+          closeModal={this.closeImgDialog}
+          src={TestJpg}
+        />
         <div className={styles['AlarmCard-title']}>
           {/*
           // 头部空间不足 先删除icon
@@ -138,7 +188,7 @@ class AlarmCard extends Component {
               </React.Fragment>
             ) : null
           }
-          <a><EIcon type="myicon-delete" /></a>
+          <a onClick={this.showDelDialog}><EIcon type="myicon-delete" /></a>
         </div>
       </div>
     );
@@ -150,13 +200,3 @@ class AlarmCard extends Component {
 // };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AlarmCard);
-
-/**
- * props
- * @param {*} data
- * @param {*} onDelete
- */
-// const AlarmCard = ({ data, onDelete }) => {
-// };
-
-// export default AlarmCard;

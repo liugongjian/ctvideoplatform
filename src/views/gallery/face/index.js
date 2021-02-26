@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-// import PropTypes from 'prop-types';
 import {
   getFaceList, addFace, editFace, delFace
 } from 'Redux/reducer/face';
@@ -14,6 +13,7 @@ import {
   LoadingOutlined, PlusOutlined, ImportOutlined, SearchOutlined
 } from '@ant-design/icons';
 import noImg from '@/assets/bg.png';
+import { urlPrefix } from '../../../constants/Dictionary';
 
 import styles from './index.less';
 
@@ -29,6 +29,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 
 class Face extends Component {
     state = {
+      uploadUrl: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+      // uploadUrl: `${urlPrefix}/role/list/`,
       modalVisible: false,
       modalStatus: 'add',
       textMap: {
@@ -37,6 +39,7 @@ class Face extends Component {
       },
       delModalVisible: false,
       selectedRowKeys: [],
+      repeatModalVisible: false,
       total: 4,
       pageSize: 10,
       pageNum: 1,
@@ -118,7 +121,84 @@ class Face extends Component {
           nameList: 1,
           updateTime: '2021-01-20T17:34:24.000+0800',
           isChecked: false,
-        }
+        },
+        // {
+        //   aid: 416099,
+        //   createTimeime: '2021-01-20T17:26:57.000+0800',
+        //   enable: 'y',
+        //   id: 3299604200531968,
+        //   image: 'http://192.168.10.146:8666/images/uid/573ad394c1e4408696223d5d7982ce11',
+        //   name: 'lizhiyonglizhiyonglizhiyonglizhiyong',
+        //   nameList: 1,
+        //   updateTime: '2021-01-20T17:26:58.000+0800',
+        //   isChecked: false,
+        // },
+        // {
+        //   aid: 532611,
+        //   createTimeime: '2021-01-20T17:34:24.000+0800',
+        //   enable: 'y',
+        //   id: 3299605114097664,
+        //   image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
+        //   name: 'lxp',
+        //   nameList: 2,
+        //   updateTime: '2021-01-20T17:34:24.000+0800',
+        //   isChecked: false,
+        // },
+        // {
+        //   aid: 532612,
+        //   createTimeime: '2021-01-20T17:34:24.000+0800',
+        //   enable: 'y',
+        //   id: 3299605114097665,
+        //   image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
+        //   name: 'llll',
+        //   nameList: 2,
+        //   updateTime: '2021-01-20T17:34:24.000+0800',
+        //   isChecked: false,
+        // },
+        // {
+        //   aid: 532613,
+        //   createTimeime: '2021-01-20T17:34:24.000+0800',
+        //   enable: 'y',
+        //   id: 3299605114097666,
+        //   image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
+        //   name: 'hhhh',
+        //   nameList: 2,
+        //   updateTime: '2021-01-20T17:34:24.000+0800',
+        //   isChecked: false,
+        // },
+        // {
+        //   aid: 532614,
+        //   createTimeime: '2021-01-20T17:34:24.000+0800',
+        //   enable: 'y',
+        //   id: 3299605114097667,
+        //   image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
+        //   name: 'lxp',
+        //   nameList: 1,
+        //   updateTime: '2021-01-20T17:34:24.000+0800',
+        //   isChecked: false,
+        // },
+        // {
+        //   aid: 532615,
+        //   createTimeime: '2021-01-20T17:34:24.000+0800',
+        //   enable: 'y',
+        //   id: 3299605114097668,
+        //   image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
+        //   name: 'lxpffff',
+        //   nameList: 1,
+        //   updateTime: '2021-01-20T17:34:24.000+0800',
+        //   isChecked: false,
+        // },
+        // {
+        //   aid: 532616,
+        //   createTimeime: '2021-01-20T17:34:24.000+0800',
+        //   enable: 'y',
+        //   id: 3299605114097669,
+        //   image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
+        //   name: 'lxpffffjjj',
+        //   nameList: 1,
+        //   updateTime: '2021-01-20T17:34:24.000+0800',
+        //   isChecked: false,
+        // }
       ],
       name: '',
       imageLoading: false,
@@ -145,9 +225,14 @@ class Face extends Component {
       });
       console.log('data', data);
       // 这里要给list 加一个checkbox 显示与否的 flag
-    //   getFaceList(data).then((res) => {
+      // getFaceList(data).then((res) => {
+      // let faceDataTemp = [];
+      // faceDataTemp = res.list && res.list.map((item) => {
+      //   item.isChecked = false;
+      //   return item;
+      // });
     //     this.setState({
-    //       faceData: res.list,
+    //       faceData: faceDataTemp,
     //       total: res.recordsTotal,
     //       pageNum: res.pageNo + 1,
     //       pageSize: res.pageSize,
@@ -178,21 +263,31 @@ class Face extends Component {
     };
 
     // 提交添加人脸数据的表单
-    addFace = (e) => {
+    addFace = (isReplaced) => {
       const { addFace } = this.props;
       this.props.form.validateFields((errors, values) => {
         if (!errors) {
-          addFace(values).then(
-            (res) => {
-              message.success('新增人脸数据成功');
-              this.setState({
-                addModalVisible: false
-              });
-              this.getTableList();
-            }
-          ).catch((err) => {
-            // message.warning('添加账户失败')
-          });
+          console.log('>>>>add values', values);
+          // const data = Object.assign({ isReplaced }, values);
+          // addFace(data).then(
+          // (res) => {
+          // 没有重复数据 则执行以后代码 todo
+          // if
+          // message.success('新增人脸数据成功');
+          // this.setState({
+          //   modalVisible: false
+          // });
+          // this.getTableList();
+          // 有重复数据 执行以下代码 todo
+          // if
+          // this.setState({
+          //   repeatModalVisible: true,
+          //   modalVisible: false,
+          // });
+          //   }
+          // ).catch((err) => {
+          //   // message.warning('添加账户失败')
+          // });
         }
       });
     };
@@ -272,6 +367,29 @@ class Face extends Component {
       });
     };
 
+    replaceFace = () => {
+      const { replaceFace } = this.props;
+      // const data = {
+      //   isReplaced: true,
+      // };
+      // replaceFace(data).then((res) => {
+      //   // message.success('新增人脸数据成功');
+      //   // this.setState({
+      //   //   modalVisible: false
+      //   // });
+      //   // this.getTableList();
+      // });
+      const isReplaced = true;
+      this.addFace(isReplaced);
+    };
+
+    handleReplaceCancel = () => {
+      const isReplaced = false;
+      this.setState({
+        repeatModalVisible: false
+      }, () => this.addFace(isReplaced));
+    };
+
     beforeUpload = (file) => {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
       if (!isJpgOrPng) {
@@ -300,7 +418,7 @@ class Face extends Component {
 
     renderTableHeaders = () => {
       const {
-        name, selectedRowKeys, total, pageSize, pageNum, loading, faceData
+        name, selectedRowKeys,
       } = this.state;
       return (
         <div className={styles.listHeader}>
@@ -399,7 +517,7 @@ class Face extends Component {
 
     renderTable = () => {
       const {
-        faceData, modalVisible, textMap, modalStatus, imageLoading, imageUrl, delModalVisible, selectedRowKeys, delName, delIds, total, pageNum, pageSize
+        uploadUrl, faceData, modalVisible, textMap, modalStatus, imageLoading, imageUrl, delModalVisible, selectedRowKeys, delName, delIds, total, pageNum, pageSize, repeatModalVisible
       } = this.state;
       const delIdsLength = delIds.length;
       const {
@@ -425,7 +543,7 @@ class Face extends Component {
               md: 4,
               lg: 4,
               xl: 6,
-              xxl: 3,
+              xxl: 8,
             }}
             dataSource={faceData}
             pagination={false}
@@ -514,7 +632,7 @@ class Face extends Component {
                     name="pic"
                     listType="picture-card"
                     showUploadList={false}
-                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    action={uploadUrl}
                     beforeUpload={this.beforeUpload}
                     onChange={this.handleChange}
                   >
@@ -523,7 +641,7 @@ class Face extends Component {
                 )
                 }
               </FormItem>
-              <FormItem label="标签" {...formItemLayout}>
+              <FormItem label="布控标签" {...formItemLayout}>
                 {getFieldDecorator('tag', {
                   rules: [
                     { required: true, message: '请选择一个标签' }
@@ -559,6 +677,26 @@ class Face extends Component {
               <div>{`您确定要删除${selectedRowKeys.length > 0 ? `这${delIdsLength}个人脸数据吗？` : `${delName}的人脸数据吗？`}`}</div>
             </div>
           </Modal>
+
+          <Modal
+            visible={repeatModalVisible}
+            className={styles.repeatModal}
+            width="400px"
+            closable={false}
+            footer={[
+              <Button key="submit" type="primary" onClick={this.replaceFace}>
+                确定
+              </Button>,
+              <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleReplaceCancel}>
+                取消
+              </Button>,
+            ]}
+          >
+            <div>
+              <Icon type="warning" />
+              <div>您添加的人脸数据已存在，是否要覆盖？</div>
+            </div>
+          </Modal>
         </div>
       );
     };
@@ -574,8 +712,5 @@ class Face extends Component {
     }
 }
 
-// Face.propTypes = {
-//   face: PropTypes.object.isRequired
-// };
 
 export default Form.create()(connect(mapStateToProps, mapDispatchToProps)(Face));
