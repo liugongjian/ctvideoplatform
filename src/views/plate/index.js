@@ -6,8 +6,8 @@ import {Link} from 'react-router-dom'
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-
-import { getPlateList } from '@/redux/reducer/plate'
+import { LicenseProvinces } from './constants';
+import { getPlateList , addPlate , deletePlates } from '@/redux/reducer/plate'
 
 import searchPic from '@/assets/role/search.png'
 import warnPic from '@/assets/role/warn.png'
@@ -21,7 +21,7 @@ const { Search } = Input;
 
 const mapStateToProps = state => ({ plate : state.plate });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  { getPlateList },
+  { getPlateList , addPlate , deletePlates},
   dispatch
 );
 
@@ -38,6 +38,7 @@ class Plate extends Component {
     isDeleting : false,
     deleteItems : [],
     plateModalVisible : false, 
+    modalPlateInfo:{},
   };
 
   onSelectChange = selectedRowKeys => {
@@ -45,52 +46,72 @@ class Plate extends Component {
     this.setState({ selectedRowKeys , deleteItems:selectedRowKeys });
   };
 
-  // onDeleteItems = () => {
-  //   this.setState({deleteModalVisible:false , isDeleting : false });
-  //   this.props.deleteRoles({
-  //     roleIdlist : this.state.deleteItems,
-  //   }).then((data) => {
-  //     this.setState({deleteItems:[] , selectedRowKeys:[]})
-  //     if (data) {
-  //       message.success('删除成功');
-  //     }
-  //     this.onPageNumChange(this.state.roleListInfo.pageNo + 1);
-  //   }).catch(err => {
-  //     message.error('删除失败');
-  //     this.setState({deleteModalVisible:false , isDeleting : false});
-  //   });
-  // };
+  onSubmitModal = ()=>{
+    const { getFieldValue } = this.props.form;
+    const licenseProvince = getFieldValue('licenseProvince');
+    const licenseNo = getFieldValue('licenseNo');
+    const label = getFieldValue('label');
+    const color = getFieldValue('color');
+    const licenseInfo = { licenseNo : licenseProvince + licenseNo , label , color};
+    this.props.addPlate(licenseInfo).then((data)=>{
+      console.log('data',data)
+      if(data){
+        message.success('添加成功');
+        this.setState({plateModalVisible:false});
+        this.props.getPlateList({
+          pageNo : this.state.plateListInfo.pageNo,
+          pageSize : this.state.plateListInfo.pageSize
+        }).then((data)=>{
+          this.setState({plateListInfo:data})
+        })
+      }
+    });
+  }
 
-  // searchRole = () => {
-  //   // console.log(this.state.searchName)
-  //   this.props.getRoleList({
-  //     name : this.state.searchName,
-  //     pageNo : 0,
-  //     pageSize : this.state.roleListInfo.pageSize
-  //   }).then((data)=>{
-  //     // console.log(data);
-  //     this.setState({roleListInfo : data})
-  //   })
-  // }
+  onDeleteItems = () => {
+    this.setState({deleteModalVisible:false , isDeleting : false });
+    this.props.deletePlates({ ids : this.state.deleteItems,}).then((data) => {
+      this.setState({deleteItems:[] , selectedRowKeys:[]})
+      if (data) {
+        message.success('删除成功');
+      }
+      this.onPageNumChange(this.state.plateListInfo.pageNo + 1);
+    }).catch(err => {
+      message.error('删除失败');
+      this.setState({deleteModalVisible:false , isDeleting : false});
+    });
+  };
 
-  // onPageNumChange = (pageNo) => {
-  //   this.props.getRoleList({
-  //     pageNo : pageNo-1,
-  //     pageSize : this.state.roleListInfo.pageSize
-  //   }).then((data)=>{
-  //     this.setState({roleListInfo : data})
-  //   })
-  // }
+  searchPlate = () => {
+    // console.log(this.state.searchName)
+    this.props.getPlateList({
+      licenseNo : this.state.searchName,
+      pageNo : 0,
+      pageSize : this.state.plateListInfo.pageSize
+    }).then((data)=>{
+      // console.log(data);
+      this.setState({plateListInfo : data})
+    })
+  }
 
-  // onPageSizeChange = (current , size) => {
-  //   this.props.getRoleList({
-  //     pageNo : 0,
-  //     pageSize : size
-  //   }).then((data)=>{
-  //     // console.log(data);
-  //     this.setState({roleListInfo : data})
-  //   })
-  // }
+  onPageNumChange = (pageNo) => {
+    this.props.getPlateList({
+      pageNo : pageNo-1,
+      pageSize : this.state.plateListInfo.pageSize
+    }).then((data)=>{
+      this.setState({plateListInfo : data})
+    })
+  }
+
+  onPageSizeChange = (current , size) => {
+    this.props.getPlateList({
+      pageNo : 0,
+      pageSize : size
+    }).then((data)=>{
+      // console.log(data);
+      this.setState({plateListInfo : data})
+    })
+  }
 
   componentDidMount() {
     this.props.getPlateList({
@@ -136,7 +157,7 @@ class Plate extends Component {
           }
 
           <div className={styles.searchInput}>
-            <Search placeholder="请输入车牌号" icon={searchPic} onSearch={() => this.searchRole()} onChange={(e) => this.setState({searchName:e.target.value})}/>
+            <Search placeholder="请输入车牌号" icon={searchPic} onSearch={() => this.searchPlate()} onChange={(e) => this.setState({searchName:e.target.value})}/>
           </div>
         </div>
         <Table rowSelection={rowSelection} dataSource={plateListInfo.list} pagination={false} rowKey={(record) => record.id}>
@@ -186,6 +207,8 @@ class Plate extends Component {
         className={styles.LicenseImport}
         title="新增车牌数据"
         visible={this.state.plateModalVisible}
+        onOk={()=>this.onSubmitModal()}
+        onCancel={()=>this.setState({plateModalVisible:false})}
         width="500px"
         >
         <div className={styles['LicenseImport-formWrapper']}>
@@ -204,11 +227,12 @@ class Plate extends Component {
                     }
                   ],
                 })(
-                  <Select
-                    onSelect={() => { form.validateFields(['licenseNo']); }}
-                    placeholder="-"
-                  >
-                    <Select.Option value="浙">浙</Select.Option>
+                  <Select placeholder="-">
+                    {
+                      LicenseProvinces.map(item => (
+                        <Select.Option value={item}>{item}</Select.Option>
+                      ))
+                    }
                   </Select>
                 )}
               </Form.Item>
@@ -245,8 +269,8 @@ class Plate extends Component {
                 ],
               })(
                 <Radio.Group>
-                  <Radio value={1}>白名单</Radio>
-                  <Radio value={2}>黑名单</Radio>
+                  <Radio value={"WHITE"}>白名单</Radio>
+                  <Radio value={"BLACK"}>黑名单</Radio>
                 </Radio.Group>
               )}
             </Form.Item>
@@ -293,7 +317,7 @@ class Plate extends Component {
               <img src={warnPic}/>
             </div>
             <div className={styles.deleteModalInfo}>
-              <span>你确定要删除所选的{this.state.deleteItems.length}个角色吗？</span>
+              <span>你确定要删除所选的{this.state.deleteItems.length}个车牌吗？</span>
               <p>此操作将删除选中角色</p>
               <p>如果删除的角色，已有账号关联，则无法被删除！</p>
             </div>
