@@ -11,6 +11,9 @@ import EIcon from 'Components/Icon';
 import { connect } from 'react-redux';
 import { random } from 'lodash';
 import {
+  importLicense, isLicenseExist
+} from 'Redux/reducer/alarms';
+import {
   LicenseImportModal,
   DeleteModal,
   ImageModal,
@@ -54,7 +57,9 @@ const Tag = ({
 
 const mapStateToProps = state => ({ alarms: state.alarms });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  {},
+  {
+    importLicense, isLicenseExist
+  },
   dispatch
 );
 /**
@@ -79,7 +84,12 @@ class AlarmCard extends Component {
     this.setState({ importDialogVisible: true });
   };
 
-  handleImport = () => {}
+  handleImport = (data) => {
+    this.props.importLicense(data).then((res) => {
+      console.log('import', res);
+      this.closeImportDialog();
+    });
+  }
 
   closeImportDialog = () => {
     this.setState({ importDialogVisible: false });
@@ -106,7 +116,7 @@ class AlarmCard extends Component {
   };
 
   render() {
-    const { data, onDelete } = this.props;
+    const { data, onDelete, isLicenseExist } = this.props;
     const {
       importDialogVisible,
       imgDialogVisible,
@@ -124,6 +134,7 @@ class AlarmCard extends Component {
           visible={importDialogVisible}
           handleImport={this.handleImport}
           closeModal={this.closeImportDialog}
+          isLicenseExist={isLicenseExist}
           initailVal={{}}
         />
         <DeleteModal

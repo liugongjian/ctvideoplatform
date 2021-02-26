@@ -14,40 +14,53 @@ class LicenseImportModalComp extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      exist: false,
     };
   }
 
   onOk = () => {
     const {
-      closeModal, handleImport, form: { validateFields }
+      closeModal, handleImport, isLicenseExist,
+      form: { validateFields }
     } = this.props;
     validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
-        handleImport();
-        closeModal();
+        const {
+          licenseProvince, licenseNo, label, color,
+        } = values;
+        const license = `${licenseProvince}${licenseNo}`;
+        handleImport({
+          licenseNo: license,
+          label,
+          color,
+        });
       }
     });
   };
 
+  validateExist = () => {
+    const {
+      isLicenseExist, form
+    } = this.props;
+    const licenseNo = form.getFieldValue('licenseNo');
+    const licenseProvince = form.getFieldValue('licenseProvince');
+    const license = `${licenseProvince}${licenseNo}`;
+    isLicenseExist(license).then((res) => {
+      this.setState({ exist: res });
+    });
+  }
+
   render() {
     const {
-      visible, closeModal, handleImport, initailVal, form
+      visible, closeModal, handleImport, initailVal, form, isLicenseExist
     } = this.props;
     const {
       getFieldDecorator
     } = form;
-    // const formItemLayout = {
-    //   labelCol: {
-    //     xs: { span: 24 },
-    //     sm: { span: 8 },
-    //   },
-    //   wrapperCol: {
-    //     xs: { span: 24 },
-    //     sm: { span: 16 },
-    //   },
-    // };
+    const {
+      exist
+    } = this.state;
     return (
       <Modal
         className={styles.LicenseImport}
@@ -74,7 +87,10 @@ class LicenseImportModalComp extends Component {
                   ],
                 })(
                   <Select
-                    onSelect={() => { form.validateFields(['licenseNo']); }}
+                    onSelect={() => {
+                      form.validateFields(['licenseNo']);
+                      this.validateExist();
+                    }}
                     placeholder="-"
                   >
                     {
@@ -104,6 +120,7 @@ class LicenseImportModalComp extends Component {
                     }
                   ],
                 })(<Input
+                  onBlur={this.validateExist}
                   placeholder="请输入车牌号"
                 />)}
               </Form.Item>
@@ -142,6 +159,12 @@ class LicenseImportModalComp extends Component {
               )}
             </Form.Item>
           </Form>
+          { exist ? (
+            <div className={styles.existMsg}>
+              <span className={styles['existMsg-icon']}><Icon type="exclamation-circle" /></span>
+              该车牌已经在车辆库中，确认则覆盖原数据。
+            </div>
+          ) : null}
         </div>
       </Modal>
     );
