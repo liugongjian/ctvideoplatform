@@ -48,13 +48,13 @@ export function getFaceList(data) {
 }
 
 export function addFace(data) {
-//   return {
-//     type: LOAD_SUCCESS,
-//     promise: apiClient => apiClient.post(`${urlPrefix}/face/add/`,
-//       {
-//         data
-//       })
-//   };
+  return {
+    type: LOAD_SUCCESS,
+    promise: apiClient => apiClient.post(`${urlPrefix}/face/submit/`,
+      {
+        data
+      })
+  };
 }
 
 export function editFace(data) {

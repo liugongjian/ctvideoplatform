@@ -190,26 +190,29 @@ class Face extends Component {
       this.props.form.validateFields((errors, values) => {
         if (!errors) {
           console.log('>>>>add values', values);
-          // const data = Object.assign({ isReplaced }, values);
-          // addFace(data).then(
-          // (res) => {
-          // 没有重复数据 则执行以后代码 todo
-          // if
-          // message.success('新增人脸数据成功');
-          // this.setState({
-          //   modalVisible: false
-          // });
-          // this.getTableList();
-          // 有重复数据 执行以下代码 todo
-          // if
-          // this.setState({
-          //   repeatModalVisible: true,
-          //   modalVisible: false,
-          // });
-          //   }
-          // ).catch((err) => {
-          //   // message.warning('添加账户失败')
-          // });
+          delete values.imageUrl;
+          const data = Object.assign({ isReplaced }, values);
+          addFace(data).then(
+            (res) => {
+              // 没有重复数据 则执行以后代码 todo
+              // if
+              message.success('新增人脸数据成功');
+              this.setState({
+                modalVisible: false
+              }, () => {
+                this.getTableList();
+              });
+              // this.getTableList();
+              // 有重复数据 执行以下代码 todo
+              // if
+              // this.setState({
+              //   repeatModalVisible: true,
+              //   modalVisible: false,
+              // });
+            }
+          ).catch((err) => {
+            // message.warning('添加账户失败')
+          });
         }
       });
     };
@@ -226,8 +229,8 @@ class Face extends Component {
       });
       setFieldsValue({
         name: item.name,
-        imageUrl: item.image,
-        tag: item.labelCode
+        imageUrl: `${urlPrefix}/face/displayupimage/${item.photoId}`,
+        label: item.labelCode
       });
     };
 
@@ -324,27 +327,22 @@ class Face extends Component {
       return isJpgOrPng && isLt2M;
     };
 
-    // getBase64 = (img, callback) => {
-    //   const reader = new FileReader();
-    //   reader.addEventListener('load', () => callback(reader.result));
-    //   reader.readAsDataURL(img);
-    // }
 
     handleChange = (info) => {
-      console.log('>>>>>>upload file', info);
       if (info.file.status === 'uploading') {
         this.setState({ imageLoading: true });
         return;
       }
-      if (info.file.status === 'done') {
-        // this.setState({
-        //   imageUrl: `${urlPrefix}/face/displayupimage/hi6p4ljt`
-        // });
-        // this.getBase64(info.file.originFileObj, imageUrl => this.setState({
-        //   imageUrl,
-        //   imageLoading: false,
-        // }),);
+      if (info.file.status === 'done' && info.file.response.code === 0) {
+        this.setState({
+          imageUrl: `${urlPrefix}/face/displayupimage/${info.file.response.data[0].faceId}`,
+          imageLoading: false,
+        });
       }
+      if (info.file.response.code === -1) {
+        message.error(`${info.file.name}上传失败！`);
+      }
+      console.log('>>>>>>upload photo', info, info.file.response);
     };
 
     renderTableHeaders = () => {
@@ -465,43 +463,6 @@ class Face extends Component {
           <div style={{ marginTop: 8 }}>上传</div>
         </div>
       );
-      const props = {
-        listType: 'picture-card',
-        name: 'photo',
-        multiple: false,
-        showUploadList: false,
-        action: uploadUrl,
-        beforeUpload: file => new Promise((resolve, reject) => {
-          const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-          if (!isJpgOrPng) {
-            message.error('请上传.jpg/.png格式的图片！');
-          }
-          const isLt20M = file.size / 1024 / 1024 < 20;
-          if (!isLt20M) {
-            message.error('图片大小不得超过20MB!');
-          }
-          if (isJpgOrPng && isLt20M) {
-            return resolve(true);
-          }
-          // eslint-disable-next-line prefer-promise-reject-errors
-          return reject(false);
-        }),
-        onChange(info) {
-          console.log('>>>>>图片的信息', info.file);
-          const { status } = info.file;
-          if (status !== 'uploading') {
-            console.log(info.file, info.fileList);
-          }
-          if (status === 'done') {
-            // that.setState({
-            //   uploadStatus: 'done',
-            // });
-          //   message.success(`${info.file.name} file uploaded successfully.`);
-          } else if (status === 'error') {
-            message.error(`${info.file.name}上传失败！`);
-          }
-        },
-      };
       return (
         <div className={styles.mainContanier}>
           <List
@@ -603,36 +564,32 @@ class Face extends Component {
                     { required: true, message: '请上传人脸图像' }
                   ],
                   validateTrigger: 'onBlur',
-                  valuePropName: 'fileList'
+                  valuePropName: 'avatar'
                 })(
-                  // <Upload
-                  //   name="file"
-                  //   listType="picture-card"
-                  //   multiple={false}
-                  //   showUploadList={false}
-                  //   action={uploadUrl}
-                  //   beforeUpload={this.beforeUpload}
-                  //   onChange={this.handleChange}
-                  // >
-                  //   {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
-                  // </Upload>
-                  <Upload {...props}>
+                  <Upload
+                    name="file"
+                    listType="picture-card"
+                    multiple={false}
+                    showUploadList={false}
+                    action={uploadUrl}
+                    beforeUpload={this.beforeUpload}
+                    onChange={this.handleChange}
+                  >
                     {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
-
                   </Upload>
                 )
                 }
               </FormItem>
               <FormItem label="布控标签" {...formItemLayout}>
-                {getFieldDecorator('tag', {
+                {getFieldDecorator('label', {
                   rules: [
                     { required: true, message: '请选择一个标签' }
                   ],
                   validateTrigger: 'onBlur'
                 })(
                   <Radio.Group>
-                    <Radio value={2}>黑名单</Radio>
-                    <Radio value={1}>白名单</Radio>
+                    <Radio value={0}>白名单</Radio>
+                    <Radio value={1}>黑名单</Radio>
                   </Radio.Group>
                 )
                 }
