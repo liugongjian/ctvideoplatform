@@ -12,7 +12,7 @@ import {
 import {
   LoadingOutlined, PlusOutlined, ImportOutlined, SearchOutlined
 } from '@ant-design/icons';
-import noImg from '@/assets/bg.png';
+import noImg from '@/assets/defaultFace.png';
 import { urlPrefix } from '../../../constants/Dictionary';
 
 import styles from './index.less';
@@ -29,8 +29,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 
 class Face extends Component {
     state = {
-      uploadUrl: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-      // uploadUrl: `${urlPrefix}/role/list/`,
+      uploadUrl: `${urlPrefix}/face/upload/`,
       modalVisible: false,
       modalStatus: 'add',
       textMap: {
@@ -45,83 +44,6 @@ class Face extends Component {
       pageNum: 1,
       loading: false,
       faceData: [
-        {
-          aid: 416099,
-          createTimeime: '2021-01-20T17:26:57.000+0800',
-          enable: 'y',
-          id: 3299604200531968,
-          image: 'http://192.168.10.146:8666/images/uid/573ad394c1e4408696223d5d7982ce11',
-          name: 'lizhiyonglizhiyonglizhiyonglizhiyong',
-          nameList: 1,
-          updateTime: '2021-01-20T17:26:58.000+0800',
-          isChecked: false,
-        },
-        {
-          aid: 532611,
-          createTimeime: '2021-01-20T17:34:24.000+0800',
-          enable: 'y',
-          id: 3299605114097664,
-          image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-          name: 'lxp',
-          nameList: 2,
-          updateTime: '2021-01-20T17:34:24.000+0800',
-          isChecked: false,
-        },
-        {
-          aid: 532612,
-          createTimeime: '2021-01-20T17:34:24.000+0800',
-          enable: 'y',
-          id: 3299605114097665,
-          image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-          name: 'llll',
-          nameList: 2,
-          updateTime: '2021-01-20T17:34:24.000+0800',
-          isChecked: false,
-        },
-        {
-          aid: 532613,
-          createTimeime: '2021-01-20T17:34:24.000+0800',
-          enable: 'y',
-          id: 3299605114097666,
-          image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-          name: 'hhhh',
-          nameList: 2,
-          updateTime: '2021-01-20T17:34:24.000+0800',
-          isChecked: false,
-        },
-        {
-          aid: 532614,
-          createTimeime: '2021-01-20T17:34:24.000+0800',
-          enable: 'y',
-          id: 3299605114097667,
-          image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-          name: 'lxp',
-          nameList: 1,
-          updateTime: '2021-01-20T17:34:24.000+0800',
-          isChecked: false,
-        },
-        {
-          aid: 532615,
-          createTimeime: '2021-01-20T17:34:24.000+0800',
-          enable: 'y',
-          id: 3299605114097668,
-          image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-          name: 'lxpffff',
-          nameList: 1,
-          updateTime: '2021-01-20T17:34:24.000+0800',
-          isChecked: false,
-        },
-        {
-          aid: 532616,
-          createTimeime: '2021-01-20T17:34:24.000+0800',
-          enable: 'y',
-          id: 3299605114097669,
-          image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-          name: 'lxpffffjjj',
-          nameList: 1,
-          updateTime: '2021-01-20T17:34:24.000+0800',
-          isChecked: false,
-        },
         // {
         //   aid: 416099,
         //   createTimeime: '2021-01-20T17:26:57.000+0800',
@@ -198,7 +120,7 @@ class Face extends Component {
         //   nameList: 1,
         //   updateTime: '2021-01-20T17:34:24.000+0800',
         //   isChecked: false,
-        // }
+        // },
       ],
       name: '',
       imageLoading: false,
@@ -225,20 +147,20 @@ class Face extends Component {
       });
       console.log('data', data);
       // 这里要给list 加一个checkbox 显示与否的 flag
-      // getFaceList(data).then((res) => {
-      // let faceDataTemp = [];
-      // faceDataTemp = res.list && res.list.map((item) => {
-      //   item.isChecked = false;
-      //   return item;
-      // });
-    //     this.setState({
-    //       faceData: faceDataTemp,
-    //       total: res.recordsTotal,
-    //       pageNum: res.pageNo + 1,
-    //       pageSize: res.pageSize,
-    //       loading: false
-    //     });
-    //   });
+      getFaceList(data).then((res) => {
+        let faceDataTemp = [];
+        faceDataTemp = res.list && res.list.map((item) => {
+          item.isChecked = false;
+          return item;
+        });
+        this.setState({
+          faceData: faceDataTemp,
+          total: res.recordsTotal,
+          pageNum: res.pageNo + 1,
+          pageSize: res.pageSize,
+          loading: false
+        });
+      });
     };
 
     queryName = (e) => {
@@ -305,7 +227,7 @@ class Face extends Component {
       setFieldsValue({
         name: item.name,
         imageUrl: item.image,
-        tag: item.nameList
+        tag: item.labelCode
       });
     };
 
@@ -356,14 +278,14 @@ class Face extends Component {
     delFace = () => {
       const { delFace } = this.props;
       const data = {
-        idList: this.state.delIds
+        userFaceIdList: this.state.delIds
       };
       delFace(data).then((res) => {
         message.success('删除成功');
         this.setState({
-          delModelVisible: false
-        });
-        this.getTableList();
+          delModalVisible: false,
+          selectedRowKeys: [],
+        }, () => this.getTableList());
       });
     };
 
@@ -395,21 +317,30 @@ class Face extends Component {
       if (!isJpgOrPng) {
         message.error('You can only upload JPG/PNG file!');
       }
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isLt2M = file.size / 1024 / 1024 < 20;
       if (!isLt2M) {
-        message.error('Image must smaller than 2MB!');
+        message.error('Image must smaller than 20MB!');
       }
       return isJpgOrPng && isLt2M;
     };
 
+    // getBase64 = (img, callback) => {
+    //   const reader = new FileReader();
+    //   reader.addEventListener('load', () => callback(reader.result));
+    //   reader.readAsDataURL(img);
+    // }
+
     handleChange = (info) => {
+      console.log('>>>>>>upload file', info);
       if (info.file.status === 'uploading') {
         this.setState({ imageLoading: true });
         return;
       }
       if (info.file.status === 'done') {
-        // Get this url from response in real world.
-        // getBase64(info.file.originFileObj, imageUrl => this.setState({
+        // this.setState({
+        //   imageUrl: `${urlPrefix}/face/displayupimage/hi6p4ljt`
+        // });
+        // this.getBase64(info.file.originFileObj, imageUrl => this.setState({
         //   imageUrl,
         //   imageLoading: false,
         // }),);
@@ -468,8 +399,9 @@ class Face extends Component {
       console.log('>>>>>image', e, e.target);
       const image = e.target;
       image.src = noImg;
-      image.style.height = '225px';
-      image.style.width = '100%';
+      image.style.height = '109px';
+      image.style.width = '94px';
+      image.style.marginTop = '58px';
       image.onerror = null;
     };
 
@@ -478,7 +410,7 @@ class Face extends Component {
       const { faceData, selectedRowKeys } = this.state;
       let faceDataTemp = [];
       faceDataTemp = faceData.map((i) => {
-        if (i.aid === item.aid) {
+        if (i.id === item.id) {
           i.isChecked = e.target.checked;
           return i;
         }
@@ -486,9 +418,9 @@ class Face extends Component {
       });
 
       if (e.target.checked) {
-        selectedRowKeys.push(item.aid);
-      } else if (selectedRowKeys.indexOf(item.aid) > -1) {
-        const index = selectedRowKeys.indexOf(item.aid);
+        selectedRowKeys.push(item.id);
+      } else if (selectedRowKeys.indexOf(item.id) > -1) {
+        const index = selectedRowKeys.indexOf(item.id);
         selectedRowKeys.splice(index, 1);
       }
 
@@ -533,6 +465,43 @@ class Face extends Component {
           <div style={{ marginTop: 8 }}>上传</div>
         </div>
       );
+      const props = {
+        listType: 'picture-card',
+        name: 'photo',
+        multiple: false,
+        showUploadList: false,
+        action: uploadUrl,
+        beforeUpload: file => new Promise((resolve, reject) => {
+          const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+          if (!isJpgOrPng) {
+            message.error('请上传.jpg/.png格式的图片！');
+          }
+          const isLt20M = file.size / 1024 / 1024 < 20;
+          if (!isLt20M) {
+            message.error('图片大小不得超过20MB!');
+          }
+          if (isJpgOrPng && isLt20M) {
+            return resolve(true);
+          }
+          // eslint-disable-next-line prefer-promise-reject-errors
+          return reject(false);
+        }),
+        onChange(info) {
+          console.log('>>>>>图片的信息', info.file);
+          const { status } = info.file;
+          if (status !== 'uploading') {
+            console.log(info.file, info.fileList);
+          }
+          if (status === 'done') {
+            // that.setState({
+            //   uploadStatus: 'done',
+            // });
+          //   message.success(`${info.file.name} file uploaded successfully.`);
+          } else if (status === 'error') {
+            message.error(`${info.file.name}上传失败！`);
+          }
+        },
+      };
       return (
         <div className={styles.mainContanier}>
           <List
@@ -552,7 +521,7 @@ class Face extends Component {
                 <Card bordered={false} hoverable>
                   <div className={item.isChecked ? styles.cardContanierChecked : styles.cardContanier}>
                     <div className={styles.imgContainer}>
-                      <img src={item.image} onError={e => this.handleImageError(e)} alt="" />
+                      <img src={`${urlPrefix}/face/displayimage/${item.photoId}`} onError={e => this.handleImageError(e)} alt="" />
                       <Checkbox className={item.isChecked ? styles.checkedbox : styles.checkbox} onChange={e => this.onChange(item, e)} />
                     </div>
                     <div className={item.isChecked ? styles.btnChecked : styles.btn}>
@@ -562,9 +531,17 @@ class Face extends Component {
                     </div>
                     <div className={styles.footerContanier}>
                       <div className={styles.info}>
-                        <div title={item.name} className={styles.name}>{item.name}</div>
+                        <div title={item.name} className={styles.name}>{item.name.split('.')[0]}</div>
                         {
-                          item.nameList === 1 ? <div className={styles.tagContainer}><Tag color="green">白名单</Tag></div> : <div className={styles.tagContainer}><Tag color="red">黑名单</Tag></div>
+                          item.labelCode === 0 || item.labelCode === 1 ? (
+                            <div className={styles.tagContainer}>
+                              {
+                                item.labelCode === 0
+                                  ? <Tag color="green">白名单</Tag> : <Tag color="red">黑名单</Tag>
+                              }
+                            </div>
+                          )
+                            : <div className={styles.tagContainer}><Tag color="blue">其他</Tag></div>
                         }
                       </div>
                     </div>
@@ -628,15 +605,20 @@ class Face extends Component {
                   validateTrigger: 'onBlur',
                   valuePropName: 'fileList'
                 })(
-                  <Upload
-                    name="pic"
-                    listType="picture-card"
-                    showUploadList={false}
-                    action={uploadUrl}
-                    beforeUpload={this.beforeUpload}
-                    onChange={this.handleChange}
-                  >
+                  // <Upload
+                  //   name="file"
+                  //   listType="picture-card"
+                  //   multiple={false}
+                  //   showUploadList={false}
+                  //   action={uploadUrl}
+                  //   beforeUpload={this.beforeUpload}
+                  //   onChange={this.handleChange}
+                  // >
+                  //   {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                  // </Upload>
+                  <Upload {...props}>
                     {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+
                   </Upload>
                 )
                 }
@@ -674,7 +656,7 @@ class Face extends Component {
           >
             <div>
               <Icon type="warning" />
-              <div>{`您确定要删除${selectedRowKeys.length > 0 ? `这${delIdsLength}个人脸数据吗？` : `${delName}的人脸数据吗？`}`}</div>
+              <div>{`您确定要删除${selectedRowKeys.length > 0 ? `这${delIdsLength}个人脸数据吗？` : `${delName.split('.')[0]}的人脸数据吗？`}`}</div>
             </div>
           </Modal>
 

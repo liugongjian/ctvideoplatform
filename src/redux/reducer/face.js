@@ -38,13 +38,13 @@ export default function face(state = initialState, action = {}) {
 }
 
 export function getFaceList(data) {
-//   return {
-//     type: [GET_LIST, GET_LIST_SUCCESS, GET_LIST_FAIL],
-//     promise: apiClient => apiClient.post(`${urlPrefix}/face/list/`,
-//       {
-//         data
-//       })
-//   };
+  return {
+    type: [GET_LIST, GET_LIST_SUCCESS, GET_LIST_FAIL],
+    promise: apiClient => apiClient.post(`${urlPrefix}/face/list/`,
+      {
+        data
+      })
+  };
 }
 
 export function addFace(data) {
@@ -68,21 +68,38 @@ export function editFace(data) {
 }
 
 export function delFace(data) {
-//   return {
-//     type: LOAD_SUCCESS,
-//     promise: apiClient => apiClient.del(`${urlPrefix}/face/remove/`,
-//       {
-//         data
-//       })
-//   };
+  return {
+    type: LOAD_SUCCESS,
+    promise: apiClient => apiClient.post(`${urlPrefix}/face/delete/`,
+      {
+        data
+      })
+  };
 }
 
 export function getImportFaceList(data) {
-//   return {
-//     type: [GET_LIST, GET_LIST_SUCCESS, GET_LIST_FAIL],
-//     promise: apiClient => apiClient.post(`${urlPrefix}/face/list/`,
-//       {
-//         data
-//       })
-//   };
+  return {
+    type: [GET_LIST, GET_LIST_SUCCESS, GET_LIST_FAIL],
+    promise: apiClient => apiClient.post(`${urlPrefix}/face/listupload/`,
+      {
+        data
+      })
+  };
+}
+
+export function submitLabel(data) {
+  return {
+    type: LOAD_SUCCESS,
+    promise: apiClient => apiClient.post(`${urlPrefix}/face/sumitzip/`,
+      {
+        data
+      })
+  };
+}
+
+export function saveUploadList() {
+  return {
+    type: LOAD_SUCCESS,
+    promise: apiClient => apiClient.post(`${urlPrefix}/face/save/`)
+  };
 }

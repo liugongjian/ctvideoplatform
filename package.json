@@ -99,6 +99,7 @@
     "redux-devtools-extension": "^2.13.7",
     "scroll-behavior": "^0.9.9",
     "superagent": "^5.2.2",
+    "videojs-contrib-hls": "^5.15.0",
     "webpack-bundle-analyzer": "^3.0.3",
     "wolfy87-eventemitter": "^5.2.8"
   }
