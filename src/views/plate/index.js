@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Table, Input, Modal, Pagination, Button , message ,Tooltip , Icon , Tag
+  Table, Input, Modal, Pagination, Button , message ,Tooltip , Icon , Tag , Form , Select
 } from 'antd';
 import {Link} from 'react-router-dom'
 import { bindActionCreators } from 'redux';
@@ -9,8 +9,6 @@ import PropTypes from 'prop-types';
 
 import { getRoleList , deleteRoles } from '@/redux/reducer/role'
 
-import deletePic from '@/assets/role/delete.png'
-import deletePic2 from '@/assets/role/delete2.png'
 import searchPic from '@/assets/role/search.png'
 import warnPic from '@/assets/role/warn.png'
 
@@ -38,7 +36,8 @@ class Plate extends Component {
     searchName:"",
     deleteModalVisible : false,
     isDeleting : false,
-    deleteItems : []
+    deleteItems : [],
+    plateModalVisible : false, 
   };
 
   onSelectChange = selectedRowKeys => {
@@ -108,14 +107,19 @@ class Plate extends Component {
       selectedRowKeys,
       onChange: this.onSelectChange,
     };
+    const { getFieldDecorator } = this.props.form;
+    const formItemLayout = {
+      labelCol: { span: 6 },
+      wrapperCol: { span: 14 },
+    };
     return (
       <div className={styles.mainWrapper}>
         <div className={styles.searchContainer}>
-          <Link to=''><Button type="primary" className={styles.addBtn}>+ 新增车牌数据</Button></Link>
-          <a className={styles.deleteBtn}>
-            <Icon type="export" className={styles.deletePic}/>
-            批量导入
-          </a>
+          <Button type="primary" className={styles.addBtn} onClick={()=>this.setState({plateModalVisible:true})}>+ 新增车牌数据</Button>
+          <Link to='/gallery/carLicense/import' className={styles.deleteBtn}>
+              <Icon type="export" className={styles.deletePic}/>
+              批量导入
+          </Link>
           {
             this.state.selectedRowKeys.length > 0 ? (
               <a className={styles.deleteBtn} onClick={()=>this.setState({deleteModalVisible:true})}>
@@ -183,6 +187,43 @@ class Plate extends Component {
             />
           </div>
         </div>
+
+
+        <Modal
+          centered
+          width={565}
+          visible={this.state.plateModalVisible}
+          onCancel={() => this.setState({plateModalVisible:false})}
+          footer={[    
+            <Button key="submit" type="primary" disabled={this.state.isDeleting} onClick={() => this.onDeleteItems()} style={{margin:'0 0 0 5px'}}>
+            确定
+           </Button>,        
+            <Button key="back" style={{margin:'0 0 0 30px'}} disabled={this.state.isDeleting} onClick={() => {this.setState({deleteModalVisible:false,deleteItems:[]})}}>
+              取消
+            </Button>
+          ]}
+        >
+          <div className={styles.deleteModal}>
+
+              <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+                <Form.Item label="Plain Text">
+                  <span className="ant-form-text">China</span>
+                </Form.Item>
+                <Form.Item label="Select" hasFeedback>
+                  {getFieldDecorator('select', {
+                    rules: [{ required: true, message: 'Please select your country!' }],
+                  })(
+                    <Select placeholder="Please select a country">
+                      <Option value="china">China</Option>
+                      <Option value="usa">U.S.A</Option>
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Form>
+          </div>
+        </Modal>
+
+
         
         <Modal
           centered
@@ -221,4 +262,4 @@ Plate.propTypes = {
   // plate: PropTypes.object.isRequired
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Plate);
+export default Form.create()(connect(mapStateToProps, mapDispatchToProps)(Plate));
