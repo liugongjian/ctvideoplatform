@@ -9,6 +9,7 @@ const PLATE_LIST_FAIL = 'ROLE_LIST_FAIL'
 
 const ADD_PLATE = 'ADD_PLATE';
 const DELETE_PLATE = 'DELETE_PLATE';
+const UPDATE_PLATE = 'UPDATE_PLATE';
 
 
 const initialState = {
@@ -38,6 +39,10 @@ export default function role(state = initialState, action = {}) {
     case DELETE_PLATE:
       return {
         ...state,
+      };  
+    case UPDATE_PLATE:
+    return {
+      ...state,
       };  
     default:
       return {
@@ -72,6 +77,16 @@ export function deletePlates(params) {
   return {
     type: DELETE_PLATE,
     promise: apiClient => apiClient.del(`${urlPrefix}/license`,
+      {
+        data: params
+      })
+  };
+}
+
+export function updatePlate(params) {
+  return {
+    type: UPDATE_PLATE,
+    promise: apiClient => apiClient.post(`${urlPrefix}/license/update`,
       {
         data: params
       })
