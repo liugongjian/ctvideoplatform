@@ -16,8 +16,9 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import EIcon from 'Components/Icon';
 import {
-  getAlgoList, getDeviceTree
+  getAlgoList, getDeviceTree, getAlarmList
 } from 'Redux/reducer/alarms';
+import moment from 'moment';
 import AlarmCard from './alarmCard';
 
 import styles from './index.less';
@@ -28,11 +29,13 @@ const { Option } = Select;
 const mapStateToProps = state => ({ alarms: state.alarms });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    getAlgoList, getDeviceTree
+    getAlgoList, getDeviceTree, getAlarmList
   },
   dispatch
 );
 
+
+const timeFormat = 'YYYY-MM-DD HH:mm:ss';
 class Alarms extends Component {
   constructor() {
     super();
@@ -134,7 +137,13 @@ class Alarms extends Component {
           details: 'blabla',
 
         },
-      ]
+      ],
+      pageNo: 0,
+      pageSize: 10,
+      total: 0,
+      algorithmIdList: undefined,
+      startTime: moment().subtract('days', 7).format(timeFormat),
+      endTime: moment().format(timeFormat),
     };
   }
 
@@ -166,6 +175,28 @@ class Alarms extends Component {
       this.setState({
         devicesLoading: false,
       });
+    });
+    this.getAlarms();
+  }
+
+  getAlarms = () => {
+    const {
+      pageNo,
+      pageSize,
+      algorithmIdList,
+      startTime,
+      endTime,
+    } = this.state;
+    const params = {
+      pageNo,
+      pageSize,
+      algorithmIdList,
+      startTime,
+      endTime,
+      deviceId: 'ff80818177b9ab770177bea1bfe800db',
+    };
+    this.props.getAlarmList(params).then((res) => {
+      console.log('getAlarmList', res);
     });
   }
 
@@ -211,7 +242,7 @@ class Alarms extends Component {
     return val;
   };
 
-  onChange = (value, dateString) => {
+  onTimeChange = (value, dateString) => {
     console.log('Selected Time: ', value);
     console.log('Formatted Selected Time: ', dateString);
   }
@@ -232,7 +263,7 @@ class Alarms extends Component {
 
     render() {
       const {
-        listData, algoList, algoListLoading, deviceTree
+        listData, algoList, algoListLoading, deviceTree, total
       } = this.state;
       return (
         <div className={styles.alarms}>
@@ -242,14 +273,17 @@ class Alarms extends Component {
                 style={{ width: '310px' }}
                 showTime={{ format: 'HH:mm' }}
                 format="YYYY-MM-DD HH:mm"
-                onChange={this.onChange}
+                onChange={this.onTimeChange}
                 onOk={this.onOk}
                 allowClear={false}
               />
               <span className={styles.span10px} />
               <Select
-                style={{ width: '150px' }}
+                style={{ width: '180px' }}
+                mode="multiple"
                 placeholder="请选择告警类型"
+                maxTagCount={1}
+                maxTagTextLength={2}
               >
                 {
                   algoList.map(item => (<Option value={item.id}>{item.cnName}</Option>))
@@ -286,7 +320,7 @@ class Alarms extends Component {
           <div className={styles['alarms-paginationWrapper']}>
             <Pagination
               // size="small"
-              total={50}
+              total={total}
               showSizeChanger
               showQuickJumper
               showTotal={this.showTotal}
