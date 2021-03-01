@@ -13,7 +13,7 @@ import {
   LoadingOutlined, PlusOutlined, ImportOutlined, SearchOutlined
 } from '@ant-design/icons';
 import noImg from '@/assets/defaultFace.png';
-import { urlPrefix } from '../../../constants/Dictionary';
+import { urlPrefix } from 'Constants/Dictionary';
 
 import styles from './index.less';
 

@@ -12,6 +12,7 @@ import {
 } from 'Redux/reducer/preview';
 
 import { getAlgorithmList } from 'Redux/reducer/monitor';
+import { urlPrefix } from 'Constants/Dictionary';
 
 import VideoPlayer from './VideoPlayer';
 
@@ -37,12 +38,13 @@ class Preview extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      text: '啊啊啊',
       treeDatas: [],
       expandedKeys: ['1'],
       selectAreaKeys: ['1'],
       algorithmList: [],
-      keyword: ''
+      keyword: '',
+      videoSrc: null,
+      historyListData: {}
     };
   }
 
@@ -98,9 +100,14 @@ class Preview extends PureComponent {
       const param = {
         pageSize: 10,
         pageNo: 0,
-        deviceId: id
+        // deviceId: id
       };
-      getHistoryListTopTen(param).then(res => console.log('res', res));
+      getHistoryListTopTen(param).then((res) => {
+        console.log('res', res);
+        this.setState({
+          historyListData: res
+        });
+      });
     }
 
     renderTreeNodes = data => data.map((item, index) => {
@@ -185,8 +192,12 @@ class Preview extends PureComponent {
 
     render() {
       const {
-        treeDatas, selectAreaKeys, expandedKeys, algorithmList
+        treeDatas, selectAreaKeys, expandedKeys, algorithmList, videoSrc, historyListData
       } = this.state;
+
+      const { list = [] } = historyListData;
+
+      const tempUrl = window.location.origin;
 
       const drawAlgorithmList = () => algorithmList.map(item => (
         <Option value={item.id} key={item.id} label={item.cnName}>
@@ -248,14 +259,21 @@ class Preview extends PureComponent {
               </p>
             </div>
             <div className={styles.historyCard}>
-              <Card
-                hoverable
-                style={{ width: 240 }}
-                cover={<img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-              >
-                {/* } <Meta title="Europe Street beat" description="www.instagram.com" /> */}
-                <p>Card content</p>
-              </Card>
+              {
+                list.map(item => (
+                  <Card
+                    hoverable
+                    style={{ width: 240 }}
+                    cover={<img alt="example" src={`${urlPrefix}${item.imageCompress}`} />}
+                  >
+                    {/* } <Meta title="Europe Street beat" description="www.instagram.com" /> */}
+                    <p>
+                      {item.type}
+                      {item.resTime}
+                    </p>
+                  </Card>
+                ))
+              }
             </div>
           </div>
         </div>
