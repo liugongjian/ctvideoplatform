@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-operators */
 import React, { Component } from 'react';
 import {
   Modal,
@@ -16,6 +17,37 @@ class LicenseImportModalComp extends Component {
     this.state = {
       exist: false,
     };
+  }
+
+  componentDidMount() {
+    this.initData(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps?.initailVal !== this.props.initailVal) {
+      this.initData(nextProps);
+    }
+  }
+
+  initData = (props) => {
+    const { initailVal, form } = props;
+    const { licenseNo: licenseOrigin, label: labelOrigin, color } = initailVal || {};
+    const licenseProvince = licenseOrigin && licenseOrigin[0] || undefined;
+    const licenseNo = licenseOrigin && licenseOrigin.slice(1, licenseOrigin.length);
+    let label;
+    switch (labelOrigin) {
+      case 'WHITE':
+        label = 1;
+        break;
+      case 'BLACK':
+        label = 2;
+        break;
+      default:
+        break;
+    }
+    form.setFieldsValue({
+      licenseProvince, licenseNo, color, label
+    });
   }
 
   onOk = () => {
@@ -190,7 +222,7 @@ const DeleteModal = ({
       width="400px"
     >
       <div className={styles.content}>
-        <span className={styles.iconWrapper}><Icon type="warning" theme="filled" /></span>
+        <span className={styles.iconWrapper}><Icon type="warning" /></span>
         <span className={styles.text}>您确定要删除该条告警信息吗？</span>
       </div>
     </Modal>
@@ -199,7 +231,7 @@ const DeleteModal = ({
 
 
 const ImageModal = ({
-  visible, closeModal, src
+  visible, closeModal, src, handleImageError
 }) => (
   <Modal
     className={styles.imgModal}
@@ -208,8 +240,16 @@ const ImageModal = ({
     footer={null}
     onCancel={closeModal}
     width="50vw"
+    style={{
+      maxWidth: '800px'
+    }}
   >
-    <img src={src} width="100%" alt="告警图片" />
+    <img
+      src={src}
+      onError={handleImageError}
+      width="100%"
+      alt="告警图片"
+    />
   </Modal>
 );
 export {

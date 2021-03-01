@@ -58,13 +58,13 @@ export function addFace(data) {
 }
 
 export function editFace(data) {
-  //   return {
-  //     type: LOAD_SUCCESS,
-  //     promise: apiClient => apiClient.post(`${urlPrefix}/face/update/`,
-  //       {
-  //         data
-  //       })
-  //   };
+  return {
+    type: LOAD_SUCCESS,
+    promise: apiClient => apiClient.post(`${urlPrefix}/face/edit/`,
+      {
+        data
+      })
+  };
 }
 
 export function delFace(data) {

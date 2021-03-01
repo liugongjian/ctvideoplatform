@@ -4,7 +4,8 @@ import React, { Component } from 'react';
 import {
   Select,
   Result,
-  Modal
+  Modal,
+  message,
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import EIcon from 'Components/Icon';
@@ -13,11 +14,18 @@ import { random } from 'lodash';
 import {
   importLicense, isLicenseExist
 } from 'Redux/reducer/alarms';
+import { urlPrefix } from 'Constants/Dictionary';
+import noImage from 'Assets/defaultFace.png';
 import {
   LicenseImportModal,
   DeleteModal,
   ImageModal,
 } from './Modals';
+import {
+  AlgoConfigs,
+  ALARM_DETAIL_TYPE,
+  LABEL,
+} from './constants';
 import TestJpg from './test.jpg';
 // import { push } from 'react-router-redux';
 // import PropTypes from 'prop-types';
@@ -41,15 +49,17 @@ const getImgUrl = (name) => {
 };
 
 const Tag = ({
-  title, color = '#F5222D', borderColor = '#FFA39E', background = '#FFF1F0'
+  title,
+  // color = '#F5222D', borderColor = '#FFA39E', background = '#FFF1F0'
+  type
 }) => (
   <span
-    className={styles.AlarmCardTag}
-    style={{
-      color,
-      border: `1px solid ${borderColor}`,
-      background
-    }}
+    className={`${styles.AlarmCardTag} ${styles[`AlarmCardTag-${type}`]}`}
+    // style={{
+    //   color,
+    //   border: `1px solid ${borderColor}`,
+    //   background
+    // }}
   >
     {title}
   </span>
@@ -74,10 +84,19 @@ class AlarmCard extends Component {
       importDialogVisible: false,
       imgDialogVisible: false,
       delVisible: false,
+      imageErr: false,
     };
   }
 
   componentDidMount() {
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps?.data?.imageCompress !== this.props?.data?.imageCompress) {
+      this.setState({
+        imageErr: false,
+      });
+    }
   }
 
   showImportDialog = () => {
@@ -88,6 +107,9 @@ class AlarmCard extends Component {
     this.props.importLicense(data).then((res) => {
       console.log('import', res);
       this.closeImportDialog();
+      message.success('导入成功');
+    }).catch((err) => {
+      console.log('import-err', err);
     });
   }
 
@@ -101,6 +123,8 @@ class AlarmCard extends Component {
 
   handleDelete = () => {
     // 1.删除操作 2.刷新列表（外部传入？emit？
+    const { data, onDelete, isLicenseExist } = this.props;
+    onDelete(data?.id);
   }
 
   closeDelDialog = () => {
@@ -115,19 +139,36 @@ class AlarmCard extends Component {
     this.setState({ imgDialogVisible: false });
   };
 
+  handleImageError = (e) => {
+    const image = e.target;
+    image.src = noImage;
+    image.className = styles['AlarmCard-noImage'];
+    image.onerror = null;
+    this.setState({ imageErr: true });
+  };
+
   render() {
     const { data, onDelete, isLicenseExist } = this.props;
     const {
-      importDialogVisible,
-      imgDialogVisible,
-      delVisible,
+      importDialogVisible, imgDialogVisible, delVisible,
+      imageErr,
     } = this.state;
     const {
-      AlgorithmName, controlRule, details, resTime, deviceArea
+      deviceName,
+      algorithmName, algorithmCnName, imageCompress, image,
+      controlRule, details, resTime, areaPath,
+      type, plate, face
     } = data;
-    const type = 'car';
-    const hasDetail = Math.random() > 0.5;
-    const hasImport = Math.random() > 0.5;
+    let recognizeType = '';
+    if (plate) recognizeType = 'car';
+    if (face) recognizeType = 'person';
+    const detailExp = AlgoConfigs[algorithmName]?.alarmDetail;
+    const hasImport = AlgoConfigs[algorithmName]?.carImport;
+    let detail = null;
+    if (detailExp) {
+      const reg = /\{(\w+)\}/g;
+      detail = detailExp.replace(reg, (match, matchStr, index, stringObj) => ALARM_DETAIL_TYPE[type] || '未知目标');
+    }
     return (
       <div className={styles.AlarmCard}>
         <LicenseImportModal
@@ -135,17 +176,18 @@ class AlarmCard extends Component {
           handleImport={this.handleImport}
           closeModal={this.closeImportDialog}
           isLicenseExist={isLicenseExist}
-          initailVal={{}}
+          initailVal={plate}
         />
         <DeleteModal
           visible={delVisible}
-          onOk={this.handleDelete}
+          handleOk={this.handleDelete}
           closeModal={this.closeDelDialog}
         />
         <ImageModal
           visible={imgDialogVisible}
           closeModal={this.closeImgDialog}
-          src={TestJpg}
+          src={`${urlPrefix}${image}`}
+          handleImageError={e => this.handleImageError(e)}
         />
         <div className={styles['AlarmCard-title']}>
           {/*
@@ -153,13 +195,17 @@ class AlarmCard extends Component {
            <img src={getImgUrl('carPersonCheck')}
           alt="icon" className={styles['AlarmCard-title-icon']} />
         &nbsp; */}
-          <span className={styles['AlarmCard-title-name']}>{AlgorithmName || ''}</span>
+          <span className={styles['AlarmCard-title-name']}>{algorithmCnName || ''}</span>
           <span className={styles['AlarmCard-title-time']}>{resTime || ''}</span>
         </div>
-        <div className={styles['AlarmCard-imgWrapper']} onClick={this.showImgDialog}>
+        <div className={`${styles['AlarmCard-imgWrapper']} ${imageErr ? '' : styles['AlarmCard-imgWrapper-cursor']}`} onClick={imageErr ? () => {} : this.showImgDialog}>
+          <div className={styles['AlarmCard-imgWrapper-title']} title={deviceName}>
+            {deviceName}
+          </div>
           <img
-            src={TestJpg}
+            src={`${urlPrefix}${imageCompress}`}
             alt="图片"
+            onError={e => this.handleImageError(e)}
           />
         </div>
         <div className={styles['AlarmCard-contentWrapper']}>
@@ -168,25 +214,46 @@ class AlarmCard extends Component {
             <span title={controlRule}>{controlRule}</span>
           </div>
           {
-            hasDetail ? (
-              <React.Fragment>
-                {type === 'car' ? (
-                  <div>
-                    车牌：
-                    <Tag title="黑名单" />
-                  </div>
-                ) : <div>姓名：</div>}
-              </React.Fragment>
-            ) : (
+            detail ? (
               <div>
                 告警详情：
-                <span title={details}>{details}</span>
+                <span title={detail}>{detail}</span>
               </div>
-            )
+            ) : null
+          }
+          {
+            recognizeType === '' ? null
+              : (
+                <React.Fragment>
+                  {recognizeType === 'car' ? (
+                    <div>
+                      车牌：
+                      {plate?.licenseNo || '-'}
+                      <React.Fragment>
+                        {
+                          plate.label && LABEL[plate.label]
+                            ? (<Tag title={LABEL[plate.label]} type={plate.label} />)
+                            : null}
+                      </React.Fragment>
+                    </div>
+                  ) : (
+                    <div>
+                      姓名：
+                      {face?.username || '-'}
+                      <React.Fragment>
+                        {
+                        face?.label && LABEL[face.label]
+                          ? <Tag title={LABEL[face.label]} type={face.label} />
+                          : null}
+                      </React.Fragment>
+                    </div>
+                  )}
+                </React.Fragment>
+              )
           }
           <div>
             设备区域：
-            <span title={deviceArea}>{deviceArea}</span>
+            <span title={areaPath}>{areaPath}</span>
           </div>
         </div>
         <div className={styles['AlarmCard-operatorWrapper']}>
