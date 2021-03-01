@@ -9,18 +9,20 @@ import {
   Pagination,
   Modal,
   Icon,
+  Spin,
+  message,
 } from 'antd';
 import { bindActionCreators } from 'redux';
+import math from 'Utils/math';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import EIcon from 'Components/Icon';
 import {
-  getAlgoList, getDeviceTree, getAlarmList
+  getAlgoList, getDeviceTree, getAlarmList, delAlarmInfo
 } from 'Redux/reducer/alarms';
 import moment from 'moment';
 import AlarmCard from './alarmCard';
-
 import styles from './index.less';
 
 const { RangePicker } = DatePicker;
@@ -29,11 +31,17 @@ const { Option } = Select;
 const mapStateToProps = state => ({ alarms: state.alarms });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    getAlgoList, getDeviceTree, getAlarmList
+    getAlgoList, getDeviceTree, getAlarmList, delAlarmInfo
   },
   dispatch
 );
 
+const initialVals = {
+  startTime: moment().subtract('days', 7),
+  endTime: moment(),
+  deviceVal: [],
+  algoVal: [],
+};
 
 const timeFormat = 'YYYY-MM-DD HH:mm:ss';
 class Alarms extends Component {
@@ -45,105 +53,13 @@ class Alarms extends Component {
       deviceList: [],
       deviceTree: [],
       devicesLoading: false,
-      listData: [
-        {
-          id: 1,
-          AlgorithmName: '安全帽识别',
-          controlRule: 'testtesttest',
-          details: 'blablablablablablablablablablablablablablablablablablablabla',
-          resTime: '2021/02/30 01:30:30',
-          algorithmId: '111',
-          imageCompress: '...',
-          deviceArea: '区域1/区域2/区域3/区域4/摄像头某某某某某某某某'
-        },
-        {
-          id: 2,
-          AlgorithmName: '移动侦测',
-          controlRule: '',
-          details: 'blabla',
-          deviceArea: '区域NNN/区域1/区域2/区域3/区域4/摄像头某某某某某某某某'
-        },
-        {
-          id: 3,
-          AlgorithmName: '电子围栏',
-          controlRule: '',
-          details: 'blabla',
-
-        },
-        {
-          id: 4,
-          AlgorithmName: '人员布控',
-          controlRule: '',
-          details: 'blabla',
-
-        },
-        {
-          id: 5,
-          AlgorithmName: '电子围栏',
-          controlRule: '',
-          details: 'blabla',
-        },
-        {
-          id: 6,
-          AlgorithmName: '电子围栏',
-          controlRule: '',
-          details: 'blabla',
-        },
-        {
-          id: 7,
-          AlgorithmName: '车辆布控',
-          controlRule: '',
-          details: 'blabla',
-        },
-        {
-          id: 8,
-          AlgorithmName: '移动侦测5',
-          controlRule: '',
-          details: 'blabla',
-
-        },
-        {
-          id: 9,
-          AlgorithmName: '车辆布控',
-          controlRule: '',
-          details: 'blabla',
-
-        },
-        {
-          id: 10,
-          AlgorithmName: '车辆布控',
-          controlRule: '',
-          details: 'blabla',
-
-        },
-        {
-          id: 11,
-          AlgorithmName: '人员布控',
-          controlRule: '',
-          details: 'blabla',
-
-        },
-        {
-          id: 12,
-          AlgorithmName: '电子围栏',
-          controlRule: '',
-          details: 'blabla',
-
-        },
-        {
-          id: 13,
-          AlgorithmName: '口罩检测',
-          controlRule: '',
-          details: 'blabla',
-
-        },
-      ],
-      pageNo: 0,
+      listData: [],
+      listLoading: false,
       pageSize: 10,
       total: 0,
+      current: 1,
       algorithmIdList: undefined,
-      startTime: moment().subtract('days', 7).format(timeFormat),
-      endTime: moment().format(timeFormat),
+      ...initialVals,
     };
   }
 
@@ -180,23 +96,45 @@ class Alarms extends Component {
   }
 
   getAlarms = () => {
+    this.setState({
+      listLoading: true,
+    });
     const {
-      pageNo,
+      current,
       pageSize,
       algorithmIdList,
-      startTime,
-      endTime,
+      startTime, endTime, algoVal, deviceVal
     } = this.state;
     const params = {
-      pageNo,
+      pageNo: current - 1,
       pageSize,
-      algorithmIdList,
-      startTime,
-      endTime,
-      deviceId: 'ff80818177b9ab770177bea1bfe800db',
+      algorithmIdList: algoVal,
+      startTime: startTime.format(timeFormat),
+      endTime: endTime.format(timeFormat),
+      deviceId: deviceVal ? deviceVal[deviceVal.length - 1] : undefined,
     };
     this.props.getAlarmList(params).then((res) => {
       console.log('getAlarmList', res);
+      const {
+        list, recordsTotal, pageNo, pageSize, pageTotal,
+      } = res;
+      let current = pageNo + 1;
+      const maxPage = recordsTotal === 0
+        ? 1 : math.ceil(math.divide(recordsTotal, pageSize));
+      if (!list?.length && current > maxPage) {
+        current = maxPage;
+        this.onPageChange(current, pageSize);
+      }
+      this.setState({
+        listData: list,
+        total: recordsTotal,
+        listLoading: false,
+      });
+    }).catch((err) => {
+      console.log('getAlarmList-Error', err);
+      this.setState({
+        listLoading: false,
+      });
     });
   }
 
@@ -242,28 +180,57 @@ class Alarms extends Component {
     return val;
   };
 
-  onTimeChange = (value, dateString) => {
-    console.log('Selected Time: ', value);
-    console.log('Formatted Selected Time: ', dateString);
+  handleDel = (id) => {
+    this.props.delAlarmInfo(id).then((res) => {
+      message.success('删除成功');
+      this.getAlarms();
+    }).catch((err) => {
+      console.log('err', err);
+    });
   }
 
-    onOk = (value) => {
-      console.log('onOk: ', value);
+  onDeviceChange = (val) => {
+    console.log('deviceChange: ', val);
+    this.setState({ deviceVal: val });
+  }
+
+  onAlgoChange = (val) => {
+    console.log('onAlgoChange: ', val);
+    this.setState({ algoVal: val });
+  }
+
+    onTimeChange = (value) => {
+      console.log('timeChange: ', value);
+      this.setState({
+        startTime: value[0],
+        endTime: value[1]
+      });
     }
 
     onSearch = () => {
-
+      this.getAlarms();
     }
 
     onReset = () => {
-
+      this.setState(initialVals, this.getAlarms);
     }
 
     showTotal = total => (<span className={styles.totalText}>{`总条数： ${total}`}</span>)
 
+    onPageChange = (current, pageSize) => {
+      this.setState({
+        current,
+        pageSize,
+      }, this.getAlarms);
+    }
+
     render() {
       const {
-        listData, algoList, algoListLoading, deviceTree, total
+        listData, listLoading,
+        algoList, algoListLoading,
+        deviceTree, devicesLoading,
+        total, current,
+        startTime, endTime, algoVal, deviceVal
       } = this.state;
       return (
         <div className={styles.alarms}>
@@ -274,7 +241,8 @@ class Alarms extends Component {
                 showTime={{ format: 'HH:mm' }}
                 format="YYYY-MM-DD HH:mm"
                 onChange={this.onTimeChange}
-                onOk={this.onOk}
+                value={[startTime, endTime]}
+                onOk={this.onTimeChange}
                 allowClear={false}
               />
               <span className={styles.span10px} />
@@ -282,6 +250,8 @@ class Alarms extends Component {
                 style={{ width: '180px' }}
                 mode="multiple"
                 placeholder="请选择告警类型"
+                value={algoVal}
+                onChange={this.onAlgoChange}
                 maxTagCount={1}
                 maxTagTextLength={2}
               >
@@ -295,7 +265,8 @@ class Alarms extends Component {
                 popupClassName={styles.cameraCascader}
                 options={deviceTree}
                 allowClear={false}
-                // onChange={this.onAreaChange}
+                value={deviceVal}
+                onChange={this.onDeviceChange}
               />
               <span className={styles['alarms-filterWrapper-btnWrapper']}>
                 <Button type="primary" onClick={this.onSearch}>搜索</Button>
@@ -307,20 +278,26 @@ class Alarms extends Component {
               </span>
             </div>
           </div>
-          <div className={styles['alarms-listWrapper']}>
-            {
-              listData.map(item => (
-                <AlarmCard
-                  key={item.id}
-                  data={item}
-                />
-              ))
-            }
-          </div>
+          <Spin spinning={listLoading}>
+            <div className={styles['alarms-listWrapper']}>
+              {
+                listData.map(item => (
+                  <AlarmCard
+                    key={item.id}
+                    data={item}
+                    onDelete={this.handleDel}
+                  />
+                ))
+              }
+            </div>
+          </Spin>
           <div className={styles['alarms-paginationWrapper']}>
             <Pagination
               // size="small"
               total={total}
+              current={current}
+              onChange={this.onPageChange}
+              onShowSizeChange={this.onPageChange}
               showSizeChanger
               showQuickJumper
               showTotal={this.showTotal}

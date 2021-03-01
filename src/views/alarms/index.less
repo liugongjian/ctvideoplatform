@@ -33,7 +33,7 @@
     }
 }
 .alarms{
-    min-width: 920px;
+    min-width: 950px;
     position:relative;
     background-color: white;
     min-height: calc(100% - 30px);
@@ -74,24 +74,26 @@
         .AlarmCard{
             margin-bottom: 20px;
         }
-        @media screen and (min-width: 1501px) {
+        @media screen and (min-width: 1601px) {
             .AlarmCard{
-                height: 370px;
+                height: 350px;
                 width: calc((100% - 15px * 4) / 5 );
                 &-imgWrapper{
-                    height: 240px;
+                    height: 210px;
+                    line-height: 210px;
                 }
             }
             .AlarmCard:not(:nth-of-type(5n+0)){
                 margin-right:15px;
             }
         }
-        @media screen and (max-width: 1500px) {
+        @media screen and (max-width: 1600px) {
             .AlarmCard{
                 height: 270px;
                 width: calc((100% - 15px * 3) / 4 );
                 &-imgWrapper{
                     height: 140px;
+                    line-height: 140px;
                 }
             }
             .AlarmCard:not(:nth-of-type(4n+0)){
@@ -143,6 +145,7 @@
 }
 .AlarmCard{
     display: inline-block;
+    vertical-align: middle;
     position: relative;
     border:1px solid #EDEDED;
     background-color: white;
@@ -154,9 +157,6 @@
     &>div:not(&-imgWrapper){
         padding-left: 12px;
         padding-right: 12px;
-    }
-    &-imgWrapper{
-        cursor: pointer;
     }
     &-title{
         width: 100%;
@@ -180,13 +180,36 @@
             float: right;
         }
     }
+    &-imgWrapper-cursor{
+        cursor: pointer;
+    }
     &-imgWrapper{
-        background-color: rgba(0,0,0,.05);
+        background-color: #f6f6f6;
+        position: relative;
+        &-title{
+            position: absolute;
+            top:0;
+            left:0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            height: 28px;
+            line-height: 28px;
+            width:50%;
+            padding:0 12px;
+            color: white;
+            background-image: linear-gradient(90deg, rgba(51,51,51,0.48) 57%, rgba(98,98,98,0.00) 100%);
+        }
         img{
             width: 100%;
             height: 100%;
             object-fit: fill;
-        }
+        } 
+    }
+    & >&-imgWrapper> &-noImage{
+        width: 100%;
+        height: 100px;
+        object-fit: contain;
     }
     &-contentWrapper{
         &>div{
@@ -235,6 +258,23 @@
     height: 20px;
     text-align: center;
     border-radius:4px;
+    margin-left: 5px;
+    border: 1px solid #FFA39E;
+    &-WHITE{
+        color: #52c41a;
+        background: #f6ffed;
+        border-color: #b7eb8f;
+    }
+    &-BLACK{
+        color:#F5222D; 
+        border-color: #FFA39E;
+        background:#FFF1F0;
+    }
+    &-OTHER{
+        color:#91D5FF ; 
+        border-color: #91D5FF;
+        background:#E6F7FF;
+    }
 }
 
 .delModal{
@@ -312,6 +352,12 @@
 }
 .imgModal{
     display: block;
+    .AlarmCard-noImage{
+        width: 100%;
+        height: 30vh;
+        padding: 5vh 0;
+        object-fit: contain;
+    }
     :global{
         .ant-modal-header{
             display: none;

@@ -114,3 +114,10 @@ export function getAlarmList(postData) {
     })
   };
 }
+
+export function delAlarmInfo(id) {
+  return {
+    type: DO_NOTHING,
+    promise: apiClient => apiClient.del(`${urlPrefix}/task/result/${id}`,)
+  };
+}
