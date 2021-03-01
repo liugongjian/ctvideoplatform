@@ -39,6 +39,7 @@ class Plate extends Component {
     deleteItems : [],
     plateModalVisible : false, 
     modalPlateInfo:{},
+    plateExist : false,
   };
 
   onSelectChange = selectedRowKeys => {
@@ -325,6 +326,13 @@ class Plate extends Component {
               )}
             </Form.Item>
           </Form>
+
+          { this.state.plateExist ? (
+            <div className={styles.existMsg}>
+              <span className={styles['existMsg-icon']}><Icon type="exclamation-circle" /></span>
+              该车牌已经在车辆库中，确认则覆盖原数据。
+            </div>
+          ) : null}
         </div>
       </Modal>
 

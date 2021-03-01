@@ -125,6 +125,14 @@ tr.ant-table-row {
   color: #999999;
   margin-bottom: 11px;
 }
+.LicenseImport .existMsg {
+  margin-left: 20px;
+  color: #FA8334;
+  font-size: 12px;
+}
+.LicenseImport .existMsg-icon {
+  margin-right: 5px;
+}
 .LicenseImport-formWrapper :global .ant-form .ant-form-item {
   margin-bottom: 12px;
 }
