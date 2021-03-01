@@ -222,7 +222,7 @@ const DeleteModal = ({
       width="400px"
     >
       <div className={styles.content}>
-        <span className={styles.iconWrapper}><Icon type="warning" theme="filled" /></span>
+        <span className={styles.iconWrapper}><Icon type="warning" /></span>
         <span className={styles.text}>您确定要删除该条告警信息吗？</span>
       </div>
     </Modal>
@@ -239,7 +239,7 @@ const ImageModal = ({
     visible={visible}
     footer={null}
     onCancel={closeModal}
-    width="50vw"
+    width="40vw"
   >
     <img
       src={src}

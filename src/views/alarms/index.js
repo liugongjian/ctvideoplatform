@@ -22,6 +22,7 @@ import {
   getAlgoList, getDeviceTree, getAlarmList, delAlarmInfo
 } from 'Redux/reducer/alarms';
 import moment from 'moment';
+import NODATA_IMG from 'Assets/nodata.png';
 import AlarmCard from './alarmCard';
 import styles from './index.less';
 
@@ -281,13 +282,19 @@ class Alarms extends Component {
           <Spin spinning={listLoading}>
             <div className={styles['alarms-listWrapper']}>
               {
-                listData.map(item => (
-                  <AlarmCard
-                    key={item.id}
-                    data={item}
-                    onDelete={this.handleDel}
-                  />
-                ))
+                listData.length > 0
+                  ? listData.map(item => (
+                    <AlarmCard
+                      key={item.id}
+                      data={item}
+                      onDelete={this.handleDel}
+                    />
+                  ))
+                  : (
+                    <div className={styles['alarms-listWrapper-nodata']}>
+                      <img src={NODATA_IMG} alt="" />
+                    </div>
+                  )
               }
             </div>
           </Spin>
