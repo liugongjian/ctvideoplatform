@@ -282,7 +282,7 @@ class Alarms extends Component {
           <Spin spinning={listLoading}>
             <div className={styles['alarms-listWrapper']}>
               {
-                listData.length > 0
+                listData.length > 0 || listLoading
                   ? listData.map(item => (
                     <AlarmCard
                       key={item.id}
