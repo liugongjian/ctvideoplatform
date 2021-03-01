@@ -33,87 +33,10 @@ class ImportFace extends Component {
     repeatModalVisible: false,
     repeatNum: 3,
     total: 0,
-    pageSize: 10,
+    pageSize: 12,
     pageNum: 1,
     uploadZipUrl: `${urlPrefix}/face/upload/`,
     faceData: [
-    //   {
-    //     aid: 416099,
-    //     createTimeime: '2021-01-20T17:26:57.000+0800',
-    //     enable: 'y',
-    //     id: 3299604200531968,
-    //     image: 'http://192.168.10.146:8666/images/uid/573ad394c1e4408696223d5d7982ce11',
-    //     name: 'lizhiyonglizhiyonglizhiyonglizhiyong',
-    //     nameList: 1,
-    //     updateTime: '2021-01-20T17:26:58.000+0800',
-    //     isChecked: false,
-    //   },
-    //   {
-    //     aid: 532611,
-    //     createTimeime: '2021-01-20T17:34:24.000+0800',
-    //     enable: 'y',
-    //     id: 3299605114097664,
-    //     image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-    //     name: 'lxp',
-    //     nameList: 2,
-    //     updateTime: '2021-01-20T17:34:24.000+0800',
-    //     isChecked: false,
-    //   },
-    //   {
-    //     aid: 532612,
-    //     createTimeime: '2021-01-20T17:34:24.000+0800',
-    //     enable: 'y',
-    //     id: 3299605114097665,
-    //     image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-    //     name: 'llll',
-    //     nameList: 2,
-    //     updateTime: '2021-01-20T17:34:24.000+0800',
-    //     isChecked: false,
-    //   },
-    //   {
-    //     aid: 532613,
-    //     createTimeime: '2021-01-20T17:34:24.000+0800',
-    //     enable: 'y',
-    //     id: 3299605114097666,
-    //     image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-    //     name: 'hhhh',
-    //     nameList: 2,
-    //     updateTime: '2021-01-20T17:34:24.000+0800',
-    //     isChecked: false,
-    //   },
-    //   {
-    //     aid: 532614,
-    //     createTimeime: '2021-01-20T17:34:24.000+0800',
-    //     enable: 'y',
-    //     id: 3299605114097667,
-    //     image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-    //     name: 'lxp',
-    //     nameList: 1,
-    //     updateTime: '2021-01-20T17:34:24.000+0800',
-    //     isChecked: false,
-    //   },
-    //   {
-    //     aid: 532615,
-    //     createTimeime: '2021-01-20T17:34:24.000+0800',
-    //     enable: 'y',
-    //     id: 3299605114097668,
-    //     image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-    //     name: 'lxpffff',
-    //     nameList: 1,
-    //     updateTime: '2021-01-20T17:34:24.000+0800',
-    //     isChecked: false,
-    //   },
-    //   {
-    //     aid: 532616,
-    //     createTimeime: '2021-01-20T17:34:24.000+0800',
-    //     enable: 'y',
-    //     id: 3299605114097669,
-    //     image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-    //     name: 'lxpffffjjj',
-    //     nameList: 1,
-    //     updateTime: '2021-01-20T17:34:24.000+0800',
-    //     isChecked: false,
-    //   }
     ],
   };
 
@@ -134,14 +57,6 @@ class ImportFace extends Component {
     });
     console.log('data', data);
     getImportFaceList(data).then((res) => {
-    //   if 有重复的 todo
-    // this.setState({
-    //   repeatModalVisible: true,
-    //   faceData: [],
-    //   repeatNum: 3,
-    // });
-    //   if 没有重复的 todo
-      console.log('>>>>>>======', res);
       this.setState({
         faceData: res.list,
         total: res.recordsTotal,
@@ -171,7 +86,6 @@ class ImportFace extends Component {
   }
 
   handleImageError = (e) => {
-    console.log('>>>>>image', e, e.target);
     const image = e.target;
     image.src = noImg;
     image.style.height = '109px';
@@ -197,7 +111,6 @@ class ImportFace extends Component {
 
   submit= () => {
     // 导入人脸的最后一步 提交
-    console.log('>>>>>>submit');
     const { saveUploadList } = this.props;
     saveUploadList().then((res) => {
       this.props.history.go(-1);
@@ -229,7 +142,6 @@ class ImportFace extends Component {
         return reject(false);
       }),
       onChange(info) {
-        console.log('>>>>>上传zip压缩包的信息', that, info.file);
         const { status } = info.file;
         if (status !== 'uploading') {
           console.log(info.file, info.fileList);
@@ -238,7 +150,6 @@ class ImportFace extends Component {
           that.setState({
             uploadStatus: 'done',
           });
-        //   message.success(`${info.file.name} file uploaded successfully.`);
         } else if (status === 'error') {
           message.error(`${info.file.name}上传失败！`);
         }
@@ -313,10 +224,6 @@ class ImportFace extends Component {
                               <Button type="button" onClick={() => this.setState({ stepCurrent: stepCurrent - 1 })}>上一步</Button>
                             </div>
                           )}
-                        {/* <div className={styles.btn}>
-                          <Button type="primary" onClick={() => this.getTableList()}>下一步</Button>
-                          <Button type="button" onClick={() => this.setState({ stepCurrent: stepCurrent - 1 })}>上一步</Button>
-                        </div> */}
                       </div>
 
                     </div>
@@ -331,7 +238,7 @@ class ImportFace extends Component {
                           md: 4,
                           lg: 4,
                           xl: 6,
-                          xxl: 3,
+                          xxl: 8,
                         }}
                         dataSource={faceData}
                         pagination={false}
@@ -367,6 +274,7 @@ class ImportFace extends Component {
                             current={pageNum}
                             showSizeChanger
                             showQuickJumper
+                            pageSizeOptions={[12, 24, 60, 120]}
                             pageSize={pageSize}
                             onChange={this.onPageChange}
                             onShowSizeChange={this.onShowSizeChange}

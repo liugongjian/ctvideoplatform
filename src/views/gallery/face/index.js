@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import {
-  getFaceList, addFace, editFace, delFace
+  getFaceList, addFace, editFace, delFace, saveUploadList
 } from 'Redux/reducer/face';
 import {
   message, Button, Modal, Form, Input, Icon, Radio, Upload, List, Card, Tag, Checkbox, Pagination
@@ -13,7 +13,7 @@ import {
   LoadingOutlined, PlusOutlined, ImportOutlined, SearchOutlined
 } from '@ant-design/icons';
 import noImg from '@/assets/defaultFace.png';
-import { urlPrefix } from '../../../constants/Dictionary';
+import { urlPrefix } from 'Constants/Dictionary';
 
 import styles from './index.less';
 
@@ -22,7 +22,7 @@ const FormItem = Form.Item;
 const mapStateToProps = state => ({ face: state.face });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    push, getFaceList, addFace, editFace, delFace
+    push, getFaceList, addFace, editFace, delFace, saveUploadList
   },
   dispatch
 );
@@ -39,96 +39,19 @@ class Face extends Component {
       delModalVisible: false,
       selectedRowKeys: [],
       repeatModalVisible: false,
-      total: 4,
-      pageSize: 10,
+      total: 0,
+      pageSize: 12,
       pageNum: 1,
       loading: false,
       faceData: [
-        // {
-        //   aid: 416099,
-        //   createTimeime: '2021-01-20T17:26:57.000+0800',
-        //   enable: 'y',
-        //   id: 3299604200531968,
-        //   image: 'http://192.168.10.146:8666/images/uid/573ad394c1e4408696223d5d7982ce11',
-        //   name: 'lizhiyonglizhiyonglizhiyonglizhiyong',
-        //   nameList: 1,
-        //   updateTime: '2021-01-20T17:26:58.000+0800',
-        //   isChecked: false,
-        // },
-        // {
-        //   aid: 532611,
-        //   createTimeime: '2021-01-20T17:34:24.000+0800',
-        //   enable: 'y',
-        //   id: 3299605114097664,
-        //   image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-        //   name: 'lxp',
-        //   nameList: 2,
-        //   updateTime: '2021-01-20T17:34:24.000+0800',
-        //   isChecked: false,
-        // },
-        // {
-        //   aid: 532612,
-        //   createTimeime: '2021-01-20T17:34:24.000+0800',
-        //   enable: 'y',
-        //   id: 3299605114097665,
-        //   image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-        //   name: 'llll',
-        //   nameList: 2,
-        //   updateTime: '2021-01-20T17:34:24.000+0800',
-        //   isChecked: false,
-        // },
-        // {
-        //   aid: 532613,
-        //   createTimeime: '2021-01-20T17:34:24.000+0800',
-        //   enable: 'y',
-        //   id: 3299605114097666,
-        //   image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-        //   name: 'hhhh',
-        //   nameList: 2,
-        //   updateTime: '2021-01-20T17:34:24.000+0800',
-        //   isChecked: false,
-        // },
-        // {
-        //   aid: 532614,
-        //   createTimeime: '2021-01-20T17:34:24.000+0800',
-        //   enable: 'y',
-        //   id: 3299605114097667,
-        //   image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-        //   name: 'lxp',
-        //   nameList: 1,
-        //   updateTime: '2021-01-20T17:34:24.000+0800',
-        //   isChecked: false,
-        // },
-        // {
-        //   aid: 532615,
-        //   createTimeime: '2021-01-20T17:34:24.000+0800',
-        //   enable: 'y',
-        //   id: 3299605114097668,
-        //   image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-        //   name: 'lxpffff',
-        //   nameList: 1,
-        //   updateTime: '2021-01-20T17:34:24.000+0800',
-        //   isChecked: false,
-        // },
-        // {
-        //   aid: 532616,
-        //   createTimeime: '2021-01-20T17:34:24.000+0800',
-        //   enable: 'y',
-        //   id: 3299605114097669,
-        //   image: 'http://192.168.10.146:8666/images/uid/456b10457f1138c10fa3a349b394ffb0',
-        //   name: 'lxpffffjjj',
-        //   nameList: 1,
-        //   updateTime: '2021-01-20T17:34:24.000+0800',
-        //   isChecked: false,
-        // },
       ],
       name: '',
       imageLoading: false,
       imageUrl: '',
       delName: '',
       delIds: [],
-
-
+      editId: '',
+      editFaceId: ''
     };
 
     componentDidMount() {
@@ -143,10 +66,9 @@ class Face extends Component {
         pageNo: this.state.pageNum - 1
       };
       this.setState({
-        loading: true
+        loading: true,
+        selectedRowKeys: []
       });
-      console.log('data', data);
-      // 这里要给list 加一个checkbox 显示与否的 flag
       getFaceList(data).then((res) => {
         let faceDataTemp = [];
         faceDataTemp = res.list && res.list.map((item) => {
@@ -174,6 +96,7 @@ class Face extends Component {
       this.setState({
         modalVisible: true,
         modalStatus: 'add',
+        imageUrl: ''
       });
       this.props.form.resetFields();
     };
@@ -186,29 +109,22 @@ class Face extends Component {
 
     // 提交添加人脸数据的表单
     addFace = (isReplaced) => {
-      const { addFace } = this.props;
+      const { addFace, saveUploadList } = this.props;
       this.props.form.validateFields((errors, values) => {
         if (!errors) {
-          console.log('>>>>add values', values);
           delete values.imageUrl;
-          const data = Object.assign({ isReplaced }, values);
-          addFace(data).then(
+          // const data = Object.assign({ isReplaced }, values);
+          addFace(values).then(
             (res) => {
-              // 没有重复数据 则执行以后代码 todo
-              // if
               message.success('新增人脸数据成功');
               this.setState({
-                modalVisible: false
+                modalVisible: false,
+                pageNum: 1,
               }, () => {
-                this.getTableList();
+                saveUploadList().then((res) => {
+                  this.getTableList();
+                });
               });
-              // this.getTableList();
-              // 有重复数据 执行以下代码 todo
-              // if
-              // this.setState({
-              //   repeatModalVisible: true,
-              //   modalVisible: false,
-              // });
             }
           ).catch((err) => {
             // message.warning('添加账户失败')
@@ -219,33 +135,38 @@ class Face extends Component {
 
     // 编辑人脸数据按钮
     handleEditFace = (item) => {
-      console.log('点击编辑时得到原item的数据', item);
       const {
         form: { setFieldsValue }
       } = this.props;
       this.setState({
         modalVisible: true,
         modalStatus: 'edit',
+        editId: item.id,
       });
       setFieldsValue({
-        name: item.name,
-        imageUrl: `${urlPrefix}/face/displayupimage/${item.photoId}`,
+        name: item.name.split('.')[0],
+        imageUrl: `${urlPrefix}/face/displayimage/${item.photoId}?${new Date().getTime()}`,
         label: item.labelCode
+      });
+      this.setState({
+        imageUrl: `${urlPrefix}/face/displayimage/${item.photoId}?${new Date().getTime()}`
       });
     };
 
     // 提交编辑人脸数据的表单
     editFace = (e) => {
       const { editFace } = this.props;
+      const { editId, editFaceId } = this.state;
       this.props.form.validateFields((errors, values) => {
         if (!errors) {
-          editFace(values).then(
+          const data = Object.assign({ id: editId, faceId: editFaceId }, values);
+          delete data.imageUrl;
+          editFace(data).then(
             (res) => {
               message.success('编辑人脸数据成功');
               this.setState({
-                editModalVisible: false
-              });
-              this.getTableList();
+                modalVisible: false
+              }, () => this.getTableList());
             }
           ).catch((err) => {
             // message.warning('添加账户失败')
@@ -287,6 +208,7 @@ class Face extends Component {
         message.success('删除成功');
         this.setState({
           delModalVisible: false,
+          pageNum: 1,
           selectedRowKeys: [],
         }, () => this.getTableList());
       });
@@ -318,11 +240,11 @@ class Face extends Component {
     beforeUpload = (file) => {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
       if (!isJpgOrPng) {
-        message.error('You can only upload JPG/PNG file!');
+        message.error('仅支持上传.jpg、.png格式图片！');
       }
       const isLt2M = file.size / 1024 / 1024 < 20;
       if (!isLt2M) {
-        message.error('Image must smaller than 20MB!');
+        message.error('图片大小不得超过20M！');
       }
       return isJpgOrPng && isLt2M;
     };
@@ -334,15 +256,21 @@ class Face extends Component {
         return;
       }
       if (info.file.status === 'done' && info.file.response.code === 0) {
-        this.setState({
-          imageUrl: `${urlPrefix}/face/displayupimage/${info.file.response.data[0].faceId}`,
-          imageLoading: false,
-        });
+        if (info.file.response.data[0].faceId) {
+          this.setState({
+            imageUrl: `${urlPrefix}/face/displayupimage/${info.file.response.data[0].faceId}?${new Date().getTime()}`,
+            imageLoading: false,
+          });
+        }
+        if (info.file.response.data[0].faceId && this.state.modalStatus === 'edit') {
+          this.setState({
+            editFaceId: info.file.response.data[0].faceId
+          });
+        }
       }
       if (info.file.response.code === -1) {
         message.error(`${info.file.name}上传失败！`);
       }
-      console.log('>>>>>>upload photo', info, info.file.response);
     };
 
     renderTableHeaders = () => {
@@ -369,7 +297,7 @@ class Face extends Component {
             <div className={styles.import}>
               <Link to="/gallery/face/import" className={styles.importLink}>
                 <ImportOutlined className={styles.iconActive} />
-                <a>批量导入</a>
+                <span>批量导入</span>
               </Link>
             </div>
             <div className={styles.del}>
@@ -394,7 +322,6 @@ class Face extends Component {
     };
 
     handleImageError = (e) => {
-      console.log('>>>>>image', e, e.target);
       const image = e.target;
       image.src = noImg;
       image.style.height = '109px';
@@ -403,8 +330,15 @@ class Face extends Component {
       image.onerror = null;
     };
 
+    handleEditImageError = (e) => {
+      const image = e.target;
+      image.src = noImg;
+      image.style.height = '102px';
+      image.style.width = '102px';
+      image.onerror = null;
+    }
+
     onChange = (item, e) => {
-      console.log('>>>>checkbox', item, e);
       const { faceData, selectedRowKeys } = this.state;
       let faceDataTemp = [];
       faceDataTemp = faceData.map((i) => {
@@ -426,8 +360,6 @@ class Face extends Component {
         selectedRowKeys,
         faceData: faceDataTemp
       });
-
-      console.log('选择的批量删除的ids', this.state.selectedRowKeys);
     };
 
     onPageChange = (current, pageSize) => {
@@ -447,7 +379,7 @@ class Face extends Component {
 
     renderTable = () => {
       const {
-        uploadUrl, faceData, modalVisible, textMap, modalStatus, imageLoading, imageUrl, delModalVisible, selectedRowKeys, delName, delIds, total, pageNum, pageSize, repeatModalVisible
+        loading, uploadUrl, faceData, modalVisible, textMap, modalStatus, imageLoading, imageUrl, delModalVisible, selectedRowKeys, delName, delIds, total, pageNum, pageSize, repeatModalVisible
       } = this.state;
       const delIdsLength = delIds.length;
       const {
@@ -475,6 +407,7 @@ class Face extends Component {
               xl: 6,
               xxl: 8,
             }}
+            loading={loading}
             dataSource={faceData}
             pagination={false}
             renderItem={item => (
@@ -482,8 +415,8 @@ class Face extends Component {
                 <Card bordered={false} hoverable>
                   <div className={item.isChecked ? styles.cardContanierChecked : styles.cardContanier}>
                     <div className={styles.imgContainer}>
-                      <img src={`${urlPrefix}/face/displayimage/${item.photoId}`} onError={e => this.handleImageError(e)} alt="" />
-                      <Checkbox className={item.isChecked ? styles.checkedbox : styles.checkbox} onChange={e => this.onChange(item, e)} />
+                      <img src={`${urlPrefix}/face/displayimage/${item.photoId}?${new Date().getTime()}`} onError={e => this.handleImageError(e)} alt="" />
+                      <Checkbox className={item.isChecked ? styles.checkedbox : styles.checkbox} checked={item.isChecked} onChange={e => this.onChange(item, e)} />
                     </div>
                     <div className={item.isChecked ? styles.btnChecked : styles.btn}>
                       <Icon type="edit" className={styles.iconEdit} onClick={() => this.handleEditFace(item)} />
@@ -523,6 +456,7 @@ class Face extends Component {
                 current={pageNum}
                 showSizeChanger
                 showQuickJumper
+                pageSizeOptions={['12', '24', '60', '120']}
                 pageSize={pageSize}
                 onChange={this.onPageChange}
                 onShowSizeChange={this.onShowSizeChange}
@@ -575,7 +509,7 @@ class Face extends Component {
                     beforeUpload={this.beforeUpload}
                     onChange={this.handleChange}
                   >
-                    {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                    {imageUrl ? <img src={imageUrl} alt="" style={{ width: '100%' }} onError={e => this.handleEditImageError(e)} /> : uploadButton}
                   </Upload>
                 )
                 }

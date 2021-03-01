@@ -62,6 +62,7 @@ import ImportFace from 'Views/gallery/face/import';
 import Alarms from 'Views/alarms';
 import { pathPrefix } from 'Constants/Dictionary';
 
+
 const routesConfig = [
   {
     path: '/login',
@@ -200,7 +201,7 @@ const menuRoutes = [
       },
       {
         path: '/carLicense',
-        exact:true,
+        exact: true,
         component: Plate,
         children: [
           {
