@@ -239,7 +239,10 @@ const ImageModal = ({
     visible={visible}
     footer={null}
     onCancel={closeModal}
-    width="40vw"
+    width="50vw"
+    style={{
+      maxWidth: '800px'
+    }}
   >
     <img
       src={src}
