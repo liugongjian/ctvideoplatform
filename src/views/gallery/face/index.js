@@ -145,11 +145,11 @@ class Face extends Component {
       });
       setFieldsValue({
         name: item.name.split('.')[0],
-        imageUrl: `${urlPrefix}/face/displayimage/${item.photoId}?${new Date().getTime()}`,
+        imageUrl: `${urlPrefix}/face/displayexist/${item.photoId}?${new Date().getTime()}`,
         label: item.labelCode
       });
       this.setState({
-        imageUrl: `${urlPrefix}/face/displayimage/${item.photoId}?${new Date().getTime()}`
+        imageUrl: `${urlPrefix}/face/displayexist/${item.photoId}?${new Date().getTime()}`
       });
     };
 
@@ -258,7 +258,7 @@ class Face extends Component {
       if (info.file.status === 'done' && info.file.response.code === 0) {
         if (info.file.response.data[0].faceId) {
           this.setState({
-            imageUrl: `${urlPrefix}/face/displayupimage/${info.file.response.data[0].faceId}?${new Date().getTime()}`,
+            imageUrl: `${urlPrefix}/face/displayupload/${info.file.response.data[0].faceId}?${new Date().getTime()}`,
             imageLoading: false,
           });
         }
@@ -415,7 +415,7 @@ class Face extends Component {
                 <Card bordered={false} hoverable>
                   <div className={item.isChecked ? styles.cardContanierChecked : styles.cardContanier}>
                     <div className={styles.imgContainer}>
-                      <img src={`${urlPrefix}/face/displayimage/${item.photoId}?${new Date().getTime()}`} onError={e => this.handleImageError(e)} alt="" />
+                      <img src={`${urlPrefix}/face/displayexist/${item.photoId}?${new Date().getTime()}`} onError={e => this.handleImageError(e)} alt="" />
                       <Checkbox className={item.isChecked ? styles.checkedbox : styles.checkbox} checked={item.isChecked} onChange={e => this.onChange(item, e)} />
                     </div>
                     <div className={item.isChecked ? styles.btnChecked : styles.btn}>

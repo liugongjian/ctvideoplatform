@@ -247,7 +247,7 @@ class ImportFace extends Component {
                             <Card bordered={false}>
                               <div className={styles.cardContanier}>
                                 <div className={styles.imgContainer}>
-                                  <img src={`${urlPrefix}/face/displayupimage/${item.temporaryId}`} onError={e => this.handleImageError(e)} alt="" />
+                                  <img src={`${urlPrefix}/face/displayupload/${item.temporaryId}`} onError={e => this.handleImageError(e)} alt="" />
                                 </div>
                                 <div className={styles.footerContanier}>
                                   <div className={styles.info}>
