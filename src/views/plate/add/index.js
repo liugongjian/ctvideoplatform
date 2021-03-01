@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Table, Upload , Icon , Button , Pagination , Tag
+  Table, Upload , Icon , Button , Pagination , Tag , message
 } from 'antd';
 import {Link} from 'react-router-dom'
 import { bindActionCreators } from 'redux';
@@ -41,9 +41,26 @@ class AddPlate extends Component {
 
   render() {
     const { list } = this.state;
+    const uploadprops = {
+      name: 'file',
+      multiple: false,
+      maxCount:1,
+      action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+      onChange(info) {
+        const { status } = info.file;
+        if (status !== 'uploading') {
+          console.log(info.file, info.fileList);
+        }
+        if (status === 'done') {
+          message.success(`${info.file.name} 上传成功`);
+        } else if (status === 'error') {
+          message.error(`${info.file.name} file upload failed.`);
+        }
+      },
+    };
     const uploader = ()=>(         
           <div className={styles.uploadWrapper}>
-            <Dragger>
+            <Dragger {...uploadprops}>
                 <p className="ant-upload-drag-icon">
                   <Icon type="inbox" />
                 </p>
@@ -56,7 +73,7 @@ class AddPlate extends Component {
                 <Button key="submit" type="primary" className={styles.btnNext}>
                   下一步
                 </Button>
-                <Button key="submit"className={styles.btnBack}>
+                <Button key="cancel"className={styles.btnBack}>
                   返回
                 </Button>
               </div>
@@ -97,7 +114,7 @@ class AddPlate extends Component {
     )
     return (
       <div className={styles.mainWrapper}>
-        {confirmer()}
+        {uploader()}
       </div>
     );
   }
