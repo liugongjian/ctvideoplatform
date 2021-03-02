@@ -13,6 +13,7 @@ import { pathPrefix } from '@/constants/Dictionary';
 import 'antd/dist/antd.css';
 import styles from './index.less';
 import warnPic from '@/assets/role/warn.png'
+import EIcon from 'Components/Icon';
 const { Column } = Table;
 const { Dragger } = Upload;
 
@@ -109,6 +110,9 @@ class AddPlate extends Component {
     };
     const uploader = ()=>(         
           <div className={styles.uploadWrapper}>
+            <div className={styles.templateWrapper}>
+              <a href={`${urlPrefix}/license/template`}><EIcon type="myicon-downloadicon" />下载模板</a>
+            </div>
             <Dragger {...uploadprops} fileList={this.state.fileList}>
                 <p className="ant-upload-drag-icon">
                   <Icon type="inbox" />
@@ -117,11 +121,7 @@ class AddPlate extends Component {
                 <p className="ant-upload-hint">
                   支持的格式：仅支持csv、xlsx、xls格式文件
                 </p>
-
               </Dragger>
-              <div>
-                <a href={`${urlPrefix}/license/template`}>下载模板</a>
-              </div>
               <div className={styles.buttonWrapper}>
                 <Button key="submit" type="primary" className={styles.btnNext} onClick={()=>this.onNextStep()} disabled={this.state.fileList.length < 1}>
                   下一步
@@ -136,7 +136,16 @@ class AddPlate extends Component {
     const confirmer = ()=>(
       <div>
           <Table dataSource={importedPlateInfo.list} pagination={false} rowKey={(record) => record.licenseNo}>
-          <Column title="车牌号" dataIndex="licenseNo" width={'14%'} className="tabble-row" align="center"/>
+          <Column title="车牌号" dataIndex="licenseNo" width={'14%'} className="tabble-row" align="center" 
+            render= {(text,record) => (
+                <div>
+                { 
+                  record.duplicated ? <div style={{color:'red'}}>{ record.licenseNo }</div> : <div>{ record.licenseNo }</div>
+                }    
+                </div>      
+              )
+            }
+          />
           <Column title="布控标签" dataIndex="label" width={'60%'} align="center"
                   render={(text, record) => (
                     <div>
@@ -163,8 +172,10 @@ class AddPlate extends Component {
           </div>
         </div>
           <div>
-            <Button key="cancel"className={styles.btnBack} onClick={()=>this.setState({step : 1})} style={{marginLeft:'250px'}}>上一步</Button>
-            <Button type="primary" style={{margin:'20px 20px 0 50px'}} onClick={()=>this.onCheckAndSubmit()}>提交</Button>
+            <div className={styles.buttonWrapper2}>
+              <Button key="cancel"className={styles.btnBack2} onClick={()=>this.setState({step : 1})}>上一步</Button>
+              <Button type="primary" onClick={()=>this.onCheckAndSubmit()}>提交</Button>
+            </div>
           </div>
           
         </div>

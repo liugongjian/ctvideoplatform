@@ -9,6 +9,15 @@
   height: 268px;
   margin: 100px auto ;
 }
+.mainWrapper .uploadWrapper .templateWrapper {
+  vertical-align: bottom;
+  height: 30px;
+}
+.mainWrapper .uploadWrapper .templateWrapper > a {
+  float: right;
+  font-size: 14px;
+  line-height: 22px;
+}
 .mainWrapper .buttonWrapper {
   margin-top: 40px;
   padding: 0 340px;
@@ -75,4 +84,13 @@
   font-size: 12px;
   color: #999999;
   margin-bottom: 11px;
+}
+.buttonWrapper2 {
+  padding-top: 50px;
+  width: 300px;
+  height: 100px;
+  margin: 0 auto;
+}
+.buttonWrapper2 .btnBack2 {
+  margin-right: 50px;
 }
