@@ -105,6 +105,7 @@ class ImportFace extends Component {
 
   handleListChange = (pagination, filters, sorter) => {
     this.setState({
+      stepCurrent: 1,
       pageNum: pagination.current,
       pageSize: pagination.pageSize
     }, () => this.getTableList());
