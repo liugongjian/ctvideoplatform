@@ -456,7 +456,7 @@ class Face extends Component {
                 current={pageNum}
                 showSizeChanger
                 showQuickJumper
-                pageSizeOptions={['12', '24', '60', '120']}
+                pageSizeOptions={['12', '24', '36', '48']}
                 pageSize={pageSize}
                 onChange={this.onPageChange}
                 onShowSizeChange={this.onShowSizeChange}
