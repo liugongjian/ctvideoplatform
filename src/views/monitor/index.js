@@ -921,11 +921,12 @@ class Monitor extends Component {
 
 
     return (
-      <Spin spinning={areaListLoading} wrapperClassName={styles.contentSpin}>
-        <div className={styles.content}>
-          <div className={styles.areaTree}>
-            <h1 className={styles.titleText}>区域列表</h1>
-            <Search placeholder="请输入关键字" onSearch={this.getAreaList} />
+
+      <div className={styles.content}>
+        <div className={styles.areaTree}>
+          <h1 className={styles.titleText}>区域列表</h1>
+          <Search placeholder="请输入关键字" onSearch={this.getAreaList} />
+          <div className={styles.areaList}>
             {
               treeDatas && treeDatas.length ? (
                 <Tree
@@ -945,106 +946,106 @@ class Monitor extends Component {
               ) : null
             }
           </div>
-          <div className={styles.monitorList}>
-            <h1 className={styles.titleText}>视频监控点</h1>
-            <div className={styles.searchBox}>
-              <div className={styles.searchItme}>
-                <span>摄像头名称：</span>
-                <Input value={deviceName} placeholder="请输入摄像头名称" onChange={this.changeDeviceName} />
-              </div>
-              <div className={styles.searchItme}>
-                <span>摄像头ID：</span>
-                <Input value={originId} placeholder="请输入摄像头ID" onChange={this.changeDeviceId} />
-              </div>
-              <div className={styles.searchItme}>
-                <span>算法：</span>
-                <Select
-                  defaultValue="all"
-                  value={algorithmId}
-                  style={{ width: 120 }}
-                  onSelect={this.selectThisAlgorithm}
-                >
-                  <Option value="all">全部</Option>
-                  {drawAlgorithmList()}
-                </Select>
-              </div>
-              <Button type="primary" className={styles.searchHandleBtn} onClick={this.getDeviceListByAll}>查询</Button>
-              <Button className={styles.searchHandleBtn} onClick={this.resetSearch}>
-                <Icon type="reload" />
-                <span>重置</span>
-              </Button>
+        </div>
+        <div className={styles.monitorList}>
+          <h1 className={styles.titleText}>视频监控点</h1>
+          <div className={styles.searchBox}>
+            <div className={styles.searchItme}>
+              <span>摄像头名称：</span>
+              <Input value={deviceName} placeholder="请输入摄像头名称" onChange={this.changeDeviceName} />
             </div>
-            <div className={styles.searchResult}>
-              <div className={styles.handleResult}>
-                <Button type="link" onClick={this.openModal} className={styles.handleBtn}>
-                  <Icon type="export" />
-                  <span>导入</span>
-                </Button>
-                <Button type="link" className={styles.handleBtn} onClick={this.delThisKeys} disabled={!checkedKeys.length}>
-                  <Icon type="delete" />
-                  <span>批量删除</span>
-                </Button>
-                <Checkbox onChange={this.changeStatus}>包含下级区域</Checkbox>
-              </div>
-              <Table
-                rowSelection={rowSelection}
-                columns={columns}
-                dataSource={tableData.list || []}
-                scroll={{ x: 'max-content' }}
-                pagination={pagination}
-                onChange={this.tableChange}
-              />
+            <div className={styles.searchItme}>
+              <span>摄像头ID：</span>
+              <Input value={originId} placeholder="请输入摄像头ID" onChange={this.changeDeviceId} />
             </div>
+            <div className={styles.searchItme}>
+              <span>算法：</span>
+              <Select
+                defaultValue="all"
+                value={algorithmId}
+                style={{ width: 120 }}
+                onSelect={this.selectThisAlgorithm}
+              >
+                <Option value="all">全部</Option>
+                {drawAlgorithmList()}
+              </Select>
+            </div>
+            <Button type="primary" className={styles.searchHandleBtn} onClick={this.getDeviceListByAll}>查询</Button>
+            <Button className={styles.searchHandleBtn} onClick={this.resetSearch}>
+              <Icon type="reload" />
+              <span>重置</span>
+            </Button>
           </div>
-
-          <Modal
-            title="导入摄像头"
-            visible={showModal}
-            getContainer={false}
-            onOk={this.sureImportDevice}
-            onCancel={this.cancelImportDevice}
-            forceRender
-            destroyOnClose
-            className={styles.deviceModal}
-            width="800px"
-          >
-            <span className={styles.areaTitle}>当前区域：</span>
-            <span className={styles.areaName}>{showAreaName}</span>
-            <div className={styles.searchModalBox}>
-              <div className={styles.searchItme}>
-                <span>摄像头名称：</span>
-                <Input value={modalDeviceName} placeholder="请输入摄像头名称" onChange={this.changeModalDeviceName} />
-              </div>
-              <div className={styles.searchItme}>
-                <span>摄像头ID：</span>
-                <Input value={modalDeviceId} placeholder="请输入摄像头ID" onChange={this.changeModalDeviceId} />
-              </div>
-              <Button type="primary" className={styles.searchHandleBtn} onClick={this.getModalDeviceListByAll}>查询</Button>
-              <Button className={styles.searchHandleBtn} onClick={this.resetModalSearch}>
-                <Icon type="reload" />
-                <span>重置</span>
+          <div className={styles.searchResult}>
+            <div className={styles.handleResult}>
+              <Button type="link" onClick={this.openModal} className={styles.handleBtn}>
+                <Icon type="export" />
+                <span>导入</span>
               </Button>
+              <Button type="link" className={styles.handleBtn} onClick={this.delThisKeys} disabled={!checkedKeys.length}>
+                <Icon type="delete" />
+                <span>批量删除</span>
+              </Button>
+              <Checkbox onChange={this.changeStatus}>包含下级区域</Checkbox>
             </div>
             <Table
-              dataSource={modalDeviceData.list}
-              rowSelection={modalRowSelection}
-              columns={modalColumns}
-              pagination={modalPagination}
-              getContainer={false}
+              rowSelection={rowSelection}
+              columns={columns}
+              dataSource={tableData.list || []}
+              scroll={{ x: 'max-content' }}
+              pagination={pagination}
+              onChange={this.tableChange}
             />
-          </Modal>
-
-          <Modal
-            title="删除提示"
-            visible={showDelModal}
-            onOk={this.sureDelThisKeys}
-            onCancel={this.cancelDelthisKeys}
-            getContainer={false}
-          >
-            <p className={styles.delModalText}>您确定要删除所选摄像头吗？</p>
-          </Modal>
+          </div>
         </div>
-      </Spin>
+
+        <Modal
+          title="导入摄像头"
+          visible={showModal}
+          getContainer={false}
+          onOk={this.sureImportDevice}
+          onCancel={this.cancelImportDevice}
+          forceRender
+          destroyOnClose
+          className={styles.deviceModal}
+          width="800px"
+        >
+          <span className={styles.areaTitle}>当前区域：</span>
+          <span className={styles.areaName}>{showAreaName}</span>
+          <div className={styles.searchModalBox}>
+            <div className={styles.searchItme}>
+              <span>摄像头名称：</span>
+              <Input value={modalDeviceName} placeholder="请输入摄像头名称" onChange={this.changeModalDeviceName} />
+            </div>
+            <div className={styles.searchItme}>
+              <span>摄像头ID：</span>
+              <Input value={modalDeviceId} placeholder="请输入摄像头ID" onChange={this.changeModalDeviceId} />
+            </div>
+            <Button type="primary" className={styles.searchHandleBtn} onClick={this.getModalDeviceListByAll}>查询</Button>
+            <Button className={styles.searchHandleBtn} onClick={this.resetModalSearch}>
+              <Icon type="reload" />
+              <span>重置</span>
+            </Button>
+          </div>
+          <Table
+            dataSource={modalDeviceData.list}
+            rowSelection={modalRowSelection}
+            columns={modalColumns}
+            pagination={modalPagination}
+            getContainer={false}
+          />
+        </Modal>
+
+        <Modal
+          title="删除提示"
+          visible={showDelModal}
+          onOk={this.sureDelThisKeys}
+          onCancel={this.cancelDelthisKeys}
+          getContainer={false}
+        >
+          <p className={styles.delModalText}>您确定要删除所选摄像头吗？</p>
+        </Modal>
+      </div>
     );
   }
 }
