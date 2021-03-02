@@ -284,7 +284,7 @@ class Face extends Component {
               placeholder="请输入姓名"
               onChange={this.queryName}
               value={name}
-              onPressEnter={this.getTableList}
+              onPressEnter={() => this.setState({ pageNum: 1 }, () => { this.getTableList(); })}
               suffix={
                 <SearchOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
               }
