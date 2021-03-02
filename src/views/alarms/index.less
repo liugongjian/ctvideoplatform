@@ -33,7 +33,7 @@
     }
 }
 .alarms{
-    min-width: 950px;
+    min-width: 960px;
     position:relative;
     background-color: white;
     min-height: calc(100% - 30px);
@@ -81,20 +81,20 @@
             text-align: center;
             background-color: #f6f6f6;
         }
-        @media screen and (min-width: 1601px) {
+        @media screen and (min-width: 1701px) {
             .AlarmCard{
-                height: 350px;
-                width: calc((100% - 15px * 4) / 5 );
+                height: 300px;
+                width: calc((100% - 15px * 5) / 6 );
                 &-imgWrapper{
-                    height: 210px;
-                    line-height: 210px;
+                    height: 170px;
+                    line-height: 170px;
                 }
             }
-            .AlarmCard:not(:nth-of-type(5n+0)){
+            .AlarmCard:not(:nth-of-type(6n+0)){
                 margin-right:15px;
             }
         }
-        @media screen and (max-width: 1600px) {
+        @media screen and (max-width: 1700px) {
             .AlarmCard{
                 height: 270px;
                 width: calc((100% - 15px * 3) / 4 );
@@ -193,6 +193,10 @@
         &-time{
             font-family: PingFangSC-Regular;
             font-size: 10px;
+            max-width: calc(100% - 90px);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
             color: #8C8C8C;
             float: right;
         }
@@ -211,6 +215,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             height: 28px;
+            font-size: 12px;
             line-height: 28px;
             width:50%;
             padding:0 12px;

@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable camelcase */
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import {
   Route, Switch, Link, withRouter
 } from 'react-router-dom';
