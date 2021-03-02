@@ -18,10 +18,12 @@ function formatUrl(path) {
   // // }
   // // Prepend `/api` to relative URL, to proxy to API server.
   // return `${adjustedPath}`;
-  if (path.indexOf('?') > -1) {
-    return `${path}&timestamp=${new Date().getTime()}`;
-  }
-  return `${path}?timestamp=${new Date().getTime()}`;
+
+  // if (path.indexOf('?') > -1) {
+  //   return `${path}&timestamp=${new Date().getTime()}`;
+  // }
+  // return `${path}?timestamp=${new Date().getTime()}`;
+  return path;
 }
 
 // function getcookie(name) { // for django csrf protection

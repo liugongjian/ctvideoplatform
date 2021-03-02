@@ -19,6 +19,7 @@ import {
 } from 'Views/alarms/Modals';
 
 import nostatus from 'Assets/nostatus.png';
+import nodata from 'Assets/nodata.png';
 import VideoPlayer from './VideoPlayer';
 import styles from './index.less';
 
@@ -107,7 +108,7 @@ class Preview extends PureComponent {
       const param = {
         pageSize: 10,
         pageNo: 0,
-        // deviceId: id
+        deviceId: id
       };
       getHistoryListTopTen(param).then((res) => {
         console.log('res', res);
@@ -120,10 +121,17 @@ class Preview extends PureComponent {
     getVideoSrc = (id) => {
       const { getVideoSrc } = this.props;
       getVideoSrc(id).then((res) => {
-        console.log('视频流', res.m3u8uri);
-        this.setState({
-          videoSrc: res.m3u8uri
-        });
+        if (res && res.m3u8uri) {
+          this.setState({
+            videoSrc: res.m3u8uri,
+            noVideo: false
+          });
+        } else {
+          this.setState({
+            videoSrc: '',
+            noVideo: true
+          });
+        }
       });
     }
 
@@ -228,7 +236,7 @@ class Preview extends PureComponent {
       render() {
         const {
           treeDatas, selectAreaKeys, expandedKeys, algorithmList,
-          videoSrc, historyListData, imgDialogVisible, imgDialogSrc
+          videoSrc, historyListData, imgDialogVisible, imgDialogSrc, noVideo
         } = this.state;
 
         const { list = [] } = historyListData;
@@ -242,6 +250,22 @@ class Preview extends PureComponent {
             </span>
           </Option>
         ));
+
+        const getImg = () => {
+          if (noVideo) {
+            return (
+              <div className={styles.nodataBox}>
+                <img src={nodata} alt="" />
+              </div>
+            );
+          }
+          return (
+            <div className={styles.nostatusBox}>
+              <img src={nostatus} alt="" />
+              <p>请双击左侧点位播放监控视频</p>
+            </div>
+          );
+        };
 
         return (
           <div className={styles.content}>
@@ -280,6 +304,7 @@ class Preview extends PureComponent {
               </div>
             </div>
             <div className={styles.videoBox}>
+              <p>{videoSrc}</p>
               {videoSrc
                 ? (
                   <Fragment>
@@ -291,12 +316,7 @@ class Preview extends PureComponent {
                     <VideoPlayer src={videoSrc} />
                   </Fragment>
                 )
-                : (
-                  <div className={styles.nostatusBox}>
-                    <img src={nostatus} alt="" />
-                    <p>请双击左侧点位播放监控视频</p>
-                  </div>
-                )}
+                : getImg()}
 
             </div>
             <div className={styles.historyList}>
@@ -314,6 +334,7 @@ class Preview extends PureComponent {
                       style={{ width: 240 }}
                       cover={<img alt="example" src={`${urlPrefix}${item.imageCompress}`} />}
                       onClick={() => this.showImgDialog(item.image)}
+                      key={item.id}
                     >
                       <p>
                         {item.algorithmCnName}
