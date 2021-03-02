@@ -59,12 +59,33 @@
                 margin-right: 10px;
             }
         }
+        .videoCancelBtn{
+            cursor: pointer;
+        }
+    }
+    .nostatusBox{
+        width: 80%;
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform:translate(-50%,-60%);
+        img{
+            width: 100%;
+        }
+        p{
+            margin-top: 10px;
+            text-align: center;
+            font-size: 12px;
+            color: #8C8C8C;
+        }
     }
 }
 .historyList{
     width: 240px;
     background: #fff;
-    padding-top: 10px;
+    height: 100%;
+    padding: 10px 0;
+    overflow:auto;
     .historyTitle{
         display: flex;
         a{
@@ -74,12 +95,20 @@
     }
     p{
         margin: 0;
+        font-size: 12px;
+        color: #333;
+        padding-left: 5px;
     }
     .historyCard{
         :global{
             .ant-card-body{
                 padding: 10px;
+                background-color: #EDEDED;
             }
+        }
+        .historyTime{
+            margin-left: 40px;
+            color: #8C8C8C;
         }
     }
 }

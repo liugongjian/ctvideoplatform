@@ -566,7 +566,7 @@ class Monitor extends Component {
       deviceId: modalDeviceId,
       name: modalDeviceName,
       pageSize: 10,
-      pageNo: modalPageNo
+      pageNo: modalPageNo,
     };
     getDevicePoolList(param).then((res) => {
       if (Array.isArray(res.list)) {

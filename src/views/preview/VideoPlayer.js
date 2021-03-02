@@ -16,7 +16,7 @@ class VideoPlayer extends Component {
     }
 
     componentWillReceiveProps(props) {
-      console.log('props', props);
+    //   console.log('props', props);
       try {
         const { src } = props;
         if (!src || src === this.props.src) return;
@@ -38,7 +38,7 @@ class VideoPlayer extends Component {
     initVideo(src) {
       const { videoId } = this.state;
       const { height = '400px', width = '300px' } = this.props;
-      this.player = videojs(videoId, {
+      this.player = videojs(this.videoNode, {
         height,
         width,
         controls: true,
@@ -51,15 +51,17 @@ class VideoPlayer extends Component {
             type: 'application/x-mpegURL'
           }
         ]
+      }, () => {
+        console.log('I`m ready');
       });
-    //   this.player.src({ src });
+      this.player.src({ src }); // 解决更换src时，videojs不切换视频源的问题
     }
 
     render() {
       const { videoId } = this.state;
       return (
         <div className={styles.videoWrap}>
-          <video className={`${styles.videojs} video-js`} id={videoId} />
+          <video className={`${styles.videojs} video-js`} id={videoId} ref={node => this.videoNode = node} />
         </div>
       );
     }
