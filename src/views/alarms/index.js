@@ -42,6 +42,8 @@ const initialVals = {
   endTime: moment(),
   deviceVal: [],
   algoVal: [],
+  pageSize: 12,
+  current: 1,
 };
 
 const timeFormat = 'YYYY-MM-DD HH:mm:ss';
@@ -56,9 +58,7 @@ class Alarms extends Component {
       devicesLoading: false,
       listData: [],
       listLoading: false,
-      pageSize: 10,
       total: 0,
-      current: 1,
       algorithmIdList: undefined,
       ...initialVals,
     };
@@ -230,7 +230,7 @@ class Alarms extends Component {
         listData, listLoading,
         algoList, algoListLoading,
         deviceTree, devicesLoading,
-        total, current,
+        total, current, pageSize,
         startTime, endTime, algoVal, deviceVal
       } = this.state;
       return (
@@ -282,7 +282,7 @@ class Alarms extends Component {
           <Spin spinning={listLoading}>
             <div className={styles['alarms-listWrapper']}>
               {
-                listData.length > 0
+                listData.length > 0 || listLoading
                   ? listData.map(item => (
                     <AlarmCard
                       key={item.id}
@@ -303,8 +303,11 @@ class Alarms extends Component {
               // size="small"
               total={total}
               current={current}
+              // pageSize={pageSize}
+              defaultPageSize={initialVals.pageSize}
               onChange={this.onPageChange}
               onShowSizeChange={this.onPageChange}
+              pageSizeOptions={['12', '24', '36', '48']}
               showSizeChanger
               showQuickJumper
               showTotal={this.showTotal}
