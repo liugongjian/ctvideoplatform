@@ -18,7 +18,10 @@ function formatUrl(path) {
   // // }
   // // Prepend `/api` to relative URL, to proxy to API server.
   // return `${adjustedPath}`;
-  return path;
+  if (path.indexOf('?') > -1) {
+    return `${path}&timestamp=${new Date().getTime()}`;
+  }
+  return `${path}?timestamp=${new Date().getTime()}`;
 }
 
 // function getcookie(name) { // for django csrf protection

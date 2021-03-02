@@ -190,13 +190,15 @@ class AlarmCard extends Component {
           handleImageError={e => this.handleImageError(e)}
         />
         <div className={styles['AlarmCard-title']}>
-          {/*
-          // 头部空间不足 先删除icon
-           <img src={getImgUrl('carPersonCheck')}
-          alt="icon" className={styles['AlarmCard-title-icon']} />
-        &nbsp; */}
+          {/* // 头部空间不足 先删除icon */}
+          <img
+            src={getImgUrl(algorithmName)}
+            alt="icon"
+            className={styles['AlarmCard-title-icon']}
+          />
+        &nbsp;
           <span className={styles['AlarmCard-title-name']}>{algorithmCnName || ''}</span>
-          <span className={styles['AlarmCard-title-time']}>{resTime || ''}</span>
+          <span className={styles['AlarmCard-title-time']} title={resTime || ''}>{resTime || ''}</span>
         </div>
         <div className={`${styles['AlarmCard-imgWrapper']} ${imageErr ? '' : styles['AlarmCard-imgWrapper-cursor']}`} onClick={imageErr ? () => {} : this.showImgDialog}>
           <div className={styles['AlarmCard-imgWrapper-title']} title={deviceName}>

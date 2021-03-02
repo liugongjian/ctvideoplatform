@@ -8,10 +8,15 @@ const GET_HISTORYTOP = 'GET_HISTORYTOP';
 const GET_HISTORYTOP_SUCCESS = 'GET_HISTORYTOP_SUCCESS';
 const GET_HISTORYTOP_FAIL = 'GET_HISTORYTOP_FAIL';
 
+const GET_VIDEOSRC = 'GET_VIDEOSRC';
+const GET_VIDEOSRC_SUCCESS = 'GET_VIDEOSRC_SUCCESS';
+const GET_VIDEOSRC_FAIL = 'GET_VIDEOSRC_FAIL';
+
 const initialState = {
   areatList: [],
   loading: false,
   historyTop: [],
+  videoUrl: {}
 };
 
 export default function preview(state = initialState, action = {}) {
@@ -50,6 +55,23 @@ export default function preview(state = initialState, action = {}) {
         loading: false,
         error: action.error
       };
+    case GET_VIDEOSRC:
+      return {
+        ...state,
+        loading: true
+      };
+    case GET_VIDEOSRC_SUCCESS:
+      return {
+        ...state,
+        videoUrl: action.data,
+        loading: false
+      };
+    case GET_VIDEOSRC_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: action.error
+      };
     default:
       return {
         ...state
@@ -72,5 +94,12 @@ export function getHistoryListTopTen(data) {
     promise: apiClient => apiClient.post(`${urlPrefix}/task/result/query`, {
       data
     })
+  };
+}
+
+export function getVideoSrc(id) {
+  return {
+    type: [GET_VIDEOSRC, GET_VIDEOSRC_SUCCESS, GET_VIDEOSRC_FAIL],
+    promise: apiClient => apiClient.get(`${urlPrefix}/device/stream/${id}`)
   };
 }

@@ -8,14 +8,18 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
 import {
-  getAreaList, getHistoryListTopTen
+  getAreaList, getHistoryListTopTen, getVideoSrc
 } from 'Redux/reducer/preview';
 
 import { getAlgorithmList } from 'Redux/reducer/monitor';
 import { urlPrefix } from 'Constants/Dictionary';
 
-import VideoPlayer from './VideoPlayer';
+import {
+  ImageModal,
+} from 'Views/alarms/Modals';
 
+import nostatus from 'Assets/nostatus.png';
+import VideoPlayer from './VideoPlayer';
 import styles from './index.less';
 
 const mapStateToProps = state => ({ preview: state.preview });
@@ -24,7 +28,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     push,
     getAreaList,
     getAlgorithmList,
-    getHistoryListTopTen
+    getHistoryListTopTen,
+    getVideoSrc
   },
   dispatch
 );
@@ -44,7 +49,8 @@ class Preview extends PureComponent {
       algorithmList: [],
       keyword: '',
       videoSrc: null,
-      historyListData: {}
+      historyListData: {},
+      imgDialogVisible: false
     };
   }
 
@@ -91,8 +97,9 @@ class Preview extends PureComponent {
     }
 
     doubleClickHandle = (e, val) => {
-      console.log('曲线救国思密达----->', val);
+    //   console.log('曲线救国思密达----->', val);
       this.getHistory(val.id);
+      this.getVideoSrc(val.id);
     }
 
     getHistory=(id) => {
@@ -107,6 +114,23 @@ class Preview extends PureComponent {
         this.setState({
           historyListData: res
         });
+      });
+    }
+
+    getVideoSrc = (id) => {
+      const { getVideoSrc } = this.props;
+      getVideoSrc(id).then((res) => {
+        console.log('视频流', res.m3u8uri);
+        this.setState({
+          videoSrc: res.m3u8uri
+        });
+      });
+    }
+
+    clearVideo = () => {
+      this.setState({
+        videoSrc: '',
+        historyListData: {}
       });
     }
 
@@ -190,94 +214,124 @@ class Preview extends PureComponent {
       });
     }
 
-    render() {
-      const {
-        treeDatas, selectAreaKeys, expandedKeys, algorithmList, videoSrc, historyListData
-      } = this.state;
-
-      const { list = [] } = historyListData;
-
-      const tempUrl = window.location.origin;
-
-      const drawAlgorithmList = () => algorithmList.map(item => (
-        <Option value={item.id} key={item.id} label={item.cnName}>
-          <span aria-label={item.id}>
-            {item.cnName}
-          </span>
-        </Option>
-      ));
-
-      return (
-        <div className={styles.content}>
-          <div className={styles.areaBox}>
-            <div className={styles.searchBox}>
-              <h2>监控点</h2>
-              <Search placeholder="请输入点位或区域" onSearch={this.searchByKeyword} />
-              <Select
-                defaultValue={[]}
-                style={{ width: '100%' }}
-                placeholder="请选择已配置算法"
-                mode="multiple"
-                onChange={this.algorithmChangeHandle}
-                optionLabelProp="label"
-              >
-                {drawAlgorithmList()}
-              </Select>
-            </div>
-            <div className={styles.areaList}>
-              {
-                treeDatas && treeDatas.length ? (
-                  <Tree
-                    expandedKeys={expandedKeys}
-                    defaultExpandAll
-                    blockNode
-                    showIcon
-                    onExpand={this.onExpand}
-                    onSelect={this.onSelect}
-                    className={styles.dataTree}
-                    ref={ref => this.treeNode = ref}
-                  >
-                    {this.renderTreeNodes(treeDatas)}
-                  </Tree>
-                ) : null
-              }
-            </div>
-          </div>
-          <div className={styles.videoBox}>
-            <div className={styles.videoHandle}>
-              <EIcon type="myicon-monitoring" />
-              <div>监控点位</div>
-              <EIcon type="myicon-cancel" />
-            </div>
-            <VideoPlayer src="http://ivi.bupt.edu.cn/hls/cctv3hd.m3u8" />
-          </div>
-          <div className={styles.historyList}>
-            <div className={styles.historyTitle}>
-              <p>
-                实时告警记录
-                <a>历史记录</a>
-              </p>
-            </div>
-            <div className={styles.historyCard}>
-              {
-                list.map(item => (
-                  <Card
-                    hoverable
-                    style={{ width: 240 }}
-                    cover={<img alt="example" src={`${urlPrefix}${item.imageCompress}`} />}
-                  >
-                    {/* } <Meta title="Europe Street beat" description="www.instagram.com" /> */}
-                    <p>
-                      {item.type}
-                      {item.resTime}
-                    </p>
-                  </Card>
-                ))
-              }
-            </div>
-          </div>
-        </div>
-      );
+    showImgDialog = (src) => {
+      this.setState({
+        imgDialogVisible: true,
+        imgDialogSrc: src
+      });
     }
+
+      closeImgDialog = () => {
+        this.setState({ imgDialogVisible: false });
+      }
+
+      render() {
+        const {
+          treeDatas, selectAreaKeys, expandedKeys, algorithmList,
+          videoSrc, historyListData, imgDialogVisible, imgDialogSrc
+        } = this.state;
+
+        const { list = [] } = historyListData;
+
+        const tempUrl = window.location.origin;
+
+        const drawAlgorithmList = () => algorithmList.map(item => (
+          <Option value={item.id} key={item.id} label={item.cnName}>
+            <span aria-label={item.id}>
+              {item.cnName}
+            </span>
+          </Option>
+        ));
+
+        return (
+          <div className={styles.content}>
+            <div className={styles.areaBox}>
+              <div className={styles.searchBox}>
+                <h2>监控点</h2>
+                <Search placeholder="请输入点位或区域" onSearch={this.searchByKeyword} />
+                <Select
+                  defaultValue={[]}
+                  style={{ width: '100%' }}
+                  placeholder="请选择已配置算法"
+                  mode="multiple"
+                  onChange={this.algorithmChangeHandle}
+                  optionLabelProp="label"
+                >
+                  {drawAlgorithmList()}
+                </Select>
+              </div>
+              <div className={styles.areaList}>
+                {
+                  treeDatas && treeDatas.length ? (
+                    <Tree
+                      expandedKeys={expandedKeys}
+                      defaultExpandAll
+                      blockNode
+                      showIcon
+                      onExpand={this.onExpand}
+                      onSelect={this.onSelect}
+                      className={styles.dataTree}
+                      ref={ref => this.treeNode = ref}
+                    >
+                      {this.renderTreeNodes(treeDatas)}
+                    </Tree>
+                  ) : null
+                }
+              </div>
+            </div>
+            <div className={styles.videoBox}>
+              {videoSrc
+                ? (
+                  <Fragment>
+                    <div className={styles.videoHandle}>
+                      <EIcon type="myicon-monitoring" />
+                      <div>监控点位</div>
+                      <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={this.clearVideo} />
+                    </div>
+                    <VideoPlayer src={videoSrc} />
+                  </Fragment>
+                )
+                : (
+                  <div className={styles.nostatusBox}>
+                    <img src={nostatus} alt="" />
+                    <p>请双击左侧点位播放监控视频</p>
+                  </div>
+                )}
+
+            </div>
+            <div className={styles.historyList}>
+              <div className={styles.historyTitle}>
+                <p>
+                  实时告警记录
+                  <a>历史记录</a>
+                </p>
+              </div>
+              <div className={styles.historyCard}>
+                {
+                  list.map(item => (
+                    <Card
+                      hoverable
+                      style={{ width: 240 }}
+                      cover={<img alt="example" src={`${urlPrefix}${item.imageCompress}`} />}
+                      onClick={() => this.showImgDialog(item.image)}
+                    >
+                      <p>
+                        {item.algorithmCnName}
+                        <span className={styles.historyTime}>{item.resTime}</span>
+                      </p>
+                    </Card>
+                  ))
+                }
+              </div>
+            </div>
+            <ImageModal
+              visible={imgDialogVisible}
+              closeModal={this.closeImgDialog}
+              src={`${urlPrefix}${imgDialogSrc}`}
+              handleImageError={e => this.handleImageError(e)}
+            />
+          </div>
+        );
+      }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Preview);
