@@ -65,19 +65,21 @@
             margin-right: 20px;
         }
         .queryUserName{
-            width:20%;
+            width: 20%;
+            margin-right: 20px;
             :global{
                 .ant-input{
-                    width: 65%;
+                    width: calc(100% - 56px);
                     height: 32px;
                 }
             }
         }
         .queryRoleName{
-            width:25%;
+            width: 20%;
+            margin-right: 20px;
             :global{
                 .ant-input{
-                    width: 65%;
+                    width: calc(100% - 70px);
                     height: 32px;
                 }
             }
@@ -166,6 +168,11 @@
 }
 
 .pswModal{
+    :global{
+        .ant-form{
+            width: 85%;
+        }
+    }
     .userNameItem{
         margin-bottom: 10px;
         .userName{
@@ -194,6 +201,11 @@
     }
 }
 .editModal{
+    :global{
+        .ant-select-selection{
+            width: 60%;
+        }
+    }
     .editSecTitle{
         font-family: MicrosoftYaHei;
         font-size: 16px;
