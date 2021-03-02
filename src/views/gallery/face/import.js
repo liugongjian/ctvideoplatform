@@ -134,11 +134,11 @@ class ImportFace extends Component {
         if (!isZip) {
           message.error('请上传ZIP格式的压缩包！');
         }
-        const isLt50M = file.size / 1024 / 1024 < 50;
-        if (!isLt50M) {
-          message.error('压缩包大小不得超过50M！');
+        const isLt1024M = file.size / 1024 / 1024 < 1024;
+        if (!isLt1024M) {
+          message.error('压缩包大小不得超过1G！');
         }
-        if (isZip && isLt50M) {
+        if (isZip && isLt1024M) {
           return resolve(true);
         }
         // eslint-disable-next-line prefer-promise-reject-errors
@@ -150,14 +150,29 @@ class ImportFace extends Component {
           console.log(info.file, info.fileList);
         }
         if (status === 'done') {
-          that.setState({
-            uploadStatus: 'done',
-          });
+          if (info.file.response.code === 0) {
+            that.setState({
+              uploadStatus: 'done',
+            });
+          } else {
+            message.error(`${info.file.response.msg}`);
+            info.fileList = [];
+          }
         } else if (status === 'error') {
-          message.error(`${info.file.name}上传失败！`);
+          info.fileList = [];
+          if (info.file.response.message) {
+            message.error(`${info.file.response.message}`);
+          } else {
+            message.error(`${info.file.name}上传失败！`);
+          }
         }
-        const fileList = [info.fileList[info.fileList.length - 1]];
-        that.setState({ fileList: [...fileList] });
+
+        if (info.fileList.length > 0) {
+          const fileList = [info.fileList[info.fileList.length - 1]];
+          that.setState({ fileList: [...fileList] });
+        } else {
+          that.setState({ fileList: [] });
+        }
       },
     };
 
