@@ -84,9 +84,9 @@ class Plate extends Component {
            pageNo : this.state.plateListInfo.pageNo,
            pageSize : this.state.plateListInfo.pageSize
          }).then((data)=>{
-           this.setState({plateListInfo:data , modalPlateInfo : {} })
+           this.setState({plateListInfo:data , modalPlateInfo : {} , plateExist : false})
          }).catch(err => {
-           this.setState({ modalPlateInfo : {}});
+           this.setState({ modalPlateInfo : {} , plateExist : false});
          });
        }
      });
@@ -100,7 +100,7 @@ class Plate extends Component {
          pageNo : this.state.plateListInfo.pageNo,
          pageSize : this.state.plateListInfo.pageSize
        }).then((data)=>{
-         this.setState({plateListInfo:data , modalPlateInfo:{} ,})
+         this.setState({plateListInfo:data , modalPlateInfo:{} , plateExist : false})
        })
      }
    });
@@ -164,6 +164,15 @@ class Plate extends Component {
       label : record.label || '' ,
       color : record.color || ''
     })
+  }
+  existPlate = () => {
+    const { form } = this.props;
+    const licenseNo = form.getFieldValue('licenseNo');
+    const licenseProvince = form.getFieldValue('licenseProvince');
+    const license = `${licenseProvince}${licenseNo}`;
+    this.props.licenseExist(license).then((res) => {
+      this.setState({ plateExist: res });
+    });
   }
 
   componentDidMount() {
@@ -261,7 +270,7 @@ class Plate extends Component {
         title={this.state.modalPlateInfo.licenseNo ? '编辑车牌数据' : '新增车牌数据' }
         visible={this.state.plateModalVisible}
         onOk={()=>this.onSubmitModal()}
-        onCancel={()=>this.setState({plateModalVisible:false , modalPlateInfo : {}})}
+        onCancel={()=>this.setState({plateModalVisible:false , modalPlateInfo : {} ,  plateExist : false})}
         width="500px"
         >
         <div className={styles['LicenseImport-formWrapper']}>
@@ -303,12 +312,15 @@ class Plate extends Component {
                         if (!val || !form.getFieldValue('licenseProvince')) {
                           callback(' ');
                         }
+                        if(val.length > 8){
+                          callback('车牌号不能超过8位');
+                        }
                         callback();
                       }
                     }
                   ],
                 })(<Input
-                  placeholder="请输入车牌号"
+                  placeholder="请输入车牌号" onBlur={()=>this.existPlate()}
                 />)}
               </Form.Item>
             </Form.Item>
