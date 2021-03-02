@@ -55,32 +55,34 @@ class Plate extends Component {
     const color = getFieldValue('color');
     let licenseInfo = { licenseNo : licenseProvince + licenseNo , label , color};
     
-    if(this.state.modalPlateInfo === {}){
-        this.props.addPlate(licenseInfo).then((data)=>{
+    if(this.state.modalPlateInfo.licenseNo){
+         licenseInfo = {...licenseInfo , id : this.state.modalPlateInfo.id}
+        this.props.updatePlate(licenseInfo).then((data)=>{
           console.log('data',data)
           if(data){
-            message.success('添加成功');
+            message.success('更新成功');
             this.setState({plateModalVisible:false});
             this.props.getPlateList({
               pageNo : this.state.plateListInfo.pageNo,
               pageSize : this.state.plateListInfo.pageSize
             }).then((data)=>{
-              this.setState({plateListInfo:data})
-            })
+              this.setState({plateListInfo:data , modalPlateInfo : {} })
+            }).catch(err => {
+              this.setState({ modalPlateInfo : {}});
+            });
           }
         });
     }else{
-      licenseInfo = {...licenseInfo , id : this.state.modalPlateInfo.id}
-      this.props.updatePlate(licenseInfo).then((data)=>{
+      this.props.addPlate(licenseInfo).then((data)=>{
         console.log('data',data)
         if(data){
-          message.success('更新成功');
+          message.success('添加成功');
           this.setState({plateModalVisible:false});
           this.props.getPlateList({
             pageNo : this.state.plateListInfo.pageNo,
             pageSize : this.state.plateListInfo.pageSize
           }).then((data)=>{
-            this.setState({plateListInfo:data , modalPlateInfo : {} })
+            this.setState({plateListInfo:data , modalPlateInfo:{} ,})
           })
         }
       });
@@ -131,18 +133,18 @@ class Plate extends Component {
       this.setState({plateListInfo : data})
     })
   }
-  onModalEdit = (record) => {
+  onModalOpen = (record) => {
     console.log('record',record)
     const { setFieldsValue } = this.props.form;
     this.setState({
       plateModalVisible : true , 
-      modalPlateInfo : record , 
-    })
+      modalPlateInfo : record.licenseNo ? record : {}, 
+    });
     setFieldsValue({
-      licenseProvince : record.licenseNo.substring(0,1),
-      licenseNo : record.licenseNo.substring(1),
-      label : record.label,
-      color : record.color
+      licenseProvince : record.licenseNo ? record.licenseNo.substring(0,1) : '',
+      licenseNo : record.licenseNo ? record.licenseNo.substring(1)  : '',
+      label : record.label || '' ,
+      color : record.color || ''
     })
   }
 
@@ -170,7 +172,7 @@ class Plate extends Component {
     return (
       <div className={styles.mainWrapper}>
         <div className={styles.searchContainer}>
-          <Button type="primary" className={styles.addBtn} onClick={()=>this.setState({plateModalVisible:true})}>+ 新增车牌数据</Button>
+          <Button type="primary" className={styles.addBtn} onClick={()=>this.onModalOpen({})}>+ 新增车牌数据</Button>
           <Link to='/gallery/carLicense/import' className={styles.deleteBtn}>
               <Icon type="export" className={styles.deletePic}/>
               批量导入
@@ -211,7 +213,7 @@ class Plate extends Component {
                 width={'14%'}
                 render={(text, record) => (
                   <div className={styles.oprationWrapper}>
-                    <a onClick={()=>this.onModalEdit(record)}>
+                    <a onClick={()=>this.onModalOpen(record)}>
                       编辑
                     </a>
                     <span className={styles.separator}> | </span>
@@ -238,10 +240,10 @@ class Plate extends Component {
 
         <Modal
         className={styles.LicenseImport}
-        title={this.state.modalPlateInfo === {} ? '新增车牌数据' : '编辑车牌数据'}
+        title={this.state.modalPlateInfo.licenseNo ? '编辑车牌数据' : '新增车牌数据' }
         visible={this.state.plateModalVisible}
         onOk={()=>this.onSubmitModal()}
-        onCancel={()=>this.setState({plateModalVisible:false , modalPlateInfo : {} })}
+        onCancel={()=>this.setState({plateModalVisible:false , modalPlateInfo : {}})}
         width="500px"
         >
         <div className={styles['LicenseImport-formWrapper']}>
