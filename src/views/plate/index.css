@@ -125,6 +125,14 @@ tr.ant-table-row {
   color: #999999;
   margin-bottom: 11px;
 }
+.LicenseImport .existMsg {
+  margin-left: 20px;
+  color: #FA8334;
+  font-size: 12px;
+}
+.LicenseImport .existMsg-icon {
+  margin-right: 5px;
+}
 .LicenseImport-formWrapper :global .ant-form .ant-form-item {
   margin-bottom: 12px;
 }
@@ -159,4 +167,40 @@ tr.ant-table-row {
   font-family: SimSun, sans-serif;
   line-height: 1;
   content: '*';
+}
+.deleteModal {
+  width: 350px;
+  height: 190px;
+}
+.deleteModal > div {
+  margin-top: 80px;
+}
+.deleteModal .deleteModalImg {
+  display: inline-block;
+  float: left;
+  margin-left: 20px;
+}
+.deleteModal .deleteModalImg > img {
+  margin-top: 10px;
+  width: 32px;
+  height: 27px;
+}
+.deleteModal .deleteModalInfo {
+  display: inline-block;
+  margin-left: 30px;
+}
+.deleteModal .deleteModalInfo > span {
+  display: block;
+  font-family: MicrosoftYaHei;
+  font-size: 14px;
+  color: #333333;
+  text-align: left;
+  font-weight: bold;
+  margin-bottom: 21px;
+}
+.deleteModal .deleteModalInfo > p {
+  font-family: MicrosoftYaHei;
+  font-size: 12px;
+  color: #999999;
+  margin-bottom: 11px;
 }

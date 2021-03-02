@@ -284,7 +284,7 @@ class Face extends Component {
               placeholder="请输入姓名"
               onChange={this.queryName}
               value={name}
-              onPressEnter={this.getTableList}
+              onPressEnter={() => this.setState({ pageNum: 1 }, () => { this.getTableList(); })}
               suffix={
                 <SearchOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
               }
@@ -456,7 +456,7 @@ class Face extends Component {
                 current={pageNum}
                 showSizeChanger
                 showQuickJumper
-                pageSizeOptions={['12', '24', '60', '120']}
+                pageSizeOptions={['12', '24', '36', '48']}
                 pageSize={pageSize}
                 onChange={this.onPageChange}
                 onShowSizeChange={this.onShowSizeChange}

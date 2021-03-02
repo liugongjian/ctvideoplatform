@@ -9,7 +9,14 @@ const PLATE_LIST_FAIL = 'ROLE_LIST_FAIL'
 
 const ADD_PLATE = 'ADD_PLATE';
 const DELETE_PLATE = 'DELETE_PLATE';
+const UPDATE_PLATE = 'UPDATE_PLATE';
 
+const IMPORTED_PLATE = 'IMPORTED_PLATE';
+
+const TEMPLATE_PLATE = 'TEMPLATE_PLATE';
+
+const DUPLICATED_PLATE = 'DUPLICATED_PLATE';
+const SUBMIT_PLATE = 'SUBMIT_PLATE';
 
 const initialState = {
 };
@@ -39,6 +46,28 @@ export default function role(state = initialState, action = {}) {
       return {
         ...state,
       };  
+    case UPDATE_PLATE:
+    return {
+      ...state,
+      };  
+    
+    case IMPORTED_PLATE:
+      return {
+        ...state,
+    };  
+    
+    case TEMPLATE_PLATE:
+      return {
+        ...state,
+    };  
+    case DUPLICATED_PLATE:
+      return {
+        ...state,
+    };  
+    case SUBMIT_PLATE:
+      return {
+        ...state,
+    };  
     default:
       return {
         ...state
@@ -75,5 +104,46 @@ export function deletePlates(params) {
       {
         data: params
       })
+  };
+}
+
+export function updatePlate(params) {
+  return {
+    type: UPDATE_PLATE,
+    promise: apiClient => apiClient.post(`${urlPrefix}/license/update`,
+      {
+        data: params
+      })
+  };
+}
+
+
+export function getImportedPlate(params) {
+  return {
+    type: IMPORTED_PLATE,
+    promise: apiClient => apiClient.post(`${urlPrefix}/license/imported`,
+    {
+      data: params
+    })
+  };
+}
+
+export function getDuplicatedPlate(params) {
+  return {
+    type: DUPLICATED_PLATE,
+    promise: apiClient => apiClient.get(`${urlPrefix}/license/duplicated`,
+    {
+      data: params
+    })
+  };
+}
+
+export function submitImportedPlate(params) {
+  return {
+    type: SUBMIT_PLATE,
+    promise: apiClient => apiClient.post(`${urlPrefix}/license/submit`,
+    {
+      data: params
+    })
   };
 }

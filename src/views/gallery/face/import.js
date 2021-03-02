@@ -28,6 +28,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 class ImportFace extends Component {
   state = {
     label: undefined,
+    fileList: [],
     stepCurrent: 0,
     uploadStatus: 'todo',
     repeatModalVisible: false,
@@ -120,12 +121,13 @@ class ImportFace extends Component {
   render() {
     const that = this;
     const {
-      uploadZipUrl, stepCurrent, label, uploadStatus, faceData, total, pageNum, pageSize, repeatModalVisible, repeatNum
+      uploadZipUrl, fileList, stepCurrent, label, uploadStatus, faceData, total, pageNum, pageSize, repeatModalVisible, repeatNum
     } = this.state;
     const props = {
       name: 'file',
       multiple: false,
       action: uploadZipUrl,
+      fileList,
       beforeUpload: file => new Promise((resolve, reject) => {
         const isZip = file.type === 'application/zip';
         if (!isZip) {
@@ -153,6 +155,8 @@ class ImportFace extends Component {
         } else if (status === 'error') {
           message.error(`${info.file.name}上传失败！`);
         }
+        const fileList = [info.fileList[info.fileList.length - 1]];
+        that.setState({ fileList: [...fileList] });
       },
     };
 
@@ -274,7 +278,7 @@ class ImportFace extends Component {
                             current={pageNum}
                             showSizeChanger
                             showQuickJumper
-                            pageSizeOptions={[12, 24, 60, 120]}
+                            pageSizeOptions={['12', '24', '36', '48']}
                             pageSize={pageSize}
                             onChange={this.onPageChange}
                             onShowSizeChange={this.onShowSizeChange}
