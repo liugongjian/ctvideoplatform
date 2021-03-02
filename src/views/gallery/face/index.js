@@ -7,7 +7,7 @@ import {
   getFaceList, addFace, editFace, delFace, saveUploadList
 } from 'Redux/reducer/face';
 import {
-  message, Button, Modal, Form, Input, Icon, Radio, Upload, List, Card, Tag, Checkbox, Pagination
+  message, Button, Modal, Form, Input, Icon, Radio, Upload, List, Spin, Card, Tag, Checkbox, Pagination
 } from 'antd';
 import {
   LoadingOutlined, PlusOutlined, ImportOutlined, SearchOutlined
@@ -397,54 +397,55 @@ class Face extends Component {
       );
       return (
         <div className={styles.mainContanier}>
-          <List
-            grid={{
-              gutter: 16,
-              xs: 1,
-              sm: 2,
-              md: 4,
-              lg: 4,
-              xl: 6,
-              xxl: 8,
-            }}
-            loading={loading}
-            dataSource={faceData}
-            pagination={false}
-            renderItem={item => (
-              <List.Item>
-                <Card bordered={false} hoverable>
-                  <div className={item.isChecked ? styles.cardContanierChecked : styles.cardContanier}>
-                    <div className={styles.imgContainer}>
-                      <img src={`${urlPrefix}/face/displayexist/${item.photoId}?${new Date().getTime()}`} onError={e => this.handleImageError(e)} alt="" />
-                      <Checkbox className={item.isChecked ? styles.checkedbox : styles.checkbox} checked={item.isChecked} onChange={e => this.onChange(item, e)} />
-                    </div>
-                    <div className={item.isChecked ? styles.btnChecked : styles.btn}>
-                      <Icon type="edit" className={styles.iconEdit} onClick={() => this.handleEditFace(item)} />
-                      <div className={styles.line} />
-                      <Icon type="delete" className={styles.iconDel} onClick={() => this.handleDelFace(item)} />
-                    </div>
-                    <div className={styles.footerContanier}>
-                      <div className={styles.info}>
-                        <div title={item.name} className={styles.name}>{item.name.split('.')[0]}</div>
-                        {
-                          item.labelCode === 0 || item.labelCode === 1 ? (
-                            <div className={styles.tagContainer}>
-                              {
-                                item.labelCode === 0
-                                  ? <Tag color="green">白名单</Tag> : <Tag color="red">黑名单</Tag>
-                              }
-                            </div>
-                          )
-                            : <div className={styles.tagContainer}><Tag color="blue">其他</Tag></div>
-                        }
+          <Spin spinning={loading}>
+            <List
+              grid={{
+                gutter: 16,
+                xs: 1,
+                sm: 2,
+                md: 4,
+                lg: 4,
+                xl: 6,
+                xxl: 8,
+              }}
+              dataSource={faceData}
+              pagination={false}
+              renderItem={item => (
+                <List.Item>
+                  <Card bordered={false} hoverable>
+                    <div className={item.isChecked ? styles.cardContanierChecked : styles.cardContanier}>
+                      <div className={styles.imgContainer}>
+                        <img src={`${urlPrefix}/face/displayexist/${item.photoId}?${new Date().getTime()}`} onError={e => this.handleImageError(e)} alt="" />
+                        <Checkbox className={item.isChecked ? styles.checkedbox : styles.checkbox} checked={item.isChecked} onChange={e => this.onChange(item, e)} />
+                      </div>
+                      <div className={item.isChecked ? styles.btnChecked : styles.btn}>
+                        <Icon type="edit" className={styles.iconEdit} onClick={() => this.handleEditFace(item)} />
+                        <div className={styles.line} />
+                        <Icon type="delete" className={styles.iconDel} onClick={() => this.handleDelFace(item)} />
+                      </div>
+                      <div className={styles.footerContanier}>
+                        <div className={styles.info}>
+                          <div title={item.name} className={styles.name}>{item.name.split('.')[0]}</div>
+                          {
+                            item.labelCode === 0 || item.labelCode === 1 ? (
+                              <div className={styles.tagContainer}>
+                                {
+                                  item.labelCode === 0
+                                    ? <Tag color="green">白名单</Tag> : <Tag color="red">黑名单</Tag>
+                                }
+                              </div>
+                            )
+                              : <div className={styles.tagContainer}><Tag color="blue">其他</Tag></div>
+                          }
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                </Card>
-              </List.Item>
-            )}
-          />
+                  </Card>
+                </List.Item>
+              )}
+            />
+          </Spin>
           <div className={styles.paginationWrapper}>
             <span>
               总条数：
