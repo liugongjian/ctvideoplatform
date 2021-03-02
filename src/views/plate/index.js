@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { LicenseProvinces } from './constants';
-import { getPlateList , addPlate , deletePlates , updatePlate } from '@/redux/reducer/plate'
+import { getPlateList , addPlate , deletePlates , updatePlate , licenseExist} from '@/redux/reducer/plate'
 
 import searchPic from '@/assets/role/search.png'
 import warnPic from '@/assets/role/warn.png'
@@ -21,7 +21,7 @@ const { Search } = Input;
 
 const mapStateToProps = state => ({ plate : state.plate });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  { getPlateList , addPlate , deletePlates , updatePlate },
+  { getPlateList , addPlate , deletePlates , updatePlate , licenseExist},
   dispatch
 );
 
@@ -48,45 +48,63 @@ class Plate extends Component {
   };
 
   onSubmitModal = ()=>{
-    const { getFieldValue } = this.props.form;
-    const licenseProvince = getFieldValue('licenseProvince');
-    const licenseNo = getFieldValue('licenseNo');
-    const label = getFieldValue('label');
-    const color = getFieldValue('color');
-    let licenseInfo = { licenseNo : licenseProvince + licenseNo , label , color};
+    const { getFieldValue , validateFields} = this.props.form;
+    // const licenseProvince = getFieldValue('licenseProvince');
+    // const licenseNo = getFieldValue('licenseNo');
+    // const label = getFieldValue('label');
+    // const color = getFieldValue('color');
+    // let licenseInfo = { licenseNo : licenseProvince + licenseNo , label , color};
+
+    validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
+        const {
+          licenseProvince, licenseNo, label, color,
+        } = values;
+        const license = `${licenseProvince}${licenseNo}`;
+        this.handleEditAddPlate({
+          licenseNo: license,
+          label,
+          color,
+        });
+      }
+    });
+  }
+
+  handleEditAddPlate = (licenseInfo)=>{
     
     if(this.state.modalPlateInfo.licenseNo){
-         licenseInfo = {...licenseInfo , id : this.state.modalPlateInfo.id}
-        this.props.updatePlate(licenseInfo).then((data)=>{
-          console.log('data',data)
-          if(data){
-            message.success('更新成功');
-            this.setState({plateModalVisible:false});
-            this.props.getPlateList({
-              pageNo : this.state.plateListInfo.pageNo,
-              pageSize : this.state.plateListInfo.pageSize
-            }).then((data)=>{
-              this.setState({plateListInfo:data , modalPlateInfo : {} })
-            }).catch(err => {
-              this.setState({ modalPlateInfo : {}});
-            });
-          }
-        });
-    }else{
-      this.props.addPlate(licenseInfo).then((data)=>{
-        console.log('data',data)
-        if(data){
-          message.success('添加成功');
-          this.setState({plateModalVisible:false});
-          this.props.getPlateList({
-            pageNo : this.state.plateListInfo.pageNo,
-            pageSize : this.state.plateListInfo.pageSize
-          }).then((data)=>{
-            this.setState({plateListInfo:data , modalPlateInfo:{} ,})
-          })
-        }
-      });
-    }
+      licenseInfo = {...licenseInfo , id : this.state.modalPlateInfo.id}
+     this.props.updatePlate(licenseInfo).then((data)=>{
+       console.log('data',data)
+       if(data){
+         message.success('更新成功');
+         this.setState({plateModalVisible:false});
+         this.props.getPlateList({
+           pageNo : this.state.plateListInfo.pageNo,
+           pageSize : this.state.plateListInfo.pageSize
+         }).then((data)=>{
+           this.setState({plateListInfo:data , modalPlateInfo : {} })
+         }).catch(err => {
+           this.setState({ modalPlateInfo : {}});
+         });
+       }
+     });
+ }else{
+   this.props.addPlate(licenseInfo).then((data)=>{
+     console.log('data',data)
+     if(data){
+       message.success('添加成功');
+       this.setState({plateModalVisible:false});
+       this.props.getPlateList({
+         pageNo : this.state.plateListInfo.pageNo,
+         pageSize : this.state.plateListInfo.pageSize
+       }).then((data)=>{
+         this.setState({plateListInfo:data , modalPlateInfo:{} ,})
+       })
+     }
+   });
+ }
   }
 
   onDeleteItems = () => {
@@ -164,6 +182,7 @@ class Plate extends Component {
       selectedRowKeys,
       onChange: this.onSelectChange,
     };
+    const { form } = this.props;
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -190,7 +209,6 @@ class Plate extends Component {
               </a>
             )
           }
-
           <div className={styles.searchInput}>
             <Search placeholder="请输入车牌号" icon={searchPic} onSearch={() => this.searchPlate()} onChange={(e) => this.setState({searchName:e.target.value})}/>
           </div>
@@ -297,10 +315,18 @@ class Plate extends Component {
             <Form.Item label="布控标签">
               {getFieldDecorator('label', {
                 rules: [
+                  // {
+                  //   required: true,
+                  //   message: '请选择布控标签!',
+                  // },
                   {
-                    required: true,
-                    message: '请选择布控标签!',
-                  },
+                    validator: (rule, val, callback) => {
+                      if (!val) {
+                        callback('请选择布控标签!');
+                      }
+                      callback();
+                    }
+                  }
                 ],
               })(
                 <Radio.Group>
@@ -312,10 +338,18 @@ class Plate extends Component {
             <Form.Item label="车牌颜色">
               {getFieldDecorator('color', {
                 rules: [
+                  // {
+                  //   required: true,
+                  //   message: '请选择车牌颜色!',
+                  // },
                   {
-                    required: true,
-                    message: '请选择车牌颜色!',
-                  },
+                    validator: (rule, val, callback) => {
+                      if (!val) {
+                        callback('请选择车牌颜色!');
+                      }
+                      callback();
+                    }
+                  }
                 ],
               })(
                 <Select>
