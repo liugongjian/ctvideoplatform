@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { bindActionCreators } from 'redux';
 import {
-  Tree, Input, Select, Icon, Card
+  Tree, Input, Select, Icon, Card, Spin
 } from 'antd';
 import EIcon from 'Components/Icon';
 import { connect } from 'react-redux';
@@ -239,6 +239,8 @@ class Preview extends PureComponent {
           videoSrc, historyListData, imgDialogVisible, imgDialogSrc, noVideo
         } = this.state;
 
+        const { preview: { loading } } = this.props;
+
         const { list = [] } = historyListData;
 
         const tempUrl = window.location.origin;
@@ -268,6 +270,7 @@ class Preview extends PureComponent {
         };
 
         return (
+
           <div className={styles.content}>
             <div className={styles.areaBox}>
               <div className={styles.searchBox}>

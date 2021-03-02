@@ -392,7 +392,7 @@ class Face extends Component {
       const uploadButton = (
         <div>
           {imageLoading ? <LoadingOutlined /> : <PlusOutlined />}
-          <div style={{ marginTop: 8 }}>上传</div>
+          <div style={{ marginTop: 8, color: '#999999' }}>上传</div>
         </div>
       );
       return (
@@ -415,7 +415,8 @@ class Face extends Component {
                   <Card bordered={false} hoverable>
                     <div className={item.isChecked ? styles.cardContanierChecked : styles.cardContanier}>
                       <div className={styles.imgContainer}>
-                        <img src={`${urlPrefix}/face/displayexist/${item.photoId}?${new Date().getTime()}`} onError={e => this.handleImageError(e)} alt="" />
+                        {/* <img src={`${urlPrefix}/face/displayexist/${item.photoId}?${new Date().getTime()}`} onError={e => this.handleImageError(e)} alt="" /> */}
+                        { !loading ? <img src={`${urlPrefix}/face/displayexist/${item.photoId}?${new Date().getTime()}`} onError={e => this.handleImageError(e)} alt="" /> : ''}
                         <Checkbox className={item.isChecked ? styles.checkedbox : styles.checkbox} checked={item.isChecked} onChange={e => this.onChange(item, e)} />
                       </div>
                       <div className={item.isChecked ? styles.btnChecked : styles.btn}>
