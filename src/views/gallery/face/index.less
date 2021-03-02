@@ -270,10 +270,20 @@
     }
 }
 .addOrEditModal{
-    // :global{
-    //     .ant-form{
-    //         width: 80%;
-    //         margin: 0 auto;
-    //     }
-    // }
+    :global{
+        .ant-upload{
+            height: 128px;
+            width: 128px;
+            img{
+                border-radius: 5px;
+                height: 110px;
+            }
+            svg{
+                color: #999999;
+            }
+        }
+        .ant-form-item-control{
+            width: 80%;
+        }
+    }
 }
