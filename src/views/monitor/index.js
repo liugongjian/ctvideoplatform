@@ -430,9 +430,8 @@ class Monitor extends Component {
   }
 
   onSelect = (keys, e) => {
-    const eleName = e.nativeEvent.toElement.localName;
-    const eleCls = e.nativeEvent.toElement.className;
-    console.log(keys);
+    const eleName = e.nativeEvent.target.localName;
+    const eleCls = e.nativeEvent.target.className;
     if (eleName !== 'input' && eleCls.indexOf('popover') === -1) {
       if (keys && keys.length > 0) {
         const [a] = keys;
@@ -445,11 +444,11 @@ class Monitor extends Component {
           pageNo: 0
         }, () => this.getDeviceList());
       } else {
-        this.setState({
-          areaId: 1,
-          selectAreaKeys: ['1'],
-          pageNo: 0
-        }, () => this.getDeviceList());
+        // this.setState({
+        //   areaId: 1,
+        //   selectAreaKeys: ['1'],
+        //   pageNo: 0
+        // }, () => this.getDeviceList());
       }
     }
   }
@@ -652,26 +651,32 @@ class Monitor extends Component {
     const param = {
       deviceIds: temp
     };
-    const ifLastPage = () => {
-      if (pageNo === tableData.pageTotal - 1 && tableData.recordsTotal % 10 === 1) {
-        return true;
-      }
-      return false;
-    };
-    if (ifLastPage()) {
-      delDeviceById(param).then((res) => {
-        this.setState({
-          showDelModal: false,
-          pageNo: tableData.pageTotal - 2 >= 0 ? tableData.pageTotal - 2 : 0
-        }, () => this.getDeviceList());
-      });
-    } else {
-      delDeviceById(param).then((res) => {
-        this.setState({
-          showDelModal: false,
-        }, () => this.getDeviceList());
-      });
-    }
+
+    this.setState({
+      checkedKeys: temp,
+      showDelModal: true
+    });
+
+    // const ifLastPage = () => {
+    //   if (pageNo === tableData.pageTotal - 1 && tableData.recordsTotal % 10 === 1) {
+    //     return true;
+    //   }
+    //   return false;
+    // };
+    // if (ifLastPage()) {
+    //   delDeviceById(param).then((res) => {
+    //     this.setState({
+    //       showDelModal: false,
+    //       pageNo: tableData.pageTotal - 2 >= 0 ? tableData.pageTotal - 2 : 0
+    //     }, () => this.getDeviceList());
+    //   });
+    // } else {
+    //   delDeviceById(param).then((res) => {
+    //     this.setState({
+    //       showDelModal: false,
+    //     }, () => this.getDeviceList());
+    //   });
+    // }
   }
 
   sureDelThisKeys = (e) => {
@@ -832,7 +837,7 @@ class Monitor extends Component {
         key: 'online',
         width: '100px',
         render: (text) => {
-          if (text === 1) {
+          if (text) {
             return (
               <span className={styles.tableOnlineStatus}>
                 <span className={styles.tableOnline} />
