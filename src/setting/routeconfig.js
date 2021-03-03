@@ -203,6 +203,7 @@ const menuRoutes = [
         path: '/carLicense',
         exact: true,
         component: Plate,
+        pageTitle: '车牌库',
         children: [
           {
             path: '/import',

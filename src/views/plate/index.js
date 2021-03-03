@@ -43,7 +43,7 @@ class Plate extends Component {
   };
 
   onSelectChange = selectedRowKeys => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    // console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys , deleteItems:selectedRowKeys });
   };
 
@@ -57,7 +57,7 @@ class Plate extends Component {
 
     validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        // console.log('Received values of form: ', values);
         const {
           licenseProvince, licenseNo, label, color,
         } = values;
@@ -76,7 +76,7 @@ class Plate extends Component {
     if(this.state.modalPlateInfo.licenseNo){
       licenseInfo = {...licenseInfo , id : this.state.modalPlateInfo.id}
      this.props.updatePlate(licenseInfo).then((data)=>{
-       console.log('data',data)
+      //  console.log('data',data)
        if(data){
          message.success('更新成功');
          this.setState({plateModalVisible:false});
@@ -92,7 +92,7 @@ class Plate extends Component {
      });
  }else{
    this.props.addPlate(licenseInfo).then((data)=>{
-     console.log('data',data)
+    //  console.log('data',data)
      if(data){
        message.success('添加成功');
        this.setState({plateModalVisible:false});
@@ -121,20 +121,21 @@ class Plate extends Component {
     });
   };
 
-  searchPlate = () => {
-    // console.log(this.state.searchName)
+  searchPlate = (value) => {
+
     this.props.getPlateList({
-      licenseNo : this.state.searchName,
+      licenseNo : value,
       pageNo : 0,
       pageSize : this.state.plateListInfo.pageSize
     }).then((data)=>{
       // console.log(data);
-      this.setState({plateListInfo : data})
+      this.setState({plateListInfo : data , searchName : value })
     })
   }
 
   onPageNumChange = (pageNo) => {
     this.props.getPlateList({
+      licenseNo : this.state.searchName,
       pageNo : pageNo-1,
       pageSize : this.state.plateListInfo.pageSize
     }).then((data)=>{
@@ -144,6 +145,7 @@ class Plate extends Component {
 
   onPageSizeChange = (current , size) => {
     this.props.getPlateList({
+      licenseNo : this.state.searchName,
       pageNo : 0,
       pageSize : size
     }).then((data)=>{
@@ -152,7 +154,7 @@ class Plate extends Component {
     })
   }
   onModalOpen = (record) => {
-    console.log('record',record)
+    // console.log('record',record)
     const { setFieldsValue } = this.props.form;
     this.setState({
       plateModalVisible : true , 
@@ -219,7 +221,7 @@ class Plate extends Component {
             )
           }
           <div className={styles.searchInput}>
-            <Search placeholder="请输入车牌号" icon={searchPic} onSearch={() => this.searchPlate()} onChange={(e) => this.setState({searchName:e.target.value})}/>
+            <Search placeholder="请输入车牌号" icon={searchPic} onSearch={(value) => this.searchPlate(value)}/>
           </div>
         </div>
         <Table rowSelection={rowSelection} dataSource={plateListInfo.list} pagination={false} rowKey={(record) => record.id}>
