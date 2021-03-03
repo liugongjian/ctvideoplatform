@@ -351,7 +351,8 @@ class Account extends Component {
     delAccount(data).then((res) => {
       message.success('删除成功');
       this.setState({
-        deleteModelVisible: false
+        deleteModelVisible: false,
+        selectedRowKeys: []
       });
       this.getTableList();
     });
