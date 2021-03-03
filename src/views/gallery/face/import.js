@@ -130,7 +130,8 @@ class ImportFace extends Component {
       action: uploadZipUrl,
       fileList,
       beforeUpload: file => new Promise((resolve, reject) => {
-        const isZip = file.type === 'application/zip';
+        // const isZip = file.type === 'application/zip';
+        const isZip = file.name.split('.')[1] === 'zip';
         if (!isZip) {
           message.error('请上传ZIP格式的压缩包！');
         }
