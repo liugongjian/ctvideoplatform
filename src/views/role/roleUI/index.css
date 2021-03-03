@@ -34,6 +34,9 @@
   height: 90%;
   width: 100%;
 }
+.contentWrapper .tree .treefr .treeRegion :global .ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected {
+  background-color: #BFE5FF;
+}
 .contentWrapper .formItemInput {
   width: 390px;
   height: 36px;

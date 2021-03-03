@@ -329,10 +329,10 @@ class Plate extends Component {
             <Form.Item label="布控标签">
               {getFieldDecorator('label', {
                 rules: [
-                  // {
-                  //   required: true,
-                  //   message: '请选择布控标签!',
-                  // },
+                  {
+                    required: true,
+                    message: '请选择布控标签!',
+                  },
                   {
                     validator: (rule, val, callback) => {
                       if (!val) {
@@ -352,10 +352,10 @@ class Plate extends Component {
             <Form.Item label="车牌颜色">
               {getFieldDecorator('color', {
                 rules: [
-                  // {
-                  //   required: true,
-                  //   message: '请选择车牌颜色!',
-                  // },
+                  {
+                    required: true,
+                    message: '请选择车牌颜色!',
+                  },
                   {
                     validator: (rule, val, callback) => {
                       if (!val) {
@@ -408,8 +408,6 @@ class Plate extends Component {
             </div>
             <div className={styles.deleteModalInfo}>
               <span>你确定要删除所选的{this.state.deleteItems.length}个车牌吗？</span>
-              <p>此操作将删除选中角色</p>
-              <p>如果删除的角色，已有账号关联，则无法被删除！</p>
             </div>
           </div>
         </Modal>

@@ -90,8 +90,9 @@ tr.ant-table-row {
   color: #E9E9E9;
 }
 .deleteModal {
+  padding-left: 30px;
   width: 565px;
-  height: 280px;
+  height: 80px;
 }
 .deleteModal > div {
   margin-top: 43px;
@@ -102,13 +103,13 @@ tr.ant-table-row {
   margin-left: 20px;
 }
 .deleteModal .deleteModalImg > img {
-  margin-top: 10px;
+  margin-top: 0px;
   width: 32px;
   height: 27px;
 }
 .deleteModal .deleteModalInfo {
   display: inline-block;
-  margin-left: 30px;
+  margin-left: 10px;
 }
 .deleteModal .deleteModalInfo > span {
   display: block;
@@ -117,7 +118,6 @@ tr.ant-table-row {
   color: #333333;
   text-align: left;
   font-weight: bold;
-  margin-bottom: 21px;
 }
 .deleteModal .deleteModalInfo > p {
   font-family: MicrosoftYaHei;
@@ -162,7 +162,7 @@ tr.ant-table-row {
 .LicenseImport-formWrapper .addItemRequiredIcon label::before {
   display: inline-block;
   margin-right: 4px;
-  color: #FF8836;
+  color: #f5222d;
   font-size: 14px;
   font-family: SimSun, sans-serif;
   line-height: 1;
