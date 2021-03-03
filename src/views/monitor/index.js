@@ -651,26 +651,32 @@ class Monitor extends Component {
     const param = {
       deviceIds: temp
     };
-    const ifLastPage = () => {
-      if (pageNo === tableData.pageTotal - 1 && tableData.recordsTotal % 10 === 1) {
-        return true;
-      }
-      return false;
-    };
-    if (ifLastPage()) {
-      delDeviceById(param).then((res) => {
-        this.setState({
-          showDelModal: false,
-          pageNo: tableData.pageTotal - 2 >= 0 ? tableData.pageTotal - 2 : 0
-        }, () => this.getDeviceList());
-      });
-    } else {
-      delDeviceById(param).then((res) => {
-        this.setState({
-          showDelModal: false,
-        }, () => this.getDeviceList());
-      });
-    }
+
+    this.setState({
+      checkedKeys: temp,
+      showDelModal: true
+    });
+
+    // const ifLastPage = () => {
+    //   if (pageNo === tableData.pageTotal - 1 && tableData.recordsTotal % 10 === 1) {
+    //     return true;
+    //   }
+    //   return false;
+    // };
+    // if (ifLastPage()) {
+    //   delDeviceById(param).then((res) => {
+    //     this.setState({
+    //       showDelModal: false,
+    //       pageNo: tableData.pageTotal - 2 >= 0 ? tableData.pageTotal - 2 : 0
+    //     }, () => this.getDeviceList());
+    //   });
+    // } else {
+    //   delDeviceById(param).then((res) => {
+    //     this.setState({
+    //       showDelModal: false,
+    //     }, () => this.getDeviceList());
+    //   });
+    // }
   }
 
   sureDelThisKeys = (e) => {
