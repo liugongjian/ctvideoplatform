@@ -7,6 +7,7 @@ import {
   Select,
   Radio,
   Input,
+  Button,
 } from 'antd';
 import { LicenseProvinces } from './constants';
 import styles from './index.less';
@@ -93,12 +94,20 @@ class LicenseImportModalComp extends Component {
     const {
       exist
     } = this.state;
+    const footer = (
+      <div className={styles.delModalFooter}>
+        <Button type="primary" onClick={this.onOk}>确定</Button>
+        <span className={styles.span10px} />
+        <Button onClick={closeModal}>取消</Button>
+      </div>
+    );
     return (
       <Modal
         className={styles.LicenseImport}
         title="导入车牌"
         visible={visible}
-        onOk={this.onOk}
+        footer={footer}
+        // onOk={this.onOk}
         onCancel={closeModal}
         width="500px"
       >
@@ -213,12 +222,20 @@ const DeleteModal = ({
     handleOk();
     closeModal();
   };
+  const footer = (
+    <div className={styles.delModalFooter}>
+      <Button type="primary" onClick={onOk}>确定</Button>
+      <span className={styles.span10px} />
+      <Button onClick={closeModal}>取消</Button>
+    </div>
+  );
   return (
     <Modal
       className={styles.delModal}
       title="删除提示"
       visible={visible}
-      onOk={onOk}
+      footer={footer}
+      // onOk={onOk}
       onCancel={closeModal}
       width="400px"
     >
