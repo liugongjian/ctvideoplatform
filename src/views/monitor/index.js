@@ -441,12 +441,14 @@ class Monitor extends Component {
         }
         this.setState({
           areaId: a,
-          selectAreaKeys: keys
+          selectAreaKeys: keys,
+          pageNo: 0
         }, () => this.getDeviceList());
       } else {
         this.setState({
           areaId: 1,
-          selectAreaKeys: ['1']
+          selectAreaKeys: ['1'],
+          pageNo: 0
         }, () => this.getDeviceList());
       }
     }
@@ -905,12 +907,16 @@ class Monitor extends Component {
         this.changeModalCheckRowKeys(selectedRowKeys, selectedRows);
       },
     };
+
+    const showTotal = total => (<span className={styles.totalText}>{`总条数： ${total}`}</span>);
+
     const pagination = {
       total: tableData.recordsTotal,
       defaultCurrent: 1,
       current: pageNo + 1,
       pageSize,
-      onChange: this.changePageNo
+      onChange: this.changePageNo,
+      showTotal
     };
 
     const modalPagination = {
@@ -918,7 +924,8 @@ class Monitor extends Component {
       defaultCurrent: 1,
       current: modalPageNo + 1,
       pageSize: 10,
-      onChange: this.modalChangePageNo
+      onChange: this.modalChangePageNo,
+      showTotal
     };
 
 
