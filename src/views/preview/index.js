@@ -99,8 +99,12 @@ class Preview extends PureComponent {
 
     doubleClickHandle = (e, val) => {
     //   console.log('曲线救国思密达----->', val);
-      this.getHistory(val.id);
-      this.getVideoSrc(val.id);
+      this.setState({
+        selectAreaKeys: [val.id]
+      }, () => {
+        this.getHistory(val.id);
+        this.getVideoSrc(val.id, val.name);
+      });
     }
 
     getHistory=(id) => {
@@ -118,18 +122,21 @@ class Preview extends PureComponent {
       });
     }
 
-    getVideoSrc = (id) => {
+    getVideoSrc = (id, name) => {
       const { getVideoSrc } = this.props;
+      console.log('id', id);
       getVideoSrc(id).then((res) => {
         if (res && res.m3u8uri) {
           this.setState({
             videoSrc: res.m3u8uri,
-            noVideo: false
+            noVideo: false,
+            videoName: name,
           });
         } else {
           this.setState({
             videoSrc: '',
-            noVideo: true
+            noVideo: true,
+            videoName: '',
           });
         }
       });
@@ -143,10 +150,14 @@ class Preview extends PureComponent {
     }
 
     renderTreeNodes = data => data.map((item, index) => {
+      const { checkedId } = this.state;
       const getTitle = (val) => {
         if (val.type === 1) {
           return (
-            <span onDoubleClick={e => this.doubleClickHandle(e, val)}>
+            <span
+              onDoubleClick={e => this.doubleClickHandle(e, val)}
+              className={styles.treeNameById}
+            >
               {val.name}
             </span>
           );
@@ -245,7 +256,7 @@ class Preview extends PureComponent {
       render() {
         const {
           treeDatas, selectAreaKeys, expandedKeys, algorithmList,
-          videoSrc, historyListData, imgDialogVisible, imgDialogSrc, noVideo
+          videoSrc, historyListData, imgDialogVisible, imgDialogSrc, noVideo, videoName
         } = this.state;
 
         const { preview: { loading } } = this.props;
@@ -308,6 +319,7 @@ class Preview extends PureComponent {
                       onSelect={this.onSelect}
                       className={styles.dataTree}
                       ref={ref => this.treeNode = ref}
+                      selectedKeys={selectAreaKeys}
                     >
                       {this.renderTreeNodes(treeDatas)}
                     </Tree>
@@ -321,7 +333,11 @@ class Preview extends PureComponent {
                   <Fragment>
                     <div className={styles.videoHandle}>
                       <EIcon type={`${styles.videoMonitoring} myicon-monitoring`} />
-                      <div>监控点位</div>
+                      <div>
+                        监控点位
+                        {' '}
+                        {videoName}
+                      </div>
                       <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={this.clearVideo} />
                     </div>
                     <VideoPlayer src={videoSrc} />

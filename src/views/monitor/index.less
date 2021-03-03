@@ -81,7 +81,14 @@
     margin: 10px 0 15px 0;
     height: calc(100% - 60px);
     background: #fff;
-    padding:0 10px
+    padding:0 10px;
+    .totalText{
+        position: absolute;
+        left:0;
+        font-size: 12px;
+        color: #666666;
+        line-height: 32px;
+    }
   }
   .searchBox{
     display: flex;
@@ -176,6 +183,13 @@
       .searchHandleBtn{
         margin: 0 5px;
       }
+    }
+    .totalText{
+      position: absolute;
+      left:0;
+      font-size: 12px;
+      color: #666666;
+      line-height: 32px;
     }
     :global{
       .ant-table-tbody > tr > td{

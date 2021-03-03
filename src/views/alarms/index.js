@@ -6,7 +6,7 @@ import {
   DatePicker,
   Cascader,
   Button,
-  Pagination,
+  // Pagination,
   Modal,
   Icon,
   Spin,
@@ -23,6 +23,7 @@ import {
 } from 'Redux/reducer/alarms';
 import moment from 'moment';
 import NODATA_IMG from 'Assets/nodata.png';
+import Pagination from 'Components/EPagination';
 import AlarmCard from './alarmCard';
 import styles from './index.less';
 
@@ -38,7 +39,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 );
 
 const initialVals = {
-  startTime: moment().subtract('days', 7),
+  startTime: moment().subtract('days', 30),
   endTime: moment(),
   deviceVal: [],
   algoVal: [],
@@ -279,7 +280,7 @@ class Alarms extends Component {
               </span>
             </div>
           </div>
-          <Spin spinning={listLoading}>
+          <Spin spinning={listLoading} className={styles['alarms-listSpin']}>
             <div className={styles['alarms-listWrapper']}>
               {
                 listData.length > 0 || listLoading
@@ -308,6 +309,7 @@ class Alarms extends Component {
               onChange={this.onPageChange}
               onShowSizeChange={this.onPageChange}
               pageSizeOptions={['12', '24', '36', '48']}
+              hideOnSinglePage={false}
               showSizeChanger
               showQuickJumper
               showTotal={this.showTotal}

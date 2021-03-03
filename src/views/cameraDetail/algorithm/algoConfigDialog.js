@@ -12,6 +12,7 @@ import {
   Spin,
   TimePicker,
   message,
+  Button,
 } from 'antd';
 import math from 'Utils/math';
 import { bindActionCreators } from 'redux';
@@ -287,12 +288,20 @@ class CameraDetail extends Component {
       }
       return '';
     })();
+    const footer = (
+      <div className={styles.delModalFooter}>
+        <Button type="primary" onClick={this.handleOk}>确定</Button>
+        <span className={styles.span10px} />
+        <Button onClick={this.handleCancel}>取消</Button>
+      </div>
+    );
     return (
       <Modal
         className={styles.algoConfig}
         title="规则配置"
         visible={visible}
-        onOk={this.handleOk}
+        // onOk={this.handleOk}
+        footer={footer}
         onCancel={this.handleCancel}
         width="600px"
       >

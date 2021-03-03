@@ -6,8 +6,9 @@ import {
   getImportFaceList, submitLabel, saveUploadList
 } from 'Redux/reducer/face';
 import {
-  Form, Steps, Select, Button, Upload, message, List, Card, Tag, Pagination, Modal, Icon
+  Form, Steps, Select, Button, Upload, message, List, Card, Tag, Modal, Icon, Spin
 } from 'antd';
+import Pagination from 'Components/EPagination';
 import { InboxOutlined } from '@ant-design/icons';
 import noImg from '@/assets/defaultFace.png';
 import styles from './import.less';
@@ -39,13 +40,15 @@ class ImportFace extends Component {
     uploadZipUrl: `${urlPrefix}/face/upload/`,
     faceData: [
     ],
+    submitLoading: false,
+    submitBtnDis: false,
   };
 
   componentDidMount() {
 
   }
 
-  getTableList = (isReplaced) => {
+  getTableList = (isPaged, isReplaced) => {
     const { getImportFaceList } = this.props;
     const data = {
       pageSize: this.state.pageSize,
@@ -54,18 +57,21 @@ class ImportFace extends Component {
     };
     const { stepCurrent } = this.state;
     this.setState({
-      loading: true
+      submitLoading: true
     });
-    console.log('data', data);
     getImportFaceList(data).then((res) => {
       this.setState({
         faceData: res.list,
         total: res.recordsTotal,
         pageNum: res.pageNo + 1,
         pageSize: res.pageSize,
-        loading: false,
-        stepCurrent: stepCurrent + 1
+        submitLoading: false,
       });
+      if (!isPaged) {
+        this.setState({
+          stepCurrent: stepCurrent + 1
+        });
+      }
     });
   };
 
@@ -82,7 +88,7 @@ class ImportFace extends Component {
       label,
     };
     submitLabel(data).then((res) => {
-      this.getTableList();
+      this.getTableList(false);
     });
   }
 
@@ -95,34 +101,39 @@ class ImportFace extends Component {
     image.onerror = null;
   };
 
+  showTotal = total => (<span className={styles.totalText}>{`总条数： ${total}`}</span>);
+
   onPageChange = (current, pageSize) => {
     this.handleListChange({ current, pageSize }, {}, {});
   };
 
-  onShowSizeChange = (current, pageSize) => {
-    this.handleListChange({ current, pageSize }, {}, {});
-  };
 
   handleListChange = (pagination, filters, sorter) => {
     this.setState({
-      stepCurrent: 1,
       pageNum: pagination.current,
       pageSize: pagination.pageSize
-    }, () => this.getTableList());
+    }, () => this.getTableList(true));
   };
 
   submit= () => {
     // 导入人脸的最后一步 提交
     const { saveUploadList } = this.props;
+    this.setState({
+      submitLoading: true,
+      submitBtnDis: true,
+    });
     saveUploadList().then((res) => {
-      this.props.history.go(-1);
+      this.setState({
+        submitLoading: false,
+        submitBtnDis: false,
+      }, () => { this.props.history.go(-1); });
     });
   }
 
   render() {
     const that = this;
     const {
-      uploadZipUrl, fileList, stepCurrent, label, uploadStatus, faceData, total, pageNum, pageSize, repeatModalVisible, repeatNum
+      uploadZipUrl, fileList, stepCurrent, label, uploadStatus, faceData, total, pageNum, pageSize, submitLoading, submitBtnDis, repeatModalVisible, repeatNum
     } = this.state;
     const props = {
       name: 'file',
@@ -130,10 +141,9 @@ class ImportFace extends Component {
       action: uploadZipUrl,
       fileList,
       beforeUpload: file => new Promise((resolve, reject) => {
-        // const isZip = file.type === 'application/zip';
-        const isZip = file.name.split('.')[1] === 'zip';
+        const isZip = file.name.split('.').length === 2 && file.name.split('.')[1] === 'zip';
         if (!isZip) {
-          message.error('请上传ZIP格式的压缩包！');
+          message.error('请上传zip格式的压缩包！');
         }
         const isLt1024M = file.size / 1024 / 1024 < 1024;
         if (!isLt1024M) {
@@ -250,61 +260,60 @@ class ImportFace extends Component {
                     </div>
 
                   ) : (
-                    <div className={styles.previewContainer}>
-                      <List
-                        grid={{
-                          gutter: 16,
-                          xs: 1,
-                          sm: 2,
-                          md: 4,
-                          lg: 4,
-                          xl: 6,
-                          xxl: 8,
-                        }}
-                        dataSource={faceData}
-                        pagination={false}
-                        renderItem={item => (
-                          <List.Item>
-                            <Card bordered={false}>
-                              <div className={styles.cardContanier}>
-                                <div className={styles.imgContainer}>
-                                  <img src={`${urlPrefix}/face/displayupload/${item.temporaryId}`} onError={e => this.handleImageError(e)} alt="" />
-                                </div>
-                                <div className={styles.footerContanier}>
-                                  <div className={styles.info}>
-                                    <div title={item.name} className={styles.name}>{item.name.split('.')[0]}</div>
-                                    {
-                                      item.labelCode === 0 ? <div className={styles.tagContainer}><Tag color="green">白名单</Tag></div> : <div className={styles.tagContainer}><Tag color="red">黑名单</Tag></div>
-                                    }
+                    <div>
+                      <div className={styles.previewContainer}>
+                        <Spin spinning={submitLoading}>
+                          <List
+                            grid={{
+                              gutter: 16,
+                              xs: 1,
+                              sm: 2,
+                              md: 4,
+                              lg: 4,
+                              xl: 6,
+                              xxl: 8,
+                            }}
+                            dataSource={faceData}
+                            pagination={false}
+                            renderItem={item => (
+                              <List.Item>
+                                <Card bordered={false}>
+                                  <div className={styles.cardContanier}>
+                                    <div className={styles.imgContainer}>
+                                      <img src={`${urlPrefix}/face/displayupload/${item.temporaryId}`} onError={e => this.handleImageError(e)} alt="" />
+                                    </div>
+                                    <div className={styles.footerContanier}>
+                                      <div className={styles.info}>
+                                        <div title={item.name} className={styles.name}>{item.name.split('.')[0]}</div>
+                                        {item.labelCode === 0 ? <div className={styles.tagContainer}><Tag color="green">白名单</Tag></div> : <div className={styles.tagContainer}><Tag color="red">黑名单</Tag></div>}
+                                      </div>
+                                    </div>
                                   </div>
-                                </div>
-                              </div>
 
-                            </Card>
-                          </List.Item>
-                        )}
-                      />
-                      <div className={styles.paginationWrapper}>
-                        <span>
-                          总条数：
-                          {total}
-                        </span>
-                        <div>
-                          <Pagination
-                            total={total}
-                            current={pageNum}
-                            showSizeChanger
-                            showQuickJumper
-                            pageSizeOptions={['12', '24', '36', '48']}
-                            pageSize={pageSize}
-                            onChange={this.onPageChange}
-                            onShowSizeChange={this.onShowSizeChange}
+                                </Card>
+                              </List.Item>
+                            )}
                           />
+                        </Spin>
+
+                        <div className={styles.btn}>
+                          <Button type="primary" onClick={this.submit} disabled={submitBtnDis}>提交</Button>
+                          <Button type="button" onClick={() => this.props.history.go(-1)}>取消</Button>
                         </div>
                       </div>
-                      <div className={styles.btn}>
-                        <Button type="primary" onClick={this.submit}>提交</Button>
-                        <Button type="button" onClick={() => this.props.history.go(-1)}>取消</Button>
+                      <div className={styles.paginationWrapper}>
+                        <Pagination
+                          total={total}
+                          current={pageNum}
+                          defaultPageSize={pageSize}
+                          onChange={this.onPageChange}
+                          onShowSizeChange={this.onPageChange}
+                          pageSizeOptions={['12', '24', '36', '48']}
+                          hideOnSinglePage={false}
+                          showSizeChanger
+                          showQuickJumper
+                          showTotal={this.showTotal}
+                        />
                       </div>
                     </div>
                   )

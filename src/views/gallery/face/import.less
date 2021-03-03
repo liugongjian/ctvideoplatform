@@ -1,6 +1,7 @@
 .content{
     background: #fff;
-    padding: 20px;
+    padding: 20px 20px 10px 20px;
+    margin: 10px 10px 20px 10px;
     position: relative;
     min-height: 100%;
     .importContainer{
@@ -59,7 +60,8 @@
         }
         
         .selectContainer .nextStep,.draggerContainer .nextStep{
-            margin-top: 45px;
+            margin-top: 35px;
+            margin-bottom: 15px;
             .btn{
                 display: flex;
                 align-items: center;
@@ -150,25 +152,6 @@
                 }
                 
             }
-            .paginationWrapper{
-                &>*{
-                  display: inline-block;
-                }
-                &>div{
-                  margin-top: 10px;
-                  float: right;
-                  font-family: HelveticaNeue;
-                  font-size: 12px;
-                }
-                &>span{
-                  margin-top: 15px;
-                  font-family: PingFangSC-Regular;
-                  font-size: 12px;
-                  color: #666666;
-                  text-align: left;
-                  line-height: 18px;
-                }
-            }
             .btn{
                 margin-top: 20px;
                 display: flex;
@@ -180,6 +163,9 @@
                     }
                 }
             }
+        }
+        .paginationWrapper{
+            margin-top: 20px;
         }
     }
 }
