@@ -47,7 +47,7 @@ class LicenseImportModalComp extends Component {
     // }
     form.setFieldsValue({
       licenseProvince, licenseNo, color, label
-    });
+    }, this.validateExist);
   }
 
   onOk = () => {
@@ -71,11 +71,11 @@ class LicenseImportModalComp extends Component {
     });
   };
 
-  validateExist = () => {
+  validateExist = (val) => {
     const {
       isLicenseExist, form
     } = this.props;
-    const licenseNo = form.getFieldValue('licenseNo');
+    const licenseNo = val?.licenseNo || form.getFieldValue('licenseNo');
     const licenseProvince = form.getFieldValue('licenseProvince');
     const license = `${licenseProvince}${licenseNo}`;
     isLicenseExist(license).then((res) => {
@@ -139,6 +139,7 @@ class LicenseImportModalComp extends Component {
                   rules: [
                     {
                       required: true,
+                      whitespace: true,
                       message: ' ',
                     },
                     {
@@ -152,7 +153,7 @@ class LicenseImportModalComp extends Component {
                     }
                   ],
                 })(<Input
-                  onBlur={this.validateExist}
+                  onChange={e => this.validateExist({ licenseNo: e.target.value })}
                   placeholder="请输入车牌号"
                 />)}
               </Form.Item>
@@ -194,7 +195,7 @@ class LicenseImportModalComp extends Component {
           { exist ? (
             <div className={styles.existMsg}>
               <span className={styles['existMsg-icon']}><Icon type="exclamation-circle" /></span>
-              该车牌已经在车辆库中，确认则覆盖原数据。
+              该车牌已经在车辆库中，确定则覆盖原数据。
             </div>
           ) : null}
         </div>
