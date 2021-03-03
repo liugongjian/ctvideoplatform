@@ -6,8 +6,9 @@ import {
   getImportFaceList, submitLabel, saveUploadList
 } from 'Redux/reducer/face';
 import {
-  Form, Steps, Select, Button, Upload, message, List, Card, Tag, Pagination, Modal, Icon, Spin
+  Form, Steps, Select, Button, Upload, message, List, Card, Tag, Modal, Icon, Spin
 } from 'antd';
+import Pagination from 'Components/EPagination';
 import { InboxOutlined } from '@ant-design/icons';
 import noImg from '@/assets/defaultFace.png';
 import styles from './import.less';
@@ -100,13 +101,12 @@ class ImportFace extends Component {
     image.onerror = null;
   };
 
+  showTotal = total => (<span className={styles.totalText}>{`总条数： ${total}`}</span>);
+
   onPageChange = (current, pageSize) => {
     this.handleListChange({ current, pageSize }, {}, {});
   };
 
-  onShowSizeChange = (current, pageSize) => {
-    this.handleListChange({ current, pageSize }, {}, {});
-  };
 
   handleListChange = (pagination, filters, sorter) => {
     this.setState({
@@ -260,63 +260,60 @@ class ImportFace extends Component {
                     </div>
 
                   ) : (
-                    <div className={styles.previewContainer}>
-                      <Spin spinning={submitLoading}>
-                        <List
-                          grid={{
-                            gutter: 16,
-                            xs: 1,
-                            sm: 2,
-                            md: 4,
-                            lg: 4,
-                            xl: 6,
-                            xxl: 8,
-                          }}
-                          dataSource={faceData}
-                          pagination={false}
-                          renderItem={item => (
-                            <List.Item>
-                              <Card bordered={false}>
-                                <div className={styles.cardContanier}>
-                                  <div className={styles.imgContainer}>
-                                    <img src={`${urlPrefix}/face/displayupload/${item.temporaryId}`} onError={e => this.handleImageError(e)} alt="" />
-                                  </div>
-                                  <div className={styles.footerContanier}>
-                                    <div className={styles.info}>
-                                      <div title={item.name} className={styles.name}>{item.name.split('.')[0]}</div>
-                                      {
-                                        item.labelCode === 0 ? <div className={styles.tagContainer}><Tag color="green">白名单</Tag></div> : <div className={styles.tagContainer}><Tag color="red">黑名单</Tag></div>
-                                      }
+                    <div>
+                      <div className={styles.previewContainer}>
+                        <Spin spinning={submitLoading}>
+                          <List
+                            grid={{
+                              gutter: 16,
+                              xs: 1,
+                              sm: 2,
+                              md: 4,
+                              lg: 4,
+                              xl: 6,
+                              xxl: 8,
+                            }}
+                            dataSource={faceData}
+                            pagination={false}
+                            renderItem={item => (
+                              <List.Item>
+                                <Card bordered={false}>
+                                  <div className={styles.cardContanier}>
+                                    <div className={styles.imgContainer}>
+                                      <img src={`${urlPrefix}/face/displayupload/${item.temporaryId}`} onError={e => this.handleImageError(e)} alt="" />
+                                    </div>
+                                    <div className={styles.footerContanier}>
+                                      <div className={styles.info}>
+                                        <div title={item.name} className={styles.name}>{item.name.split('.')[0]}</div>
+                                        {item.labelCode === 0 ? <div className={styles.tagContainer}><Tag color="green">白名单</Tag></div> : <div className={styles.tagContainer}><Tag color="red">黑名单</Tag></div>}
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
 
-                              </Card>
-                            </List.Item>
-                          )}
-                        />
-                      </Spin>
-                      <div className={styles.paginationWrapper}>
-                        <span>
-                          总条数：
-                          {total}
-                        </span>
-                        <div>
-                          <Pagination
-                            total={total}
-                            current={pageNum}
-                            showSizeChanger
-                            showQuickJumper
-                            pageSizeOptions={['12', '24', '36', '48']}
-                            pageSize={pageSize}
-                            onChange={this.onPageChange}
-                            onShowSizeChange={this.onShowSizeChange}
+                                </Card>
+                              </List.Item>
+                            )}
                           />
+                        </Spin>
+
+                        <div className={styles.btn}>
+                          <Button type="primary" onClick={this.submit} disabled={submitBtnDis}>提交</Button>
+                          <Button type="button" onClick={() => this.props.history.go(-1)}>取消</Button>
                         </div>
                       </div>
-                      <div className={styles.btn}>
-                        <Button type="primary" onClick={this.submit} disabled={submitBtnDis}>提交</Button>
-                        <Button type="button" onClick={() => this.props.history.go(-1)}>取消</Button>
+                      <div className={styles.paginationWrapper}>
+                        <Pagination
+                          total={total}
+                          current={pageNum}
+                          defaultPageSize={pageSize}
+                          onChange={this.onPageChange}
+                          onShowSizeChange={this.onPageChange}
+                          pageSizeOptions={['12', '24', '36', '48']}
+                          hideOnSinglePage={false}
+                          showSizeChanger
+                          showQuickJumper
+                          showTotal={this.showTotal}
+                        />
                       </div>
                     </div>
                   )
