@@ -34,17 +34,17 @@ class LicenseImportModalComp extends Component {
     const { licenseNo: licenseOrigin, label: labelOrigin, color } = initailVal || {};
     const licenseProvince = licenseOrigin && licenseOrigin[0] || undefined;
     const licenseNo = licenseOrigin && licenseOrigin.slice(1, licenseOrigin.length);
-    let label;
-    switch (labelOrigin) {
-      case 'WHITE':
-        label = 1;
-        break;
-      case 'BLACK':
-        label = 2;
-        break;
-      default:
-        break;
-    }
+    const label = labelOrigin;
+    // switch (labelOrigin) {
+    //   case 'WHITE':
+    //     label = 1;
+    //     break;
+    //   case 'BLACK':
+    //     label = 2;
+    //     break;
+    //   default:
+    //     break;
+    // }
     form.setFieldsValue({
       licenseProvince, licenseNo, color, label
     });
@@ -167,8 +167,8 @@ class LicenseImportModalComp extends Component {
                 ],
               })(
                 <Radio.Group>
-                  <Radio value={1}>白名单</Radio>
-                  <Radio value={2}>黑名单</Radio>
+                  <Radio value="WHITE">白名单</Radio>
+                  <Radio value="BLACK">黑名单</Radio>
                 </Radio.Group>
               )}
             </Form.Item>

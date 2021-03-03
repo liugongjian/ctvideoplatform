@@ -530,6 +530,14 @@ class Account extends Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 18, offset: 6, },
     };
+    const pswFormItemLayout = {
+      labelCol: { span: 8 },
+      wrapperCol: { span: 16 },
+    };
+    const pswTailFormItemLayout = {
+      labelCol: { span: 8 },
+      wrapperCol: { span: 16, offset: 8, },
+    };
 
     const columns = [
       {
@@ -662,7 +670,7 @@ class Account extends Component {
           width="600px"
           footer={[
             <Button key="submit" type="primary" onClick={this.updateUser}>
-              保存
+              确定
             </Button>,
             <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleCancel}>
               取消
@@ -709,7 +717,7 @@ class Account extends Component {
           width="600px"
           footer={[
             <Button key="submit" type="primary" onClick={this.updatePassword}>
-              保存
+              确定
             </Button>,
             <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handlePswCancel}>
               取消
@@ -717,10 +725,10 @@ class Account extends Component {
           ]}
         >
           <Form horizontal="true">
-            <FormItem label="用户名" {...formItemLayout} className={styles.userNameItem}>
+            <FormItem label="用户名" {...pswFormItemLayout} className={styles.userNameItem}>
               <div className={styles.userName} title={pswXq.userName}>{pswXq.userName}</div>
             </FormItem>
-            <FormItem label="租户管理员密码" autoComplete="off" {...formItemLayout}>
+            <FormItem label="租户管理员密码" autoComplete="off" {...pswFormItemLayout}>
               {getFieldDecorator('rentpassword', {
                 rules: [
                   { required: true, message: '租户管理员密码不能为空！' },
@@ -731,7 +739,7 @@ class Account extends Component {
                 <Input placeholder="请输入租户管理员密码" />
               )}
             </FormItem>
-            <FormItem label="新密码" autoComplete="off" {...formItemLayout} className={isTooltipShow ? styles.passwordBpttom : styles.password}>
+            <FormItem label="新密码" autoComplete="off" {...pswFormItemLayout} className={isTooltipShow ? styles.passwordBpttom : styles.password}>
               {getFieldDecorator('reNewPassword', {
                 rules: [
                   { required: true, message: '新密码不能为空！' },
@@ -747,12 +755,12 @@ class Account extends Component {
             {
               isTooltipShow
                 ? (
-                  <FormItem {...tailFormItemLayout} className={styles.tooltip}>
+                  <FormItem {...pswTailFormItemLayout} className={styles.tooltip}>
                     <span>新密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符</span>
                   </FormItem>
                 ) : ''
             }
-            <FormItem label="确认密码" autoComplete="off" {...formItemLayout}>
+            <FormItem label="确认密码" autoComplete="off" {...pswFormItemLayout}>
               {getFieldDecorator('reNewPassword1',
                 {
                   rules: [

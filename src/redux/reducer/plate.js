@@ -17,6 +17,7 @@ const TEMPLATE_PLATE = 'TEMPLATE_PLATE';
 
 const DUPLICATED_PLATE = 'DUPLICATED_PLATE';
 const SUBMIT_PLATE = 'SUBMIT_PLATE';
+const EXIST_PLATE = 'EXIST_PLATE';
 
 const initialState = {
 };
@@ -65,6 +66,11 @@ export default function role(state = initialState, action = {}) {
         ...state,
     };  
     case SUBMIT_PLATE:
+      return {
+        ...state,
+    };  
+    
+    case EXIST_PLATE:
       return {
         ...state,
     };  
@@ -145,5 +151,12 @@ export function submitImportedPlate(params) {
     {
       data: params
     })
+  };
+}
+
+export function licenseExist(license) {
+  return {
+    type: EXIST_PLATE,
+    promise: apiClient => apiClient.get(`${urlPrefix}/license/exist?license=${license}`)
   };
 }

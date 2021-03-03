@@ -392,7 +392,7 @@ class Face extends Component {
       const uploadButton = (
         <div>
           {imageLoading ? <LoadingOutlined /> : <PlusOutlined />}
-          <div style={{ marginTop: 8 }}>上传</div>
+          <div style={{ marginTop: 8, color: '#999999' }}>上传</div>
         </div>
       );
       return (
