@@ -39,7 +39,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 );
 
 const initialVals = {
-  startTime: moment().subtract('days', 7),
+  startTime: moment().subtract('days', 30),
   endTime: moment(),
   deviceVal: [],
   algoVal: [],
@@ -280,7 +280,7 @@ class Alarms extends Component {
               </span>
             </div>
           </div>
-          <Spin spinning={listLoading}>
+          <Spin spinning={listLoading} className={styles['alarms-listSpin']}>
             <div className={styles['alarms-listWrapper']}>
               {
                 listData.length > 0 || listLoading

@@ -415,9 +415,15 @@ class Face extends Component {
                   <Card bordered={false} hoverable>
                     <div className={item.isChecked ? styles.cardContanierChecked : styles.cardContanier}>
                       <div className={styles.imgContainer}>
-                        {/* <img src={`${urlPrefix}/face/displayexist/${item.photoId}?${new Date().getTime()}`} onError={e => this.handleImageError(e)} alt="" /> */}
                         { !loading ? <img src={`${urlPrefix}/face/displayexist/${item.photoId}?${new Date().getTime()}`} onError={e => this.handleImageError(e)} alt="" /> : ''}
                         <Checkbox className={item.isChecked ? styles.checkedbox : styles.checkbox} checked={item.isChecked} onChange={e => this.onChange(item, e)} />
+                        {
+                          item.syncStatusCode !== 1 ? (
+                            <div className={styles.faceTip}>
+                              {item.syncStatusCode === 0 ? '人脸录入失败' : '人脸录入中'}
+                            </div>
+                          ) : ''
+                        }
                       </div>
                       <div className={item.isChecked ? styles.btnChecked : styles.btn}>
                         <Icon type="edit" className={styles.iconEdit} onClick={() => this.handleEditFace(item)} />
