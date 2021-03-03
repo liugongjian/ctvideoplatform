@@ -134,8 +134,8 @@ class AddPlate extends Component {
      );
     
     const confirmer = ()=>(
-      <div>
-          <Table dataSource={importedPlateInfo.list} pagination={false}>
+      <div className={styles.confirmerWrapper}>
+          <Table dataSource={importedPlateInfo.list} pagination={false} rowClassName={styles.tabRow}>
           <Column title="车牌号" dataIndex="licenseNo" width={'14%'} className="tabble-row" align="center" 
             render= {(text,record) => (
                 <div>

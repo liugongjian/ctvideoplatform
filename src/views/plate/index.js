@@ -225,8 +225,8 @@ class Plate extends Component {
           </div>
         </div>
         <Table rowSelection={rowSelection} dataSource={plateListInfo.list} pagination={false} rowKey={(record) => record.id}>
-            <Column title="车牌号" dataIndex="licenseNo" width={'27%'} className="tabble-row"/>
-            <Column title="布控标签" dataIndex="label" width={'31%'}
+            <Column title="车牌号" dataIndex="licenseNo" width={'24%'} className="tabble-row"/>
+            <Column title="布控标签" dataIndex="label" width={'28%'}
                   render={(text, record) => (
                     <div>
                       {
@@ -239,7 +239,7 @@ class Plate extends Component {
             <Column
                 title="操作"
                 key="action"
-                width={'14%'}
+                width={'20%'}
                 render={(text, record) => (
                   <div className={styles.oprationWrapper}>
                     <a onClick={()=>this.onModalOpen(record)}>
@@ -329,10 +329,10 @@ class Plate extends Component {
             <Form.Item label="布控标签">
               {getFieldDecorator('label', {
                 rules: [
-                  // {
-                  //   required: true,
-                  //   message: '请选择布控标签!',
-                  // },
+                  {
+                    required: true,
+                    message: '请选择布控标签!',
+                  },
                   {
                     validator: (rule, val, callback) => {
                       if (!val) {
@@ -352,10 +352,10 @@ class Plate extends Component {
             <Form.Item label="车牌颜色">
               {getFieldDecorator('color', {
                 rules: [
-                  // {
-                  //   required: true,
-                  //   message: '请选择车牌颜色!',
-                  // },
+                  {
+                    required: true,
+                    message: '请选择车牌颜色!',
+                  },
                   {
                     validator: (rule, val, callback) => {
                       if (!val) {
@@ -408,8 +408,6 @@ class Plate extends Component {
             </div>
             <div className={styles.deleteModalInfo}>
               <span>你确定要删除所选的{this.state.deleteItems.length}个车牌吗？</span>
-              <p>此操作将删除选中角色</p>
-              <p>如果删除的角色，已有账号关联，则无法被删除！</p>
             </div>
           </div>
         </Modal>

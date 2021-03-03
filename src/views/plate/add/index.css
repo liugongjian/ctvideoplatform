@@ -94,3 +94,10 @@
 .buttonWrapper2 .btnBack2 {
   margin-right: 50px;
 }
+.tabRow {
+  height: 30px;
+}
+.confirmerWrapper :global .ant-table-thead > tr > th {
+  color: #333333;
+  font-weight: bold;
+}
