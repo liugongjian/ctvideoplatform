@@ -980,7 +980,7 @@ class Monitor extends Component {
             <div className={styles.handleResult}>
               <Button type="link" onClick={this.openModal} className={styles.handleBtn}>
                 <Icon type="export" />
-                <span>导入</span>
+                <span>批量导入</span>
               </Button>
               <Button type="link" className={styles.handleBtn} onClick={this.delThisKeys} disabled={!checkedKeys.length}>
                 <Icon type="delete" />
