@@ -1,8 +1,9 @@
 /* eslint-disable max-len */
 import React, { Component } from 'react';
 import {
-  Select, Button, Modal, Form, Input, Switch, Icon, message, Table, Pagination, Tooltip
+  Select, Button, Modal, Form, Input, Switch, Icon, message, Table, Tooltip
 } from 'antd';
+import Pagination from 'Components/EPagination';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -297,13 +298,12 @@ class Account extends Component {
 
   );
 
+  showTotal = total => (<span className={styles.totalText}>{`总条数： ${total}`}</span>);
+
   onPageChange = (current, pageSize) => {
     this.handleTableChange({ current, pageSize }, {}, {});
   };
 
-  onShowSizeChange = (current, pageSize) => {
-    this.handleTableChange({ current, pageSize }, {}, {});
-  };
 
   // 编辑账号
   handleEdit= (val) => {
@@ -544,9 +544,6 @@ class Account extends Component {
       {
         title: '用户名', // 列名称
         dataIndex: 'username', // 数据源的字段名
-        // render: text => (
-        //   <div title={text}>{text && text.length > 10 ? `${text.substring(0, 10)}...` : text}</div>
-        // )
         render: (text) => {
           if (text.length > 10) {
             return (
@@ -561,9 +558,6 @@ class Account extends Component {
       {
         title: '角色名称',
         dataIndex: 'roleName',
-        // render: (text, record) => (
-        //   <div title={text}>{text && text.length > 10 ? `${text.substring(0, 10)}...` : text}</div>
-        // )
         render: (text) => {
           if (text.length > 10) {
             return (
@@ -636,205 +630,204 @@ class Account extends Component {
       onChange: this.handleRowSelectChange
     };
     return (
-      <div className={styles['table-content']}>
-        <Table
-          loading={loading}
-          columns={columns}
-          rowKey={record => record.id}
-          dataSource={accountData}
-          rowSelection={rowSelection}
-          onChange={this.handleTableChange}
-          pagination={false}
-        />
-        <div className={styles.paginationWrapper}>
-          <span>
-            总条数：
-            {total}
-          </span>
-          <div>
-            <Pagination
-              total={total}
-              current={pageNum}
-              showSizeChanger
-              showQuickJumper
-              pageSize={pageSize}
-              onChange={this.onPageChange}
-              onShowSizeChange={this.onShowSizeChange}
-            />
-          </div>
-        </div>
-        <Modal
-          title="编辑账号"
-          visible={this.state.modalVisible}
-          onCancel={this.handleCancel}
-          className={styles.editModal}
-          width="600px"
-          footer={[
-            <Button key="submit" type="primary" onClick={this.updateUser}>
-              确定
-            </Button>,
-            <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleCancel}>
-              取消
-            </Button>,
-          ]}
-        >
-          <Form horizontal="true">
-            <div className={styles.editSecTitle}>基本配置</div>
-            <FormItem label="用户名" {...formItemLayout} className={styles.userNameItem}>
-              <div className={styles.userName} title={editXq.userName}>{editXq.userName}</div>
-            </FormItem>
-            <div className={styles.editSecTitle}>关联权限</div>
-            <FormItem label="选择角色" {...formItemLayout} className={styles.role}>
-              {
-                getFieldDecorator('roleId', {
-                  rules: [
-                    { required: true, message: '角色不能为空' }
-                  ]
-                })(
-                  <Select
-                    placeholder="请选择角色"
-                    showSearch
-                    optionFilterProp="children"
-                    onChange={this.handleRoleChange}
-                    onSearch={this.handleRoleSearch}
-                    // eslint-disable-next-line max-len
-                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
-                  >
-                    {roleData.map(d => (
-                      <Option key={d.value}>{d.text}</Option>
-                    ))}
-                  </Select>
-                )
-              }
-            </FormItem>
-          </Form>
-        </Modal>
-        <Modal
-          title="重置密码"
-          visible={this.state.pswModalVisible}
-          onCancel={this.handlePswCancel}
-          className={styles.pswModal}
-          width="600px"
-          footer={[
-            <Button key="submit" type="primary" onClick={this.updatePassword}>
-              确定
-            </Button>,
-            <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handlePswCancel}>
-              取消
-            </Button>,
-          ]}
-        >
-          <Form horizontal="true">
-            <FormItem label="用户名" {...pswFormItemLayout} className={styles.userNameItem}>
-              <div className={styles.userName} title={pswXq.userName}>{pswXq.userName}</div>
-            </FormItem>
-            <FormItem label="租户管理员密码" autoComplete="off" {...pswFormItemLayout}>
-              {getFieldDecorator('rentpassword', {
-                rules: [
-                  { required: true, message: '租户管理员密码不能为空！' },
-                ],
-                validateTrigger: 'onBlur'
-              },
-              { initialValue: '' })(
-                <Input placeholder="请输入租户管理员密码" />
-              )}
-            </FormItem>
-            <FormItem label="新密码" autoComplete="off" {...pswFormItemLayout} className={isTooltipShow ? styles.passwordBpttom : styles.password}>
-              {getFieldDecorator('reNewPassword', {
-                rules: [
-                  { required: true, message: '新密码不能为空！' },
-                  // eslint-disable-next-line max-len
-                  { validator: (rule, value, callback) => { this.validatorRePsw(rule, value, callback); } }
-                ],
-                validateTrigger: 'onBlur'
-              },
-              { initialValue: '' })(
-                <Input.Password onChange={this.reNewPswChange} placeholder="请输入新密码" />
-              )}
-            </FormItem>
-            {
-              isTooltipShow
-                ? (
-                  <FormItem {...pswTailFormItemLayout} className={styles.tooltip}>
-                    <span>新密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符</span>
-                  </FormItem>
-                ) : ''
-            }
-            <FormItem label="确认密码" autoComplete="off" {...pswFormItemLayout}>
-              {getFieldDecorator('reNewPassword1',
+      <div>
+        <div className={styles.tableContainer}>
+          <Table
+            loading={loading}
+            columns={columns}
+            rowKey={record => record.id}
+            dataSource={accountData}
+            rowSelection={rowSelection}
+            onChange={this.handleTableChange}
+            pagination={false}
+          />
+          <Modal
+            title="编辑账号"
+            visible={this.state.modalVisible}
+            onCancel={this.handleCancel}
+            className={styles.editModal}
+            width="600px"
+            footer={[
+              <Button key="submit" type="primary" onClick={this.updateUser}>
+                确定
+              </Button>,
+              <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleCancel}>
+                取消
+              </Button>,
+            ]}
+          >
+            <Form horizontal="true">
+              <div className={styles.editSecTitle}>基本配置</div>
+              <FormItem label="用户名" {...formItemLayout} className={styles.userNameItem}>
+                <div className={styles.userName} title={editXq.userName}>{editXq.userName}</div>
+              </FormItem>
+              <div className={styles.editSecTitle}>关联权限</div>
+              <FormItem label="选择角色" {...formItemLayout} className={styles.role}>
                 {
+                  getFieldDecorator('roleId', {
+                    rules: [
+                      { required: true, message: '角色不能为空' }
+                    ]
+                  })(
+                    <Select
+                      placeholder="请选择角色"
+                      showSearch
+                      optionFilterProp="children"
+                      onChange={this.handleRoleChange}
+                      onSearch={this.handleRoleSearch}
+                      // eslint-disable-next-line max-len
+                      filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
+                    >
+                      {roleData.map(d => (
+                        <Option key={d.value}>{d.text}</Option>
+                      ))}
+                    </Select>
+                  )
+                }
+              </FormItem>
+            </Form>
+          </Modal>
+          <Modal
+            title="重置密码"
+            visible={this.state.pswModalVisible}
+            onCancel={this.handlePswCancel}
+            className={styles.pswModal}
+            width="600px"
+            footer={[
+              <Button key="submit" type="primary" onClick={this.updatePassword}>
+                确定
+              </Button>,
+              <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handlePswCancel}>
+                取消
+              </Button>,
+            ]}
+          >
+            <Form horizontal="true">
+              <FormItem label="用户名" {...pswFormItemLayout} className={styles.userNameItem}>
+                <div className={styles.userName} title={pswXq.userName}>{pswXq.userName}</div>
+              </FormItem>
+              <FormItem label="租户管理员密码" autoComplete="off" {...pswFormItemLayout}>
+                {getFieldDecorator('rentpassword', {
                   rules: [
-                    { required: true, message: '确认密码不能为空！' },
-                    // eslint-disable-next-line max-len
-                    { validator: (rule, value, callback) => { this.validatorRePsw2(rule, value, callback); } }
+                    { required: true, message: '租户管理员密码不能为空！' },
                   ],
                   validateTrigger: 'onBlur'
                 },
                 { initialValue: '' })(
+                  <Input placeholder="请输入租户管理员密码" />
+                )}
+              </FormItem>
+              <FormItem label="新密码" autoComplete="off" {...pswFormItemLayout} className={isTooltipShow ? styles.passwordBpttom : styles.password}>
+                {getFieldDecorator('reNewPassword', {
+                  rules: [
+                    { required: true, message: '新密码不能为空！' },
+                    // eslint-disable-next-line max-len
+                    { validator: (rule, value, callback) => { this.validatorRePsw(rule, value, callback); } }
+                  ],
+                  validateTrigger: 'onBlur'
+                },
+                { initialValue: '' })(
+                  <Input.Password onChange={this.reNewPswChange} placeholder="请输入新密码" />
+                )}
+              </FormItem>
+              {
+                isTooltipShow
+                  ? (
+                    <FormItem {...pswTailFormItemLayout} className={styles.tooltip}>
+                      <span>新密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符</span>
+                    </FormItem>
+                  ) : ''
+              }
+              <FormItem label="确认密码" autoComplete="off" {...pswFormItemLayout}>
+                {getFieldDecorator('reNewPassword1',
+                  {
+                    rules: [
+                      { required: true, message: '确认密码不能为空！' },
+                      // eslint-disable-next-line max-len
+                      { validator: (rule, value, callback) => { this.validatorRePsw2(rule, value, callback); } }
+                    ],
+                    validateTrigger: 'onBlur'
+                  },
+                  { initialValue: '' })(
                 // eslint-disable-next-line react/jsx-indent
-                <Input.Password placeholder="请输入确认密码" />
-              )}
-            </FormItem>
-          </Form>
-        </Modal>
-        <Modal
-          visible={deleteModelVisible}
-          className={styles.delComfirmModal}
-          width="400px"
-          closable={false}
-          footer={[
-            <Button key="submit" type="primary" onClick={this.delAccount}>
-              确定
-            </Button>,
-            <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleDelCancel}>
-              取消
-            </Button>,
-          ]}
-        >
-          <div>
-            <Icon type="warning" />
-            <div>{`您确定要删除${selectedRowKeys.length > 0 ? `这${delIdsLength}个账号吗？` : `账号：${delUserName}吗？`}`}</div>
-          </div>
-        </Modal>
-        <Modal
-          visible={stopModelVisible}
-          className={styles.stopComfirmModal}
-          width="400px"
-          closable={false}
-          footer={[
-            <Button key="submit" type="primary" onClick={this.stopAccount}>
-              确定
-            </Button>,
-            <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleStopCancel}>
-              取消
-            </Button>,
-          ]}
-        >
-          <div>
-            <Icon type="warning" />
-            <div>{`您确定要禁用${selectedRowKeys.length > 0 ? `这${stopIdsLength}个账号吗？` : `账号：${stopUserName}吗？`}`}</div>
-          </div>
-        </Modal>
-        <Modal
-          visible={enableModelVisible}
-          className={styles.enableComfirmModal}
-          width="400px"
-          closable={false}
-          footer={[
-            <Button key="submit" type="primary" onClick={this.enableAccount}>
-              确定
-            </Button>,
-            <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleEnableCancel}>
-              取消
-            </Button>,
-          ]}
-        >
-          <div>
-            <Icon type="exclamation-circle" />
-            <div>{`您确定要启用${selectedRowKeys.length > 0 ? `这${enableIdsLength}个账号吗？` : `账号：${enableUserName}吗？`}`}</div>
-          </div>
-        </Modal>
+                  <Input.Password placeholder="请输入确认密码" />
+                )}
+              </FormItem>
+            </Form>
+          </Modal>
+          <Modal
+            visible={deleteModelVisible}
+            className={styles.delComfirmModal}
+            width="400px"
+            closable={false}
+            footer={[
+              <Button key="submit" type="primary" onClick={this.delAccount}>
+                确定
+              </Button>,
+              <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleDelCancel}>
+                取消
+              </Button>,
+            ]}
+          >
+            <div>
+              <Icon type="warning" />
+              <div>{`您确定要删除${selectedRowKeys.length > 0 ? `这${delIdsLength}个账号吗？` : `账号：${delUserName}吗？`}`}</div>
+            </div>
+          </Modal>
+          <Modal
+            visible={stopModelVisible}
+            className={styles.stopComfirmModal}
+            width="400px"
+            closable={false}
+            footer={[
+              <Button key="submit" type="primary" onClick={this.stopAccount}>
+                确定
+              </Button>,
+              <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleStopCancel}>
+                取消
+              </Button>,
+            ]}
+          >
+            <div>
+              <Icon type="warning" />
+              <div>{`您确定要禁用${selectedRowKeys.length > 0 ? `这${stopIdsLength}个账号吗？` : `账号：${stopUserName}吗？`}`}</div>
+            </div>
+          </Modal>
+          <Modal
+            visible={enableModelVisible}
+            className={styles.enableComfirmModal}
+            width="400px"
+            closable={false}
+            footer={[
+              <Button key="submit" type="primary" onClick={this.enableAccount}>
+                确定
+              </Button>,
+              <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleEnableCancel}>
+                取消
+              </Button>,
+            ]}
+          >
+            <div>
+              <Icon type="exclamation-circle" />
+              <div>{`您确定要启用${selectedRowKeys.length > 0 ? `这${enableIdsLength}个账号吗？` : `账号：${enableUserName}吗？`}`}</div>
+            </div>
+          </Modal>
+        </div>
+        <div className={styles.paginationWrapper}>
+          <Pagination
+            total={total}
+            current={pageNum}
+            defaultPageSize={pageSize}
+            onChange={this.onPageChange}
+            onShowSizeChange={this.onPageChange}
+            pageSizeOptions={['12', '24', '36', '48']}
+            hideOnSinglePage={false}
+            showSizeChanger
+            showQuickJumper
+            showTotal={this.showTotal}
+          />
+        </div>
       </div>
     );
   };

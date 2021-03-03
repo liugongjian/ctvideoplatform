@@ -7,8 +7,9 @@ import {
   getFaceList, addFace, editFace, delFace, saveUploadList
 } from 'Redux/reducer/face';
 import {
-  message, Button, Modal, Form, Input, Icon, Radio, Upload, List, Spin, Card, Tag, Checkbox, Pagination
+  message, Button, Modal, Form, Input, Icon, Radio, Upload, List, Spin, Card, Tag, Checkbox,
 } from 'antd';
+import Pagination from 'Components/EPagination';
 import {
   LoadingOutlined, PlusOutlined, ImportOutlined, SearchOutlined
 } from '@ant-design/icons';
@@ -362,11 +363,9 @@ class Face extends Component {
       });
     };
 
-    onPageChange = (current, pageSize) => {
-      this.handleListChange({ current, pageSize }, {}, {});
-    };
+    showTotal = total => (<span className={styles.totalText}>{`总条数： ${total}`}</span>);
 
-    onShowSizeChange = (current, pageSize) => {
+    onPageChange = (current, pageSize) => {
       this.handleListChange({ current, pageSize }, {}, {});
     };
 
@@ -396,64 +395,65 @@ class Face extends Component {
         </div>
       );
       return (
-        <div className={styles.mainContanier}>
-          <Spin spinning={loading}>
-            <List
-              grid={{
-                gutter: 16,
-                xs: 1,
-                sm: 2,
-                md: 4,
-                lg: 4,
-                xl: 6,
-                xxl: 8,
-              }}
-              dataSource={faceData}
-              pagination={false}
-              renderItem={item => (
-                <List.Item>
-                  <Card bordered={false} hoverable>
-                    <div className={item.isChecked ? styles.cardContanierChecked : styles.cardContanier}>
-                      <div className={styles.imgContainer}>
-                        { !loading ? <img src={`${urlPrefix}/face/displayexist/${item.photoId}?${new Date().getTime()}`} onError={e => this.handleImageError(e)} alt="" /> : ''}
-                        <Checkbox className={item.isChecked ? styles.checkedbox : styles.checkbox} checked={item.isChecked} onChange={e => this.onChange(item, e)} />
-                        {
-                          item.syncStatusCode !== 1 ? (
-                            <div className={styles.faceTip}>
-                              {item.syncStatusCode === 0 ? '人脸录入失败' : '人脸录入中'}
-                            </div>
-                          ) : ''
-                        }
-                      </div>
-                      <div className={item.isChecked ? styles.btnChecked : styles.btn}>
-                        <Icon type="edit" className={styles.iconEdit} onClick={() => this.handleEditFace(item)} />
-                        <div className={styles.line} />
-                        <Icon type="delete" className={styles.iconDel} onClick={() => this.handleDelFace(item)} />
-                      </div>
-                      <div className={styles.footerContanier}>
-                        <div className={styles.info}>
-                          <div title={item.name} className={styles.name}>{item.name.split('.')[0]}</div>
+        <div>
+          <div className={styles.mainContanier}>
+            <Spin spinning={loading}>
+              <List
+                grid={{
+                  gutter: 16,
+                  xs: 1,
+                  sm: 2,
+                  md: 4,
+                  lg: 4,
+                  xl: 6,
+                  xxl: 8,
+                }}
+                dataSource={faceData}
+                pagination={false}
+                renderItem={item => (
+                  <List.Item>
+                    <Card bordered={false} hoverable>
+                      <div className={item.isChecked ? styles.cardContanierChecked : styles.cardContanier}>
+                        <div className={styles.imgContainer}>
+                          { !loading ? <img src={`${urlPrefix}/face/displayexist/${item.photoId}?${new Date().getTime()}`} onError={e => this.handleImageError(e)} alt="" /> : ''}
+                          <Checkbox className={item.isChecked ? styles.checkedbox : styles.checkbox} checked={item.isChecked} onChange={e => this.onChange(item, e)} />
                           {
-                            item.labelCode === 0 || item.labelCode === 1 ? (
-                              <div className={styles.tagContainer}>
-                                {
-                                  item.labelCode === 0
-                                    ? <Tag color="green">白名单</Tag> : <Tag color="red">黑名单</Tag>
-                                }
+                            item.syncStatusCode !== 1 ? (
+                              <div className={styles.faceTip}>
+                                {item.syncStatusCode === 0 ? '人脸录入失败' : '人脸录入中'}
                               </div>
-                            )
-                              : <div className={styles.tagContainer}><Tag color="blue">其他</Tag></div>
+                            ) : ''
                           }
                         </div>
+                        <div className={item.isChecked ? styles.btnChecked : styles.btn}>
+                          <Icon type="edit" className={styles.iconEdit} onClick={() => this.handleEditFace(item)} />
+                          <div className={styles.line} />
+                          <Icon type="delete" className={styles.iconDel} onClick={() => this.handleDelFace(item)} />
+                        </div>
+                        <div className={styles.footerContanier}>
+                          <div className={styles.info}>
+                            <div title={item.name} className={styles.name}>{item.name.split('.')[0]}</div>
+                            {
+                              item.labelCode === 0 || item.labelCode === 1 ? (
+                                <div className={styles.tagContainer}>
+                                  {
+                                    item.labelCode === 0
+                                      ? <Tag color="green">白名单</Tag> : <Tag color="red">黑名单</Tag>
+                                  }
+                                </div>
+                              )
+                                : <div className={styles.tagContainer}><Tag color="blue">其他</Tag></div>
+                            }
+                          </div>
+                        </div>
                       </div>
-                    </div>
 
-                  </Card>
-                </List.Item>
-              )}
-            />
-          </Spin>
-          <div className={styles.paginationWrapper}>
+                    </Card>
+                  </List.Item>
+                )}
+              />
+            </Spin>
+            {/* <div className={styles.paginationWrapper}>
             <span>
               总条数：
               {total}
@@ -467,117 +467,130 @@ class Face extends Component {
                 pageSizeOptions={['12', '24', '36', '48']}
                 pageSize={pageSize}
                 onChange={this.onPageChange}
-                onShowSizeChange={this.onShowSizeChange}
+                onShowSizeChange={this.onPageChange}
               />
             </div>
+          </div> */}
+            <Modal
+              title={textMap[modalStatus]}
+              visible={modalVisible}
+              className={styles.addOrEditModal}
+              width="600px"
+              onCancel={this.handleCancel}
+              footer={[
+                <Button key="submit" type="primary" onClick={modalStatus === 'add' ? this.addFace : this.editFace}>
+                  确定
+                </Button>,
+                <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleCancel}>
+                  取消
+                </Button>,
+              ]}
+            >
+              <Form horizontal="true">
+                <FormItem label="姓名" {...formItemLayout}>
+                  {getFieldDecorator('name', {
+                    rules: [
+                      { required: true, message: '姓名不能为空' },
+                      { max: 30, message: '姓名不得超过30个字符' },
+                      { pattern: new RegExp(/\S/), message: '姓名不能为空' }
+                    ],
+                    validateTrigger: 'onBlur'
+                  })(
+                    <Input placeholder="请输入姓名" />
+                  )
+                  }
+                </FormItem>
+                <FormItem label="上传人脸图像" {...formItemLayout} extra="支持.jpg、.png格式图片">
+                  {getFieldDecorator('imageUrl', {
+                    rules: [
+                      { required: true, message: '请上传人脸图像' }
+                    ],
+                    validateTrigger: 'onBlur',
+                    valuePropName: 'avatar'
+                  })(
+                    <Upload
+                      name="file"
+                      listType="picture-card"
+                      multiple={false}
+                      showUploadList={false}
+                      action={uploadUrl}
+                      beforeUpload={this.beforeUpload}
+                      onChange={this.handleChange}
+                    >
+                      {imageUrl ? <img src={imageUrl} alt="" style={{ width: '100%' }} onError={e => this.handleEditImageError(e)} /> : uploadButton}
+                    </Upload>
+                  )
+                  }
+                </FormItem>
+                <FormItem label="布控标签" {...formItemLayout}>
+                  {getFieldDecorator('label', {
+                    rules: [
+                      { required: true, message: '请选择一个标签' }
+                    ],
+                    validateTrigger: 'onBlur'
+                  })(
+                    <Radio.Group>
+                      <Radio value={0}>白名单</Radio>
+                      <Radio value={1}>黑名单</Radio>
+                    </Radio.Group>
+                  )
+                  }
+                </FormItem>
+              </Form>
+            </Modal>
+
+            <Modal
+              visible={delModalVisible}
+              className={styles.delModal}
+              width="400px"
+              closable={false}
+              footer={[
+                <Button key="submit" type="primary" onClick={this.delFace}>
+                  确定
+                </Button>,
+                <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleDelCancel}>
+                  取消
+                </Button>,
+              ]}
+            >
+              <div>
+                <Icon type="warning" />
+                <div>{`您确定要删除${selectedRowKeys.length > 0 ? `这${delIdsLength}个人脸数据吗？` : `${delName.split('.')[0]}的人脸数据吗？`}`}</div>
+              </div>
+            </Modal>
+
+            <Modal
+              visible={repeatModalVisible}
+              className={styles.repeatModal}
+              width="400px"
+              closable={false}
+              footer={[
+                <Button key="submit" type="primary" onClick={this.replaceFace}>
+                  确定
+                </Button>,
+                <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleReplaceCancel}>
+                  取消
+                </Button>,
+              ]}
+            >
+              <div>
+                <Icon type="warning" />
+                <div>您添加的人脸数据已存在，是否要覆盖？</div>
+              </div>
+            </Modal>
           </div>
-          <Modal
-            title={textMap[modalStatus]}
-            visible={modalVisible}
-            className={styles.addOrEditModal}
-            width="600px"
-            onCancel={this.handleCancel}
-            footer={[
-              <Button key="submit" type="primary" onClick={modalStatus === 'add' ? this.addFace : this.editFace}>
-                确定
-              </Button>,
-              <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleCancel}>
-                取消
-              </Button>,
-            ]}
-          >
-            <Form horizontal="true">
-              <FormItem label="姓名" {...formItemLayout}>
-                {getFieldDecorator('name', {
-                  rules: [
-                    { required: true, message: '姓名不能为空' },
-                    { max: 30, message: '姓名不得超过30个字符' },
-                    { pattern: new RegExp(/\S/), message: '姓名不能为空' }
-                  ],
-                  validateTrigger: 'onBlur'
-                })(
-                  <Input placeholder="请输入姓名" />
-                )
-                }
-              </FormItem>
-              <FormItem label="上传人脸图像" {...formItemLayout} extra="支持.jpg、.png格式图片">
-                {getFieldDecorator('imageUrl', {
-                  rules: [
-                    { required: true, message: '请上传人脸图像' }
-                  ],
-                  validateTrigger: 'onBlur',
-                  valuePropName: 'avatar'
-                })(
-                  <Upload
-                    name="file"
-                    listType="picture-card"
-                    multiple={false}
-                    showUploadList={false}
-                    action={uploadUrl}
-                    beforeUpload={this.beforeUpload}
-                    onChange={this.handleChange}
-                  >
-                    {imageUrl ? <img src={imageUrl} alt="" style={{ width: '100%' }} onError={e => this.handleEditImageError(e)} /> : uploadButton}
-                  </Upload>
-                )
-                }
-              </FormItem>
-              <FormItem label="布控标签" {...formItemLayout}>
-                {getFieldDecorator('label', {
-                  rules: [
-                    { required: true, message: '请选择一个标签' }
-                  ],
-                  validateTrigger: 'onBlur'
-                })(
-                  <Radio.Group>
-                    <Radio value={0}>白名单</Radio>
-                    <Radio value={1}>黑名单</Radio>
-                  </Radio.Group>
-                )
-                }
-              </FormItem>
-            </Form>
-          </Modal>
-
-          <Modal
-            visible={delModalVisible}
-            className={styles.delModal}
-            width="400px"
-            closable={false}
-            footer={[
-              <Button key="submit" type="primary" onClick={this.delFace}>
-                确定
-              </Button>,
-              <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleDelCancel}>
-                取消
-              </Button>,
-            ]}
-          >
-            <div>
-              <Icon type="warning" />
-              <div>{`您确定要删除${selectedRowKeys.length > 0 ? `这${delIdsLength}个人脸数据吗？` : `${delName.split('.')[0]}的人脸数据吗？`}`}</div>
-            </div>
-          </Modal>
-
-          <Modal
-            visible={repeatModalVisible}
-            className={styles.repeatModal}
-            width="400px"
-            closable={false}
-            footer={[
-              <Button key="submit" type="primary" onClick={this.replaceFace}>
-                确定
-              </Button>,
-              <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleReplaceCancel}>
-                取消
-              </Button>,
-            ]}
-          >
-            <div>
-              <Icon type="warning" />
-              <div>您添加的人脸数据已存在，是否要覆盖？</div>
-            </div>
-          </Modal>
+          <Pagination
+            total={total}
+            current={pageNum}
+            defaultPageSize={pageSize}
+            onChange={this.onPageChange}
+            onShowSizeChange={this.onPageChange}
+            pageSizeOptions={['12', '24', '36', '48']}
+            hideOnSinglePage={false}
+            showSizeChanger
+            showQuickJumper
+            showTotal={this.showTotal}
+          />
         </div>
       );
     };
