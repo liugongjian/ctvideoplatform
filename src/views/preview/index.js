@@ -161,13 +161,22 @@ class Preview extends PureComponent {
         }
         return (<Icon type="folder" />);
       };
+
+      const getFolderICon = (val) => {
+        if (val.pid === '0') {
+          return (<Icon type="apartment" />);
+        }
+        return (<EIcon type="myicon-folderopen" />);
+      };
+
       if (item.children && item.children.length) {
         return (
           <TreeNode
             key={item.id.toString()}
             title={item.name}
             className={styles.treenode}
-            icon={<EIcon type="myicon-folderopen" />}
+            // icon={<EIcon type="myicon-folderopen" />}
+            icon={getFolderICon(item)}
           >
             {this.renderTreeNodes(item.children)}
           </TreeNode>
@@ -307,12 +316,11 @@ class Preview extends PureComponent {
               </div>
             </div>
             <div className={styles.videoBox}>
-              <p>{videoSrc}</p>
               {videoSrc
                 ? (
                   <Fragment>
                     <div className={styles.videoHandle}>
-                      <EIcon type="myicon-monitoring" />
+                      <EIcon type={`${styles.videoMonitoring} myicon-monitoring`} />
                       <div>监控点位</div>
                       <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={this.clearVideo} />
                     </div>
