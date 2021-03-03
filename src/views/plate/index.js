@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { LicenseProvinces } from './constants';
-import { getPlateList , addPlate , deletePlates , updatePlate } from '@/redux/reducer/plate'
+import { getPlateList , addPlate , deletePlates , updatePlate , licenseExist} from '@/redux/reducer/plate'
 
 import searchPic from '@/assets/role/search.png'
 import warnPic from '@/assets/role/warn.png'
@@ -21,7 +21,7 @@ const { Search } = Input;
 
 const mapStateToProps = state => ({ plate : state.plate });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  { getPlateList , addPlate , deletePlates , updatePlate },
+  { getPlateList , addPlate , deletePlates , updatePlate , licenseExist},
   dispatch
 );
 
@@ -48,43 +48,63 @@ class Plate extends Component {
   };
 
   onSubmitModal = ()=>{
-    const { getFieldValue } = this.props.form;
-    const licenseProvince = getFieldValue('licenseProvince');
-    const licenseNo = getFieldValue('licenseNo');
-    const label = getFieldValue('label');
-    const color = getFieldValue('color');
-    let licenseInfo = { licenseNo : licenseProvince + licenseNo , label , color};
-    
-    if(this.state.modalPlateInfo === {}){
-        this.props.addPlate(licenseInfo).then((data)=>{
-          console.log('data',data)
-          if(data){
-            message.success('添加成功');
-            this.setState({plateModalVisible:false});
-            this.props.getPlateList({
-              pageNo : this.state.plateListInfo.pageNo,
-              pageSize : this.state.plateListInfo.pageSize
-            }).then((data)=>{
-              this.setState({plateListInfo:data})
-            })
-          }
+    const { getFieldValue , validateFields} = this.props.form;
+    // const licenseProvince = getFieldValue('licenseProvince');
+    // const licenseNo = getFieldValue('licenseNo');
+    // const label = getFieldValue('label');
+    // const color = getFieldValue('color');
+    // let licenseInfo = { licenseNo : licenseProvince + licenseNo , label , color};
+
+    validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
+        const {
+          licenseProvince, licenseNo, label, color,
+        } = values;
+        const license = `${licenseProvince}${licenseNo}`;
+        this.handleEditAddPlate({
+          licenseNo: license,
+          label,
+          color,
         });
-    }else{
+      }
+    });
+  }
+
+  handleEditAddPlate = (licenseInfo)=>{
+    
+    if(this.state.modalPlateInfo.licenseNo){
       licenseInfo = {...licenseInfo , id : this.state.modalPlateInfo.id}
-      this.props.updatePlate(licenseInfo).then((data)=>{
-        console.log('data',data)
-        if(data){
-          message.success('更新成功');
-          this.setState({plateModalVisible:false});
-          this.props.getPlateList({
-            pageNo : this.state.plateListInfo.pageNo,
-            pageSize : this.state.plateListInfo.pageSize
-          }).then((data)=>{
-            this.setState({plateListInfo:data , modalPlateInfo : {} })
-          })
-        }
-      });
-    }
+     this.props.updatePlate(licenseInfo).then((data)=>{
+       console.log('data',data)
+       if(data){
+         message.success('更新成功');
+         this.setState({plateModalVisible:false});
+         this.props.getPlateList({
+           pageNo : this.state.plateListInfo.pageNo,
+           pageSize : this.state.plateListInfo.pageSize
+         }).then((data)=>{
+           this.setState({plateListInfo:data , modalPlateInfo : {} , plateExist : false})
+         }).catch(err => {
+           this.setState({ modalPlateInfo : {} , plateExist : false});
+         });
+       }
+     });
+ }else{
+   this.props.addPlate(licenseInfo).then((data)=>{
+     console.log('data',data)
+     if(data){
+       message.success('添加成功');
+       this.setState({plateModalVisible:false});
+       this.props.getPlateList({
+         pageNo : this.state.plateListInfo.pageNo,
+         pageSize : this.state.plateListInfo.pageSize
+       }).then((data)=>{
+         this.setState({plateListInfo:data , modalPlateInfo:{} , plateExist : false})
+       })
+     }
+   });
+ }
   }
 
   onDeleteItems = () => {
@@ -131,19 +151,28 @@ class Plate extends Component {
       this.setState({plateListInfo : data})
     })
   }
-  onModalEdit = (record) => {
+  onModalOpen = (record) => {
     console.log('record',record)
     const { setFieldsValue } = this.props.form;
     this.setState({
       plateModalVisible : true , 
-      modalPlateInfo : record , 
-    })
+      modalPlateInfo : record.licenseNo ? record : {}, 
+    });
     setFieldsValue({
-      licenseProvince : record.licenseNo.substring(0,1),
-      licenseNo : record.licenseNo.substring(1),
-      label : record.label,
-      color : record.color
+      licenseProvince : record.licenseNo ? record.licenseNo.substring(0,1) : '',
+      licenseNo : record.licenseNo ? record.licenseNo.substring(1)  : '',
+      label : record.label || '' ,
+      color : record.color || ''
     })
+  }
+  existPlate = () => {
+    const { form } = this.props;
+    const licenseNo = form.getFieldValue('licenseNo');
+    const licenseProvince = form.getFieldValue('licenseProvince');
+    const license = `${licenseProvince}${licenseNo}`;
+    this.props.licenseExist(license).then((res) => {
+      this.setState({ plateExist: res });
+    });
   }
 
   componentDidMount() {
@@ -162,6 +191,7 @@ class Plate extends Component {
       selectedRowKeys,
       onChange: this.onSelectChange,
     };
+    const { form } = this.props;
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -170,7 +200,7 @@ class Plate extends Component {
     return (
       <div className={styles.mainWrapper}>
         <div className={styles.searchContainer}>
-          <Button type="primary" className={styles.addBtn} onClick={()=>this.setState({plateModalVisible:true})}>+ 新增车牌数据</Button>
+          <Button type="primary" className={styles.addBtn} onClick={()=>this.onModalOpen({})}>+ 新增车牌数据</Button>
           <Link to='/gallery/carLicense/import' className={styles.deleteBtn}>
               <Icon type="export" className={styles.deletePic}/>
               批量导入
@@ -188,7 +218,6 @@ class Plate extends Component {
               </a>
             )
           }
-
           <div className={styles.searchInput}>
             <Search placeholder="请输入车牌号" icon={searchPic} onSearch={() => this.searchPlate()} onChange={(e) => this.setState({searchName:e.target.value})}/>
           </div>
@@ -211,7 +240,7 @@ class Plate extends Component {
                 width={'14%'}
                 render={(text, record) => (
                   <div className={styles.oprationWrapper}>
-                    <a onClick={()=>this.onModalEdit(record)}>
+                    <a onClick={()=>this.onModalOpen(record)}>
                       编辑
                     </a>
                     <span className={styles.separator}> | </span>
@@ -238,10 +267,10 @@ class Plate extends Component {
 
         <Modal
         className={styles.LicenseImport}
-        title={this.state.modalPlateInfo === {} ? '新增车牌数据' : '编辑车牌数据'}
+        title={this.state.modalPlateInfo.licenseNo ? '编辑车牌数据' : '新增车牌数据' }
         visible={this.state.plateModalVisible}
         onOk={()=>this.onSubmitModal()}
-        onCancel={()=>this.setState({plateModalVisible:false , modalPlateInfo : {} })}
+        onCancel={()=>this.setState({plateModalVisible:false , modalPlateInfo : {} ,  plateExist : false})}
         width="500px"
         >
         <div className={styles['LicenseImport-formWrapper']}>
@@ -283,22 +312,33 @@ class Plate extends Component {
                         if (!val || !form.getFieldValue('licenseProvince')) {
                           callback(' ');
                         }
+                        if(val.length > 8){
+                          callback('车牌号不能超过8位');
+                        }
                         callback();
                       }
                     }
                   ],
                 })(<Input
-                  placeholder="请输入车牌号"
+                  placeholder="请输入车牌号" onBlur={()=>this.existPlate()}
                 />)}
               </Form.Item>
             </Form.Item>
             <Form.Item label="布控标签">
               {getFieldDecorator('label', {
                 rules: [
+                  // {
+                  //   required: true,
+                  //   message: '请选择布控标签!',
+                  // },
                   {
-                    required: true,
-                    message: '请选择布控标签!',
-                  },
+                    validator: (rule, val, callback) => {
+                      if (!val) {
+                        callback('请选择布控标签!');
+                      }
+                      callback();
+                    }
+                  }
                 ],
               })(
                 <Radio.Group>
@@ -310,10 +350,18 @@ class Plate extends Component {
             <Form.Item label="车牌颜色">
               {getFieldDecorator('color', {
                 rules: [
+                  // {
+                  //   required: true,
+                  //   message: '请选择车牌颜色!',
+                  // },
                   {
-                    required: true,
-                    message: '请选择车牌颜色!',
-                  },
+                    validator: (rule, val, callback) => {
+                      if (!val) {
+                        callback('请选择车牌颜色!');
+                      }
+                      callback();
+                    }
+                  }
                 ],
               })(
                 <Select>
