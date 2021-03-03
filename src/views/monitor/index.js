@@ -430,9 +430,8 @@ class Monitor extends Component {
   }
 
   onSelect = (keys, e) => {
-    const eleName = e.nativeEvent.toElement.localName;
-    const eleCls = e.nativeEvent.toElement.className;
-    console.log(keys);
+    const eleName = e.nativeEvent.target.localName;
+    const eleCls = e.nativeEvent.target.className;
     if (eleName !== 'input' && eleCls.indexOf('popover') === -1) {
       if (keys && keys.length > 0) {
         const [a] = keys;
@@ -445,11 +444,11 @@ class Monitor extends Component {
           pageNo: 0
         }, () => this.getDeviceList());
       } else {
-        this.setState({
-          areaId: 1,
-          selectAreaKeys: ['1'],
-          pageNo: 0
-        }, () => this.getDeviceList());
+        // this.setState({
+        //   areaId: 1,
+        //   selectAreaKeys: ['1'],
+        //   pageNo: 0
+        // }, () => this.getDeviceList());
       }
     }
   }
