@@ -42,6 +42,7 @@ class VideoPlayer extends Component {
         height,
         width,
         controls: true,
+        aspectRatio: '16:9',
         preload: 'auto',
         fluid: true,
         autoplay: 'any',

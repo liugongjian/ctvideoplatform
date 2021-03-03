@@ -7,6 +7,7 @@ import {
   Select,
   Radio,
   Input,
+  Button,
 } from 'antd';
 import { LicenseProvinces } from './constants';
 import styles from './index.less';
@@ -47,7 +48,7 @@ class LicenseImportModalComp extends Component {
     // }
     form.setFieldsValue({
       licenseProvince, licenseNo, color, label
-    });
+    }, this.validateExist);
   }
 
   onOk = () => {
@@ -71,11 +72,11 @@ class LicenseImportModalComp extends Component {
     });
   };
 
-  validateExist = () => {
+  validateExist = (val) => {
     const {
       isLicenseExist, form
     } = this.props;
-    const licenseNo = form.getFieldValue('licenseNo');
+    const licenseNo = val?.licenseNo || form.getFieldValue('licenseNo');
     const licenseProvince = form.getFieldValue('licenseProvince');
     const license = `${licenseProvince}${licenseNo}`;
     isLicenseExist(license).then((res) => {
@@ -93,12 +94,20 @@ class LicenseImportModalComp extends Component {
     const {
       exist
     } = this.state;
+    const footer = (
+      <div className={styles.delModalFooter}>
+        <Button type="primary" onClick={this.onOk}>确定</Button>
+        <span className={styles.span10px} />
+        <Button onClick={closeModal}>取消</Button>
+      </div>
+    );
     return (
       <Modal
         className={styles.LicenseImport}
         title="导入车牌"
         visible={visible}
-        onOk={this.onOk}
+        footer={footer}
+        // onOk={this.onOk}
         onCancel={closeModal}
         width="500px"
       >
@@ -139,6 +148,7 @@ class LicenseImportModalComp extends Component {
                   rules: [
                     {
                       required: true,
+                      whitespace: true,
                       message: ' ',
                     },
                     {
@@ -152,7 +162,7 @@ class LicenseImportModalComp extends Component {
                     }
                   ],
                 })(<Input
-                  onBlur={this.validateExist}
+                  onChange={e => this.validateExist({ licenseNo: e.target.value })}
                   placeholder="请输入车牌号"
                 />)}
               </Form.Item>
@@ -194,7 +204,7 @@ class LicenseImportModalComp extends Component {
           { exist ? (
             <div className={styles.existMsg}>
               <span className={styles['existMsg-icon']}><Icon type="exclamation-circle" /></span>
-              该车牌已经在车辆库中，确认则覆盖原数据。
+              该车牌已经在车辆库中，确定则覆盖原数据。
             </div>
           ) : null}
         </div>
@@ -212,12 +222,20 @@ const DeleteModal = ({
     handleOk();
     closeModal();
   };
+  const footer = (
+    <div className={styles.delModalFooter}>
+      <Button type="primary" onClick={onOk}>确定</Button>
+      <span className={styles.span10px} />
+      <Button onClick={closeModal}>取消</Button>
+    </div>
+  );
   return (
     <Modal
       className={styles.delModal}
       title="删除提示"
       visible={visible}
-      onOk={onOk}
+      footer={footer}
+      // onOk={onOk}
       onCancel={closeModal}
       width="400px"
     >
