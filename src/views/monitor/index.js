@@ -831,7 +831,7 @@ class Monitor extends Component {
         key: 'online',
         width: '100px',
         render: (text) => {
-          if (text === 1) {
+          if (text) {
             return (
               <span className={styles.tableOnlineStatus}>
                 <span className={styles.tableOnline} />

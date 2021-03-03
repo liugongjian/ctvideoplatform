@@ -20,6 +20,7 @@ import {
 
 import nostatus from 'Assets/nostatus.png';
 import nodata from 'Assets/nodata.png';
+import noImage from 'Assets/defaultFace.png';
 import VideoPlayer from './VideoPlayer';
 import styles from './index.less';
 
@@ -165,6 +166,7 @@ class Preview extends PureComponent {
         return val.name;
       };
       const getIcon = (val) => {
+        console.log('val.online', val.online);
         if (val.type === 1) {
           return (
             <EIcon type={val.online ? `${styles.monitorOnline} myicon-monitorIcon` : `${styles.monitorOffline} myicon-monitorIcon`} />
@@ -253,13 +255,20 @@ class Preview extends PureComponent {
         this.setState({ imgDialogVisible: false });
       }
 
+      handleImageError = (e) => {
+        const image = e.target;
+        image.src = noImage;
+        image.className = styles.historyTopnoImage;
+        image.onerror = null;
+      };
+
       render() {
         const {
           treeDatas, selectAreaKeys, expandedKeys, algorithmList,
           videoSrc, historyListData, imgDialogVisible, imgDialogSrc, noVideo, videoName
         } = this.state;
 
-        const { preview: { loading } } = this.props;
+        const { preview: { loading }, push } = this.props;
 
         const { list = [] } = historyListData;
 
@@ -350,7 +359,7 @@ class Preview extends PureComponent {
               <div className={styles.historyTitle}>
                 <p>
                   实时告警记录
-                  <a>历史记录</a>
+                  <a onClick={() => push('/alarms')}>历史记录</a>
                 </p>
               </div>
               <div className={styles.historyCard}>
@@ -358,10 +367,11 @@ class Preview extends PureComponent {
                   list.map(item => (
                     <Card
                       hoverable
-                      style={{ width: 240 }}
-                      cover={<img alt="example" src={`${urlPrefix}${item.imageCompress}`} />}
+                      style={{ width: 220 }}
+                      cover={<img alt="" src={`${urlPrefix}${item.imageCompress}`} onError={this.handleImageError} />}
                       onClick={() => this.showImgDialog(item.image)}
                       key={item.id}
+                      className={styles.historyListCard}
                     >
                       <p>
                         {item.algorithmCnName}
