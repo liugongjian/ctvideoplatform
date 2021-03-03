@@ -9,12 +9,23 @@
     width: 240px;
     height: calc(100% - 90px);
     padding: 10px 10px 20px;
+    -moz-user-select:none;/*火狐*/
+    -webkit-user-select:none;/*webkit浏览器*/
+    -ms-user-select:none;/*IE10*/
+    -khtml-user-select:none;/*早期浏览器*/
+    user-select:none; /*取消双击选中文字*/
     :global{
         .ant-tree{
             font-size: 12px;
         }
         .ant-select{
             margin-top: 10px;
+        }
+        .ant-tree li .ant-tree-node-content-wrapper{
+            padding: 0;
+        }
+        .ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected{
+            background-color: #BFE5FF;
         }
     }
     h2{
@@ -39,30 +50,39 @@
     height: 100%;
     position: relative;
     .videoHandle{
-        position: absolute;
-        width: calc(100% - 20px);
-        top: 10px;
-        height: 30px;
-        line-height: 30px;
-        opacity: 0.65;
-        background: #fff;
-        display: flex;
-        z-index: 99;
-        span{
+        display: none;
+    }
+    &:hover{
+        .videoHandle{
+            position: absolute;
+            width: calc(100% - 20px);
+            top: 10px;
+            height: 30px;
             line-height: 30px;
-            &:first-child{
-                margin-left: 10px;
-                margin-right: 10px;
+            opacity: 0.65;
+            background: #fff;
+            display: flex;
+            z-index: 99;
+            span{
+                line-height: 30px;
+                &:first-child{
+                    margin-left: 10px;
+                    margin-right: 10px;
+                }
+                &:last-child{
+                    margin-left: auto;
+                    margin-right: 10px;
+                }
             }
-            &:last-child{
-                margin-left: auto;
-                margin-right: 10px;
+            .videoCancelBtn{
+                cursor: pointer;
             }
-        }
-        .videoCancelBtn{
-            cursor: pointer;
+            .videoMonitoring{
+                color: #53FF00;
+            }
         }
     }
+    
     .nostatusBox{
         width: 80%;
         position:absolute;

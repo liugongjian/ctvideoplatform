@@ -307,12 +307,11 @@ class Preview extends PureComponent {
               </div>
             </div>
             <div className={styles.videoBox}>
-              <p>{videoSrc}</p>
               {videoSrc
                 ? (
                   <Fragment>
                     <div className={styles.videoHandle}>
-                      <EIcon type="myicon-monitoring" />
+                      <EIcon type={`${styles.videoMonitoring} myicon-monitoring`} />
                       <div>监控点位</div>
                       <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={this.clearVideo} />
                     </div>

@@ -767,7 +767,7 @@ class Monitor extends Component {
       test, treeDatas, expandedKeys, tableData, showModal, showDelModal,
       algorithmList = [], algorithmId, modalDeviceData, pageSize, showAreaName,
       deviceName, deviceId, modalDeviceName, modalDeviceId, originId, checkedKeys,
-      selectedKeys, modalSelectedKeys, selectAreaKeys
+      selectedKeys, modalSelectedKeys, selectAreaKeys, modalPageNo, pageNo
     } = this.state;
     const { monitor: { areaListLoading } } = this.props;
     const columns = [
@@ -908,6 +908,7 @@ class Monitor extends Component {
     const pagination = {
       total: tableData.recordsTotal,
       defaultCurrent: 1,
+      current: pageNo + 1,
       pageSize,
       onChange: this.changePageNo
     };
@@ -915,6 +916,7 @@ class Monitor extends Component {
     const modalPagination = {
       total: modalDeviceData.recordsTotal,
       defaultCurrent: 1,
+      current: modalPageNo + 1,
       pageSize: 10,
       onChange: this.modalChangePageNo
     };
