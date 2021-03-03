@@ -154,7 +154,10 @@ class Preview extends PureComponent {
       const getTitle = (val) => {
         if (val.type === 1) {
           return (
-            <span onDoubleClick={e => this.doubleClickHandle(e, val)} className={styles.treeNameById}>
+            <span
+              onDoubleClick={e => this.doubleClickHandle(e, val)}
+              className={styles.treeNameById}
+            >
               {val.name}
             </span>
           );
