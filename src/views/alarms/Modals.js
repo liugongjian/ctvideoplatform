@@ -98,7 +98,7 @@ class LicenseImportModalComp extends Component {
     const footer = (
       <div className={styles.delModalFooter}>
         <Button type="primary" onClick={this.onOk}>确定</Button>
-        <span className={styles.span10px} />
+        <span className={styles.span20px} />
         <Button onClick={closeModal}>取消</Button>
       </div>
     );

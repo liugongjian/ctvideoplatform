@@ -291,7 +291,7 @@ class CameraDetail extends Component {
     const footer = (
       <div className={styles.delModalFooter}>
         <Button type="primary" onClick={this.handleOk}>确定</Button>
-        <span className={styles.span10px} />
+        <span className={styles.span20px} />
         <Button onClick={this.handleCancel}>取消</Button>
       </div>
     );

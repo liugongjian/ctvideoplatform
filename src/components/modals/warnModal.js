@@ -14,9 +14,11 @@ import styles from './modals.less';
  * @props {function} handleOk 确定操作
  * @props {string || ReactNode} content 右侧内容，可以为string或dom内容
  * @props {string} icon image的src，默认为warnPic，其他图标可自定义
+ * @props {number} width 默认为400
  */
 const WarnModal = ({
-  visible, closeModal, handleOk = () => {}, content = '您确定要删除该条告警信息吗？', icon = warnPic
+  visible, closeModal, handleOk = () => {}, content = '您确定要进行该操作吗？', icon = warnPic,
+  width = 400
 }) => {
   const onOk = () => {
     handleOk();
@@ -25,7 +27,7 @@ const WarnModal = ({
   const footer = (
     <div className={styles.delModalFooter}>
       <Button type="primary" onClick={onOk}>确定</Button>
-      <span className={styles.span10px} />
+      <span className={styles.span20px} />
       <Button onClick={closeModal}>取消</Button>
     </div>
   );
@@ -36,7 +38,7 @@ const WarnModal = ({
       visible={visible}
       footer={footer}
       onCancel={closeModal}
-      width={400}
+      width={width}
     >
       <div className={styles.content}>
         <div className={styles.iconWrapper}>
