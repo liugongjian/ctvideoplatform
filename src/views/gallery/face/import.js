@@ -145,11 +145,11 @@ class ImportFace extends Component {
         if (!isZip) {
           message.error('请上传zip格式的压缩包！');
         }
-        const isLt1024M = file.size / 1024 / 1024 < 1024;
-        if (!isLt1024M) {
-          message.error('压缩包大小不得超过1G！');
+        const isLt1000M = file.size / 1024 / 1024 < 1000;
+        if (!isLt1000M) {
+          message.error('压缩包大小不得超过1000M！');
         }
-        if (isZip && isLt1024M) {
+        if (isZip && isLt1000M) {
           return resolve(true);
         }
         // eslint-disable-next-line prefer-promise-reject-errors
@@ -233,7 +233,7 @@ class ImportFace extends Component {
                         </p>
                         <p className="ant-upload-text">点击或将压缩包拖拽到这里上传</p>
                         <p className="ant-upload-hint">
-                          压缩包格式：支持ZIP格式压缩包
+                          压缩包格式：支持ZIP格式压缩包，大小不得超过1000M
                         </p>
                         <p className="ant-upload-hint">
                           图片格式：支持.jpg、.png格式图片

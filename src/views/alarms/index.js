@@ -258,7 +258,7 @@ class Alarms extends Component {
                 maxTagTextLength={2}
               >
                 {
-                  algoList.map(item => (<Option value={item.id}>{item.cnName}</Option>))
+                  algoList?.map(item => (<Option value={item.id}>{item.cnName}</Option>))
                 }
               </Select>
               <span className={styles.span10px} />

@@ -1,12 +1,7 @@
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
 import React, { Component } from 'react';
-import {
-  Select,
-  Result,
-  Modal,
-  message,
-} from 'antd';
+import { message, Icon } from 'antd';
 import { bindActionCreators } from 'redux';
 import EIcon from 'Components/Icon';
 import { connect } from 'react-redux';
@@ -163,7 +158,7 @@ class AlarmCard extends Component {
     if (plate) recognizeType = 'car';
     if (face) recognizeType = 'person';
     const detailExp = AlgoConfigs[algorithmName]?.alarmDetail;
-    const hasImport = AlgoConfigs[algorithmName]?.carImport;
+    const hasImport = true;// AlgoConfigs[algorithmName]?.carImport;
     let detail = null;
     if (detailExp) {
       const reg = /\{(\w+)\}/g;
@@ -268,7 +263,10 @@ class AlarmCard extends Component {
               </React.Fragment>
             ) : null
           }
-          <a onClick={this.showDelDialog}><EIcon type="myicon-delete" /></a>
+          <a onClick={this.showDelDialog}>
+            {/* <Icon type="anticon-delete" /> */}
+            <EIcon type="myicon-delete" />
+          </a>
         </div>
       </div>
     );
