@@ -966,6 +966,19 @@ class Monitor extends Component {
                 <Option value="all">全部</Option>
                 {drawAlgorithmList()}
               </Select>
+
+              {/* <Select
+                style={{ width: '180px' }}
+                mode="multiple"
+                placeholder="请选择算法类型"
+                value={algorithmId}
+                onChange={this.selectThisAlgorithm}
+                maxTagCount={1}
+                maxTagTextLength={2}
+              >
+              {drawAlgorithmList()}
+              </Select>
+              */}
             </div>
             <Button type="primary" className={styles.searchHandleBtn} onClick={this.getDeviceListByAll}>查询</Button>
             <Button className={styles.searchHandleBtn} onClick={this.resetSearch}>
