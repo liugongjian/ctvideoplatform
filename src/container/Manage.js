@@ -39,12 +39,15 @@ const mapDispathToProps = dispatch => bindActionCreators({
 
 class Manage extends Component {
   state = {
-    collapsed: false
+    collapsed: false,
+    menuRouter: null,
   }
 
   componentDidMount() {
-    this.props.getMenuList().then((res) => {
-      console.log(res);
+    this.props.getMenuList().then((menuList) => {
+      this.setState({
+        menuRouter: createRouterByApiData(menuRoutes, menuList, true, pathPrefix),
+      });
     });
   }
 
@@ -84,12 +87,12 @@ class Manage extends Component {
       menuList,
       menuListLoading,
     } = this.props;
-    const { collapsed } = this.state;
+    const { collapsed, menuRouter } = this.state;
 
-    let menuRouter = () => null;
-    menuRouter = () => createRouterByApiData(menuRoutes, menuList, true, pathPrefix);
+    // let menuRouter = () => null;
+    // menuRouter = () => createRouterByApiData(menuRoutes, menuList, true, pathPrefix);
 
-    console.log('createRouterByApiData', menuRouter());
+    // console.log('createRouterByApiData', menuRouter());
 
     const menuTree = this.createMenuTree(menuList);
     if (!menuTree || !menuTree[0]?.path) {
@@ -197,7 +200,7 @@ class Manage extends Component {
           <div className={styles['EMR-manage-content-inner']}>
             <PageHeader changeCollapsed={this.changeMenuCollapsed} />
             <div className={styles['EMR-manage-main']}>
-              { menuRouter() }
+              { menuRouter }
             </div>
           </div>
         </div>

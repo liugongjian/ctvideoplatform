@@ -9,6 +9,7 @@ import {
   Input,
   Button,
 } from 'antd';
+import warnPic from 'Assets/role/warn.png';
 import { LicenseProvinces } from './constants';
 import styles from './index.less';
 
@@ -215,39 +216,6 @@ class LicenseImportModalComp extends Component {
 const LicenseImportModal = Form.create()(LicenseImportModalComp);
 
 
-const DeleteModal = ({
-  visible, closeModal, handleOk = () => {}
-}) => {
-  const onOk = () => {
-    handleOk();
-    closeModal();
-  };
-  const footer = (
-    <div className={styles.delModalFooter}>
-      <Button type="primary" onClick={onOk}>确定</Button>
-      <span className={styles.span10px} />
-      <Button onClick={closeModal}>取消</Button>
-    </div>
-  );
-  return (
-    <Modal
-      className={styles.delModal}
-      title="删除提示"
-      visible={visible}
-      footer={footer}
-      // onOk={onOk}
-      onCancel={closeModal}
-      width="400px"
-    >
-      <div className={styles.content}>
-        <span className={styles.iconWrapper}><Icon type="warning" /></span>
-        <span className={styles.text}>您确定要删除该条告警信息吗？</span>
-      </div>
-    </Modal>
-  );
-};
-
-
 const ImageModal = ({
   visible, closeModal, src, handleImageError
 }) => (
@@ -272,6 +240,5 @@ const ImageModal = ({
 );
 export {
   LicenseImportModal,
-  DeleteModal,
   ImageModal,
 };

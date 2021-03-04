@@ -303,7 +303,7 @@ class CameraDetail extends Component {
         // onOk={this.handleOk}
         footer={footer}
         onCancel={this.handleCancel}
-        width="600px"
+        width="630px"
       >
         <div className={styles['algoConfig-content']}>
           {

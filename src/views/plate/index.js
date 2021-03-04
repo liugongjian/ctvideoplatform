@@ -225,8 +225,8 @@ class Plate extends Component {
           </div>
         </div>
         <Table rowSelection={rowSelection} dataSource={plateListInfo.list} pagination={false} rowKey={(record) => record.id}>
-            <Column title="车牌号" dataIndex="licenseNo" width={'27%'} className="tabble-row"/>
-            <Column title="布控标签" dataIndex="label" width={'31%'}
+            <Column title="车牌号" dataIndex="licenseNo" width={'24%'} className="tabble-row"/>
+            <Column title="布控标签" dataIndex="label" width={'28%'}
                   render={(text, record) => (
                     <div>
                       {
@@ -239,7 +239,7 @@ class Plate extends Component {
             <Column
                 title="操作"
                 key="action"
-                width={'14%'}
+                width={'20%'}
                 render={(text, record) => (
                   <div className={styles.oprationWrapper}>
                     <a onClick={()=>this.onModalOpen(record)}>
