@@ -180,6 +180,7 @@ class AlarmCard extends Component {
         />
         <DeleteModal
           visible={delVisible}
+          content="您确定要删除该条告警信息吗？"
           handleOk={this.handleDelete}
           closeModal={this.closeDelDialog}
         />
