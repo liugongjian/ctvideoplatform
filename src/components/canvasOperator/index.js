@@ -402,14 +402,14 @@ class CanvasOperator extends Component {
               onClick={() => this.reset()}
               title="重置"
             >
-              <Icon type="undo" />
+              <EIcon type="myicon-canvas-reset" />
             </div>
             <div
               className={`${styles.optButton}`}
               onClick={() => this.clearAll()}
               title="清空"
             >
-              <Icon type="delete" />
+              <EIcon type="myicon-canvas-del" />
             </div>
           </div>
           <div id={`configCanvas-${id}-wrapper`} className={styles.canvasWrapper}>
