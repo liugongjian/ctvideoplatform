@@ -66,8 +66,8 @@ class AddAccount extends Component {
     };
 
     validatorPsw = (rule, value, callback) => {
-      if (!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?])(.{12,26})/.test(value)) && value) {
-        callback(new Error('密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符'));
+      if (!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?_~.])(.{12,26})/.test(value)) && value) {
+        callback(new Error('密码至少包含大小写字母、数字和特殊字符(!@#$%^&*?_~.)，且长度为12～26位字符'));
       } else {
         callback();
       }
@@ -144,7 +144,7 @@ class AddAccount extends Component {
               isTooltipShow
                 ? (
                   <FormItem {...tailFormItemLayout} className={styles.tooltip}>
-                    <span>密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符</span>
+                    <span>密码至少包含大小写字母、数字和特殊字符(!@#$%^&*?_~.)，且长度为12～26位字符</span>
                   </FormItem>
                 ) : ''
             }
