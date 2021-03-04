@@ -16,9 +16,9 @@ import {
 } from 'Redux/reducer/alarms';
 import { urlPrefix } from 'Constants/Dictionary';
 import noImage from 'Assets/defaultFace.png';
+import DeleteModal from 'Components/modals/warnModal';
 import {
   LicenseImportModal,
-  DeleteModal,
   ImageModal,
 } from './Modals';
 import {

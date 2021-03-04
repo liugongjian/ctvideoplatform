@@ -149,14 +149,18 @@ class BasicSetting extends Component {
                 ],
               })(<Input />)}
             </Form.Item>
-            <Form.Item label="经纬度" style={{ marginBottom: 0 }} className={styles.addItemRequiredIcon}>
+            <Form.Item
+              label="经纬度"
+              style={{ marginBottom: 0 }}
+              // className={styles.addItemRequiredIcon}
+            >
               <Form.Item className={styles.locationInputNumber}>
                 {getFieldDecorator('latitude', {
                   rules: [
-                    {
-                      required: true,
-                      message: '请输入纬度',
-                    },
+                    // {
+                    //   required: true,
+                    //   message: '请输入纬度',
+                    // },
                     {
                       validator: (rule, val, callback) => {
                         const num = parseFloat(val);
@@ -177,10 +181,10 @@ class BasicSetting extends Component {
               <Form.Item className={styles.locationInputNumber}>
                 {getFieldDecorator('longitude', {
                   rules: [
-                    {
-                      required: true,
-                      message: '请输入经度！',
-                    },
+                    // {
+                    //   required: true,
+                    //   message: '请输入经度！',
+                    // },
                     {
                       validator: (rule, val, callback) => {
                         const num = parseFloat(val);
