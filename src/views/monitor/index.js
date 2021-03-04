@@ -3,6 +3,7 @@ import {
   Select, Tree, Icon, Input, Button, Table, Divider,
   Modal, Checkbox, Tooltip, Spin, Popover
 } from 'antd';
+import EIcon from 'Components/Icon';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
@@ -11,6 +12,7 @@ import {
   getList, renameArea, addChild, delArea, upArea, downArea,
   getDeiviceList, delDeviceById, getAlgorithmList, getDevicePoolList, setDeviceList, getAreaName
 } from 'Redux/reducer/monitor';
+import DeleteModal from 'Components/modals/warnModal';
 
 import styles from './index.less';
 
@@ -76,7 +78,6 @@ class Monitor extends Component {
 
   componentDidMount() {
     this.getAreaList();
-    this.getDeviceList();
     this.getAlgorithmList();
   }
 
@@ -100,10 +101,16 @@ class Monitor extends Component {
     const { expandedKeys } = this.state;
     getList(0, keyword).then((res) => {
       const treeDatas = this.dataToTree(res);
+      const areaId = res.find(item => item.pid === 0).id;
       this.setState({
         tempData: res,
         treeDatas,
-      }, () => this.onExpand(expandedKeys));
+        areaId,
+        selectAreaKeys: [areaId.toString()]
+      }, () => {
+        this.onExpand(expandedKeys);
+        this.getDeviceList();
+      });
     });
   }
 
@@ -129,48 +136,6 @@ class Monitor extends Component {
 
   renderTreeNodes = data => data.map((item, index) => {
     const { deptHover } = this.state;
-    const getBtn = () => {
-      if (deptHover && deptHover[item.id]) {
-        if (item.pid === 0) {
-          return (
-            <span className={styles.treeBtnBox}>
-              {item.ifEdit
-                ? (
-                  <Button type="link" className={styles.checkBtn} disabled={item.hasSame} size="small" onClick={(e) => { this.sureEdit(e, item.id, item.addTag, item.pid); }}>
-                    <Icon type="check" />
-                  </Button>
-                )
-                : <Icon type="edit" className={styles.treeBtn} onClick={e => this.editThis(e, item.id, item.name)} />}
-
-              <Icon type="plus-square" className={styles.treeBtn} onClick={(e) => { this.onAdd(e, item.id); }} />
-
-            </span>
-          );
-        }
-        return (
-          <span className={styles.treeBtnBox}>
-            {item.ifEdit
-              ? (
-                <Button className={styles.checkBtn} type="link" disabled={item.hasSame} size="small" onClick={(e) => { this.sureEdit(e, item.id, item.addTag, item.pid); }}>
-                  <Icon type="check" />
-                </Button>
-              )
-              : <Icon type="edit" className={styles.treeBtn} onClick={e => this.editThis(e, item.id, item.name)} />}
-            {!item.addTag
-              ? (
-                <Fragment>
-                  <Icon type="delete" className={styles.treeBtn} onClick={(e) => { this.onDelete(e, item.id); }} />
-                  <Icon type="plus-square" className={styles.treeBtn} onClick={(e) => { this.onAdd(e, item.id); }} />
-                  <Icon type="arrow-up" className={styles.treeBtn} onClick={(e) => { this.upArea(e, item.id); }} />
-                  <Icon type="arrow-down" className={styles.treeBtn} onClick={(e) => { this.downArea(e, item.id); }} />
-                </Fragment>
-              ) : <Icon type="delete" className={styles.treeBtn} onClick={(e) => { this.cancel(e, item.id); }} />}
-          </span>
-        );
-      }
-      return null;
-    };
-
     const getContent = () => {
       if (item.pid === 0) {
         return (
@@ -222,7 +187,7 @@ class Monitor extends Component {
         overlayClassName={item.pid === 0 ? `${styles.popoverInfoMin}` : `${styles.popoverInfo}`}
         getPopupContainer={trigger => trigger}
       >
-        <div className={styles.treeTitleInfo}>
+        <span className={styles.treeTitleInfo}>
           {
             val.ifEdit
               ? (
@@ -242,7 +207,7 @@ class Monitor extends Component {
               )
           }
           {item.hasSame ? <div className={styles.hasSame}>区域名称重复，请重新设置</div> : null}
-        </div>
+        </span>
       </Popover>
 
     );
@@ -252,6 +217,7 @@ class Monitor extends Component {
           key={item.id.toString()}
           title={getTitle(item)}
           className={styles.treenode}
+          icon={<EIcon type="myicon-folderopen" />}
         >
           {this.renderTreeNodes(item.children)}
         </TreeNode>
@@ -262,6 +228,7 @@ class Monitor extends Component {
         key={item.id.toString()}
         title={getTitle(item)}
         className={styles.treenode}
+        icon={<Icon type="folder" />}
       />
     );
   })
@@ -377,13 +344,15 @@ class Monitor extends Component {
   cancel = (e, key) => {
     e.stopPropagation();
     const temp = this.state.tempData.filter(({ id }) => id !== -1);
+    console.log('temp', temp);
     const tempData = temp.map((item) => {
       item.ifEdit = false;
       item.hasSame = false;
       return item;
     });
     this.setState({
-      treeDatas: this.dataToTree(tempData)
+      treeDatas: this.dataToTree(tempData),
+      tempData
     });
   }
 
@@ -497,6 +466,12 @@ class Monitor extends Component {
     }, () => this.getDeviceList());
   }
 
+  changePageSize = (current, size) => {
+    this.setState({
+      pageSize: size
+    }, () => this.getDeviceList());
+  }
+
   modalChangePageNo = (num) => {
     this.setState({
       modalPageNo: num - 1,
@@ -547,8 +522,10 @@ class Monitor extends Component {
   }
 
   resetSearch = () => {
+    const { tempData } = this.state;
+    const areaId = tempData.find(item => item.pid === 0).id;
     this.setState({
-      areaId: 1,
+      areaId,
       pageNo: 0,
       // recursive: false,
       pageSize: 10,
@@ -556,7 +533,7 @@ class Monitor extends Component {
       // deviceId: '',
       originId: '',
       algorithmId: 'all',
-      selectAreaKeys: ['1']
+      selectAreaKeys: [areaId.toString()]
     }, () => this.getDeviceList());
   }
 
@@ -835,6 +812,7 @@ class Monitor extends Component {
         title: '状态',
         dataIndex: 'online',
         key: 'online',
+        fixed: 'right',
         width: '100px',
         render: (text) => {
           if (text) {
@@ -921,7 +899,11 @@ class Monitor extends Component {
       current: pageNo + 1,
       pageSize,
       onChange: this.changePageNo,
-      showTotal
+      showTotal,
+      showQuickJumper: true,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '20', '30', '40'],
+      onShowSizeChange: this.changePageSize,
     };
 
     const modalPagination = {
@@ -947,7 +929,8 @@ class Monitor extends Component {
                   expandedKeys={expandedKeys}
                   defaultExpandAll
                   blockNode
-                  showLine
+                  // showLine
+                  showIcon
                   onExpand={this.onExpand}
                   onSelect={this.onSelect}
                   defaultSelectedKeys={['1']}
@@ -1049,7 +1032,7 @@ class Monitor extends Component {
             getContainer={false}
           />
         </Modal>
-
+        {/**
         <Modal
           title="删除提示"
           visible={showDelModal}
@@ -1059,6 +1042,13 @@ class Monitor extends Component {
         >
           <p className={styles.delModalText}>您确定要删除所选摄像头吗？</p>
         </Modal>
+         */}
+        <DeleteModal
+          visible={showDelModal}
+          handleOk={this.sureDelThisKeys}
+          closeModal={this.cancelDelthisKeys}
+          content="您确定要删除所选摄像头吗？"
+        />
       </div>
     );
   }
