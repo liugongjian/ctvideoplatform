@@ -12,6 +12,7 @@ import {
   getList, renameArea, addChild, delArea, upArea, downArea,
   getDeiviceList, delDeviceById, getAlgorithmList, getDevicePoolList, setDeviceList, getAreaName
 } from 'Redux/reducer/monitor';
+import DeleteModal from 'Components/modals/warnModal';
 
 import styles from './index.less';
 
@@ -1031,7 +1032,7 @@ class Monitor extends Component {
             getContainer={false}
           />
         </Modal>
-
+        {/**
         <Modal
           title="删除提示"
           visible={showDelModal}
@@ -1041,6 +1042,13 @@ class Monitor extends Component {
         >
           <p className={styles.delModalText}>您确定要删除所选摄像头吗？</p>
         </Modal>
+         */}
+        <DeleteModal
+          visible={showDelModal}
+          handleOk={this.sureDelThisKeys}
+          closeModal={this.cancelDelthisKeys}
+          content="您确定要删除所选摄像头吗？"
+        />
       </div>
     );
   }
