@@ -264,7 +264,7 @@ class Preview extends PureComponent {
 
       render() {
         const {
-          treeDatas, selectAreaKeys, expandedKeys, algorithmList,
+          treeDatas, selectAreaKeys, expandedKeys, algorithmList = [],
           videoSrc, historyListData, imgDialogVisible, imgDialogSrc, noVideo, videoName
         } = this.state;
 

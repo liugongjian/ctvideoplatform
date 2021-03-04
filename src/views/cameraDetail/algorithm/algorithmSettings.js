@@ -122,12 +122,14 @@ class AlgorithmSetting extends Component {
     const { algoChecked } = this.state;
     const { getAlgoList, cameraId } = this.props;
     getAlgoList(cameraId).then((list) => {
-      for (const { id, isPick } of list) {
-        algoChecked[id] = isPick || false;
+      if (list) {
+        for (const { id, isPick } of list) {
+          algoChecked[id] = isPick || false;
+        }
+        this.setState({
+          algoChecked
+        });
       }
-      this.setState({
-        algoChecked
-      });
     });
   }
 
@@ -193,7 +195,7 @@ class AlgorithmSetting extends Component {
           />
           <div className={styles.algorithmList}>
             {
-              algoList.map(item => (
+              algoList?.map(item => (
                 <AlgorithmItem
                   key={item.id}
                   curAlgo={item}
