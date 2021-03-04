@@ -287,7 +287,7 @@ class Face extends Component {
               value={name}
               onPressEnter={() => this.setState({ pageNum: 1 }, () => { this.getTableList(); })}
               suffix={
-                <SearchOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                <SearchOutlined style={{ color: 'rgba(0,0,0,.45)' }} onClick={() => { this.getTableList(); }} />
               }
             />
           </div>
