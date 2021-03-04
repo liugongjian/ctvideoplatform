@@ -12,6 +12,8 @@ import PropTypes from 'prop-types';
 import {
   getAccountList, getRoleList, updateUser, delAccount, stopAccount, updatePassword
 } from 'Redux/reducer/account';
+import DeleteModal from 'Components/modals/warnModal';
+import attentionPic from '@/assets/user/attention.png';
 
 import styles from './index.less';
 
@@ -150,8 +152,8 @@ class Account extends Component {
   };
 
   validatorRePsw = (rule, value, callback) => {
-    if (!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?])(.{12,26})/.test(value)) && value) {
-      callback(new Error('新密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符！'));
+    if (!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?_~.])(.{12,26})/.test(value)) && value) {
+      callback(new Error('新密码至少包含大小写字母、数字和特殊字符(!@#$%^&*?_~.)，且长度为12～26位字符！'));
     } else {
       callback();
     }
@@ -470,9 +472,6 @@ class Account extends Component {
     });
   };
 
-  handleRoleSearch = (value) => {
-    // console.log('search:', value);
-  };
 
   updatePassword = () => {
     const { updatePassword } = this.props;
@@ -594,12 +593,12 @@ class Account extends Component {
           record.active
             ? (
               <div className={styles.active}>
-                <Switch checked={record.active} onChange={() => this.handleStop(record)} size="small" />
+                <Switch checked={record.active} onChange={() => this.setState({ selectedRowKeys: [] }, () => this.handleStop(record))} size="small" />
                 <span>已启用</span>
               </div>
             ) : (
               <div className={styles.active}>
-                <Switch checked={record.active} onChange={() => this.handleEnable(record)} size="small" />
+                <Switch checked={record.active} onChange={() => this.setState({ selectedRowKeys: [] }, () => this.handleEnable(record))} size="small" />
                 <span>已禁用</span>
               </div>
             )
@@ -619,7 +618,7 @@ class Account extends Component {
               <div className={styles.line} />
             </div>
             <div>
-              <a onClick={() => this.handleDelete(record)}>删除</a>
+              <a onClick={() => this.setState({ selectedRowKeys: [] }, () => this.handleDelete(record))}>删除</a>
             </div>
           </div>
         ),
@@ -674,7 +673,6 @@ class Account extends Component {
                       showSearch
                       optionFilterProp="children"
                       onChange={this.handleRoleChange}
-                      onSearch={this.handleRoleSearch}
                       // eslint-disable-next-line max-len
                       filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                       }
@@ -735,7 +733,7 @@ class Account extends Component {
                 isTooltipShow
                   ? (
                     <FormItem {...pswTailFormItemLayout} className={styles.tooltip}>
-                      <span>新密码至少包含大小写字母、数字和特殊字符，且长度为12～26位字符</span>
+                      <span>新密码至少包含大小写字母、数字和特殊字符(!@#$%^&*?_~.)，且长度为12～26位字符</span>
                     </FormItem>
                   ) : ''
               }
@@ -756,63 +754,26 @@ class Account extends Component {
               </FormItem>
             </Form>
           </Modal>
-          <Modal
+          
+          <DeleteModal
             visible={deleteModelVisible}
-            className={styles.delComfirmModal}
-            width="400px"
-            closable={false}
-            footer={[
-              <Button key="submit" type="primary" onClick={this.delAccount}>
-                确定
-              </Button>,
-              <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleDelCancel}>
-                取消
-              </Button>,
-            ]}
-          >
-            <div>
-              <Icon type="warning" />
-              <div>{`您确定要删除${selectedRowKeys.length > 0 ? `这${delIdsLength}个账号吗？` : `账号：${delUserName}吗？`}`}</div>
-            </div>
-          </Modal>
-          <Modal
+            handleOk={this.delAccount}
+            closeModal={this.handleDelCancel}
+            content={`您确定要删除${selectedRowKeys.length > 0 ? `这${delIdsLength}个账号吗？` : `账号：${delUserName}吗？`}`}
+          />
+          <DeleteModal
             visible={stopModelVisible}
-            className={styles.stopComfirmModal}
-            width="400px"
-            closable={false}
-            footer={[
-              <Button key="submit" type="primary" onClick={this.stopAccount}>
-                确定
-              </Button>,
-              <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleStopCancel}>
-                取消
-              </Button>,
-            ]}
-          >
-            <div>
-              <Icon type="warning" />
-              <div>{`您确定要禁用${selectedRowKeys.length > 0 ? `这${stopIdsLength}个账号吗？` : `账号：${stopUserName}吗？`}`}</div>
-            </div>
-          </Modal>
-          <Modal
+            handleOk={this.stopAccount}
+            closeModal={this.handleStopCancel}
+            content={`您确定要禁用${selectedRowKeys.length > 0 ? `这${stopIdsLength}个账号吗？` : `账号：${stopUserName}吗？`}`}
+          />
+          <DeleteModal
             visible={enableModelVisible}
-            className={styles.enableComfirmModal}
-            width="400px"
-            closable={false}
-            footer={[
-              <Button key="submit" type="primary" onClick={this.enableAccount}>
-                确定
-              </Button>,
-              <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleEnableCancel}>
-                取消
-              </Button>,
-            ]}
-          >
-            <div>
-              <Icon type="exclamation-circle" />
-              <div>{`您确定要启用${selectedRowKeys.length > 0 ? `这${enableIdsLength}个账号吗？` : `账号：${enableUserName}吗？`}`}</div>
-            </div>
-          </Modal>
+            handleOk={this.enableAccount}
+            closeModal={this.handleEnableCancel}
+            content={`您确定要启用${selectedRowKeys.length > 0 ? `这${enableIdsLength}个账号吗？` : `账号：${enableUserName}吗？`}`}
+            icon={attentionPic}
+          />
         </div>
         <div className={styles.paginationWrapper}>
           <Pagination

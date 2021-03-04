@@ -10,6 +10,7 @@ import {
   message, Button, Modal, Form, Input, Icon, Radio, Upload, List, Spin, Card, Tag, Checkbox,
 } from 'antd';
 import Pagination from 'Components/EPagination';
+import DeleteModal from 'Components/modals/warnModal';
 import {
   LoadingOutlined, PlusOutlined, ImportOutlined, SearchOutlined
 } from '@ant-design/icons';
@@ -243,11 +244,11 @@ class Face extends Component {
       if (!isJpgOrPng) {
         message.error('仅支持上传.jpg、.png格式图片！');
       }
-      const isLt2M = file.size / 1024 / 1024 < 20;
-      if (!isLt2M) {
-        message.error('图片大小不得超过20M！');
+      const isLt5M = file.size / 1024 / 1024 < 5;
+      if (!isLt5M) {
+        message.error('图片大小不得超过5M！');
       }
-      return isJpgOrPng && isLt2M;
+      return isJpgOrPng && isLt5M;
     };
 
 
@@ -453,24 +454,6 @@ class Face extends Component {
                 )}
               />
             </Spin>
-            {/* <div className={styles.paginationWrapper}>
-            <span>
-              总条数：
-              {total}
-            </span>
-            <div>
-              <Pagination
-                total={total}
-                current={pageNum}
-                showSizeChanger
-                showQuickJumper
-                pageSizeOptions={['12', '24', '36', '48']}
-                pageSize={pageSize}
-                onChange={this.onPageChange}
-                onShowSizeChange={this.onPageChange}
-              />
-            </div>
-          </div> */}
             <Modal
               title={textMap[modalStatus]}
               visible={modalVisible}
@@ -500,7 +483,7 @@ class Face extends Component {
                   )
                   }
                 </FormItem>
-                <FormItem label="上传人脸图像" {...formItemLayout} extra="支持.jpg、.png格式图片">
+                <FormItem label="上传人脸图像" {...formItemLayout} extra="支持.jpg、.png格式图片，图片大小不得超过5M">
                   {getFieldDecorator('imageUrl', {
                     rules: [
                       { required: true, message: '请上传人脸图像' }
@@ -538,26 +521,12 @@ class Face extends Component {
                 </FormItem>
               </Form>
             </Modal>
-
-            <Modal
+            <DeleteModal
               visible={delModalVisible}
-              className={styles.delModal}
-              width="400px"
-              closable={false}
-              footer={[
-                <Button key="submit" type="primary" onClick={this.delFace}>
-                  确定
-                </Button>,
-                <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleDelCancel}>
-                  取消
-                </Button>,
-              ]}
-            >
-              <div>
-                <Icon type="warning" />
-                <div>{`您确定要删除${selectedRowKeys.length > 0 ? `这${delIdsLength}个人脸数据吗？` : `${delName.split('.')[0]}的人脸数据吗？`}`}</div>
-              </div>
-            </Modal>
+              handleOk={this.delFace}
+              closeModal={this.handleDelCancel}
+              content={`您确定要删除${selectedRowKeys.length > 0 ? `这${delIdsLength}个人脸数据吗？` : `${delName.split('.')[0]}的人脸数据吗？`}`}
+            />
 
             <Modal
               visible={repeatModalVisible}
