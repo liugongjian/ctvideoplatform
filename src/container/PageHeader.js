@@ -71,9 +71,9 @@ class Contents extends Component {
     const { collapsed, userinfo } = this.state;
     return (
       <div className={styles.pageHeaderBox}>
-        <Button type="link" onClick={this.toggleCollapsed} className={styles.changeBtn}>
+        <span onClick={this.toggleCollapsed} className={styles.changeBtn}>
           <Icon type={collapsed ? 'menu-unfold' : 'menu-fold'} />
-        </Button>
+        </span>
         <PageHeader routes={pageHeaderRoute} />
         <Dropdown overlay={this.menu} trigger={['click']} className={styles.userBtn}>
           <a>
