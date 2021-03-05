@@ -62,7 +62,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   dispatch
 );
 
-const ALL_TIME_START = '0:00';
+const ALL_TIME_START = '00:00';
 const ALL_TIME_END = '23:59';
 const allTimeSetting = {
   start: ALL_TIME_START,
