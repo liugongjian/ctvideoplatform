@@ -160,7 +160,7 @@ class AlarmCard extends Component {
     if (plate) recognizeType = 'car';
     if (face) recognizeType = 'person';
     const detailExp = AlgoConfigs[algorithmName]?.alarmDetail;
-    const hasImport = true;// AlgoConfigs[algorithmName]?.carImport;
+    const hasImport = AlgoConfigs[algorithmName]?.carImport;
     let detail = null;
     if (detailExp) {
       const reg = /\{(\w+)\}/g;

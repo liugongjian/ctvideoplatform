@@ -97,7 +97,7 @@
       :global{
         .ant-menu-inline-collapsed > .ant-menu-item, .ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-item,
          .ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-inline-collapsed > .ant-menu-submenu > .ant-menu-submenu-title{
-          padding:0 20px !important;
+          padding:0 17px !important;
           // width: 15px;
           overflow: hidden;
           a{
@@ -118,6 +118,9 @@
           margin: 0;
         }
       }
+      // .@{manage-prefix-cls}-tab-iconFs{
+      //   vertical-align: baseline;
+      // }
     }
     .span10px{
       display: inline-block;
@@ -127,10 +130,14 @@
     &-iconFs{
       color:white;
       font-size: 16px;
-      padding-right: 13px;
+      padding-right: 16px;
       display: inline-block;
-      vertical-align: middle;
     }
+    &-full{
+      .@{manage-prefix-cls}-tab-iconFs{
+        vertical-align: middle;
+      }
+    } 
 
     // width: 240px;
     // position: fixed;
