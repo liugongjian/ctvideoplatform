@@ -550,10 +550,14 @@ class Monitor extends Component {
       if (Array.isArray(res.list)) {
         this.setState({
           modalDeviceData: res,
+          modalCheckedKeys: [],
+          modalSelectedKeys: []
         });
       } else {
         this.setState({
-          modalDeviceData: {}
+          modalDeviceData: {},
+          modalCheckedKeys: [],
+          modalSelectedKeys: []
         });
       }
     });
