@@ -577,7 +577,7 @@ class Monitor extends Component {
       deviceId: '',
       name: '',
       pageSize: 10,
-      pageNo: modalPageNo
+      pageNo: 0
     };
     getDevicePoolList(param).then((res) => {
       getAreaName(areaId).then((data) => {
@@ -720,7 +720,8 @@ class Monitor extends Component {
           modalCheckedKeys: [],
           modalDeviceName: '',
           modalDeviceId: '',
-          modalSelectedKeys: []
+          modalSelectedKeys: [],
+          modalPageNo: 0,
         }, () => {
           this.getModalDeviceList();
           this.getDeviceList();
@@ -735,7 +736,8 @@ class Monitor extends Component {
       modalCheckedKeys: [],
       modalDeviceName: '',
       modalDeviceId: '',
-      modalSelectedKeys: []
+      modalSelectedKeys: [],
+      modalPageNo: 0
     });
   }
 
