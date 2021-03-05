@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import {
-  getFaceList, addFace, editFace, delFace, saveUploadList
+  getFaceList, addFace, editFace, delFace
 } from 'Redux/reducer/face';
 import {
   message, Button, Modal, Form, Input, Icon, Radio, Upload, List, Spin, Card, Tag, Checkbox,
@@ -24,7 +24,7 @@ const FormItem = Form.Item;
 const mapStateToProps = state => ({ face: state.face });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    push, getFaceList, addFace, editFace, delFace, saveUploadList
+    push, getFaceList, addFace, editFace, delFace
   },
   dispatch
 );
@@ -95,6 +95,20 @@ class Face extends Component {
 
     // 添加人脸数据按钮
     handleAddFace = () => {
+      const { faceData, selectedRowKeys } = this.state;
+      if (selectedRowKeys.length > 0) {
+        for (let i = 0; i < selectedRowKeys.length; i++) {
+          for (let j = 0; j < faceData.length; j++) {
+            if (faceData[j].id === selectedRowKeys[i]) {
+              faceData[j].isChecked = false;
+            }
+          }
+        }
+        this.setState({
+          selectedRowKeys: [],
+          faceData,
+        });
+      }
       this.setState({
         modalVisible: true,
         modalStatus: 'add',
@@ -111,7 +125,7 @@ class Face extends Component {
 
     // 提交添加人脸数据的表单
     addFace = (isReplaced) => {
-      const { addFace, saveUploadList } = this.props;
+      const { addFace } = this.props;
       this.props.form.validateFields((errors, values) => {
         if (!errors) {
           delete values.imageUrl;
@@ -123,9 +137,7 @@ class Face extends Component {
                 modalVisible: false,
                 pageNum: 1,
               }, () => {
-                saveUploadList().then((res) => {
-                  this.getTableList();
-                });
+                this.getTableList();
               });
             }
           ).catch((err) => {
@@ -140,6 +152,20 @@ class Face extends Component {
       const {
         form: { setFieldsValue }
       } = this.props;
+      const { faceData, selectedRowKeys } = this.state;
+      if (selectedRowKeys.length > 0) {
+        for (let i = 0; i < selectedRowKeys.length; i++) {
+          for (let j = 0; j < faceData.length; j++) {
+            if (faceData[j].id === selectedRowKeys[i]) {
+              faceData[j].isChecked = false;
+            }
+          }
+        }
+        this.setState({
+          selectedRowKeys: [],
+          faceData,
+        });
+      }
       this.setState({
         modalVisible: true,
         modalStatus: 'edit',
@@ -177,16 +203,48 @@ class Face extends Component {
       });
     };
 
-    handleDelFace = (item) => {
-      const { id } = item;
+    handleDelFace = (isSingleDel, item) => {
+      // const { id } = item;
+      // let ids;
+      // let nameTemp;
+      // if (this.state.selectedRowKeys.length > 0) {
+      //   ids = this.state.selectedRowKeys;
+      //   nameTemp = '';
+      // } else {
+      //   ids = [id];
+      //   nameTemp = item.name;
+      // }
+      // this.setState({
+      //   delModalVisible: true,
+      //   delIds: ids,
+      //   delName: nameTemp
+      // });
+      const id = isSingleDel ? item.id : '';
       let ids;
       let nameTemp;
-      if (this.state.selectedRowKeys.length > 0) {
-        ids = this.state.selectedRowKeys;
-        nameTemp = '';
-      } else {
+      // 单个删除
+      if (isSingleDel) {
         ids = [id];
         nameTemp = item.name;
+        const { faceData, selectedRowKeys } = this.state;
+        if (selectedRowKeys.length > 0) {
+          for (let i = 0; i < selectedRowKeys.length; i++) {
+            for (let j = 0; j < faceData.length; j++) {
+              if (faceData[j].id === selectedRowKeys[i]) {
+                faceData[j].isChecked = false;
+              }
+            }
+          }
+
+          this.setState({
+            selectedRowKeys: [],
+            faceData,
+          });
+        }
+      } else {
+        // 批量删除
+        ids = this.state.selectedRowKeys;
+        nameTemp = '';
       }
       this.setState({
         delModalVisible: true,
@@ -308,7 +366,7 @@ class Face extends Component {
                   ? (
                     <>
                       <Icon type="delete" className={styles.iconActive} />
-                      <a onClick={this.handleDelFace}>批量删除</a>
+                      <a onClick={() => this.handleDelFace(false)}>批量删除</a>
                     </>
                   ) : (
                     <>
@@ -429,7 +487,7 @@ class Face extends Component {
                         <div className={item.isChecked ? styles.btnChecked : styles.btn}>
                           <Icon type="edit" className={styles.iconEdit} onClick={() => this.handleEditFace(item)} />
                           <div className={styles.line} />
-                          <Icon type="delete" className={styles.iconDel} onClick={() => this.handleDelFace(item)} />
+                          <Icon type="delete" className={styles.iconDel} onClick={() => this.handleDelFace(true, item)} />
                         </div>
                         <div className={styles.footerContanier}>
                           <div className={styles.info}>
