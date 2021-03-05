@@ -12,6 +12,7 @@ import {
 import { urlPrefix } from 'Constants/Dictionary';
 import noImage from 'Assets/defaultFace.png';
 import DeleteModal from 'Components/modals/warnModal';
+import moment from 'moment';
 import {
   LicenseImportModal,
   ImageModal,
@@ -30,7 +31,8 @@ import TestJpg from './test.jpg';
 import styles from './index.less';
 
 // const { Option } = Select;
-
+const timeFormat = 'YYYY-MM-DD HH:mm:ss';
+const showFormat = 'YYYY/MM/DD HH:mm:ss';
 
 const getImgUrl = (name) => {
   const arr = [
@@ -187,14 +189,16 @@ class AlarmCard extends Component {
         />
         <div className={styles['AlarmCard-title']}>
           {/* // 头部空间不足 先删除icon */}
-          <img
+          {/* <img
             src={getImgUrl(algorithmName)}
             alt="icon"
             className={styles['AlarmCard-title-icon']}
-          />
+          /> */}
         &nbsp;
           <span className={styles['AlarmCard-title-name']}>{algorithmCnName || ''}</span>
-          <span className={styles['AlarmCard-title-time']} title={resTime || ''}>{resTime || ''}</span>
+          <span className={styles['AlarmCard-title-time']} title={resTime || ''}>
+            {resTime || ''}
+          </span>
         </div>
         <div className={`${styles['AlarmCard-imgWrapper']} ${imageErr ? '' : styles['AlarmCard-imgWrapper-cursor']}`} onClick={imageErr ? () => {} : this.showImgDialog}>
           <div className={styles['AlarmCard-imgWrapper-title']} title={deviceName}>

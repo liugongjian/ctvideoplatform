@@ -39,7 +39,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 );
 
 const initialVals = {
-  startTime: moment().subtract('days', 30),
+  startTime: moment().subtract('days', 7),
   endTime: moment(),
   deviceVal: [],
   algoVal: [],
