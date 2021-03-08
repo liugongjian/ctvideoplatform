@@ -147,6 +147,7 @@ class Plate extends Component {
   }
 
   onPageNumChange = (pageNo) => {
+    this.setState({selectedRowKeys:[] , deleteItems : []});
     this.props.getPlateList({
       licenseNo: this.state.searchName,
       pageNo: pageNo - 1,
@@ -156,7 +157,8 @@ class Plate extends Component {
     });
   }
 
-  onPageSizeChange = (current, size) => {
+  onPageSizeChange = (current , size) => {
+    this.setState({selectedRowKeys:[] , deleteItems : []});
     this.props.getPlateList({
       licenseNo: this.state.searchName,
       pageNo: 0,
@@ -372,8 +374,16 @@ class Plate extends Component {
                     },
                     {
                       validator: (rule, val, callback) => {
-                        if (!val) {
-                          callback('请选择车牌颜色!');
+                        const reg = /^[0-9a-zA-Z]+$/
+                        form.validateFields(['licenseProvince']);
+                        if (!val || !form.getFieldValue('licenseProvince')) {
+                          callback(' ');
+                        }
+                        if(val.length > 8){
+                          callback('车牌号不能超过8位');
+                        }
+                        if(!reg.test(val)){
+                          callback('车牌号只能包含数字和字母');
                         }
                         callback();
                       }
@@ -389,7 +399,56 @@ class Plate extends Component {
                   </Select>
                 )}
               </Form.Item>
-            </Form>
+            <Form.Item label="布控标签">
+              {getFieldDecorator('label', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择布控标签!',
+                  },
+                  // {
+                  //   validator: (rule, val, callback) => {
+                  //     if (!val) {
+                  //       callback('请选择布控标签!');
+                  //     }
+                  //     callback();
+                  //   }
+                  // }
+                ],
+              })(
+                <Radio.Group>
+                  <Radio value={"WHITE"}>白名单</Radio>
+                  <Radio value={"BLACK"}>黑名单</Radio>
+                </Radio.Group>
+              )}
+            </Form.Item>
+            <Form.Item label="车牌颜色">
+              {getFieldDecorator('color', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择车牌颜色!',
+                  },
+                  // {
+                  //   validator: (rule, val, callback) => {
+                  //     if (!val) {
+                  //       callback('请选择车牌颜色!');
+                  //     }
+                  //     callback();
+                  //   }
+                  // }
+                ],
+              })(
+                <Select>
+                  <Select.Option value="蓝色">蓝色</Select.Option>
+                  <Select.Option value="绿色">绿色</Select.Option>
+                  <Select.Option value="黄色">黄色</Select.Option>
+                  <Select.Option value="白色">白色</Select.Option>
+                  <Select.Option value="黑色">黑色</Select.Option>
+                </Select>
+              )}
+            </Form.Item>
+          </Form>
 
             { this.state.plateExist ? (
               <div className={styles.existMsg}>
