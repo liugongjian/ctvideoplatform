@@ -3,6 +3,7 @@ import {
   Select, Tree, Icon, Input, Button, Table, Divider,
   Modal, Checkbox, Tooltip, Spin, Popover
 } from 'antd';
+import ETable from 'Components/ETable';
 import EIcon from 'Components/Icon';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -1004,7 +1005,7 @@ class Monitor extends Component {
               </Button>
               <Checkbox onChange={this.changeStatus}>包含下级区域</Checkbox>
             </div>
-            <Table
+            <ETable
               rowSelection={rowSelection}
               columns={columns}
               dataSource={tableData.list || []}
@@ -1043,7 +1044,7 @@ class Monitor extends Component {
               <span>重置</span>
             </Button>
           </div>
-          <Table
+          <ETable
             dataSource={modalDeviceData.list}
             rowSelection={modalRowSelection}
             columns={modalColumns}
