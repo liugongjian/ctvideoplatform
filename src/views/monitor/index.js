@@ -3,6 +3,7 @@ import {
   Select, Tree, Icon, Input, Button, Table, Divider,
   Modal, Checkbox, Tooltip, Spin, Popover
 } from 'antd';
+import ETable from 'Components/ETable';
 import EIcon from 'Components/Icon';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -182,7 +183,8 @@ class Monitor extends Component {
 
     const getTitle = val => (
       <Popover
-        arrowPointAtCenter
+        // arrowPointAtCenter
+        placement="bottomLeft"
         content={getContent()}
         overlayClassName={item.pid === 0 ? `${styles.popoverInfoMin}` : `${styles.popoverInfo}`}
         getPopupContainer={trigger => trigger}
@@ -577,7 +579,7 @@ class Monitor extends Component {
       deviceId: '',
       name: '',
       pageSize: 10,
-      pageNo: modalPageNo
+      pageNo: 0
     };
     getDevicePoolList(param).then((res) => {
       getAreaName(areaId).then((data) => {
@@ -626,38 +628,16 @@ class Monitor extends Component {
 
   delThisKey = (record) => {
     const { id } = record;
-    const { delDeviceById } = this.props;
-    const { pageNo, tableData } = this.state;
+    // const { delDeviceById } = this.props;
+    // const { pageNo, tableData } = this.state;
     const temp = [id];
     const param = {
       deviceIds: temp
     };
-
     this.setState({
+      showDelModal: true,
       checkedKeys: temp,
-      showDelModal: true
     });
-
-    // const ifLastPage = () => {
-    //   if (pageNo === tableData.pageTotal - 1 && tableData.recordsTotal % 10 === 1) {
-    //     return true;
-    //   }
-    //   return false;
-    // };
-    // if (ifLastPage()) {
-    //   delDeviceById(param).then((res) => {
-    //     this.setState({
-    //       showDelModal: false,
-    //       pageNo: tableData.pageTotal - 2 >= 0 ? tableData.pageTotal - 2 : 0
-    //     }, () => this.getDeviceList());
-    //   });
-    // } else {
-    //   delDeviceById(param).then((res) => {
-    //     this.setState({
-    //       showDelModal: false,
-    //     }, () => this.getDeviceList());
-    //   });
-    // }
   }
 
   sureDelThisKeys = (e) => {
@@ -699,7 +679,9 @@ class Monitor extends Component {
 
   cancelDelthisKeys = () => {
     this.setState({
-      showDelModal: false
+      showDelModal: false,
+      checkedKeys: [],
+      selectedKeys: []
     });
   }
 
@@ -720,7 +702,8 @@ class Monitor extends Component {
           modalCheckedKeys: [],
           modalDeviceName: '',
           modalDeviceId: '',
-          modalSelectedKeys: []
+          modalSelectedKeys: [],
+          modalPageNo: 0,
         }, () => {
           this.getModalDeviceList();
           this.getDeviceList();
@@ -735,7 +718,8 @@ class Monitor extends Component {
       modalCheckedKeys: [],
       modalDeviceName: '',
       modalDeviceId: '',
-      modalSelectedKeys: []
+      modalSelectedKeys: [],
+      modalPageNo: 0
     });
   }
 
@@ -1002,7 +986,7 @@ class Monitor extends Component {
               </Button>
               <Checkbox onChange={this.changeStatus}>包含下级区域</Checkbox>
             </div>
-            <Table
+            <ETable
               rowSelection={rowSelection}
               columns={columns}
               dataSource={tableData.list || []}
@@ -1041,7 +1025,7 @@ class Monitor extends Component {
               <span>重置</span>
             </Button>
           </div>
-          <Table
+          <ETable
             dataSource={modalDeviceData.list}
             rowSelection={modalRowSelection}
             columns={modalColumns}
