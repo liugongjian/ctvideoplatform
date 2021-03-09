@@ -79,10 +79,12 @@ class LicenseImportModalComp extends Component {
     } = this.props;
     const licenseNo = val?.licenseNo || form.getFieldValue('licenseNo');
     const licenseProvince = form.getFieldValue('licenseProvince');
-    const license = `${licenseProvince}${licenseNo}`;
-    isLicenseExist(license).then((res) => {
-      this.setState({ exist: res });
-    });
+    if (licenseNo && licenseProvince) {
+      const license = `${licenseProvince}${licenseNo}`;
+      isLicenseExist(license).then((res) => {
+        this.setState({ exist: res });
+      });
+    }
   }
 
   render() {

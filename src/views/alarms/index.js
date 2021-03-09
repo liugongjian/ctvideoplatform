@@ -105,16 +105,23 @@ class Alarms extends Component {
       current,
       pageSize,
       algorithmIdList,
-      startTime, endTime, algoVal, deviceVal
+      startTime, endTime, algoVal, deviceVal, deviceList
     } = this.state;
+
     const params = {
       pageNo: current - 1,
       pageSize,
       algorithmIdList: algoVal,
       startTime: startTime.format(timeFormat),
       endTime: endTime.format(timeFormat),
-      deviceId: deviceVal ? deviceVal[deviceVal.length - 1] : undefined,
     };
+    const deviceOrAreaId = deviceVal ? deviceVal[deviceVal.length - 1] : undefined;
+    const item = deviceOrAreaId ? deviceList.find(({ id }) => id == deviceOrAreaId) : {};
+    if (item && item.type == 0) {
+      params.areaId = deviceOrAreaId;
+    } else if (item && item.type == 1) {
+      params.deviceId = deviceOrAreaId;
+    }
     this.props.getAlarmList(params).then((res) => {
       console.log('getAlarmList', res);
       const {
@@ -169,16 +176,16 @@ class Alarms extends Component {
       }
     });
     // 子节点为区域，不是设备，不可选
-    const setAreaNodeDisabled = (tree) => {
-      tree.forEach((item) => {
-        if (item.children) {
-          setAreaNodeDisabled(item.children);
-        } else {
-          item.disabled = item.type == 0;
-        }
-      });
-    };
-    setAreaNodeDisabled(val);
+    // const setAreaNodeDisabled = (tree) => {
+    //   tree.forEach((item) => {
+    //     if (item.children) {
+    //       setAreaNodeDisabled(item.children);
+    //     } else {
+    //       item.disabled = item.type == 0;
+    //     }
+    //   });
+    // };
+    // setAreaNodeDisabled(val);
     return val;
   };
 
@@ -263,6 +270,7 @@ class Alarms extends Component {
               </Select>
               <span className={styles.span10px} />
               <Cascader
+                changeOnSelect
                 placeholder="请选择设备"
                 popupClassName={styles.cameraCascader}
                 options={deviceTree}
