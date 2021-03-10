@@ -8,6 +8,8 @@ import {
   Cascader,
   message,
   Spin,
+  Icon,
+  Tooltip,
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -150,7 +152,15 @@ class BasicSetting extends Component {
               })(<Input />)}
             </Form.Item>
             <Form.Item
-              label="经纬度"
+              label={(
+                <span>
+                  经纬度
+                  {' '}
+                  <Tooltip title="例：-82.2, 152.7 (南纬82.2度，东经152.7度)">
+                    <span className={styles.questionIcon}><Icon type="question-circle" theme="filled" /></span>
+                  </Tooltip>
+                </span>
+              )}
               style={{ marginBottom: 0 }}
               // className={styles.addItemRequiredIcon}
             >

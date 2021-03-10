@@ -183,7 +183,8 @@ class Monitor extends Component {
 
     const getTitle = val => (
       <Popover
-        arrowPointAtCenter
+        // arrowPointAtCenter
+        placement="bottomLeft"
         content={getContent()}
         overlayClassName={item.pid === 0 ? `${styles.popoverInfoMin}` : `${styles.popoverInfo}`}
         getPopupContainer={trigger => trigger}
@@ -627,38 +628,16 @@ class Monitor extends Component {
 
   delThisKey = (record) => {
     const { id } = record;
-    const { delDeviceById } = this.props;
-    const { pageNo, tableData } = this.state;
+    // const { delDeviceById } = this.props;
+    // const { pageNo, tableData } = this.state;
     const temp = [id];
     const param = {
       deviceIds: temp
     };
-
     this.setState({
+      showDelModal: true,
       checkedKeys: temp,
-      showDelModal: true
     });
-
-    // const ifLastPage = () => {
-    //   if (pageNo === tableData.pageTotal - 1 && tableData.recordsTotal % 10 === 1) {
-    //     return true;
-    //   }
-    //   return false;
-    // };
-    // if (ifLastPage()) {
-    //   delDeviceById(param).then((res) => {
-    //     this.setState({
-    //       showDelModal: false,
-    //       pageNo: tableData.pageTotal - 2 >= 0 ? tableData.pageTotal - 2 : 0
-    //     }, () => this.getDeviceList());
-    //   });
-    // } else {
-    //   delDeviceById(param).then((res) => {
-    //     this.setState({
-    //       showDelModal: false,
-    //     }, () => this.getDeviceList());
-    //   });
-    // }
   }
 
   sureDelThisKeys = (e) => {
@@ -700,7 +679,9 @@ class Monitor extends Component {
 
   cancelDelthisKeys = () => {
     this.setState({
-      showDelModal: false
+      showDelModal: false,
+      checkedKeys: [],
+      selectedKeys: []
     });
   }
 
