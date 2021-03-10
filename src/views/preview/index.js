@@ -53,7 +53,8 @@ class Preview extends PureComponent {
       videoSrc: null,
       historyListData: {},
       imgDialogVisible: false,
-      algorithmIds: []
+      algorithmIds: [],
+      showText: '无信号'
     };
   }
 
@@ -112,9 +113,9 @@ class Preview extends PureComponent {
     }
 
     doubleClickHandle = (e, val) => {
-    //   console.log('曲线救国思密达----->', val);
       this.setState({
-        selectAreaKeys: [val.id]
+        selectAreaKeys: [val.id],
+        videoSrc: null
       }, () => {
         this.getHistory(val.id);
         this.getVideoSrc(val.id, val.name);
@@ -138,27 +139,40 @@ class Preview extends PureComponent {
 
     getVideoSrc = (id, name) => {
       const { getVideoSrc } = this.props;
-      getVideoSrc(id).then((res) => {
-        if (res && res.m3u8uri) {
-          this.setState({
-            videoSrc: res.m3u8uri,
-            noVideo: false,
-            videoName: name,
-          });
-        } else {
-          this.setState({
-            videoSrc: '',
-            noVideo: true,
-            videoName: '',
-          });
-        }
+      this.setState({
+        showText: '加载中...'
+      }, () => {
+        getVideoSrc(id).then((res) => {
+          if (res && res.m3u8uri) {
+            this.setState({
+              videoSrc: res.m3u8uri,
+              noVideo: false,
+              videoName: name,
+              showText: '无信号'
+            }, () => {
+              window.clearTimeout(this.timer);
+              this.timer = null;
+            });
+          } else {
+            this.setState({
+              videoSrc: '',
+              noVideo: true,
+              videoName: '',
+              showText: '无信号'
+            }, () => {
+              window.clearTimeout(this.timer);
+              this.timer = null;
+            });
+          }
+        });
       });
     }
 
     clearVideo = () => {
       this.setState({
         videoSrc: '',
-        historyListData: {}
+        historyListData: {},
+        showText: '无信号'
       });
     }
 
@@ -276,7 +290,7 @@ class Preview extends PureComponent {
       render() {
         const {
           treeDatas, selectAreaKeys, expandedKeys, algorithmList = [],
-          videoSrc, historyListData, imgDialogVisible, imgDialogSrc, noVideo, videoName
+          videoSrc, historyListData, imgDialogVisible, imgDialogSrc, noVideo, videoName, showText
         } = this.state;
 
         const { preview: { loading }, push } = this.props;
@@ -293,21 +307,25 @@ class Preview extends PureComponent {
           </Option>
         ));
 
-        const getImg = () => {
-          if (noVideo) {
-            return (
-              <div className={styles.nodataBox}>
-                <img src={nodata} alt="" />
-              </div>
-            );
-          }
-          return (
-            <div className={styles.nostatusBox}>
-              <img src={nostatus} alt="" />
-              <p>请双击左侧点位播放监控视频</p>
-            </div>
-          );
-        };
+        const getImg = () => (
+          <div className={styles.allStatusBox}>
+            <p>{showText}</p>
+          </div>
+        )
+          // if (noVideo) {
+          //   return (
+          //     <div className={styles.nodataBox}>
+          //       <img src={nodata} alt="" />
+          //     </div>
+          //   );
+          // }
+          // return (
+          //   <div className={styles.nostatusBox}>
+          //     <img src={nostatus} alt="" />
+          //     <p>请双击左侧点位播放监控视频</p>
+          //   </div>
+          // );
+        ;
 
         return (
 
