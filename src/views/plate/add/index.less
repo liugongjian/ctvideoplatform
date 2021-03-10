@@ -2,7 +2,6 @@
     background: #fff;
     padding: 20px;
     position: relative;
-    height: 100%;
     .uploadWrapper{
         width: 873px;
         height: 268px;
@@ -97,7 +96,10 @@
       height: 100px;
       margin:0 auto;
       .btnBack2{
-          margin-right: 50px;
+          :global{
+                margin-right: 50px;
+                height: 34px;
+            }
       }
   }
   .tabRow{

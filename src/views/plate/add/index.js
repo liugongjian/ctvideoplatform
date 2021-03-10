@@ -119,7 +119,7 @@ class AddPlate extends Component {
                 </p>
                 <p className="ant-upload-text">点击或将文件拖拽到这里上传</p>
                 <p className="ant-upload-hint">
-                  支持的格式：仅支持csv、xlsx、xls格式文件
+                  支持的格式：仅支持xlsx、xls格式文件
                 </p>
               </Dragger>
               <div className={styles.buttonWrapper}>
@@ -135,7 +135,7 @@ class AddPlate extends Component {
     
     const confirmer = ()=>(
       <div className={styles.confirmerWrapper}>
-          <Table dataSource={importedPlateInfo.list} pagination={false} rowClassName={styles.tabRow}>
+          <Table dataSource={importedPlateInfo.list} pagination={false} rowClassName={styles.tabRow} rowKey={record => record.licenseNo + Math.random()}>
           <Column title="车牌号" dataIndex="licenseNo" width={'14%'} className="tabble-row" align="center" 
             render= {(text,record) => (
                 <div>
@@ -173,7 +173,10 @@ class AddPlate extends Component {
         </div>
           <div>
             <div className={styles.buttonWrapper2}>
-              <Button key="cancel"className={styles.btnBack2} onClick={()=>this.setState({step : 1})}>上一步</Button>
+              {/* <Button key="cancel"className={styles.btnBack2} onClick={()=>this.setState({step : 1})}>上一步</Button> */}
+              <Button key="cancel" className={styles.btnBack2} onClick={()=>this.onBackToMain()}>
+               返回
+                </Button>
               <Button type="primary" onClick={()=>this.onCheckAndSubmit()}>提交</Button>
             </div>
           </div>
