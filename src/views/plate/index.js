@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import {
   getPlateList, addPlate, deletePlates, updatePlate, licenseExist
 } from '@/redux/reducer/plate';
+import DeleteModal from 'Components/modals/warnModal';
 
 import searchPic from '@/assets/role/search.png';
 import warnPic from '@/assets/role/warn.png';
@@ -147,6 +148,7 @@ class Plate extends Component {
   }
 
   onPageNumChange = (pageNo) => {
+    this.setState({selectedRowKeys:[] , deleteItems : []});
     this.props.getPlateList({
       licenseNo: this.state.searchName,
       pageNo: pageNo - 1,
@@ -156,7 +158,8 @@ class Plate extends Component {
     });
   }
 
-  onPageSizeChange = (current, size) => {
+  onPageSizeChange = (current , size) => {
+    this.setState({selectedRowKeys:[] , deleteItems : []});
     this.props.getPlateList({
       licenseNo: this.state.searchName,
       pageNo: 0,
@@ -323,12 +326,16 @@ class Plate extends Component {
                       },
                       {
                         validator: (rule, val, callback) => {
+                          const reg = /^[0-9a-zA-Z]+$/
                           form.validateFields(['licenseProvince']);
                           if (!val || !form.getFieldValue('licenseProvince')) {
                             callback(' ');
                           }
                           if (val.length > 8) {
                             callback('车牌号不能超过8位');
+                          }
+                          if(!reg.test(val)){
+                            callback('车牌号只能包含数字和字母');
                           }
                           callback();
                         }
@@ -369,14 +376,6 @@ class Plate extends Component {
                     {
                       required: true,
                       message: '请选择车牌颜色!',
-                    },
-                    {
-                      validator: (rule, val, callback) => {
-                        if (!val) {
-                          callback('请选择车牌颜色!');
-                        }
-                        callback();
-                      }
                     }
                   ],
                 })(
@@ -389,7 +388,7 @@ class Plate extends Component {
                   </Select>
                 )}
               </Form.Item>
-            </Form>
+          </Form>
 
             { this.state.plateExist ? (
               <div className={styles.existMsg}>
@@ -401,7 +400,7 @@ class Plate extends Component {
         </Modal>
 
 
-        <Modal
+        {/* <Modal
           centered
           width={412}
           visible={this.state.deleteModalVisible}
@@ -427,7 +426,13 @@ class Plate extends Component {
               </span>
             </div>
           </div>
-        </Modal>
+        </Modal> */}
+         <DeleteModal
+              visible={this.state.deleteModalVisible}
+              handleOk={this.onDeleteItems}
+              closeModal={() => { this.setState({ deleteModalVisible: false, deleteItems: [] })}}
+              content={`您确定要删除这${this.state.deleteItems.length}个车牌数据吗？`}
+            />
 
 
       </div>
