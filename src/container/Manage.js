@@ -164,7 +164,7 @@ class Manage extends Component {
     }
     return (
       <div className={styles['EMR-manage-container']}>
-        <div className={`${styles['EMR-manage-tab']} ${collapsed ? styles['EMR-manage-tab-collapsed'] : ''}`}>
+        <div className={`${styles['EMR-manage-tab']} ${collapsed ? styles['EMR-manage-tab-collapsed'] : styles['EMR-manage-tab-full']}`}>
           <Spin spinning={menuListLoading}>
             {
               collapsed

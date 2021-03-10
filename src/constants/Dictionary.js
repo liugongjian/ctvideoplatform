@@ -25,6 +25,7 @@ export const devApi = '/devApi';
 export const prodApi = '/prodApi';
 export const lixueping = '/lixueping';
 export const zhoulinpeng = '/zhoulinpeng';
+const zhujianxia = '/zhujianxia';
 const prodName = '/';
 
 export const urlPrefix = devApi;

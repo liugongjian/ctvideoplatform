@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
 import React, { Component } from 'react';
@@ -239,16 +240,18 @@ class AlarmCard extends Component {
                       </React.Fragment>
                     </div>
                   ) : (
-                    <div>
-                      姓名：
-                      {face?.username || '-'}
-                      <React.Fragment>
-                        {
+                      face?.username ? (
+                        <div>
+                          姓名：
+                          {face?.username || '-'}
+                          <React.Fragment>
+                            {
                         face?.label && LABEL[face.label]
                           ? <Tag title={LABEL[face.label]} type={face.label} />
                           : null}
-                      </React.Fragment>
-                    </div>
+                          </React.Fragment>
+                        </div>
+                      ) : null
                   )}
                 </React.Fragment>
               )

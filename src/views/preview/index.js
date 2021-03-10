@@ -52,7 +52,8 @@ class Preview extends PureComponent {
       keyword: '',
       videoSrc: null,
       historyListData: {},
-      imgDialogVisible: false
+      imgDialogVisible: false,
+      algorithmIds: []
     };
   }
 
@@ -70,10 +71,22 @@ class Preview extends PureComponent {
         algorithmIds
       };
       getAreaList(param).then((res) => {
-        const treeDatas = this.dataToTree(res);
-        this.setState({
-          treeDatas
-        });
+        if (res) {
+          const treeDatas = this.dataToTree(res);
+          let expendsIds = ['1'];
+          if (keyword || algorithmIds.length) {
+            expendsIds = res.map(item => item.id);
+          }
+          this.setState({
+            treeDatas,
+            expandedKeys: expendsIds
+          });
+        } else {
+          this.setState({
+            treeDatas: [],
+            expandedKeys: ['1']
+          });
+        }
       });
     }
 
@@ -125,7 +138,6 @@ class Preview extends PureComponent {
 
     getVideoSrc = (id, name) => {
       const { getVideoSrc } = this.props;
-      console.log('id', id);
       getVideoSrc(id).then((res) => {
         if (res && res.m3u8uri) {
           this.setState({
@@ -166,7 +178,6 @@ class Preview extends PureComponent {
         return val.name;
       };
       const getIcon = (val) => {
-        console.log('val.online', val.online);
         if (val.type === 1) {
           return (
             <EIcon type={val.online ? `${styles.monitorOnline} myicon-monitorIcon` : `${styles.monitorOffline} myicon-monitorIcon`} />
