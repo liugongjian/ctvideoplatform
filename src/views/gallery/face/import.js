@@ -32,21 +32,45 @@ class ImportFace extends Component {
     fileList: [],
     stepCurrent: 0,
     uploadStatus: 'todo',
-    repeatModalVisible: false,
     repeatNum: 3,
     total: 0,
-    pageSize: 12,
+    pageSize: document.documentElement.clientWidth >= 1600 ? 16 : 12,
     pageNum: 1,
     uploadZipUrl: `${urlPrefix}/face/upload/`,
     faceData: [
     ],
     submitLoading: false,
     submitBtnDis: false,
+    pageSizeOptions: document.documentElement.clientWidth >= 1600 ? ['16', '32', '48', '64'] : ['12', '24', '36', '48'],
+    isBigScreen: document.documentElement.clientWidth >= 1600,
   };
 
   componentDidMount() {
-
+    window.addEventListener('resize', this.resize.bind(this));
   }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.resize.bind(this));
+  }
+
+  resize = () => {
+    const screenWidth = document.documentElement.clientWidth;
+    if (!this.state.isBigScreen && screenWidth >= 1600) {
+      this.setState({
+        isBigScreen: true,
+        pageNum: 1,
+        pageSize: 16,
+        pageSizeOptions: ['16', '32', '48', '64']
+      }, () => this.getTableList());
+    } else if (this.state.isBigScreen && screenWidth < 1600) {
+      this.setState({
+        pageNum: 1,
+        isBigScreen: false,
+        pageSize: 12,
+        pageSizeOptions: ['12', '24', '36', '48']
+      }, () => this.getTableList());
+    }
+  };
 
   getTableList = (isPaged, isReplaced) => {
     const { getImportFaceList } = this.props;
@@ -133,7 +157,7 @@ class ImportFace extends Component {
   render() {
     const that = this;
     const {
-      uploadZipUrl, fileList, stepCurrent, label, uploadStatus, faceData, total, pageNum, pageSize, submitLoading, submitBtnDis, repeatModalVisible, repeatNum
+      uploadZipUrl, fileList, stepCurrent, label, uploadStatus, faceData, total, pageNum, pageSize, submitLoading, submitBtnDis, pageSizeOptions
     } = this.state;
     const props = {
       name: 'file',
@@ -243,7 +267,7 @@ class ImportFace extends Component {
                         </p>
                       </Dragger>
                       <div className={styles.nextStep}>
-                        {uploadStatus === 'done' && !repeatModalVisible
+                        {uploadStatus === 'done'
                           ? (
                             <div className={styles.btn}>
                               <Button type="primary" onClick={this.submitLabel}>下一步</Button>
@@ -296,25 +320,39 @@ class ImportFace extends Component {
                           />
                         </Spin>
 
+                        <div className={styles.paginationWrapper}>
+                          <Pagination
+                            total={total}
+                            current={pageNum}
+                            pageSize={pageSize}
+                            onChange={this.onPageChange}
+                            onShowSizeChange={this.onPageChange}
+                            pageSizeOptions={pageSizeOptions}
+                            hideOnSinglePage={false}
+                            showSizeChanger
+                            showQuickJumper
+                            showTotal={this.showTotal}
+                          />
+                        </div>
                         <div className={styles.btn}>
                           <Button type="primary" onClick={this.submit} disabled={submitBtnDis}>提交</Button>
                           <Button type="button" onClick={() => this.props.history.go(-1)}>取消</Button>
                         </div>
                       </div>
-                      <div className={styles.paginationWrapper}>
+                      {/* <div className={styles.paginationWrapper}>
                         <Pagination
                           total={total}
                           current={pageNum}
-                          defaultPageSize={pageSize}
+                          pageSize={pageSize}
                           onChange={this.onPageChange}
                           onShowSizeChange={this.onPageChange}
-                          pageSizeOptions={['12', '24', '36', '48']}
+                          pageSizeOptions={pageSizeOptions}
                           hideOnSinglePage={false}
                           showSizeChanger
                           showQuickJumper
                           showTotal={this.showTotal}
                         />
-                      </div>
+                      </div> */}
                     </div>
                   )
 
@@ -324,25 +362,6 @@ class ImportFace extends Component {
             )
           }
         </div>
-        <Modal
-          visible={repeatModalVisible}
-          className={styles.repeatModal}
-          width="400px"
-          closable={false}
-          footer={[
-            <Button key="submit" type="primary" onClick={() => this.getTableList(true)}>
-              确定
-            </Button>,
-            <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={() => { this.setState({ repeatModalVisible: false }, () => { this.getTableList(false); }); }}>
-              取消
-            </Button>,
-          ]}
-        >
-          <div>
-            <Icon type="warning" />
-            <div>{`您添加的${repeatNum}条人脸数据已存在，是否要覆盖？`}</div>
-          </div>
-        </Modal>
 
       </div>
     );
