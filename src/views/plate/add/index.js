@@ -14,6 +14,7 @@ import 'antd/dist/antd.css';
 import styles from './index.less';
 import warnPic from '@/assets/role/warn.png'
 import EIcon from 'Components/Icon';
+import DeleteModal from 'Components/modals/warnModal';
 const { Column } = Table;
 const { Dragger } = Upload;
 
@@ -186,7 +187,7 @@ class AddPlate extends Component {
     return (
       <div className={styles.mainWrapper}>
         {this.state.step > 1 ? confirmer() : uploader()}
-
+{/* 
         <Modal
           centered
           width={412}
@@ -209,7 +210,14 @@ class AddPlate extends Component {
               <span>你添加的人脸数据有{this.state.duplicatedPlates}条已存在是否要覆盖</span>
             </div>
           </div>
-        </Modal>
+        </Modal> */}
+
+        <DeleteModal
+              visible={this.state.submitModalVisible}
+              handleOk={this.onSubmitDuplicatedPlates}
+              closeModal={() => {this.setState({submitModalVisible:false})}}
+              content={`你添加的车牌数据有${this.state.duplicatedPlates}条已存在是否要覆盖`}
+            />
 
 
       </div>
