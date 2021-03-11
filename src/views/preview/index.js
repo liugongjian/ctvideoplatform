@@ -52,7 +52,9 @@ class Preview extends PureComponent {
       keyword: '',
       videoSrc: null,
       historyListData: {},
-      imgDialogVisible: false
+      imgDialogVisible: false,
+      algorithmIds: [],
+      showText: '无信号'
     };
   }
 
@@ -70,10 +72,22 @@ class Preview extends PureComponent {
         algorithmIds
       };
       getAreaList(param).then((res) => {
-        const treeDatas = this.dataToTree(res);
-        this.setState({
-          treeDatas
-        });
+        if (res) {
+          const treeDatas = this.dataToTree(res);
+          let expendsIds = ['1'];
+          if (keyword || algorithmIds.length) {
+            expendsIds = res.map(item => item.id);
+          }
+          this.setState({
+            treeDatas,
+            expandedKeys: expendsIds
+          });
+        } else {
+          this.setState({
+            treeDatas: [],
+            expandedKeys: ['1']
+          });
+        }
       });
     }
 
@@ -99,9 +113,9 @@ class Preview extends PureComponent {
     }
 
     doubleClickHandle = (e, val) => {
-    //   console.log('曲线救国思密达----->', val);
       this.setState({
-        selectAreaKeys: [val.id]
+        selectAreaKeys: [val.id],
+        videoSrc: null
       }, () => {
         this.getHistory(val.id);
         this.getVideoSrc(val.id, val.name);
@@ -125,28 +139,40 @@ class Preview extends PureComponent {
 
     getVideoSrc = (id, name) => {
       const { getVideoSrc } = this.props;
-      console.log('id', id);
-      getVideoSrc(id).then((res) => {
-        if (res && res.m3u8uri) {
-          this.setState({
-            videoSrc: res.m3u8uri,
-            noVideo: false,
-            videoName: name,
-          });
-        } else {
-          this.setState({
-            videoSrc: '',
-            noVideo: true,
-            videoName: '',
-          });
-        }
+      this.setState({
+        showText: '加载中...'
+      }, () => {
+        getVideoSrc(id).then((res) => {
+          if (res && res.m3u8uri) {
+            this.setState({
+              videoSrc: res.m3u8uri,
+              noVideo: false,
+              videoName: name,
+              showText: '无信号'
+            }, () => {
+              window.clearTimeout(this.timer);
+              this.timer = null;
+            });
+          } else {
+            this.setState({
+              videoSrc: '',
+              noVideo: true,
+              videoName: '',
+              showText: '无信号'
+            }, () => {
+              window.clearTimeout(this.timer);
+              this.timer = null;
+            });
+          }
+        });
       });
     }
 
     clearVideo = () => {
       this.setState({
         videoSrc: '',
-        historyListData: {}
+        historyListData: {},
+        showText: '无信号'
       });
     }
 
@@ -166,7 +192,6 @@ class Preview extends PureComponent {
         return val.name;
       };
       const getIcon = (val) => {
-        console.log('val.online', val.online);
         if (val.type === 1) {
           return (
             <EIcon type={val.online ? `${styles.monitorOnline} myicon-monitorIcon` : `${styles.monitorOffline} myicon-monitorIcon`} />
@@ -265,7 +290,7 @@ class Preview extends PureComponent {
       render() {
         const {
           treeDatas, selectAreaKeys, expandedKeys, algorithmList = [],
-          videoSrc, historyListData, imgDialogVisible, imgDialogSrc, noVideo, videoName
+          videoSrc, historyListData, imgDialogVisible, imgDialogSrc, noVideo, videoName, showText
         } = this.state;
 
         const { preview: { loading }, push } = this.props;
@@ -282,21 +307,25 @@ class Preview extends PureComponent {
           </Option>
         ));
 
-        const getImg = () => {
-          if (noVideo) {
-            return (
-              <div className={styles.nodataBox}>
-                <img src={nodata} alt="" />
-              </div>
-            );
-          }
-          return (
-            <div className={styles.nostatusBox}>
-              <img src={nostatus} alt="" />
-              <p>请双击左侧点位播放监控视频</p>
-            </div>
-          );
-        };
+        const getImg = () => (
+          <div className={styles.allStatusBox}>
+            <p>{showText}</p>
+          </div>
+        )
+          // if (noVideo) {
+          //   return (
+          //     <div className={styles.nodataBox}>
+          //       <img src={nodata} alt="" />
+          //     </div>
+          //   );
+          // }
+          // return (
+          //   <div className={styles.nostatusBox}>
+          //     <img src={nostatus} alt="" />
+          //     <p>请双击左侧点位播放监控视频</p>
+          //   </div>
+          // );
+        ;
 
         return (
 
