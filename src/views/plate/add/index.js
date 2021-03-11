@@ -175,10 +175,10 @@ class AddPlate extends Component {
           <div>
             <div className={styles.buttonWrapper2}>
               {/* <Button key="cancel"className={styles.btnBack2} onClick={()=>this.setState({step : 1})}>上一步</Button> */}
-              <Button key="cancel" className={styles.btnBack2} onClick={()=>this.onBackToMain()}>
-               返回
-                </Button>
               <Button type="primary" onClick={()=>this.onCheckAndSubmit()}>提交</Button>
+              <Button key="cancel" className={styles.btnBack2} onClick={()=>this.onBackToMain()}>
+               取消
+                </Button>
             </div>
           </div>
           

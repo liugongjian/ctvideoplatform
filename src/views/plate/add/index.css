@@ -92,7 +92,7 @@
   margin: 0 auto;
 }
 .buttonWrapper2 .btnBack2 :global {
-  margin-right: 50px;
+  margin-left: 25px;
   height: 34px;
 }
 .tabRow {
