@@ -216,7 +216,7 @@ class AddPlate extends Component {
               visible={this.state.submitModalVisible}
               handleOk={this.onSubmitDuplicatedPlates}
               closeModal={() => {this.setState({submitModalVisible:false})}}
-              content={`你添加的车牌数据有${this.state.duplicatedPlates}条已存在是否要覆盖`}
+              content={`您添加的车牌数据有${this.state.duplicatedPlates}条已存在是否要覆盖`}
             />
 
 
