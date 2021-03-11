@@ -767,14 +767,14 @@ class Monitor extends Component {
       },
       {
         title: '区域名称',
-        dataIndex: 'areaPath',
+        dataIndex: 'areaName',
         key: 'areaPath',
-        render: (text) => {
+        render: (text, record) => {
           const arr = text.split('/');
           const showText = arr[arr.length - 1];
           return (
-            <Tooltip placement="topLeft" title={text}>
-              <span className={styles.cursorPoniter}>{showText}</span>
+            <Tooltip placement="topLeft" title={record.areaPath}>
+              <span className={styles.cursorPoniter}>{text}</span>
             </Tooltip>
           );
         }
