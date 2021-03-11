@@ -134,7 +134,6 @@ class Plate extends Component {
   }
 
   onPageNumChange = (pageNo) => {
-    this.setState({selectedRowKeys:[] , deleteItems : []});
     this.props.getPlateList({
       licenseNo : this.state.searchName,
       pageNo : pageNo-1,
@@ -145,7 +144,6 @@ class Plate extends Component {
   }
 
   onPageSizeChange = (current , size) => {
-    this.setState({selectedRowKeys:[] , deleteItems : []});
     this.props.getPlateList({
       licenseNo : this.state.searchName,
       pageNo : 0,
@@ -312,16 +310,12 @@ class Plate extends Component {
                     },
                     {
                       validator: (rule, val, callback) => {
-                        const reg = /^[0-9a-zA-Z]+$/
                         form.validateFields(['licenseProvince']);
                         if (!val || !form.getFieldValue('licenseProvince')) {
                           callback(' ');
                         }
                         if(val.length > 8){
                           callback('车牌号不能超过8位');
-                        }
-                        if(!reg.test(val)){
-                          callback('车牌号只能包含数字和字母');
                         }
                         callback();
                       }
@@ -339,14 +333,14 @@ class Plate extends Component {
                     required: true,
                     message: '请选择布控标签!',
                   },
-                  // {
-                  //   validator: (rule, val, callback) => {
-                  //     if (!val) {
-                  //       callback('请选择布控标签!');
-                  //     }
-                  //     callback();
-                  //   }
-                  // }
+                  {
+                    validator: (rule, val, callback) => {
+                      if (!val) {
+                        callback('请选择布控标签!');
+                      }
+                      callback();
+                    }
+                  }
                 ],
               })(
                 <Radio.Group>
@@ -362,14 +356,14 @@ class Plate extends Component {
                     required: true,
                     message: '请选择车牌颜色!',
                   },
-                  // {
-                  //   validator: (rule, val, callback) => {
-                  //     if (!val) {
-                  //       callback('请选择车牌颜色!');
-                  //     }
-                  //     callback();
-                  //   }
-                  // }
+                  {
+                    validator: (rule, val, callback) => {
+                      if (!val) {
+                        callback('请选择车牌颜色!');
+                      }
+                      callback();
+                    }
+                  }
                 ],
               })(
                 <Select>
