@@ -190,9 +190,12 @@ class Plate extends Component {
     const licenseNo = form.getFieldValue('licenseNo');
     const licenseProvince = form.getFieldValue('licenseProvince');
     const license = `${licenseProvince}${licenseNo}`;
-    this.props.licenseExist(license).then((res) => {
-      this.setState({ plateExist: res });
-    });
+    const reg = /^[0-9a-zA-Z]+$/
+    if(reg.test(licenseNo)){
+      this.props.licenseExist(license).then((res) => {
+        this.setState({ plateExist: res });
+      });
+    }
   }
 
 
@@ -239,13 +242,21 @@ class Plate extends Component {
             title="布控标签"
             dataIndex="label"
             width="28%"
-            render={(text, record) => (
-              <div>
-                {
-                  text === 'WHITE' ? (<Tag color="green">白名单</Tag>) : (<Tag color="red">黑名单</Tag>)
-                }
-              </div>
-            )}
+            render={(text, record) => {
+              switch (text) {
+                case 'WHITE':
+                    return (<Tag color="green">白名单</Tag>);
+                case 'BLACK':
+                    return (<Tag color="red">黑名单</Tag>);
+                default: 
+                    return (<Tag>其它</Tag>);
+            } 
+              // <div>
+              //   {
+              //     text === 'WHITE' ? (<Tag color="green">白名单</Tag>) : (<Tag color="red">黑名单</Tag>)
+              //   }
+              // </div>
+            }}
           />
           <Column title="车牌颜色" dataIndex="color" width="33%" />
           <Column
@@ -331,7 +342,7 @@ class Plate extends Component {
                           if (!val || !form.getFieldValue('licenseProvince')) {
                             callback(' ');
                           }
-                          if (val.length > 8) {
+                          if (val.length > 7) {
                             callback('车牌号不能超过8位');
                           }
                           if(!reg.test(val)){
@@ -354,14 +365,14 @@ class Plate extends Component {
                       required: true,
                       message: '请选择布控标签!',
                     },
-                    {
-                      validator: (rule, val, callback) => {
-                        if (!val) {
-                          callback('请选择布控标签!');
-                        }
-                        callback();
-                      }
-                    }
+                    // {
+                    //   validator: (rule, val, callback) => {
+                    //     if (!val) {
+                    //       callback('请选择布控标签!');
+                    //     }
+                    //     callback();
+                    //   }
+                    // }
                   ],
                 })(
                   <Radio.Group>
@@ -430,7 +441,7 @@ class Plate extends Component {
          <DeleteModal
               visible={this.state.deleteModalVisible}
               handleOk={this.onDeleteItems}
-              closeModal={() => { this.setState({ deleteModalVisible: false, deleteItems: [] })}}
+              closeModal={() => { this.setState({ deleteModalVisible: false })}}
               content={`您确定要删除这${this.state.deleteItems.length}个车牌数据吗？`}
             />
 
