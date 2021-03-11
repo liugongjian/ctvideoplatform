@@ -238,9 +238,10 @@ class Preview extends PureComponent {
     }
 
     onSelect = (keys, eve) => {
-      this.setState({
-        selectAreaKeys: keys
-      });
+      console.log('keys', keys);
+      // this.setState({
+      //   selectAreaKeys: keys
+      // });
     }
 
 
