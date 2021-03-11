@@ -239,13 +239,21 @@ class Plate extends Component {
             title="布控标签"
             dataIndex="label"
             width="28%"
-            render={(text, record) => (
-              <div>
-                {
-                  text === 'WHITE' ? (<Tag color="green">白名单</Tag>) : (<Tag color="red">黑名单</Tag>)
-                }
-              </div>
-            )}
+            render={(text, record) => {
+              switch (text) {
+                case 'WHITE':
+                    return (<Tag color="green">白名单</Tag>);
+                case 'BLACK':
+                    return (<Tag color="red">黑名单</Tag>);
+                default: 
+                    return (<Tag>其它</Tag>);
+            } 
+              // <div>
+              //   {
+              //     text === 'WHITE' ? (<Tag color="green">白名单</Tag>) : (<Tag color="red">黑名单</Tag>)
+              //   }
+              // </div>
+            }}
           />
           <Column title="车牌颜色" dataIndex="color" width="33%" />
           <Column
@@ -331,7 +339,7 @@ class Plate extends Component {
                           if (!val || !form.getFieldValue('licenseProvince')) {
                             callback(' ');
                           }
-                          if (val.length > 8) {
+                          if (val.length > 7) {
                             callback('车牌号不能超过8位');
                           }
                           if(!reg.test(val)){
