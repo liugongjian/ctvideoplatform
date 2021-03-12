@@ -1,7 +1,13 @@
 .mainWrapper{
-  background: #fff;
-  padding: 20px;
-  position: relative;
+  min-width: 960px;
+  height: calc(100vh - 72px);
+  position:relative;
+  background-color: white;
+  min-height: calc(100% - 30px);
+  margin: 10px 10px 20px 10px;
+  padding: 20px 20px 72px 20px;
+  border-radius: 2px;
+  overflow-y:scroll;
   .ant-table-thead {
     tr {
       th {
@@ -14,11 +20,18 @@
   }
 }
 
-
+.tableWrapper{
+  width: 100%;
+  height: calc(100vh - 250px);
+  overflow-y: auto;
+}
 
 .searchContainer {
-  height: 50px;
-  margin-bottom: 5px;
+  background: rgba(0, 0, 0, 0.03);
+  width: 100%;
+  height: 72px;
+  padding: 20px;
+  margin-bottom: 20px;
   img{
     margin-top: 5px;
     margin-right: 10px;
@@ -67,6 +80,9 @@
 }
 
 .paginationWrapper{
+  position: absolute;
+  width: calc(100% - 40px);
+  bottom: 10px;
   &>*{
     display: inline-block;
   }

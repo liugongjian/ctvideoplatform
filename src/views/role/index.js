@@ -132,6 +132,7 @@ class Role extends Component {
             <Search placeholder="请输入角色名称" icon={searchPic} onSearch={() => this.searchRole()} onChange={e => this.setState({ searchName: e.target.value })} />
           </div>
         </div>
+        <div className={styles.tableWrapper}>
         <Table rowSelection={rowSelection} dataSource={roleListInfo.list} pagination={false} rowKey={record => record.id}>
           <Column
             title="角色名称"
@@ -191,6 +192,7 @@ class Role extends Component {
             )}
           />
         </Table>
+        </div>
         <div className={styles.paginationWrapper}>
           <span>
             总条数:
