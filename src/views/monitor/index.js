@@ -767,14 +767,14 @@ class Monitor extends Component {
       },
       {
         title: '区域名称',
-        dataIndex: 'areaPath',
+        dataIndex: 'areaName',
         key: 'areaPath',
-        render: (text) => {
+        render: (text, record) => {
           const arr = text.split('/');
           const showText = arr[arr.length - 1];
           return (
-            <Tooltip placement="topLeft" title={text}>
-              <span className={styles.cursorPoniter}>{showText}</span>
+            <Tooltip placement="topLeft" title={record.areaPath}>
+              <span className={styles.cursorPoniter}>{text}</span>
             </Tooltip>
           );
         }
@@ -980,7 +980,7 @@ class Monitor extends Component {
                 <Icon type="export" />
                 <span>批量导入</span>
               </Button>
-              <Button type="link" className={styles.handleBtn} onClick={this.delThisKeys} disabled={!checkedKeys.length}>
+              <Button type="link" className={styles.handleBtn} onClick={this.delThisKeys} disabled={!selectedKeys.length}>
                 <Icon type="delete" />
                 <span>批量删除</span>
               </Button>

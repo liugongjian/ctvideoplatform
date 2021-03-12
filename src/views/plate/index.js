@@ -190,9 +190,12 @@ class Plate extends Component {
     const licenseNo = form.getFieldValue('licenseNo');
     const licenseProvince = form.getFieldValue('licenseProvince');
     const license = `${licenseProvince}${licenseNo}`;
-    this.props.licenseExist(license).then((res) => {
-      this.setState({ plateExist: res });
-    });
+    const reg = /^[0-9a-zA-Z]+$/
+    if(reg.test(licenseNo)){
+      this.props.licenseExist(license).then((res) => {
+        this.setState({ plateExist: res });
+      });
+    }
   }
 
 
@@ -362,14 +365,14 @@ class Plate extends Component {
                       required: true,
                       message: '请选择布控标签!',
                     },
-                    {
-                      validator: (rule, val, callback) => {
-                        if (!val) {
-                          callback('请选择布控标签!');
-                        }
-                        callback();
-                      }
-                    }
+                    // {
+                    //   validator: (rule, val, callback) => {
+                    //     if (!val) {
+                    //       callback('请选择布控标签!');
+                    //     }
+                    //     callback();
+                    //   }
+                    // }
                   ],
                 })(
                   <Radio.Group>
@@ -438,7 +441,7 @@ class Plate extends Component {
          <DeleteModal
               visible={this.state.deleteModalVisible}
               handleOk={this.onDeleteItems}
-              closeModal={() => { this.setState({ deleteModalVisible: false, deleteItems: [] })}}
+              closeModal={() => { this.setState({ deleteModalVisible: false })}}
               content={`您确定要删除这${this.state.deleteItems.length}个车牌数据吗？`}
             />
 

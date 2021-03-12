@@ -175,10 +175,10 @@ class AddPlate extends Component {
           <div>
             <div className={styles.buttonWrapper2}>
               {/* <Button key="cancel"className={styles.btnBack2} onClick={()=>this.setState({step : 1})}>上一步</Button> */}
-              <Button key="cancel" className={styles.btnBack2} onClick={()=>this.onBackToMain()}>
-               返回
-                </Button>
               <Button type="primary" onClick={()=>this.onCheckAndSubmit()}>提交</Button>
+              <Button key="cancel" className={styles.btnBack2} onClick={()=>this.onBackToMain()}>
+               取消
+                </Button>
             </div>
           </div>
           
@@ -216,7 +216,7 @@ class AddPlate extends Component {
               visible={this.state.submitModalVisible}
               handleOk={this.onSubmitDuplicatedPlates}
               closeModal={() => {this.setState({submitModalVisible:false})}}
-              content={`你添加的车牌数据有${this.state.duplicatedPlates}条已存在是否要覆盖`}
+              content={`您添加的车牌数据有${this.state.duplicatedPlates}条已存在是否要覆盖`}
             />
 
 
