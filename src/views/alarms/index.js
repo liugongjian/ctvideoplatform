@@ -38,14 +38,14 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   dispatch
 );
 
-const initialVals = {
+const initialVals = () => ({
   startTime: moment().subtract('days', 7),
   endTime: moment(),
   deviceVal: [],
   algoVal: [],
   pageSize: 12,
   current: 1,
-};
+});
 
 const timeFormat = 'YYYY-MM-DD HH:mm:ss';
 class Alarms extends Component {
@@ -61,7 +61,7 @@ class Alarms extends Component {
       listLoading: false,
       total: 0,
       algorithmIdList: undefined,
-      ...initialVals,
+      ...initialVals(),
     };
   }
 
@@ -221,7 +221,7 @@ class Alarms extends Component {
     }
 
     onReset = () => {
-      this.setState(initialVals, this.getAlarms);
+      this.setState(initialVals(), this.getAlarms);
     }
 
     showTotal = total => (<span className={styles.totalText}>{`总条数： ${total}`}</span>)
@@ -313,7 +313,7 @@ class Alarms extends Component {
               total={total}
               current={current}
               // pageSize={pageSize}
-              defaultPageSize={initialVals.pageSize}
+              defaultPageSize={initialVals().pageSize}
               onChange={this.onPageChange}
               onShowSizeChange={this.onPageChange}
               pageSizeOptions={['12', '24', '36', '48']}
