@@ -986,14 +986,16 @@ class Monitor extends Component {
               </Button>
               <Checkbox onChange={this.changeStatus}>包含下级区域</Checkbox>
             </div>
-            <ETable
-              rowSelection={rowSelection}
-              columns={columns}
-              dataSource={tableData.list || []}
-              scroll={{ x: 'max-content' }}
-              pagination={pagination}
-              onChange={this.tableChange}
-            />
+            <div className={styles.tableList}>
+              <ETable
+                rowSelection={rowSelection}
+                columns={columns}
+                dataSource={tableData.list || []}
+                scroll={{ x: 'max-content' }}
+                pagination={pagination}
+                onChange={this.tableChange}
+              />
+            </div>
           </div>
         </div>
 

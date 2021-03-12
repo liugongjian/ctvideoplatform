@@ -236,6 +236,8 @@ class Plate extends Component {
             <Search placeholder="请输入车牌号" icon={searchPic} onSearch={value => this.searchPlate(value)} />
           </div>
         </div>
+
+        <div className={styles.tableWrapper}>
         <Table rowSelection={rowSelection} dataSource={plateListInfo.list} pagination={false} rowKey={record => record.id}>
           <Column title="车牌号" dataIndex="licenseNo" width="24%" className="tabble-row" />
           <Column
@@ -274,6 +276,7 @@ class Plate extends Component {
             )}
           />
         </Table>
+        </div>
         <div className={styles.paginationWrapper}>
           <span>
             总条数:
