@@ -606,7 +606,7 @@ class Face extends Component {
 
     render() {
       return (
-        <div className={styles.content}>
+        <div className={styles.faceContent}>
           {this.renderTableHeaders()}
           {this.renderTable()}
         </div>
