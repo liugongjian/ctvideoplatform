@@ -216,19 +216,19 @@ class Face extends Component {
     editFace = (e) => {
       const { editFace } = this.props;
       const { editId, editFaceId } = this.state;
-      this.setState({
-        submitBtnDis: false,
-        modalVisible: false,
-      });
       this.props.form.validateFields((errors, values) => {
         if (!errors) {
+          this.setState({
+            submitBtnDis: true,
+            modalVisible: false,
+          });
           const data = Object.assign({ id: editId, faceId: editFaceId }, values);
           delete data.imageUrl;
           editFace(data).then(
             (res) => {
               message.success('编辑人脸数据成功');
               this.setState({
-                submitBtnDis: true,
+                submitBtnDis: false,
               }, () => this.getTableList());
             }
           ).catch((err) => {
