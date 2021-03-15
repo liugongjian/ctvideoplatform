@@ -130,7 +130,7 @@ class Preview extends PureComponent {
         deviceId: id
       };
       getHistoryListTopTen(param).then((res) => {
-        console.log('res', res);
+        // console.log('res', res);
         this.setState({
           historyListData: res
         });
@@ -238,7 +238,7 @@ class Preview extends PureComponent {
     }
 
     onSelect = (keys, eve) => {
-      console.log('keys', keys);
+      // console.log('keys', keys);
       // this.setState({
       //   selectAreaKeys: keys
       // });

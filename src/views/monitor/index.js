@@ -101,17 +101,24 @@ class Monitor extends Component {
     const { getList } = this.props;
     const { expandedKeys } = this.state;
     getList(0, keyword).then((res) => {
-      const treeDatas = this.dataToTree(res);
-      const areaId = res.find(item => item.pid === 0).id;
-      this.setState({
-        tempData: res,
-        treeDatas,
-        areaId,
-        selectAreaKeys: [areaId.toString()]
-      }, () => {
-        this.onExpand(expandedKeys);
-        this.getDeviceList();
-      });
+      if (Array.isArray(res)) {
+        const treeDatas = this.dataToTree(res);
+        const areaId = res.find(item => item.pid === 0).id;
+        this.setState({
+          tempData: res,
+          treeDatas,
+          areaId,
+          selectAreaKeys: [areaId.toString()]
+        }, () => {
+          this.onExpand(expandedKeys);
+          this.getDeviceList();
+        });
+      } else {
+        this.setState({
+          tempData: [],
+          treeDatas: []
+        });
+      }
     });
   }
 
@@ -346,7 +353,6 @@ class Monitor extends Component {
   cancel = (e, key) => {
     e.stopPropagation();
     const temp = this.state.tempData.filter(({ id }) => id !== -1);
-    console.log('temp', temp);
     const tempData = temp.map((item) => {
       item.ifEdit = false;
       item.hasSame = false;
@@ -731,7 +737,7 @@ class Monitor extends Component {
   }
 
   tableChange = (page, filter, sorter, extra) => {
-    console.log(page, filter, sorter, extra);
+    // console.log(page, filter, sorter, extra);
   }
 
   render() {
@@ -928,7 +934,7 @@ class Monitor extends Component {
                 >
                   {this.renderTreeNodes(treeDatas)}
                 </Tree>
-              ) : null
+              ) : <div className={styles.noData}>暂无区域</div>
             }
           </div>
         </div>
