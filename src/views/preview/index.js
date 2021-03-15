@@ -403,10 +403,10 @@ class Preview extends PureComponent {
                       key={item.id}
                       className={styles.historyListCard}
                     >
-                      <p>
-                        {item.algorithmCnName}
+                      <div className={styles.historyTextBox}>
+                        <span>{item.algorithmCnName}</span>
                         <span className={styles.historyTime}>{item.resTime}</span>
-                      </p>
+                      </div>
                     </Card>
                   ))
                 }
