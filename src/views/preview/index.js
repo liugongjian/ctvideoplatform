@@ -171,7 +171,6 @@ class Preview extends PureComponent {
 
     setIntervalTimer = () => {
       this.state.timer = window.setInterval(() => {
-        console.log('WTF');
         this.getHistory();
       }, 5000);
     }
@@ -341,23 +340,23 @@ class Preview extends PureComponent {
     )
 
     getTypeContent = (val) => {
-      if (val.face) {
+      if (val.face && val.face.label !== 'OTHER') {
         return (
           <div className={styles.historyTextName}>
             <span>姓名：</span>
             <span>
-              {val.face.username}
+              {val.face.username || '-'}
             </span>
             {this.getTag(LABEL_PERSON[val.face.label], val.face.label)}
           </div>
         );
       }
-      if (val.plate) {
+      if (val.plate && val.plate.label !== 'OTHER') {
         return (
           <div className={styles.historyTextName}>
             <span>车牌：</span>
             <span>
-              {val.plate.licenseNo}
+              {val.plate.licenseNo || '-'}
             </span>
             {this.getTag(LABEL_CAR[val.plate.label], val.plate.label)}
           </div>
