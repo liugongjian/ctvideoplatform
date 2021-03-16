@@ -30,6 +30,7 @@
         }
         .ant-tree.ant-tree-block-node li .ant-tree-node-content-wrapper{
             width: auto;
+            padding-right: 8px;
         }
     }
     h2{
@@ -177,6 +178,35 @@
         .historyTime{
             margin-left: auto;
             color: #8C8C8C;
+        }
+        .historyTextName{
+            font-size: 12px;
+            display: flex;
+            .AlarmCardTag{
+                display: inline-block;
+                width: 52px;
+                line-height: 18px;
+                height: 20px;
+                text-align: center;
+                border-radius:4px;
+                margin-left: 5px;
+                border: 1px solid #FFA39E;
+                &-WHITE{
+                    color: #52c41a;
+                    background: #f6ffed;
+                    border-color: #b7eb8f;
+                }
+                &-BLACK{
+                    color:#F5222D; 
+                    border-color: #FFA39E;
+                    background:#FFF1F0;
+                }
+                &-OTHER{
+                    color:#1890FF ; 
+                    border-color: #91D5FF;
+                    background:#E6F7FF;
+                }
+            }
         }
     }
 }

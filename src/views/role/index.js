@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unused-prop-types */
+/* eslint-disable max-len */
 import React, { Component } from 'react';
 import {
   Table, Input, Modal, Button, message, Tooltip, Icon
@@ -133,65 +135,65 @@ class Role extends Component {
           </div>
         </div>
         <div className={styles.tableWrapper}>
-        <Table rowSelection={rowSelection} dataSource={roleListInfo.list} pagination={false} rowKey={record => record.id}>
-          <Column
-            title="角色名称"
-            dataIndex="name"
-            width="20%"
-            className="tabble-row"
-            render={
-              (text, record) => (
-                <div>
-                  { text.length > 10
-                    ? (
-                      <Tooltip title={text}>
-                        {' '}
-                        {`${text.substring(0, 10)}...`}
-                        {' '}
-                      </Tooltip>
-                    )
-                    : text }
+          <Table rowSelection={rowSelection} dataSource={roleListInfo.list} pagination={false} rowKey={record => record.id}>
+            <Column
+              title="角色名称"
+              dataIndex="name"
+              width="20%"
+              className="tabble-row"
+              render={
+                (text, record) => (
+                  <div>
+                    { text.length > 10
+                      ? (
+                        <Tooltip title={text}>
+                          {' '}
+                          {`${text.substring(0, 10)}...`}
+                          {' '}
+                        </Tooltip>
+                      )
+                      : text}
+                  </div>
+                )
+              }
+            />
+            <Column title="创建时间" dataIndex="createTime" width="20%" />
+            <Column title="修改时间" dataIndex="updateTime" width="22%" />
+            <Column
+              title="角色描述"
+              dataIndex="description"
+              width="22%"
+              render={
+                (text, record) => (
+                  <div>
+                    { text.length > 10
+                      ? (
+                        <Tooltip title={text}>
+                          {' '}
+                          {`${text.substring(0, 10)}...`}
+                          {' '}
+                        </Tooltip>
+                      )
+                      : text}
+                  </div>
+                )
+              }
+            />
+            <Column
+              title="操作"
+              key="action"
+              width="14%"
+              render={(text, record) => (
+                <div className={styles.oprationWrapper}>
+                  <Link to={`/system/role/edit/${record.id}`}>
+                    编辑
+                  </Link>
+                  <span className={styles.separator}> | </span>
+                  <span onClick={() => this.setState({ deleteModalVisible: true, deleteItems: [record.id] })}><a>删除</a></span>
                 </div>
-              )
-            }
-          />
-          <Column title="创建时间" dataIndex="createTime" width="20%" />
-          <Column title="修改时间" dataIndex="updateTime" width="22%" />
-          <Column
-            title="角色描述"
-            dataIndex="description"
-            width="22%"
-            render={
-              (text, record) => (
-                <div>
-                  { text.length > 10
-                    ? (
-                      <Tooltip title={text}>
-                        {' '}
-                        {`${text.substring(0, 10)}...`}
-                        {' '}
-                      </Tooltip>
-                    )
-                    : text }
-                </div>
-              )
-            }
-          />
-          <Column
-            title="操作"
-            key="action"
-            width="14%"
-            render={(text, record) => (
-              <div className={styles.oprationWrapper}>
-                <Link to={`/system/role/edit/${record.id}`}>
-                  编辑
-                </Link>
-                <span className={styles.separator}> | </span>
-                <span onClick={() => this.setState({ deleteModalVisible: true, deleteItems: [record.id] })}><a>删除</a></span>
-              </div>
-            )}
-          />
-        </Table>
+              )}
+            />
+          </Table>
         </div>
         <div className={styles.paginationWrapper}>
           <span>
@@ -229,7 +231,7 @@ class Role extends Component {
         >
           <div className={styles.deleteModal}>
             <div className={styles.deleteModalImg}>
-              <img src={warnPic} />
+              <img src={warnPic} alt="" />
             </div>
             <div className={styles.deleteModalInfo}>
               <span>
