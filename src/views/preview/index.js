@@ -41,6 +41,15 @@ const { Search } = Input;
 const { Option } = Select;
 const { Meta } = Card;
 
+
+const LABEL_PERSON = {
+  WHITE: '白名单', BLACK: '黑名单', OTHER: '陌生人'
+};
+
+const LABEL_CAR = {
+  WHITE: '白名单', BLACK: '黑名单', OTHER: '其他'
+};
+
 class Preview extends PureComponent {
   constructor(props) {
     super(props);
@@ -54,14 +63,22 @@ class Preview extends PureComponent {
       historyListData: {},
       imgDialogVisible: false,
       algorithmIds: [],
-      showText: '无信号'
+      showText: '无信号',
+      tempTotal: -1,
+      historyID: '',
+      timer: null
     };
+    this.timer = null;
   }
 
 
   componentDidMount() {
     this.getTreeData();
     this.getAlgorithmList();
+  }
+
+  componentWillUnmount() {
+    this.clearTimer();
   }
 
     getTreeData = () => {
@@ -113,28 +130,54 @@ class Preview extends PureComponent {
     }
 
     doubleClickHandle = (e, val) => {
+      this.clearTimer();
       this.setState({
         selectAreaKeys: [val.id],
-        videoSrc: null
+        videoSrc: null,
+        tempTotal: -1,
+        historyID: val.id
       }, () => {
-        this.getHistory(val.id);
+        this.getHistory();
+        this.setIntervalTimer();
         this.getVideoSrc(val.id, val.name);
       });
     }
 
-    getHistory=(id) => {
+    getHistory = () => {
+      const { historyID } = this.state;
       const { getHistoryListTopTen } = this.props;
       const param = {
         pageSize: 10,
         pageNo: 0,
-        deviceId: id
+        deviceId: historyID
       };
       getHistoryListTopTen(param).then((res) => {
-        // console.log('res', res);
-        this.setState({
-          historyListData: res
-        });
+        const { tempTotal } = this.state;
+        if (tempTotal === -1) {
+          this.setState({
+            historyListData: res,
+            tempTotal: res.recordsTotal
+          });
+        } else if (res.recordsTotal > tempTotal) {
+          this.setState({
+            historyListData: res,
+            tempTotal: res.recordsTotal
+          });
+        } else {
+          // this.timer = window.setInterval(getTopTenList, 5000);
+        }
       });
+    }
+
+    setIntervalTimer = () => {
+      this.state.timer = window.setInterval(() => {
+        this.getHistory();
+      }, 5000);
+    }
+
+    clearTimer = () => {
+      window.clearInterval(this.state.timer);
+      this.state.timer = null;
     }
 
     getVideoSrc = (id, name) => {
@@ -277,149 +320,192 @@ class Preview extends PureComponent {
       });
     }
 
-      closeImgDialog = () => {
-        this.setState({ imgDialogVisible: false });
-      }
+    closeImgDialog = () => {
+      this.setState({ imgDialogVisible: false });
+    }
 
-      handleImageError = (e) => {
-        const image = e.target;
-        image.src = noImage;
-        image.className = styles.historyTopnoImage;
-        image.onerror = null;
-      };
+    handleImageError = (e) => {
+      const image = e.target;
+      image.src = noImage;
+      image.className = styles.historyTopnoImage;
+      image.onerror = null;
+    };
 
-      render() {
-        const {
-          treeDatas, selectAreaKeys, expandedKeys, algorithmList = [],
-          videoSrc, historyListData, imgDialogVisible, imgDialogSrc, noVideo, videoName, showText
-        } = this.state;
+    getTag = (title, type) => (
+      <span
+        className={`${styles.AlarmCardTag} ${styles[`AlarmCardTag-${type}`]}`}
+      >
+        {title}
+      </span>
+    )
 
-        const { preview: { loading }, push } = this.props;
-
-        const { list = [] } = historyListData;
-
-        const tempUrl = window.location.origin;
-
-        const drawAlgorithmList = () => algorithmList.map(item => (
-          <Option value={item.id} key={item.id} label={item.cnName}>
-            <span aria-label={item.id}>
-              {item.cnName}
-            </span>
-          </Option>
-        ));
-
-        const getImg = () => (
-          <div className={styles.allStatusBox}>
-            <p>{showText}</p>
-          </div>
-        )
-          // if (noVideo) {
-          //   return (
-          //     <div className={styles.nodataBox}>
-          //       <img src={nodata} alt="" />
-          //     </div>
-          //   );
-          // }
-          // return (
-          //   <div className={styles.nostatusBox}>
-          //     <img src={nostatus} alt="" />
-          //     <p>请双击左侧点位播放监控视频</p>
-          //   </div>
-          // );
-        ;
-
+    getTypeContent = (val) => {
+      if (val.face && val.face.label !== 'OTHER') {
         return (
-
-          <div className={styles.content}>
-            <div className={styles.areaBox}>
-              <div className={styles.searchBox}>
-                <h2>监控点</h2>
-                <Search placeholder="请输入点位或区域" onSearch={this.searchByKeyword} />
-                <Select
-                  defaultValue={[]}
-                  style={{ width: '100%' }}
-                  placeholder="请选择已配置算法"
-                  mode="multiple"
-                  onChange={this.algorithmChangeHandle}
-                  optionLabelProp="label"
-                >
-                  {drawAlgorithmList()}
-                </Select>
-              </div>
-              <div className={styles.areaList}>
-                {
-                  treeDatas && treeDatas.length ? (
-                    <Tree
-                      expandedKeys={expandedKeys}
-                      defaultExpandAll
-                      blockNode
-                      showIcon
-                      onExpand={this.onExpand}
-                      onSelect={this.onSelect}
-                      className={styles.dataTree}
-                      ref={ref => this.treeNode = ref}
-                      selectedKeys={selectAreaKeys}
-                    >
-                      {this.renderTreeNodes(treeDatas)}
-                    </Tree>
-                  ) : null
-                }
-              </div>
-            </div>
-            <div className={styles.videoBox}>
-              {videoSrc
-                ? (
-                  <Fragment>
-                    <div className={styles.videoHandle}>
-                      <EIcon type={`${styles.videoMonitoring} myicon-monitoring`} />
-                      <div>
-                        监控点位
-                        {' '}
-                        {videoName}
-                      </div>
-                      <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={this.clearVideo} />
-                    </div>
-                    <VideoPlayer src={videoSrc} />
-                  </Fragment>
-                )
-                : getImg()}
-
-            </div>
-            <div className={styles.historyList}>
-              <div className={styles.historyTitle}>
-                <p>
-                  实时告警记录
-                  <a onClick={() => push('/alarms')}>历史记录</a>
-                </p>
-              </div>
-              <div className={styles.historyCard}>
-                {
-                  list.map(item => (
-                    <Card
-                      hoverable
-                      style={{ width: 220 }}
-                      cover={<img alt="" src={`${urlPrefix}${item.imageCompress}`} onError={this.handleImageError} />}
-                      onClick={() => this.showImgDialog(item.image)}
-                      key={item.id}
-                      className={styles.historyListCard}
-                    >
-                      <div className={styles.historyTextBox}>
-                        <span>{item.algorithmCnName}</span>
-                        <span className={styles.historyTime}>{item.resTime}</span>
-                      </div>
-                    </Card>
-                  ))
-                }
-              </div>
-            </div>
-            <ImageModal
-              visible={imgDialogVisible}
-              closeModal={this.closeImgDialog}
-              src={`${urlPrefix}${imgDialogSrc}`}
-              handleImageError={e => this.handleImageError(e)}
-            />
+          <div className={styles.historyTextName}>
+            <span>姓名：</span>
+            <span>
+              {val.face.username || '-'}
+            </span>
+            {this.getTag(LABEL_PERSON[val.face.label], val.face.label)}
           </div>
         );
       }
+      if (val.plate && val.plate.label !== 'OTHER') {
+        return (
+          <div className={styles.historyTextName}>
+            <span>车牌：</span>
+            <span>
+              {val.plate.licenseNo || '-'}
+            </span>
+            {this.getTag(LABEL_CAR[val.plate.label], val.plate.label)}
+          </div>
+        );
+      }
+      return false;
+      // (
+      //   <div className={styles.historyTextName}>
+      //     <span>姓名：</span>
+      //     <span>70 陈丽君</span>
+      //     {this.getTag('白名单', 'BLACK')}
+      //   </div>
+      // );
+    }
+
+    render() {
+      const {
+        treeDatas, selectAreaKeys, expandedKeys, algorithmList = [],
+        videoSrc, historyListData, imgDialogVisible, imgDialogSrc, noVideo, videoName, showText
+      } = this.state;
+
+      const { preview: { loading }, push } = this.props;
+
+      const { list = [] } = historyListData;
+
+      const tempUrl = window.location.origin;
+
+      const drawAlgorithmList = () => algorithmList.map(item => (
+        <Option value={item.id} key={item.id} label={item.cnName}>
+          <span aria-label={item.id}>
+            {item.cnName}
+          </span>
+        </Option>
+      ));
+
+
+      const getImg = () => (
+        <div className={styles.allStatusBox}>
+          <p>{showText}</p>
+        </div>
+      );
+        // if (noVideo) {
+        //   return (
+        //     <div className={styles.nodataBox}>
+        //       <img src={nodata} alt="" />
+        //     </div>
+        //   );
+        // }
+        // return (
+        //   <div className={styles.nostatusBox}>
+        //     <img src={nostatus} alt="" />
+        //     <p>请双击左侧点位播放监控视频</p>
+        //   </div>
+        // );
+
+
+      return (
+
+        <div className={styles.content}>
+          <div className={styles.areaBox}>
+            <div className={styles.searchBox}>
+              <h2>监控点</h2>
+              <Search placeholder="请输入点位或区域" onSearch={this.searchByKeyword} />
+              <Select
+                defaultValue={[]}
+                style={{ width: '100%' }}
+                placeholder="请选择已配置算法"
+                mode="multiple"
+                onChange={this.algorithmChangeHandle}
+                optionLabelProp="label"
+              >
+                {drawAlgorithmList()}
+              </Select>
+            </div>
+            <div className={styles.areaList}>
+              {
+                treeDatas && treeDatas.length ? (
+                  <Tree
+                    expandedKeys={expandedKeys}
+                    defaultExpandAll
+                    blockNode
+                    showIcon
+                    onExpand={this.onExpand}
+                    onSelect={this.onSelect}
+                    className={styles.dataTree}
+                    ref={ref => this.treeNode = ref}
+                    selectedKeys={selectAreaKeys}
+                  >
+                    {this.renderTreeNodes(treeDatas)}
+                  </Tree>
+                ) : null
+              }
+            </div>
+          </div>
+          <div className={styles.videoBox}>
+            {videoSrc
+              ? (
+                <Fragment>
+                  <div className={styles.videoHandle}>
+                    <EIcon type={`${styles.videoMonitoring} myicon-monitoring`} />
+                    <div>
+                      监控点位
+                      {' '}
+                      {videoName}
+                    </div>
+                    <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={this.clearVideo} />
+                  </div>
+                  <VideoPlayer src={videoSrc} />
+                </Fragment>
+              )
+              : getImg()}
+
+          </div>
+          <div className={styles.historyList}>
+            <div className={styles.historyTitle}>
+              <p>
+                实时告警记录
+                <a onClick={() => push('/alarms')}>历史记录</a>
+              </p>
+            </div>
+            <div className={styles.historyCard}>
+              {
+                list.map(item => (
+                  <Card
+                    hoverable
+                    style={{ width: 220 }}
+                    cover={<img alt="" src={`${urlPrefix}${item.imageCompress}`} onError={this.handleImageError} />}
+                    onClick={() => this.showImgDialog(item.image)}
+                    key={item.id}
+                    className={styles.historyListCard}
+                  >
+                    <div className={styles.historyTextBox}>
+                      <span>{item.algorithmCnName}</span>
+                      <span className={styles.historyTime}>{item.resTime}</span>
+                    </div>
+                    {this.getTypeContent(item)}
+                  </Card>
+                ))
+              }
+            </div>
+          </div>
+          <ImageModal
+            visible={imgDialogVisible}
+            closeModal={this.closeImgDialog}
+            src={`${urlPrefix}${imgDialogSrc}`}
+            handleImageError={e => this.handleImageError(e)}
+          />
+        </div>
+      );
+    }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Preview);

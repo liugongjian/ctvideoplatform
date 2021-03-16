@@ -229,16 +229,18 @@ class AlarmCard extends Component {
               : (
                 <React.Fragment>
                   {recognizeType === 'car' ? (
-                    <div>
-                      车牌：
-                      {plate?.licenseNo || '-'}
-                      <React.Fragment>
-                        {
-                          plate.label && LABEL[plate.label]
-                            ? (<Tag title={LABEL[plate.label]} type={plate.label} />)
-                            : null}
-                      </React.Fragment>
-                    </div>
+                    plate?.licenseNo ? (
+                      <div>
+                        车牌：
+                        {plate?.licenseNo || '-'}
+                        <React.Fragment>
+                          {
+                            plate.label && LABEL[plate.label]
+                              ? (<Tag title={LABEL[plate.label]} type={plate.label} />)
+                              : null}
+                        </React.Fragment>
+                      </div>
+                    ) : null
                   ) : (
                       face?.username ? (
                         <div>
