@@ -36,7 +36,7 @@ class LicenseImportModalComp extends Component {
     const { licenseNo: licenseOrigin, label: labelOrigin, color } = initailVal || {};
     const licenseProvince = licenseOrigin && licenseOrigin[0] || undefined;
     const licenseNo = licenseOrigin && licenseOrigin.slice(1, licenseOrigin.length);
-    const label = labelOrigin;
+    const label = labelOrigin === 'OTHER' ? null : labelOrigin;
     // switch (labelOrigin) {
     //   case 'WHITE':
     //     label = 1;
@@ -135,7 +135,7 @@ class LicenseImportModalComp extends Component {
                       form.validateFields(['licenseNo']);
                       this.validateExist();
                     }}
-                    placeholder="-"
+                    // placeholder="-"
                   >
                     {
                       LicenseProvinces.map(item => (
@@ -156,9 +156,16 @@ class LicenseImportModalComp extends Component {
                     },
                     {
                       validator: (rule, val, callback) => {
+                        const reg = /^[0-9a-zA-Z]+$/;
                         form.validateFields(['licenseProvince']);
                         if (!val || !form.getFieldValue('licenseProvince')) {
                           callback(' ');
+                        }
+                        if (val.length > 7) {
+                          callback('车牌号不能超过8位');
+                        }
+                        if (!reg.test(val)) {
+                          callback('车牌号只能包含数字和字母');
                         }
                         callback();
                       }

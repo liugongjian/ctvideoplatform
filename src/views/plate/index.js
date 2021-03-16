@@ -292,6 +292,7 @@ class Plate extends Component {
               showQuickJumper
               pageSize={this.state.plateListInfo.pageSize}
               onShowSizeChange={(current, size) => this.onPageSizeChange(current, size)}
+              showTotal={false}
             />
           </div>
         </div>
