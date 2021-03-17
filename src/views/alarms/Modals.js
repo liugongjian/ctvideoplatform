@@ -26,7 +26,8 @@ class LicenseImportModalComp extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps?.initailVal !== this.props.initailVal) {
+    if (nextProps?.initailVal !== this.props.initailVal
+      || nextProps?.visible !== this.props.visible) {
       this.initData(nextProps);
     }
   }
@@ -77,18 +78,18 @@ class LicenseImportModalComp extends Component {
     const {
       isLicenseExist, form
     } = this.props;
-    form.validateFields(['licenseNo', 'licenseProvince'], (err) => {
-      if (!err) {
-        const licenseNo = val?.licenseNo || form.getFieldValue('licenseNo');
-        const licenseProvince = form.getFieldValue('licenseProvince');
-        if (licenseNo && licenseProvince) {
+    const licenseNo = val?.licenseNo || form.getFieldValue('licenseNo');
+    const licenseProvince = form.getFieldValue('licenseProvince');
+    if (licenseNo && licenseProvince) {
+      form.validateFields(['licenseNo', 'licenseProvince'], (err) => {
+        if (!err) {
           const license = `${licenseProvince}${licenseNo}`;
           isLicenseExist(license).then((res) => {
             this.setState({ exist: res });
           });
         }
-      }
-    });
+      });
+    }
   }
 
   render() {
