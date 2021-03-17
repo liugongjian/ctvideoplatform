@@ -146,6 +146,7 @@ class AddPlate extends Component {
       </div>
     );
 
+    // 确认组件
     const confirmer = () => (
       <div className={styles.confirmerWrapper}>
         <Table dataSource={importedPlateInfo.list} pagination={false} rowClassName={styles.tabRow} rowKey={record => record.licenseNo + Math.random()}>
@@ -240,7 +241,7 @@ class AddPlate extends Component {
           visible={this.state.submitModalVisible}
           handleOk={this.onSubmitDuplicatedPlates}
           closeModal={() => { this.setState({ submitModalVisible: false }); }}
-          content={`您添加的车牌数据有${this.state.duplicatedPlates}条已存在是否要覆盖`}
+          content={`您添加的车牌数据有${this.state.duplicatedPlates}条已存在是否要覆盖？`}
         />
 
 
