@@ -224,7 +224,7 @@ class Role extends Component {
             <Button key="submit" type="primary" disabled={this.state.isDeleting} onClick={() => this.onDeleteItems()} style={{ margin: '0 0 0 5px' }}>
               确定
             </Button>,
-            <Button key="back" style={{ margin: '0 0 0 30px' }} disabled={this.state.isDeleting} onClick={() => { this.setState({ deleteModalVisible: false, deleteItems: [] }); }}>
+            <Button key="back" style={{ margin: '0 0 0 30px' }} disabled={this.state.isDeleting} onClick={() => { this.setState({ deleteModalVisible: false, deleteItems: [], selectedRowKeys: [] }); }}>
               取消
             </Button>,
           ]}
@@ -235,7 +235,7 @@ class Role extends Component {
             </div>
             <div className={styles.deleteModalInfo}>
               <span>
-                你确定要删除所选的
+                您确定要删除所选的
                 {this.state.deleteItems.length}
                 个角色吗？
               </span>
