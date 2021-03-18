@@ -1,13 +1,13 @@
-.mainWrapper{
+.mainWrapper {
   min-width: 960px;
   height: calc(100vh - 72px);
-  position:relative;
+  position: relative;
   background-color: white;
   min-height: calc(100% - 30px);
   margin: 10px 10px 20px 10px;
   padding: 20px 20px 72px 20px;
   border-radius: 2px;
-  overflow-y:scroll;
+  // overflow-y:scroll;
   .ant-table-thead {
     tr {
       th {
@@ -20,7 +20,7 @@
   }
 }
 
-.tableWrapper{
+.tableWrapper {
   width: 100%;
   height: calc(100vh - 250px);
   overflow-y: auto;
@@ -32,23 +32,23 @@
   height: 72px;
   padding: 20px;
   margin-bottom: 20px;
-  img{
+  img {
     margin-top: 5px;
     margin-right: 10px;
     height: 25px;
   }
-  .searchInput{
+  .searchInput {
     display: inline-block;
     float: right;
     width: 250px;
     height: 40px;
   }
-  .addBtn{
+  .addBtn {
     width: 120px;
     height: 36px;
   }
 
-  .deleteBtn{
+  .deleteBtn {
     margin-left: 20px;
     font-size: 14px;
   }
@@ -56,14 +56,14 @@
   .deleteBtnDisabled:link,
   .deleteBtnDisabled:hover,
   .deleteBtnDisabled:visited,
-  .deleteBtnDisabled:active{
+  .deleteBtnDisabled:active {
     margin-left: 20px;
     font-size: 14px;
     text-decoration: none;
     color: #999;
   }
 
-  .deletePic{
+  .deletePic {
     margin-top: -2px;
     margin-right: 8px;
     width: 15px;
@@ -71,28 +71,28 @@
   }
 }
 
-.oprationWrapper{
-  img{
+.oprationWrapper {
+  img {
     margin-left: 8px;
     height: 30px;
     width: 30px;
   }
 }
 
-.paginationWrapper{
+.paginationWrapper {
   position: absolute;
   width: calc(100% - 40px);
   bottom: 10px;
-  &>*{
+  & > * {
     display: inline-block;
   }
-  &>div{
+  & > div {
     margin-top: 10px;
     float: right;
     font-family: HelveticaNeue;
     font-size: 12px;
   }
-  &>span{
+  & > span {
     margin-top: 15px;
     font-family: PingFangSC-Regular;
     font-size: 12px;
@@ -101,44 +101,43 @@
     line-height: 18px;
   }
 }
-tr.ant-table-row{
+tr.ant-table-row {
   font-family: MicrosoftYaHei;
   font-size: 14px;
   color: #333333;
 }
 
-.ant-table-thead .ant-table-column-title{
+.ant-table-thead .ant-table-column-title {
   font-family: PingFangSC-Semibold;
   font-size: 14px;
   color: #666666;
 }
 
-.separator{
-  color: #E9E9E9;
+.separator {
+  color: #e9e9e9;
 }
 
-.deleteModal{
+.deleteModal {
   width: 350px;
   height: 190px;
-  &>div{
+  & > div {
     margin-top: 80px;
   }
-  .deleteModalImg{
+  .deleteModalImg {
     display: inline-block;
     float: left;
     margin-left: 20px;
-    &>img{
+    & > img {
       margin-top: 10px;
       width: 32px;
       height: 27px;
     }
-
   }
-  .deleteModalInfo{
+  .deleteModalInfo {
     display: inline-block;
     // float: right;
     margin-left: 30px;
-    &>span{
+    & > span {
       display: block;
       font-family: MicrosoftYaHei;
       font-size: 14px;
@@ -147,7 +146,7 @@ tr.ant-table-row{
       font-weight: bold;
       margin-bottom: 21px;
     }
-    &>p{
+    & > p {
       font-family: MicrosoftYaHei;
       font-size: 12px;
       color: #999999;

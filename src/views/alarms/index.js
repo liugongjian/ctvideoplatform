@@ -317,6 +317,7 @@ class Alarms extends Component {
               onChange={this.onPageChange}
               onShowSizeChange={this.onPageChange}
               pageSizeOptions={['12', '24', '36', '48']}
+              pageSize={pageSize}
               hideOnSinglePage={false}
               showSizeChanger
               showQuickJumper

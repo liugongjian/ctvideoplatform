@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { Component } from 'react';
 import {
   Table, Input, Modal, Button, message, Tooltip, Icon, Tag, Form, Select, Radio
@@ -91,7 +92,7 @@ class Plate extends Component {
     if (this.state.modalPlateInfo.licenseNo) {
       licenseInfo = { ...licenseInfo, id: this.state.modalPlateInfo.id };
       this.props.updatePlate(licenseInfo).then((data) => {
-      //  console.log('data',data)
+        //  console.log('data',data)
         if (data) {
           message.success('更新成功');
           this.setState({ plateModalVisible: false });
@@ -148,7 +149,7 @@ class Plate extends Component {
   }
 
   onPageNumChange = (pageNo) => {
-    this.setState({selectedRowKeys:[] , deleteItems : []});
+    this.setState({ selectedRowKeys: [], deleteItems: [] });
     this.props.getPlateList({
       licenseNo: this.state.searchName,
       pageNo: pageNo - 1,
@@ -158,8 +159,8 @@ class Plate extends Component {
     });
   }
 
-  onPageSizeChange = (current , size) => {
-    this.setState({selectedRowKeys:[] , deleteItems : []});
+  onPageSizeChange = (current, size) => {
+    this.setState({ selectedRowKeys: [], deleteItems: [] });
     this.props.getPlateList({
       licenseNo: this.state.searchName,
       pageNo: 0,
@@ -190,8 +191,8 @@ class Plate extends Component {
     const licenseNo = form.getFieldValue('licenseNo');
     const licenseProvince = form.getFieldValue('licenseProvince');
     const license = `${licenseProvince}${licenseNo}`;
-    const reg = /^[0-9a-zA-Z]+$/
-    if(reg.test(licenseNo)){
+    const reg = /^[0-9a-zA-Z]+$/;
+    if (reg.test(licenseNo)) {
       this.props.licenseExist(license).then((res) => {
         this.setState({ plateExist: res });
       });
@@ -238,44 +239,44 @@ class Plate extends Component {
         </div>
 
         <div className={styles.tableWrapper}>
-        <Table rowSelection={rowSelection} dataSource={plateListInfo.list} pagination={false} rowKey={record => record.id}>
-          <Column title="车牌号" dataIndex="licenseNo" width="24%" className="tabble-row" />
-          <Column
-            title="布控标签"
-            dataIndex="label"
-            width="28%"
-            render={(text, record) => {
-              switch (text) {
-                case 'WHITE':
+          <Table rowSelection={rowSelection} dataSource={plateListInfo.list} pagination={false} rowKey={record => record.id}>
+            <Column title="车牌号" dataIndex="licenseNo" width="24%" className="tabble-row" />
+            <Column
+              title="布控标签"
+              dataIndex="label"
+              width="28%"
+              render={(text, record) => {
+                switch (text) {
+                  case 'WHITE':
                     return (<Tag color="green">白名单</Tag>);
-                case 'BLACK':
+                  case 'BLACK':
                     return (<Tag color="red">黑名单</Tag>);
-                default: 
+                  default:
                     return (<Tag>其它</Tag>);
-            } 
-              // <div>
-              //   {
-              //     text === 'WHITE' ? (<Tag color="green">白名单</Tag>) : (<Tag color="red">黑名单</Tag>)
-              //   }
-              // </div>
-            }}
-          />
-          <Column title="车牌颜色" dataIndex="color" width="33%" />
-          <Column
-            title="操作"
-            key="action"
-            width="20%"
-            render={(text, record) => (
-              <div className={styles.oprationWrapper}>
-                <a onClick={() => this.onModalOpen(record)}>
-                  编辑
-                </a>
-                <span className={styles.separator}> | </span>
-                <span onClick={() => this.setState({ deleteModalVisible: true, deleteItems: [record.id] })}><a>删除</a></span>
-              </div>
-            )}
-          />
-        </Table>
+                }
+                // <div>
+                //   {
+                //     text === 'WHITE' ? (<Tag color="green">白名单</Tag>) : (<Tag color="red">黑名单</Tag>)
+                //   }
+                // </div>
+              }}
+            />
+            <Column title="车牌颜色" dataIndex="color" width="33%" />
+            <Column
+              title="操作"
+              key="action"
+              width="20%"
+              render={(text, record) => (
+                <div className={styles.oprationWrapper}>
+                  <a onClick={() => this.onModalOpen(record)}>
+                    编辑
+                  </a>
+                  <span className={styles.separator}> | </span>
+                  <span onClick={() => this.setState({ deleteModalVisible: true, deleteItems: [record.id] })}><a>删除</a></span>
+                </div>
+              )}
+            />
+          </Table>
         </div>
         <div className={styles.paginationWrapper}>
           <span>
@@ -341,7 +342,7 @@ class Plate extends Component {
                       },
                       {
                         validator: (rule, val, callback) => {
-                          const reg = /^[0-9a-zA-Z]+$/
+                          const reg = /^[0-9a-zA-Z]+$/;
                           form.validateFields(['licenseProvince']);
                           if (!val || !form.getFieldValue('licenseProvince')) {
                             callback(' ');
@@ -349,7 +350,7 @@ class Plate extends Component {
                           if (val.length > 7) {
                             callback('车牌号不能超过8位');
                           }
-                          if(!reg.test(val)){
+                          if (!reg.test(val)) {
                             callback('车牌号只能包含数字和字母');
                           }
                           callback();
@@ -403,9 +404,9 @@ class Plate extends Component {
                   </Select>
                 )}
               </Form.Item>
-          </Form>
+            </Form>
 
-            { this.state.plateExist ? (
+            {this.state.plateExist ? (
               <div className={styles.existMsg}>
                 <span className={styles['existMsg-icon']}><Icon type="exclamation-circle" /></span>
                 该车牌已经在车辆库中，确认则覆盖原数据。
@@ -442,12 +443,12 @@ class Plate extends Component {
             </div>
           </div>
         </Modal> */}
-         <DeleteModal
-              visible={this.state.deleteModalVisible}
-              handleOk={this.onDeleteItems}
-              closeModal={() => { this.setState({ deleteModalVisible: false })}}
-              content={`您确定要删除这${this.state.deleteItems.length}个车牌数据吗？`}
-            />
+        <DeleteModal
+          visible={this.state.deleteModalVisible}
+          handleOk={this.onDeleteItems}
+          closeModal={() => { this.setState({ deleteModalVisible: false }); }}
+          content={`您确定要删除这${this.state.deleteItems.length}个车牌数据吗？`}
+        />
 
 
       </div>
