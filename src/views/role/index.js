@@ -88,6 +88,7 @@ class Role extends Component {
 
   onPageNumChange = (pageNo) => {
     this.props.getRoleList({
+      name: this.state.searchName,
       pageNo: pageNo - 1,
       pageSize: this.state.roleListInfo.pageSize
     }).then((data) => {
@@ -96,11 +97,12 @@ class Role extends Component {
   }
 
   onPageSizeChange = (current, size) => {
+    console.log('size', size);
     this.props.getRoleList({
+      name: this.state.searchName,
       pageNo: 0,
       pageSize: size
     }).then((data) => {
-      // console.log(data);
       this.setState({ roleListInfo: data });
     });
   }
@@ -208,9 +210,10 @@ class Role extends Component {
               current={roleListInfo.pageNo + 1}
               showSizeChanger
               showQuickJumper
-              pageSize={this.state.roleListInfo.pageSize}
+              pageSize={roleListInfo.pageSize}
               onShowSizeChange={(current, size) => this.onPageSizeChange(current, size)}
-              showTotal={false}
+              hideOnSinglePage={false}
+              showTotal={() => false}
             />
           </div>
         </div>
