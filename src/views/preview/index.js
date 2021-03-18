@@ -237,7 +237,7 @@ class Preview extends PureComponent {
       const getIcon = (val) => {
         if (val.type === 1) {
           return (
-            <EIcon type={val.online ? `${styles.monitorOnline} myicon-monitorIcon` : `${styles.monitorOffline} myicon-monitorIcon`} />
+            <EIcon type={val.online ? `${styles.monitorOnline} myicon-monitorIcon` : `${styles.monitorOffline} myicon-monitorOff`} />
           );
         }
         return (<Icon type="folder" />);
