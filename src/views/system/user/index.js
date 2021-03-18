@@ -115,6 +115,7 @@ class Account extends Component {
 
   handleTableChange = (pagination, filters, sorter) => {
     this.setState({
+      selectedRowKeys: [],
       pageNum: pagination.current,
       pageSize: pagination.pageSize
     }, () => this.getTableList());
@@ -152,7 +153,7 @@ class Account extends Component {
   };
 
   validatorRePsw = (rule, value, callback) => {
-    if (!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?_~.])(.{12,26})/.test(value)) && value) {
+    if (!(/^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?_~.]).{12,26}$/.test(value)) && value) {
       callback(new Error('新密码至少包含大小写字母、数字和特殊字符(!@#$%^&*?_~.)，且长度为12～26位字符！'));
     } else {
       callback();
@@ -241,7 +242,7 @@ class Account extends Component {
         </div>
 
         <div className={styles.btnContainer}>
-          <Button onClick={this.getTableList} type="primary">查询</Button>
+          <Button onClick={() => this.setState({ pageNum: 1 }, () => { this.getTableList(); })} type="primary">查询</Button>
           <Button onClick={this.reset} icon="redo" className={styles.resetBtn}>重置</Button>
         </div>
       </div>
@@ -363,6 +364,7 @@ class Account extends Component {
   handleDelCancel = () => {
     this.setState({
       deleteModelVisible: false,
+      selectedRowKeys: []
     });
   };
 
@@ -779,7 +781,7 @@ class Account extends Component {
           <Pagination
             total={total}
             current={pageNum}
-            defaultPageSize={pageSize}
+            pageSize={pageSize}
             onChange={this.onPageChange}
             onShowSizeChange={this.onPageChange}
             hideOnSinglePage={false}

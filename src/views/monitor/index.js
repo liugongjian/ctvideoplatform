@@ -476,7 +476,8 @@ class Monitor extends Component {
 
   changePageSize = (current, size) => {
     this.setState({
-      pageSize: size
+      pageSize: size,
+      pageNo: 0
     }, () => this.getDeviceList());
   }
 
