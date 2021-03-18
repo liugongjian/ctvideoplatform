@@ -274,8 +274,18 @@ class Face extends Component {
     };
 
     handleDelCancel = () => {
+      const { faceData, selectedRowKeys } = this.state;
+      for (let i = 0; i < selectedRowKeys.length; i++) {
+        for (let j = 0; j < faceData.length; j++) {
+          if (faceData[j].id === selectedRowKeys[i]) {
+            faceData[j].isChecked = false;
+          }
+        }
+      }
       this.setState({
         delModalVisible: false,
+        selectedRowKeys: [],
+        faceData,
       });
     };
 
