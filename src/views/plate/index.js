@@ -447,7 +447,7 @@ class Plate extends Component {
         <DeleteModal
           visible={this.state.deleteModalVisible}
           handleOk={this.onDeleteItems}
-          closeModal={() => { this.setState({ deleteModalVisible: false }); }}
+          closeModal={() => { this.setState({ deleteModalVisible: false, selectedRowKeys: [], deleteItems: [] }); }}
           content={`您确定要删除这${this.state.deleteItems.length}个车牌数据吗？`}
         />
 
