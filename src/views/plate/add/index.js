@@ -44,16 +44,51 @@ class AddPlate extends Component {
   }
 
   onUploadChange = (info) => {
-    const fileTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/vnd.ms-excel'];
-    if (!fileTypes.includes(info.file.type)) {
-      message.error('格式错误，请重新上传');
-      return;
+    // const fileTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    //   'application/vnd.ms-excel'];
+    // if (!fileTypes.includes(info.file.type)) {
+    //   message.error('格式错误，请重新上传');
+    //   return;
+    // }
+    const { status } = info.file;
+    this.setState({
+      fileList: info.fileList
+    });
+    if (status === 'done') {
+      if (info.file.response.code === 0) {
+        let fileList = [...info.fileList];
+        fileList = fileList.slice(-1);
+        this.setState({
+          fileList
+        });
+      } else {
+        message.error(`${info.file.response.msg}`);
+      }
+    } else if (status === 'error') {
+      const fileList = [...info.fileList];
+      fileList.pop();
+      this.setState({
+        fileList
+      });
+      if (info.file.response.message) {
+        message.error(`${info.file.response.message}`);
+      } else {
+        message.error(`${info.file.name}上传失败！`);
+      }
     }
-    let fileList = [...info.fileList];
-    fileList = fileList.slice(-1);
-    this.setState({ fileList });
   }
+
+  onBeforeUpload = file => new Promise((resolve, reject) => {
+    const isExcel = file.name.split('.').length === 2 && (file.name.split('.')[1] === 'xlsx' || file.name.split('.')[1] === 'xls');
+    if (!isExcel) {
+      message.error('请格式错误，请重新上传');
+    }
+    if (isExcel) {
+      return resolve(true);
+    }
+    // eslint-disable-next-line prefer-promise-reject-errors
+    return reject(false);
+  })
 
   onNextStep = () => {
     this.props.getImportedPlate({ pageNo: 0, pageSize: 10 }).then((data) => {
@@ -117,6 +152,7 @@ class AddPlate extends Component {
     const uploadprops = {
       action: `${urlPrefix}/license/import`,
       onChange: this.onUploadChange,
+      beforeUpload: this.onBeforeUpload,
     };
     const uploader = () => (
       <div className={styles.uploadWrapper}>
@@ -194,6 +230,8 @@ class AddPlate extends Component {
               showQuickJumper
               pageSize={importedPlateInfo.pageSize}
               onShowSizeChange={(current, size) => this.onPageSizeChange(current, size)}
+              hideOnSinglePage={false}
+              showTotal={() => false}
             />
           </div>
         </div>
