@@ -81,7 +81,7 @@ class AddPlate extends Component {
   onBeforeUpload = file => new Promise((resolve, reject) => {
     const isExcel = file.name.split('.').length === 2 && (file.name.split('.')[1] === 'xlsx' || file.name.split('.')[1] === 'xls');
     if (!isExcel) {
-      message.error('请格式错误，请重新上传');
+      message.error('格式错误，请重新上传');
     }
     if (isExcel) {
       return resolve(true);

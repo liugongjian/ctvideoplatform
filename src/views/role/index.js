@@ -70,7 +70,7 @@ class Role extends Component {
       this.onPageNumChange(this.state.roleListInfo.pageNo + 1);
     }).catch((err) => {
       message.error('删除失败');
-      this.setState({ deleteModalVisible: false, isDeleting: false });
+      this.setState({ deleteItems: [], selectedRowKeys: [] });
     });
   };
 
@@ -92,7 +92,7 @@ class Role extends Component {
       pageNo: pageNo - 1,
       pageSize: this.state.roleListInfo.pageSize
     }).then((data) => {
-      this.setState({ roleListInfo: data });
+      this.setState({ roleListInfo: data, deleteItems: [], selectedRowKeys: [] });
     });
   }
 
@@ -103,7 +103,7 @@ class Role extends Component {
       pageNo: 0,
       pageSize: size
     }).then((data) => {
-      this.setState({ roleListInfo: data });
+      this.setState({ roleListInfo: data, deleteItems: [], selectedRowKeys: [] });
     });
   }
 
