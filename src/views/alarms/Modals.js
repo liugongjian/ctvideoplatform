@@ -131,20 +131,12 @@ class LicenseImportModalComp extends Component {
                           callback('请补充车牌号！');
                         }
                         callback();
+                        this.validateExist();
                       }
                     }
                   ],
                 })(
-                  <Select
-                    onSelect={() => {
-                      form.validateFields(['licenseNo'], (err) => {
-                        if (!err) {
-                          this.validateExist();
-                        }
-                      });
-                    }}
-                    // placeholder="-"
-                  >
+                  <Select>
                     {
                       LicenseProvinces.map(item => (
                         <Select.Option value={item}>{item}</Select.Option>
@@ -176,11 +168,12 @@ class LicenseImportModalComp extends Component {
                           callback('车牌号只能包含数字和字母');
                         }
                         callback();
+                        this.validateExist({ licenseNo: val });
                       }
                     }
                   ],
                 })(<Input
-                  onChange={e => this.validateExist({ licenseNo: e.target.value })}
+                  // onChange={e => this.validateExist({ licenseNo: e.target.value })}
                   placeholder="请输入车牌号"
                 />)}
               </Form.Item>
