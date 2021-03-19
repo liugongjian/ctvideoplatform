@@ -215,7 +215,7 @@ class LicenseImportModalComp extends Component {
           { exist ? (
             <div className={styles.existMsg}>
               <span className={styles['existMsg-icon']}><Icon type="exclamation-circle" /></span>
-              该车牌已经在车辆库中，确定则覆盖原数据。
+              该车牌已经在车牌库中，确定则覆盖原数据。
             </div>
           ) : null}
         </div>
