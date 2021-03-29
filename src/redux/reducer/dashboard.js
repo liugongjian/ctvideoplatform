@@ -1,42 +1,48 @@
-const LOAD = 'DASHBOARD/LOAD';
-const LOAD_SUCCESS = 'DASHBOARD/LOAD_SUCCESS';
-const LOAD_FAIL = 'DASHBOARD/LOAD_FAIL';
+import { urlPrefix } from 'Constants/Dictionary';
+
+const LOAD_ALARM_DISTRIBUTE = 'DASHBOARD/LOAD_ALARM_DISTRIBUTE';
+const LOAD_ALARM_DISTRIBUTE_SUCCESS = 'DASHBOARD/LOAD_ALARM_DISTRIBUTE_SUCCESS';
+const LOAD_ALARM_DISTRIBUTE_FAIL = 'DASHBOARD/LOAD_ALARM_DISTRIBUTE_FAIL';
+
+const DO_NOTHING = 'DASHBOARD/DO_NOTHING';
 
 const initialState = {
-  summary: [],
-  summaryLoading: true,
-  monitorApply: [],
-  monitorApplyLoading: true,
-  monitorResource: [],
-  monitorResourceLoading: true
+  alarmDistribute: {},
+  alarmDistributeLoading: true,
 };
 
 export default function dashboard(state = initialState, action = {}) {
   switch (action.type) {
-    case LOAD:
+    case LOAD_ALARM_DISTRIBUTE:
       return {
         ...state,
-        summaryLoading: true
+        alarmDistributeLoading: true
       };
-    case LOAD_SUCCESS:
+    case LOAD_ALARM_DISTRIBUTE_SUCCESS:
       return {
         ...state,
-        summaryLoading: false,
-        summary: action.data,
+        alarmDistributeLoading: false,
+        alarmDistribute: action.data,
       };
-    case LOAD_FAIL:
+    case LOAD_ALARM_DISTRIBUTE_FAIL:
       return {
         ...state,
-        summaryLoading: false,
+        alarmDistributeLoading: false,
+      };
+    case DO_NOTHING:
+      return {
+        ...state,
       };
     default:
       return state;
   }
 }
 
-// export function getSummary() {
-//   return {
-//     type: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-//     promise: apiClient => apiClient.get('/cloud/api/v1/order/analysize/summary')
-//   };
-// }
+export function getAlarmDistribute(data) {
+  return {
+    type: [LOAD_ALARM_DISTRIBUTE, LOAD_ALARM_DISTRIBUTE_SUCCESS, LOAD_ALARM_DISTRIBUTE_FAIL],
+    promise: apiClient => apiClient.post(`${urlPrefix}/home/queryalarmdistr`, {
+      data
+    })
+  };
+}

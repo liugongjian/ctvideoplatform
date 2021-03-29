@@ -1,0 +1,26 @@
+.api-line-option{
+    font-size:14px;
+}
+
+.nochart-placeholder{
+    text-align: center;
+    color: #999999;
+    .nochart-icon {
+        display: inline-block;
+        position: relative;
+        img{
+            width:70px;
+            height:67px;
+        }
+    }
+    .nochart-icon::after{
+        // display:'inline-block'
+        content:'暂无数据';
+        position: absolute;
+        width:100%;
+        text-align: center;
+        top: 55px;
+        left:0;
+        font-size:12px;
+    }
+}

@@ -126,7 +126,7 @@ export default class Bar extends PureComponent {
         right: 10,
         bottom: 30,
       },
-      color: ['#4E98BA', '#99DAF0', '#F8CC5B'],
+      color: ['#1890FF'], // ['#4E98BA', '#99DAF0', '#F8CC5B'],
       series: data.map(s => ({
         name: s.metricDisplayName || '',
         type: 'bar',
@@ -156,8 +156,8 @@ export default class Bar extends PureComponent {
                   right: 0,
                   top: 0,
                   textAlign: 'center',
-                  height: '450px',
-                  lineHeight: '450px'
+                  height: '100%',
+                  lineHeight: '100%'
                 }}
               >
                 暂无数据
