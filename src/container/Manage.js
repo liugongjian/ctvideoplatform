@@ -39,7 +39,7 @@ const mapDispathToProps = dispatch => bindActionCreators({
 
 class Manage extends Component {
   state = {
-    collapsed: false,
+    collapsed: true,
     menuRouter: null,
   }
 
@@ -190,6 +190,7 @@ class Manage extends Component {
               mode="inline"
               className={collapsed ? `${styles.menuInline}` : `${styles.menu}`}
               inlineCollapsed={collapsed}
+              onClick={() => { this.changeMenuCollapsed(true); }}
             >
               {leftMenu}
             </Menu>
@@ -198,7 +199,7 @@ class Manage extends Component {
 
         <div className={styles['EMR-manage-content']}>
           <div className={styles['EMR-manage-content-inner']}>
-            <PageHeader changeCollapsed={this.changeMenuCollapsed} />
+            <PageHeader changeCollapsed={this.changeMenuCollapsed} collapsed={collapsed} />
             <div className={styles['EMR-manage-main']}>
               { menuRouter }
             </div>

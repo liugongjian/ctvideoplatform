@@ -113,13 +113,22 @@ class Preview extends PureComponent {
     }
 
     doubleClickHandle = (e, val) => {
-      this.setState({
-        selectAreaKeys: [val.id],
-        videoSrc: null
-      }, () => {
-        this.getHistory(val.id);
-        this.getVideoSrc(val.id, val.name);
-      });
+      if (val.online) {
+        this.setState({
+          selectAreaKeys: [val.id],
+          videoSrc: null
+        }, () => {
+          this.getHistory(val.id);
+          this.getVideoSrc(val.id, val.name);
+        });
+      } else {
+        this.setState({
+          selectAreaKeys: [val.id],
+          videoSrc: null,
+          showText: '设备已离线',
+          historyListData: {}
+        });
+      }
     }
 
     getHistory=(id) => {
@@ -130,7 +139,6 @@ class Preview extends PureComponent {
         deviceId: id
       };
       getHistoryListTopTen(param).then((res) => {
-        console.log('res', res);
         this.setState({
           historyListData: res
         });
