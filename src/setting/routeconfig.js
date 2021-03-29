@@ -217,7 +217,7 @@ const menuRoutes = [
   {
     path: '/',
     exact: true,
-    component: DefaultPage,
+    component: Dashboard,
   }
 ];
 
