@@ -286,23 +286,30 @@ class Monitor extends Component {
   onChange = (e, key, name) => {
     e.stopPropagation();
     const { tempData, treeDatas } = this.state;
-    const test = tempData.filter(item => item.name === e.target.value);
-    if (test && test.length) {
-      const temp = tempData.find(item => item.id === key && item.name !== e.target.value) || {};
-      temp.hasSame = true;
-      temp.ifEdit = true;
-      this.setState({
-        treeDatas: this.dataToTree(tempData)
-      });
-    } else {
-      const temp = tempData.find(item => item.id === key) || {};
-      temp.hasSame = false;
-      temp.ifEdit = true;
-      this.setState({
-        treeDatas: this.dataToTree(tempData)
-      });
-    }
+    const tempValue = tempData.filter(item => item.name === e.target.value);
+    // if (tempValue && tempValue.length) {
+    //   const temp = tempData.find(item => item.id === key && item.name !== e.target.value) || {};
+    //   temp.hasSame = true;
+    //   temp.ifEdit = true;
+    //   this.setState({
+    //     treeDatas: this.dataToTree(tempData)
+    //   });
+    // } else {
+    //   const temp = tempData.find(item => item.id === key) || {};
+    //   temp.hasSame = false;
+    //   temp.ifEdit = true;
+    //   this.setState({
+    //     treeDatas: this.dataToTree(tempData)
+    //   });
+    // }
+    // this.setState({
+    //   editValue: e.target.value
+    // });
+    const temp = tempData.find(item => item.id === key) || {};
+    temp.ifEdit = true;
+    temp.hasSame = false;
     this.setState({
+      treeDatas: this.dataToTree(tempData),
       editValue: e.target.value
     });
   }

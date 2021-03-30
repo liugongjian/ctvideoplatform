@@ -148,7 +148,7 @@ class Plate extends Component {
   }
 
   onPageNumChange = (pageNo) => {
-    this.setState({selectedRowKeys:[] , deleteItems : []});
+    this.setState({ selectedRowKeys: [], deleteItems: [] });
     this.props.getPlateList({
       licenseNo: this.state.searchName,
       pageNo: pageNo - 1,
@@ -158,8 +158,8 @@ class Plate extends Component {
     });
   }
 
-  onPageSizeChange = (current , size) => {
-    this.setState({selectedRowKeys:[] , deleteItems : []});
+  onPageSizeChange = (current, size) => {
+    this.setState({ selectedRowKeys: [], deleteItems: [] });
     this.props.getPlateList({
       licenseNo: this.state.searchName,
       pageNo: 0,
@@ -195,6 +195,7 @@ class Plate extends Component {
     });
   }
 
+  changeFilter = (inputValue, option) => option.props.children === inputValue.toLowerCase()
 
   render() {
     const { selectedRowKeys, plateListInfo } = this.state;
@@ -218,7 +219,10 @@ class Plate extends Component {
           </Link>
           {
             this.state.selectedRowKeys.length > 0 ? (
-              <a className={styles.deleteBtn} onClick={() => this.setState({ deleteModalVisible: true })}>
+              <a
+                className={styles.deleteBtn}
+                onClick={() => this.setState({ deleteModalVisible: true })}
+              >
                 <Icon type="delete" className={styles.deletePic} />
                 批量删除
               </a>
@@ -233,7 +237,12 @@ class Plate extends Component {
             <Search placeholder="请输入车牌号" icon={searchPic} onSearch={value => this.searchPlate(value)} />
           </div>
         </div>
-        <Table rowSelection={rowSelection} dataSource={plateListInfo.list} pagination={false} rowKey={record => record.id}>
+        <Table
+          rowSelection={rowSelection}
+          dataSource={plateListInfo.list}
+          pagination={false}
+          rowKey={record => record.id}
+        >
           <Column title="车牌号" dataIndex="licenseNo" width="24%" className="tabble-row" />
           <Column
             title="布控标签"
@@ -242,12 +251,12 @@ class Plate extends Component {
             render={(text, record) => {
               switch (text) {
                 case 'WHITE':
-                    return (<Tag color="green">白名单</Tag>);
+                  return (<Tag color="green">白名单</Tag>);
                 case 'BLACK':
-                    return (<Tag color="red">黑名单</Tag>);
-                default: 
-                    return (<Tag>其它</Tag>);
-            } 
+                  return (<Tag color="red">黑名单</Tag>);
+                default:
+                  return (<Tag>其它</Tag>);
+              }
               // <div>
               //   {
               //     text === 'WHITE' ? (<Tag color="green">白名单</Tag>) : (<Tag color="red">黑名单</Tag>)
@@ -266,7 +275,11 @@ class Plate extends Component {
                   编辑
                 </a>
                 <span className={styles.separator}> | </span>
-                <span onClick={() => this.setState({ deleteModalVisible: true, deleteItems: [record.id] })}><a>删除</a></span>
+                <span
+                  onClick={() => this.setState({ deleteModalVisible: true, deleteItems: [record.id] })}
+                >
+                  <a>删除</a>
+                </span>
               </div>
             )}
           />
@@ -296,7 +309,9 @@ class Plate extends Component {
           title={this.state.modalPlateInfo.licenseNo ? '编辑车牌数据' : '新增车牌数据'}
           visible={this.state.plateModalVisible}
           onOk={() => this.onSubmitModal()}
-          onCancel={() => this.setState({ plateModalVisible: false, modalPlateInfo: {}, plateExist: false })}
+          onCancel={
+            () => this.setState({ plateModalVisible: false, modalPlateInfo: {}, plateExist: false })
+          }
           width="500px"
         >
           <div className={styles['LicenseImport-formWrapper']}>
@@ -315,7 +330,12 @@ class Plate extends Component {
                       }
                     ],
                   })(
-                    <Select placeholder="-">
+                    <Select
+                      placeholder="-"
+                      showSearch
+                      optionFilterProp="children"
+                      filterOption={this.changeFilter}
+                    >
                       {
                         LicenseProvinces.map(item => (
                           <Select.Option value={item}>{item}</Select.Option>
@@ -334,7 +354,7 @@ class Plate extends Component {
                       },
                       {
                         validator: (rule, val, callback) => {
-                          const reg = /^[0-9a-zA-Z]+$/
+                          const reg = /^[0-9a-zA-Z]+$/;
                           form.validateFields(['licenseProvince']);
                           if (!val || !form.getFieldValue('licenseProvince')) {
                             callback(' ');
@@ -342,7 +362,7 @@ class Plate extends Component {
                           if (val.length > 7) {
                             callback('车牌号不能超过8位');
                           }
-                          if(!reg.test(val)){
+                          if (!reg.test(val)) {
                             callback('车牌号只能包含数字和字母');
                           }
                           callback();
@@ -396,7 +416,7 @@ class Plate extends Component {
                   </Select>
                 )}
               </Form.Item>
-          </Form>
+            </Form>
 
             { this.state.plateExist ? (
               <div className={styles.existMsg}>
@@ -435,12 +455,12 @@ class Plate extends Component {
             </div>
           </div>
         </Modal> */}
-         <DeleteModal
-              visible={this.state.deleteModalVisible}
-              handleOk={this.onDeleteItems}
-              closeModal={() => { this.setState({ deleteModalVisible: false, deleteItems: [] })}}
-              content={`您确定要删除这${this.state.deleteItems.length}个车牌数据吗？`}
-            />
+        <DeleteModal
+          visible={this.state.deleteModalVisible}
+          handleOk={this.onDeleteItems}
+          closeModal={() => { this.setState({ deleteModalVisible: false, deleteItems: [] }); }}
+          content={`您确定要删除这${this.state.deleteItems.length}个车牌数据吗？`}
+        />
 
 
       </div>
