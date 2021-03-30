@@ -103,15 +103,28 @@ class Monitor extends Component {
     getList(0, keyword).then((res) => {
       const treeDatas = this.dataToTree(res);
       const areaId = res.find(item => item.pid === 0).id;
-      this.setState({
-        tempData: res,
-        treeDatas,
-        areaId,
-        selectAreaKeys: [areaId.toString()]
-      }, () => {
-        this.onExpand(expandedKeys);
-        this.getDeviceList();
-      });
+      const expendsIds = res.map(item => item.id.toString());
+      if (keyword) {
+        this.setState({
+          tempData: res,
+          treeDatas,
+          areaId,
+          selectAreaKeys: [areaId.toString()],
+          expandedKeys: expendsIds
+        }, () => {
+          this.getDeviceList();
+        });
+      } else {
+        this.setState({
+          tempData: res,
+          treeDatas,
+          areaId,
+          selectAreaKeys: [areaId.toString()],
+          expandedKeys: ['1']
+        }, () => {
+          this.getDeviceList();
+        });
+      }
     });
   }
 
