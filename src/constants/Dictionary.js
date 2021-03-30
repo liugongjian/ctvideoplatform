@@ -24,7 +24,7 @@ export const mockApi = '/mockApi';
 export const devApi = '/devApi';
 export const prodApi = '/prodApi';
 export const lixueping = '/lixueping';
-export const zhoulinpeng = '/zhoulinpeng';
+export const zhoulingpeng = '/zhoulingpeng';
 const zhujianxia = '/zhujianxia';
 const prodName = '/';
 

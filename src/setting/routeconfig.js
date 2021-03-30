@@ -216,6 +216,7 @@ const menuRoutes = [
   },
   {
     path: '/',
+    pageTitle: '首页',
     exact: true,
     component: Dashboard,
   }
