@@ -28,4 +28,4 @@ export const zhoulingpeng = '/zhoulingpeng';
 const zhujianxia = '/zhujianxia';
 const prodName = '/';
 
-export const urlPrefix = zhoulingpeng;
+export const urlPrefix = devApi;

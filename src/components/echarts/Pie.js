@@ -3,7 +3,7 @@ import {
 } from 'antd';
 import echarts from 'echarts';
 import NoChart from './noChartPlaceholder';
-import './charts.less';
+import styles from './charts.less';
 
 class PieChart extends PureComponent {
   constructor(props) {
@@ -28,7 +28,7 @@ class PieChart extends PureComponent {
         id, title, data, loading
       } = props;
       const myChart = echarts.init(document.getElementById(`pie-${id}`));
-      if (data && data.data) {
+      if (data && data.data && data.data.length) {
         this.hasData = true;
         const option = {
           color: ['#1890FF', '#13C2C2', '#2FC25B', '#FACC14', '#F04864', '#8543E0'],
@@ -36,17 +36,23 @@ class PieChart extends PureComponent {
             trigger: 'item',
             formatter: `{a} <br/>{b}: {c}${data?.unit || ''} ({d}%)`
           },
-
           legend: {
-            // orient: 'vertical',
-            // x: 'right',
             type: 'scroll',
             orient: 'vertical',
-            right: 20,
+            left: '60%',
             top: 20,
             icon: 'circle',
-            formatter(name) {
-              return `Legend ${name}`;
+            formatter(curname) {
+              let item;
+              if (data?.data) {
+                item = data.data.find(({ value, name }) => name === curname);
+              }
+              return `${curname}:  ${item?.value || ''}`;
+            },
+            textStyle: {
+              fontSize: 14,
+              lineHeight: 22,
+              fontFamily: 'PingFangSC-Regular',
             }
           },
           series: [
@@ -54,6 +60,7 @@ class PieChart extends PureComponent {
               name: data?.title || '',
               type: 'pie',
               radius: ['60%', '80%'],
+              center: ['30%', '50%'],
               avoidLabelOverlap: false,
               label: {
                 normal: {
@@ -62,8 +69,9 @@ class PieChart extends PureComponent {
                 },
                 emphasis: {
                   show: true,
+                  formatter: `{b}\n{c}${data?.unit || ''} ({d}%)`,
                   textStyle: {
-                    fontSize: '30',
+                    fontSize: '20',
                     fontWeight: 'bold'
                   }
                 }
@@ -88,7 +96,6 @@ class PieChart extends PureComponent {
       const {
         id, width, height, className, data
       } = this.props;
-      console.log('???', data);
       return (
         <React.Fragment>
           <div id={`pie-${id}`} className={`${className || ''}`} style={{ display: this.hasData ? 'block' : 'none', width, height }} />

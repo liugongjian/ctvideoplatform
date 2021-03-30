@@ -4,20 +4,23 @@ import {
 
 } from 'antd';
 import nodataIcon from 'Assets/nodata.png';
-import './charts.less';
+import styles from './charts.less';
 
 const chartPlaceHolder = (props) => {
   const { width, height, show } = props;
   return (
     <div
-      className="nochart-placeholder"
+      className={styles.noChartWrapper}
       style={{
-        display: show ? 'block' : 'none', width, height, lineHeight: height
+        display: show ? 'table' : 'none',
+        width,
+        height,
       }}
     >
-      <div className="nochart-icon">
+      <div className={styles.imgWrapper}>
         <img src={nodataIcon} alt="暂无数据" />
       </div>
+
     </div>
   );
 };
