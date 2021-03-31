@@ -319,21 +319,21 @@ class Preview extends PureComponent {
           <div className={styles.allStatusBox}>
             <p>{showText}</p>
           </div>
-        )
-          // if (noVideo) {
-          //   return (
-          //     <div className={styles.nodataBox}>
-          //       <img src={nodata} alt="" />
-          //     </div>
-          //   );
-          // }
-          // return (
-          //   <div className={styles.nostatusBox}>
-          //     <img src={nostatus} alt="" />
-          //     <p>请双击左侧点位播放监控视频</p>
-          //   </div>
-          // );
-        ;
+        );
+        // if (noVideo) {
+        //   return (
+        //     <div className={styles.nodataBox}>
+        //       <img src={nodata} alt="" />
+        //     </div>
+        //   );
+        // }
+        // return (
+        //   <div className={styles.nostatusBox}>
+        //     <img src={nostatus} alt="" />
+        //     <p>请双击左侧点位播放监控视频</p>
+        //   </div>
+        // );
+
 
         return (
 

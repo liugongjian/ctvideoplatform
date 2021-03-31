@@ -45,7 +45,6 @@ class Monitor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      test: '测试什么的',
       treeDatas: [],
       expandedKeys: ['1'],
       editValue: '',
@@ -103,15 +102,28 @@ class Monitor extends Component {
     getList(0, keyword).then((res) => {
       const treeDatas = this.dataToTree(res);
       const areaId = res.find(item => item.pid === 0).id;
-      this.setState({
-        tempData: res,
-        treeDatas,
-        areaId,
-        selectAreaKeys: [areaId.toString()]
-      }, () => {
-        this.onExpand(expandedKeys);
-        this.getDeviceList();
-      });
+      const expendsIds = res.map(item => item.id.toString());
+      if (keyword) {
+        this.setState({
+          tempData: res,
+          treeDatas,
+          areaId,
+          selectAreaKeys: [areaId.toString()],
+          expandedKeys: expendsIds
+        }, () => {
+          this.getDeviceList();
+        });
+      } else {
+        this.setState({
+          tempData: res,
+          treeDatas,
+          areaId,
+          selectAreaKeys: [areaId.toString()],
+          expandedKeys: ['1']
+        }, () => {
+          this.getDeviceList();
+        });
+      }
     });
   }
 
@@ -743,7 +755,7 @@ class Monitor extends Component {
 
   render() {
     const {
-      test, treeDatas, expandedKeys, tableData, showModal, showDelModal,
+      treeDatas, expandedKeys, tableData, showModal, showDelModal,
       algorithmList = [], algorithmId, modalDeviceData, pageSize, showAreaName,
       deviceName, deviceId, modalDeviceName, modalDeviceId, originId, checkedKeys,
       selectedKeys, modalSelectedKeys, selectAreaKeys, modalPageNo, pageNo
