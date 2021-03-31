@@ -687,7 +687,7 @@ class Account extends Component {
             </Form>
           </Modal>
           <Modal
-            title="重置密码"
+            title="修改密码"
             visible={this.state.pswModalVisible}
             onCancel={this.handlePswCancel}
             className={styles.pswModal}
@@ -754,7 +754,7 @@ class Account extends Component {
               </FormItem>
             </Form>
           </Modal>
-          
+
           <DeleteModal
             visible={deleteModelVisible}
             handleOk={this.delAccount}

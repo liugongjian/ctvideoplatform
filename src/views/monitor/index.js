@@ -45,7 +45,6 @@ class Monitor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      test: '测试什么的',
       treeDatas: [],
       expandedKeys: ['1'],
       editValue: '',
@@ -756,7 +755,7 @@ class Monitor extends Component {
 
   render() {
     const {
-      test, treeDatas, expandedKeys, tableData, showModal, showDelModal,
+      treeDatas, expandedKeys, tableData, showModal, showDelModal,
       algorithmList = [], algorithmId, modalDeviceData, pageSize, showAreaName,
       deviceName, deviceId, modalDeviceName, modalDeviceId, originId, checkedKeys,
       selectedKeys, modalSelectedKeys, selectAreaKeys, modalPageNo, pageNo
