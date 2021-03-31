@@ -16,6 +16,14 @@ const LOAD_ALGO_ITEMS = 'DASHBOARD/LOAD_ALGO_ITEMS';
 const LOAD_ALGO_ITEMS_SUCCESS = 'DASHBOARD/LOAD_ALGO_ITEMS_SUCCESS';
 const LOAD_ALGO_ITEMS_FAIL = 'DASHBOARD/LOAD_ALGO_ITEMS_FAIL';
 
+const LOAD_DEVICE_STATUS = 'DASHBOARD/LOAD_DEVICE_STATUS';
+const LOAD_DEVICE_STATUS_SUCCESS = 'DASHBOARD/LOAD_DEVICE_STATUS_SUCCESS';
+const LOAD_DEVICE_STATUS_FAIL = 'DASHBOARD/LOAD_DEVICE_STATUS_FAIL';
+
+const LOAD_ALARM_STATUS = 'DASHBOARD/LOAD_ALARM_STATUS';
+const LOAD_ALARM_STATUS_SUCCESS = 'DASHBOARD/LOAD_ALARM_STATUS_SUCCESS';
+const LOAD_ALARM_STATUS_FAIL = 'DASHBOARD/LOAD_ALARM_STATUS_FAIL';
+
 const DO_NOTHING = 'DASHBOARD/DO_NOTHING';
 
 const initialState = {
@@ -27,6 +35,10 @@ const initialState = {
   alarmTrend: {},
   algoItemsLoading: true,
   algoItems: [],
+  deviceStatusLoading: true,
+  deviceStatus: {},
+  alarmStatusLoading: true,
+  alarmStatus: {},
 };
 
 export default function dashboard(state = initialState, action = {}) {
@@ -97,6 +109,39 @@ export default function dashboard(state = initialState, action = {}) {
         ...state,
         algoItemsLoading: false,
       };
+
+    case LOAD_DEVICE_STATUS:
+      return {
+        ...state,
+        deviceStatusLoading: true
+      };
+    case LOAD_DEVICE_STATUS_SUCCESS:
+      return {
+        ...state,
+        deviceStatusLoading: false,
+        deviceStatus: action.data,
+      };
+    case LOAD_DEVICE_STATUS_FAIL:
+      return {
+        ...state,
+        deviceStatusLoading: false,
+      };
+    case LOAD_ALARM_STATUS:
+      return {
+        ...state,
+        alarmStatusLoading: true
+      };
+    case LOAD_ALARM_STATUS_SUCCESS:
+      return {
+        ...state,
+        alarmStatusLoading: false,
+        alarmStatus: action.data,
+      };
+    case LOAD_ALARM_STATUS_FAIL:
+      return {
+        ...state,
+        alarmStatusLoading: false,
+      };
     case DO_NOTHING:
       return {
         ...state,
@@ -137,5 +182,21 @@ export function getAlgoItems() {
   return {
     type: [LOAD_ALGO_ITEMS, LOAD_ALGO_ITEMS_SUCCESS, LOAD_ALGO_ITEMS_FAIL],
     promise: apiClient => apiClient.get(`${urlPrefix}/home/queryalarmconfig`)
+  };
+}
+
+// 获取设备状态
+export function getDeviceStatus() {
+  return {
+    type: [LOAD_DEVICE_STATUS, LOAD_DEVICE_STATUS_SUCCESS, LOAD_DEVICE_STATUS_FAIL],
+    promise: apiClient => apiClient.get(`${urlPrefix}/home/querydevice`)
+  };
+}
+
+// 获取告警总览信息
+export function getAlarmPreview() {
+  return {
+    type: [LOAD_ALARM_STATUS, LOAD_ALARM_STATUS_SUCCESS, LOAD_ALARM_STATUS_FAIL],
+    promise: apiClient => apiClient.get(`${urlPrefix}/home/queryalarmdetails`)
   };
 }

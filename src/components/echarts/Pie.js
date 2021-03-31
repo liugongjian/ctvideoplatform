@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import {
 } from 'antd';
 import echarts from 'echarts';
+import { parse } from 'superagent';
 import NoChart from './noChartPlaceholder';
 import styles from './charts.less';
 
@@ -43,11 +44,13 @@ class PieChart extends PureComponent {
             top: 20,
             icon: 'circle',
             formatter(curname) {
-              let item;
+              let item; let
+                percent;
               if (data?.data) {
                 item = data.data.find(({ value, name }) => name === curname);
+                percent = parseFloat(item?.value / data.total * 100).toFixed(2);
               }
-              return `${curname}:  ${item?.value || ''}`;
+              return `${curname}:  ${item?.value || ''} ${percent ? `(${percent}%)` : ''}`;
             },
             textStyle: {
               fontSize: 14,
