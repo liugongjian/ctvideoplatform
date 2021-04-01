@@ -3,6 +3,7 @@ import {
 } from 'antd';
 import echarts from 'echarts';
 import { parse } from 'superagent';
+import ResizeObserver from 'resize-observer-polyfill';
 import NoChart from './noChartPlaceholder';
 import styles from './charts.less';
 
@@ -18,17 +19,38 @@ class PieChart extends PureComponent {
 
   componentDidMount() {
     this.initData(this.props);
+    const { id } = this.props;
+    const domNode = document.getElementById(`pie-${id}`);
+    this.resizeOb = new ResizeObserver((entries, observer) => {
+      this.handleResize();
+    });
+    this.resizeOb.observe(domNode);
   }
 
   componentWillReceiveProps(nextProps) {
     this.initData(nextProps);
   }
 
+  componentWillUnmount() {
+    const { id } = this.props;
+    const domNode = document.getElementById(`pie-${id}`);
+    this.resizeOb?.unobserve(domNode);
+  }
+
+  handleResize = () => {
+    const resize = () => {
+      if (this.myChart) this.myChart.resize();
+    };
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(resize, 500);
+  }
+
+
     initData = (props) => {
       const {
         id, title, data, loading
       } = props;
-      const myChart = echarts.init(document.getElementById(`pie-${id}`));
+      this.myChart = echarts.init(document.getElementById(`pie-${id}`));
       if (data && data.data && data.data.length) {
         this.hasData = true;
         const option = {
@@ -88,9 +110,9 @@ class PieChart extends PureComponent {
             }
           ]
         };
-        myChart.setOption(option);
+        this.myChart.setOption(option);
       } else if (!loading) {
-        myChart.clear();
+        this.myChart.clear();
         this.hasData = false;
       }
     }
