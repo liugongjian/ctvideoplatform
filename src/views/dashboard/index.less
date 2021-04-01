@@ -42,6 +42,27 @@
         display: flex;
         height: 230px;
         .PreviewData{
+          .DeviceStatus:last-of-type{
+            height: 70px;
+            &Icon{
+              line-height: 70px;
+            }
+          }
+          .DeviceStatus{
+            display: flex;
+            &Icon{
+              width: 80px;
+              // vertical-align: middle;
+              font-size: 55px;
+              color:rgba(0,0,0,0.45);
+              &-online{
+                color: #4095E3;
+              }
+            }
+            &Cotent{
+              flex-grow: 1;
+            }
+          }
           &-title{
             font-family: PingFangSC-Regular;
             font-size: 14px;
@@ -72,6 +93,7 @@
           margin-right: 20px;
           background-color: white;
         }
+       
       }
       .AlarmStatistics{
         background-color: white;
