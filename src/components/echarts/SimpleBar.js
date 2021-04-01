@@ -4,9 +4,11 @@ import React, { PureComponent } from 'react';
 import {
 } from 'antd';
 import echarts from 'echarts';
+import ResizeObserver from 'resize-observer-polyfill';
 import NoChart from './noChartPlaceholder';
 import styles from './charts.less';
 
+const recordwidth = 0;
 class BarChart extends PureComponent {
   constructor(props) {
     super(props);
@@ -17,18 +19,35 @@ class BarChart extends PureComponent {
 
 
   componentDidMount() {
+    const { id } = this.props;
+    const domNode = document.getElementById(`bar-${id}`);
     this.initData(this.props);
+    const resizeOb = new ResizeObserver((entries, observer) => {
+      this.handleResize();
+    });
+    resizeOb.observe(domNode);
   }
 
   componentWillReceiveProps(nextProps) {
     this.initData(nextProps);
   }
 
+  handleResize = () => {
+    const resize = () => {
+      console.log('resize!!!');
+      if (this.myChart) this.myChart.resize();
+    };
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(resize, 500);
+  }
+
   initData = (props) => {
     const {
       id, title, data, loading
     } = props;
-    const myChart = echarts.init(document.getElementById(`bar-${id}`));
+    const domNode = document.getElementById(`bar-${id}`);
+    this.myChart = echarts.init(domNode);
+    // window.addEventListener('resize', this.handleResize.bind(this));
     if (data && data.yAxisData && data.yAxisData.length) {
       this.hasData = true;
       const option = {
@@ -101,9 +120,9 @@ class BarChart extends PureComponent {
           barMaxWidth: '30px',
         }]
       };
-      myChart.setOption(option);
+      this.myChart.setOption(option);
     } else if (!loading) {
-      myChart.clear();
+      this.myChart.clear();
       this.hasData = false;
     }
   }
@@ -114,8 +133,12 @@ class BarChart extends PureComponent {
     } = this.props;
     return (
       <React.Fragment>
-        <div id={`bar-${id}`} className={`${className || ''}`} style={{ display: this.hasData ? 'block' : 'none', width, height }} />
-        <NoChart show={!this.hasData} width={width} height={height} />
+        <div
+          id={`bar-${id}`}
+          className={`${className || ''}`}
+          style={{ display: this.hasData ? 'block' : 'none', width: '100%', height: '100%' }}
+        />
+        <NoChart show={!this.hasData} width="100%" height="100%" />
       </React.Fragment>
     );
   }

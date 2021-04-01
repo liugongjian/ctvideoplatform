@@ -21,7 +21,7 @@ import EIcon from 'Components/Icon';
 import styles from './index.less';
 
 const { Option } = Select;
-
+var interval;
 const dateFormat = 'YYYY-MM-DD';
 const TYPE_ALL_ALGO_STATC = '0';
 const mapStateToProps = state => ({ dashboard: state.dashboard });
@@ -64,11 +64,11 @@ class Dashboard extends Component {
 
   polling = (func) => {
     func();
-    this.polling = setInterval(func, 5000);
+    interval = setInterval(func, 5000);
   }
 
   clearPolling = () => {
-    clearInterval(this.polling);
+    clearInterval(interval);
   }
 
   getAlarmTrend = () => {
@@ -200,6 +200,7 @@ class Dashboard extends Component {
                 <div className={styles['SubContents-AlarmTrend']}>
                   <div className={styles.panelSubTitle}>告警趋势</div>
                   <Bar
+                    key="alarmTrend"
                     id="alarmTrend"
                     width="100%"
                     height="calc(100% - 22px)"
@@ -235,10 +236,11 @@ class Dashboard extends Component {
         <div className={styles.panelBottom}>
           <div className={styles['panelBottom-algoStatus']}>
             <div className={styles.panelTitle}>算法配置状态</div>
-            <Bar
+            <div style={{ width:"100%", height:"calc(100% - 40px)"}}>
+              <Bar
+              key='algoConfigs'
               id="algoConfigs"
-              width="100%"
-              height="calc(100% - 40px)"
+             
               data={{
                 yAxisData: algoConfs?.seriesData,
                 xAxisData: algoConfs?.xaxisData,
@@ -246,6 +248,7 @@ class Dashboard extends Component {
               }}
               loading={algoConfsLoading}
             />
+             </div>
           </div>
           <div className={styles['panelBottom-algoTimes']}>
             <div className={styles.panelTitle}>
@@ -259,6 +262,7 @@ class Dashboard extends Component {
             </div>
             <Pie
               id="alarmDistribute"
+              key="alarmDistribute"
               width="100%"
               height="calc(100% - 52px)"
               data={{ data: alarmDistribute?.distributorPieMap, total: alarmDistribute?.alarmTotal, title: '算法告警分布' }}
