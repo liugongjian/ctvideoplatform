@@ -39,6 +39,14 @@ const typeToText = {
   OTHER: '其他'
 };
 
+const LABEL_PERSON = {
+  WHITE: '白名单', BLACK: '黑名单', OTHER: '陌生人'
+};
+
+const LABEL_CAR = {
+  WHITE: '白名单', BLACK: '黑名单', OTHER: '其他'
+};
+
 class AlarmList extends Component {
   constructor(props) {
     super(props);
@@ -113,6 +121,40 @@ class AlarmList extends Component {
     image.onerror = null;
   };
 
+  getTag = (title, type) => (
+    <span
+      className={`${styles.AlarmCardTag} ${styles[`AlarmCardTag-${type}`]}`}
+    >
+      {title}
+    </span>
+  )
+
+  getTypeContent = (val) => {
+    if (val.face && val.face.label !== 'OTHER') {
+      return (
+        <div className={styles.historyTextName}>
+          <span>姓名：</span>
+          <span>
+            {val.face.username || '-'}
+          </span>
+          {this.getTag(LABEL_PERSON[val.face.label], val.face.label)}
+        </div>
+      );
+    }
+    if (val.plate && val.plate.label !== 'OTHER') {
+      return (
+        <div className={styles.historyTextName}>
+          <span>车牌：</span>
+          <span>
+            {val.plate.licenseNo || '-'}
+          </span>
+          {this.getTag(LABEL_CAR[val.plate.label], val.plate.label)}
+        </div>
+      );
+    }
+    return false;
+  }
+
   render() {
     const { alarmData, ifShowModal, modalShowInfo } = this.state;
     const getAlarmDom = () => alarmData.list && alarmData.list.map(item => (
@@ -161,9 +203,14 @@ class AlarmList extends Component {
             告警区域：
             <span>{modalShowInfo.areaPath}</span>
           </p>
+          {this.getTypeContent(modalShowInfo)}
           <p>
             人员姓名：
             <span>{modalShowInfo.areaPath}</span>
+          </p>
+          <p>
+            告警规则：
+            <span>{modalShowInfo.controlRule}</span>
           </p>
         </Modal>
       </div>

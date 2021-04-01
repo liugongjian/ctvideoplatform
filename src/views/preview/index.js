@@ -41,6 +41,15 @@ const { Search } = Input;
 const { Option } = Select;
 const { Meta } = Card;
 
+const LABEL_PERSON = {
+  WHITE: '白名单', BLACK: '黑名单', OTHER: '陌生人'
+};
+
+const LABEL_CAR = {
+  WHITE: '白名单', BLACK: '黑名单', OTHER: '其他'
+};
+
+
 class Preview extends PureComponent {
   constructor(props) {
     super(props);
@@ -54,7 +63,10 @@ class Preview extends PureComponent {
       historyListData: {},
       imgDialogVisible: false,
       algorithmIds: [],
-      showText: '无信号'
+      showText: '无信号',
+      tempTotal: -1,
+      historyID: '',
+      timer: null
     };
   }
 
@@ -63,6 +75,11 @@ class Preview extends PureComponent {
     this.getTreeData();
     this.getAlgorithmList();
   }
+
+  componentWillUnmount() {
+    this.clearTimer();
+  }
+
 
     getTreeData = () => {
       const { getAreaList } = this.props;
@@ -113,12 +130,16 @@ class Preview extends PureComponent {
     }
 
     doubleClickHandle = (e, val) => {
+      this.clearTimer();
       if (val.online) {
         this.setState({
           selectAreaKeys: [val.id],
-          videoSrc: null
+          videoSrc: null,
+          tempTotal: -1,
+          historyID: val.id
         }, () => {
-          this.getHistory(val.id);
+          this.getHistory();
+          this.setIntervalTimer();
           this.getVideoSrc(val.id, val.name);
         });
       } else {
@@ -132,18 +153,42 @@ class Preview extends PureComponent {
     }
 
     getHistory=(id) => {
+      const { historyID } = this.state;
       const { getHistoryListTopTen } = this.props;
       const param = {
         pageSize: 10,
         pageNo: 0,
-        deviceId: id
+        deviceId: historyID
       };
       getHistoryListTopTen(param).then((res) => {
-        this.setState({
-          historyListData: res
-        });
+        const { tempTotal } = this.state;
+        if (tempTotal === -1) {
+          this.setState({
+            historyListData: res,
+            tempTotal: res.recordsTotal
+          });
+        } else if (res.recordsTotal > tempTotal) {
+          this.setState({
+            historyListData: res,
+            tempTotal: res.recordsTotal
+          });
+        } else {
+          // this.timer = window.setInterval(getTopTenList, 5000);
+        }
       });
     }
+
+    setIntervalTimer = () => {
+      this.state.timer = window.setInterval(() => {
+        this.getHistory();
+      }, 5000);
+    }
+
+    clearTimer = () => {
+      window.clearInterval(this.state.timer);
+      this.state.timer = null;
+    }
+
 
     getVideoSrc = (id, name) => {
       const { getVideoSrc } = this.props;
@@ -295,6 +340,49 @@ class Preview extends PureComponent {
         image.onerror = null;
       };
 
+      getTag = (title, type) => (
+        <span
+          className={`${styles.AlarmCardTag} ${styles[`AlarmCardTag-${type}`]}`}
+        >
+          {title}
+        </span>
+      )
+
+
+      getTypeContent = (val) => {
+        if (val.face && val.face.label !== 'OTHER') {
+          return (
+            <div className={styles.historyTextName}>
+              <span>姓名：</span>
+              <span>
+                {val.face.username || '-'}
+              </span>
+              {this.getTag(LABEL_PERSON[val.face.label], val.face.label)}
+            </div>
+          );
+        }
+        if (val.plate && val.plate.label !== 'OTHER') {
+          return (
+            <div className={styles.historyTextName}>
+              <span>车牌：</span>
+              <span>
+                {val.plate.licenseNo || '-'}
+              </span>
+              {this.getTag(LABEL_CAR[val.plate.label], val.plate.label)}
+            </div>
+          );
+        }
+        return false;
+        // (
+        //   <div className={styles.historyTextName}>
+        //     <span>姓名：</span>
+        //     <span>70 陈丽君</span>
+        //     {this.getTag('白名单', 'BLACK')}
+        //   </div>
+        // );
+      }
+
+
       render() {
         const {
           treeDatas, selectAreaKeys, expandedKeys, algorithmList = [],
@@ -410,10 +498,12 @@ class Preview extends PureComponent {
                       key={item.id}
                       className={styles.historyListCard}
                     >
-                      <p>
-                        {item.algorithmCnName}
+                      <div className={styles.historyTextBox}>
+                        <span>{item.algorithmCnName}</span>
                         <span className={styles.historyTime}>{item.resTime}</span>
-                      </p>
+                      </div>
+                      {this.getTypeContent(item)}
+
                     </Card>
                   ))
                 }
