@@ -43,21 +43,44 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   {
     push,
     getAlgoAreaImage,
-    addAlgoConf: (deviceId, curAlgo, data) => postAlgoConf(deviceId, [{
-      id: curAlgo.id,
-      algorithmId: curAlgo.algorithmId,
-      // taskId: curAlgo.algorithmId,
-      taskName: curAlgo.name,
-      action: 'add',
-      ...data
-    }]),
-    updateAlgoConf: (deviceId, curAlgo, data) => postAlgoConf(deviceId, [{
-      id: curAlgo.id,
-      // algorithmId: curAlgo.algorithmId,
-      taskName: curAlgo.name,
-      action: 'update',
-      ...data
-    }]),
+    addAlgoConf: (deviceId, curAlgo, data) => postAlgoConf(deviceId, [
+      curAlgo.aiParams
+        ? {
+          id: curAlgo.id,
+          algorithmId: curAlgo.algorithmId,
+          // taskId: curAlgo.algorithmId,
+          taskName: curAlgo.name,
+          aiParams: curAlgo.aiParams,
+          action: 'add',
+          ...data
+        }
+        : {
+          id: curAlgo.id,
+          algorithmId: curAlgo.algorithmId,
+          // taskId: curAlgo.algorithmId,
+          taskName: curAlgo.name,
+          action: 'add',
+          ...data
+        }
+    ]),
+    updateAlgoConf: (deviceId, curAlgo, data) => postAlgoConf(deviceId, [
+      curAlgo.aiParams
+        ? {
+          id: curAlgo.id,
+          // algorithmId: curAlgo.algorithmId,
+          taskName: curAlgo.name,
+          aiParams: curAlgo.aiParams,
+          action: 'update',
+          ...data
+        }
+        : {
+          id: curAlgo.id,
+          // algorithmId: curAlgo.algorithmId,
+          taskName: curAlgo.name,
+          action: 'update',
+          ...data
+        }
+    ]),
   },
   dispatch
 );
@@ -79,6 +102,7 @@ class CameraDetail extends Component {
       imgSrc: null,
       imgLoading: false,
       // areasConfig: undefined,
+      aiParams: [],
     };
   }
 
@@ -107,6 +131,9 @@ class CameraDetail extends Component {
             this.setState({ imgLoading: false });
           });
       }
+      curAlgo.aiParams && this.setState({
+        aiParams: JSON.parse(curAlgo.aiParams)
+      });
     }
   }
 
@@ -209,10 +236,11 @@ class CameraDetail extends Component {
           break;
       }
     }
-    console.log(postData);
+    curAlgo && curAlgo.aiParams && (curAlgo.aiParams = this.state.aiParams);
     postApi(cameraId, curAlgo, postData).then((res) => {
-      console.log(res);
+      console.log('res', res);
       message.success('提交成功');
+      this.setState({ aiParams: [] });
       this.props.closeModal();
     }).catch((err) => {
       // todo
@@ -220,6 +248,7 @@ class CameraDetail extends Component {
   }
 
   handleCancel = () => {
+    this.setState({ aiParams: [] });
     this.props.closeModal();
   }
 
@@ -263,6 +292,18 @@ class CameraDetail extends Component {
     });
   }
 
+  onAiParamsChange = (name, value) => {
+    const tmp = this.state.aiParams;
+    // eslint-disable-next-line array-callback-return
+    tmp.map((param) => {
+      if (param.name === name) {
+        param.value = value;
+      }
+    });
+    this.setState({
+      aiParams: tmp,
+    }, () => console.log('this.state.aiParams', this.state.aiParams));
+  }
 
   render() {
     const {
@@ -385,6 +426,45 @@ class CameraDetail extends Component {
                 )}
             </div>
           )}
+          {
+            curAlgo && curAlgo.aiParams && (
+              <div>
+                <div className={styles.modalSubTitle}>其它算法配置</div>
+                {
+                  this.state.aiParams.map(item => (
+                  // item.name  item.value
+                    <div className={styles.aiParams}>
+                      <div className={styles.paramName}>
+                        <span style={{ marginRight: '15px' }}>
+                          {item.name}
+                          :
+                        </span>
+                      </div>
+                      <div className={styles.paramValue}>
+                        <Input
+                          onChange={e => this.onAiParamsChange(item.name, e.target.value)}
+                          defaultValue={item.value}
+                        />
+                      </div>
+                    </div>
+                  ))
+                }
+              </div>
+            )
+          }
+          {/* <div className={styles.modalSubTitle}>其它算法配置</div>
+          <div>
+            <span style={{ marginRight: '15px' }}>Threshold:</span>
+            <div style={{ width: '200px', display: 'inline-block' }}>
+              <Input onChange={e => console.log(e.target.value)} />
+            </div>
+          </div>
+          <div>
+            <span style={{ marginRight: '15px' }}>Threshold:</span>
+            <div style={{ width: '200px', display: 'inline-block' }}>
+              <Input />
+            </div>
+          </div> */}
         </div>
       </Modal>
     );
