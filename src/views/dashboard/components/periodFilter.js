@@ -48,6 +48,7 @@ const PeriodFilter = (props) => {
         PeriodTags.map((text, idx) => (
           <span
             id={`PeriodTag-${idx}`}
+            key={`PeriodTag-${idx}`}
             className={`${styles.PeriodTag} ${idx + 1 === type ? styles['PeriodTag-chosen'] : ''}`}
             onClick={() => handleTypeChange(idx + 1)}
           >

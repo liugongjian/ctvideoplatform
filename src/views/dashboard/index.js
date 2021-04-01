@@ -16,6 +16,7 @@ import Bar from 'Components/echarts/SimpleBar';
 import moment from 'moment';
 import PeriodFilter from './components/periodFilter';
 import AlarmList from './components/alarmList';
+import EIcon from 'Components/Icon';
 
 import styles from './index.less';
 
@@ -140,17 +141,29 @@ class Dashboard extends Component {
                 </div>
               </div>
               <div className={styles.PreviewData}>
-                <div className={styles['PreviewData-title']}>在线设备数</div>
-                <div className={styles['PreviewData-number']}>{this.getNumberText(deviceStatus, 'onLineDevicesNums')}</div>
-                <div className={styles['PreviewData-text']}>
-                  在线设备率
-                  {' '}
-                  {deviceStatus ? parseFloat(deviceStatus.onLineDevicesRatio * 100).toFixed(2) : '-'}
-                  %
+                <div className={styles.DeviceStatus}>
+                  <div className={`${styles.DeviceStatusIcon} ${styles['DeviceStatusIcon-online']}`}><EIcon type="myicon-dashboardCamera" /></div>
+                  <div className={styles.DeviceStatusContent}>
+                    <div className={styles['PreviewData-title']}>在线设备数</div>
+                    <div className={styles['PreviewData-number']}>{this.getNumberText(deviceStatus, 'onLineDevicesNums')}</div>
+                    <div className={styles['PreviewData-text']}>
+                      在线设备率
+                      {' '}
+                      {deviceStatus ? parseFloat(deviceStatus.onLineDevicesRatio * 100).toFixed(2) : '-'}
+                      %
+                    </div>
+                  </div>
                 </div>
                 <div className={styles['PreviewData-split']} />
-                <div className={styles['PreviewData-title']}>离线设备数</div>
-                <div className={styles['PreviewData-number']}>{this.getNumberText(deviceStatus, 'offLineDevicesNums')}</div>
+                <div className={styles.DeviceStatus}>
+                  <div className={`${styles.DeviceStatusIcon}`}><EIcon type="myicon-dashboardCamera" /></div>
+                  <div className={styles.DeviceStatusContent}>
+                    <div className={styles['PreviewData-title']}>离线设备数</div>
+                    <div className={styles['PreviewData-number']}>
+                      {this.getNumberText(deviceStatus, 'offLineDevicesNums')}
+                    </div>
+                  </div>
+                </div>
               </div>
               <div className={styles.PreviewData}>
                 <div className={styles['PreviewData-title']}>今日告警数</div>
@@ -177,7 +190,7 @@ class Dashboard extends Component {
                   <Select style={{ width: 200 }} onChange={this.staticsTypeChange} value={type}>
                     {
                       algoSelOptions.map(item => (
-                        <Option value={item.id}>{item.name}</Option>
+                        <Option key={item.id} value={item.id}>{item.name}</Option>
                       ))
                     }
                   </Select>
@@ -202,8 +215,8 @@ class Dashboard extends Component {
                   <div className={styles.panelSubTitle}>近两周摄像头告警分布</div>
                   <ul className={styles.alarmRanking}>
                     {
-                      alarmTrend?.alarmDistributionList?.map(({ name, totalCount }) => (
-                        <li>
+                      alarmTrend?.alarmDistributionList?.map(({ name, totalCount }, idx) => (
+                        <li key={`ditributeRanking-${idx}`}>
                           <span className={styles['alarmRanking-name']} title={name}>{name}</span>
                           <span className={styles['alarmRanking-total']}>{totalCount}</span>
                         </li>
