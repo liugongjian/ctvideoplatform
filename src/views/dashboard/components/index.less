@@ -14,3 +14,72 @@
         }
     }
 }
+.alarmListBox{
+    padding: 0 17px;
+    height: calc(100% - 52px);
+    overflow-y: scroll;
+    .alarmDetail{
+        // height: 58px;
+        display: flex;
+        border-bottom: 1px solid #E8E8E8;
+        padding: 17px 0;
+        // line-height: 58px;
+        p{
+            margin: 0;
+        }
+        .alramDetailIcon{
+            // width: 40px;
+            // height: 40px;
+            // padding: 10px;
+            img{
+                width: 40px;
+                height: 40px;
+            }
+        }
+        .alarmDetailInfo{
+            margin-left: 10px;
+        }
+        .alarmDetailName{
+            font-size: 16px;
+            color: rgba(0,0,0,0.65);
+        }
+        .alarmDetailType{
+            font-size: 14px;
+            padding: 0 5px;
+        }
+        .alarmDetailTime{
+            font-size: 14px;
+            padding: 0 5px;
+        }
+        .lookDetail{
+            margin-left: auto;
+            font-size: 14px;
+            color: #1890FF;
+            line-height: 3;
+            cursor: pointer;
+        }
+    }
+    
+}
+.alarmDetailModal{
+    .alarmListImg{
+        width: 480px;
+        position: relative;
+        img{
+            width: 100%;
+        }
+    }
+    .historyTopnoImage{
+        width: 100%;
+        height: 100px;
+        object-fit: contain;
+    }
+    .alarmModalName{
+        background: #FA8334;
+        padding: 5px 8px;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        color: #fff;
+    }
+}
