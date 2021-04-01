@@ -22,19 +22,24 @@ class BarChart extends PureComponent {
     const { id } = this.props;
     const domNode = document.getElementById(`bar-${id}`);
     this.initData(this.props);
-    const resizeOb = new ResizeObserver((entries, observer) => {
+    this.resizeOb = new ResizeObserver((entries, observer) => {
       this.handleResize();
     });
-    resizeOb.observe(domNode);
+    this.resizeOb.observe(domNode);
   }
 
   componentWillReceiveProps(nextProps) {
     this.initData(nextProps);
   }
 
+  componentWillUnmount() {
+    const { id } = this.props;
+    const domNode = document.getElementById(`bar-${id}`);
+    this.resizeOb?.unobserve(domNode);
+  }
+
   handleResize = () => {
     const resize = () => {
-      console.log('resize!!!');
       if (this.myChart) this.myChart.resize();
     };
     clearTimeout(this.timeout);
