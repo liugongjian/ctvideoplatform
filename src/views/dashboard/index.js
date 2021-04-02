@@ -235,7 +235,7 @@ class Dashboard extends Component {
         </div>
         <div className={styles.panelBottom}>
           <div className={styles['panelBottom-algoStatus']}>
-            <div className={styles.panelTitle}>算法配置状态</div>
+            <div className={styles.panelTitle}>算法已配置设备数量</div>
             <div style={{ width:"100%", height:"calc(100% - 40px)"}}>
               <Bar
               key='algoConfigs'
@@ -244,7 +244,7 @@ class Dashboard extends Component {
               data={{
                 yAxisData: algoConfs?.seriesData,
                 xAxisData: algoConfs?.xaxisData,
-                yAxisName: '算法已配置设备数/个'
+                // yAxisName: '算法已配置设备数/个'
               }}
               loading={algoConfsLoading}
             />

@@ -87,7 +87,8 @@ class BarChart extends PureComponent {
           },
           // 坐标轴轴线
           axisLine: {
-            show: false
+            show: true,
+            color: '#999',
           },
           // 坐标轴刻度标签
           axisLabel: {
@@ -101,15 +102,19 @@ class BarChart extends PureComponent {
           },
           // 坐标轴在grid中的分割线
           splitLine: {
-            show: false
+            show: true,
+            lineStyle: {
+              color: '#999',
+              type: 'dashed'
+            }
           },
           // 坐标轴在grid中的分割区域
-          splitArea: {
-            show: true,
-            areaStyle: {
-              color: ['#F7F8F8', '#fff']
-            }
-          }
+          // splitArea: {
+          //   show: true,
+          //   areaStyle: {
+          //     color: ['#F7F8F8', '#fff']
+          //   }
+          // }
         },
         grid: {
           left: 40,
@@ -123,6 +128,12 @@ class BarChart extends PureComponent {
           type: 'bar',
           barWidth: '30%',
           barMaxWidth: '30px',
+          label: {
+            show: true,
+            position: 'top',
+            formatter: '{c}',
+            color: '#666'
+          }
         }]
       };
       this.myChart.setOption(option);

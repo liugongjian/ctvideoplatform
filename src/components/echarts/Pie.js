@@ -70,9 +70,10 @@ class PieChart extends PureComponent {
                 percent;
               if (data?.data) {
                 item = data.data.find(({ value, name }) => name === curname);
-                percent = parseFloat(item?.value / data.total * 100).toFixed(2);
+                if (data.total === 0) percent = 0;
+                else percent = parseFloat(item?.value / data.total * 100).toFixed(2);
               }
-              return `${curname}:  ${item?.value || ''} ${percent ? `(${percent}%)` : ''}`;
+              return `${curname}:  ${typeof item?.value === 'number' ? item.value : ''} ${percent || percent === 0 ? `(${percent}%)` : ''}`;
             },
             textStyle: {
               fontSize: 14,
@@ -96,6 +97,7 @@ class PieChart extends PureComponent {
                   show: true,
                   formatter: `{b}\n{c}${data?.unit || ''} ({d}%)`,
                   textStyle: {
+                    color: '#666',
                     fontSize: '20',
                     fontWeight: 'bold'
                   }

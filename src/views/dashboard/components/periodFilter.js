@@ -25,15 +25,15 @@ const PeriodFilter = (props) => {
         period.endTime = moment();
         break;
       case 2:
-        period.startTime = moment().subtract('days', 7);
+        period.startTime = moment().startOf('week');
         period.endTime = moment();
         break;
       case 3:
-        period.startTime = moment().subtract('days', 30);
+        period.startTime = moment().startOf('month');
         period.endTime = moment();
         break;
       case 4:
-        period.startTime = moment().subtract('days', 365);
+        period.startTime = moment().startOf('year');
         period.endTime = moment();
         break;
       default:
