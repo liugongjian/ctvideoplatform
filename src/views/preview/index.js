@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { bindActionCreators } from 'redux';
 import {
-  Tree, Input, Select, Icon, Card, Spin
+  Tree, Input, Select, Icon, Card, Spin, Modal
 } from 'antd';
 import EIcon from 'Components/Icon';
 import { connect } from 'react-redux';
@@ -14,9 +14,9 @@ import {
 import { getAlgorithmList } from 'Redux/reducer/monitor';
 import { urlPrefix } from 'Constants/Dictionary';
 
-import {
-  ImageModal,
-} from 'Views/alarms/Modals';
+// import {
+//   ImageModal,
+// } from 'Views/alarms/Modals';
 
 import nostatus from 'Assets/nostatus.png';
 import nodata from 'Assets/nodata.png';
@@ -66,7 +66,8 @@ class Preview extends PureComponent {
       showText: '无信号',
       tempTotal: -1,
       historyID: '',
-      timer: null
+      timer: null,
+      modalShowInfo: ''
     };
   }
 
@@ -322,10 +323,11 @@ class Preview extends PureComponent {
       });
     }
 
-    showImgDialog = (src) => {
+    showImgDialog = (value) => {
       this.setState({
         imgDialogVisible: true,
-        imgDialogSrc: src
+        imgDialogSrc: value.image,
+        modalShowInfo: value
       });
     }
 
@@ -386,7 +388,7 @@ class Preview extends PureComponent {
       render() {
         const {
           treeDatas, selectAreaKeys, expandedKeys, algorithmList = [],
-          videoSrc, historyListData, imgDialogVisible, imgDialogSrc, noVideo, videoName, showText
+          videoSrc, historyListData, imgDialogVisible, imgDialogSrc, noVideo, videoName, showText, modalShowInfo
         } = this.state;
 
         const { preview: { loading }, push } = this.props;
@@ -494,7 +496,7 @@ class Preview extends PureComponent {
                       hoverable
                       style={{ width: 220 }}
                       cover={<img alt="" src={`${urlPrefix}${item.imageCompress}`} onError={this.handleImageError} />}
-                      onClick={() => this.showImgDialog(item.image)}
+                      onClick={() => this.showImgDialog(item)}
                       key={item.id}
                       className={styles.historyListCard}
                     >
@@ -509,12 +511,45 @@ class Preview extends PureComponent {
                 }
               </div>
             </div>
-            <ImageModal
+            {/* <ImageModal
               visible={imgDialogVisible}
               closeModal={this.closeImgDialog}
               src={`${urlPrefix}${imgDialogSrc}`}
               handleImageError={e => this.handleImageError(e)}
-            />
+            /> */}
+            <Modal
+              title="告警记录"
+              visible={imgDialogVisible}
+              onCancel={this.closeImgDialog}
+              // className={styles.pswModal}
+              forceRender
+              destroyOnClose
+              width="560px"
+              footer={null}
+              wrapClassName={styles.alarmDetailModal}
+            >
+              <div className={styles.alarmListImg}>
+                <img src={`${urlPrefix}${imgDialogSrc}`} onError={this.handleImageError} alt="" />
+                <div className={styles.alarmModalName}>{modalShowInfo.algorithmCnName}</div>
+              </div>
+              <p>
+                告警时间：
+                <span>{modalShowInfo.resTime}</span>
+              </p>
+              <p>
+                告警区域：
+                <span>{modalShowInfo.areaPath}</span>
+              </p>
+              <p>
+                告警位置：
+                <span>{modalShowInfo.deviceName}</span>
+              </p>
+              {this.getTypeContent(modalShowInfo)}
+              <p>
+                告警规则：
+                <span>{modalShowInfo.controlRule}</span>
+              </p>
+            </Modal>
           </div>
         );
       }
