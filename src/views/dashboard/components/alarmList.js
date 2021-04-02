@@ -174,7 +174,7 @@ class AlarmList extends Component {
               {item.resTime}
             </span>
           </p>
-          <p>{item.deviceName}</p>
+          <p className={styles.alarmDetailDeviceName}>{item.deviceName}</p>
         </div>
         <div className={styles.lookDetail} onClick={() => this.detailModal(item)}>查看</div>
       </div>
@@ -200,14 +200,18 @@ class AlarmList extends Component {
             <div className={styles.alarmModalName}>{modalShowInfo.algorithmCnName}</div>
           </div>
           <p>
+            告警时间：
+            <span>{modalShowInfo.resTime}</span>
+          </p>
+          <p>
             告警区域：
             <span>{modalShowInfo.areaPath}</span>
           </p>
-          {this.getTypeContent(modalShowInfo)}
           <p>
-            人员姓名：
-            <span>{modalShowInfo.areaPath}</span>
+            告警位置：
+            <span>{modalShowInfo.deviceName}</span>
           </p>
+          {this.getTypeContent(modalShowInfo)}
           <p>
             告警规则：
             <span>{modalShowInfo.controlRule}</span>
