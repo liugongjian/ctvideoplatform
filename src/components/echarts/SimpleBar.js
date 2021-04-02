@@ -87,8 +87,8 @@ class BarChart extends PureComponent {
           },
           // 坐标轴轴线
           axisLine: {
-            show: true,
-            color: '#999',
+            show: false,
+            // color: '#999',
           },
           // 坐标轴刻度标签
           axisLabel: {
@@ -104,7 +104,7 @@ class BarChart extends PureComponent {
           splitLine: {
             show: true,
             lineStyle: {
-              color: '#999',
+              color: '#e8e8e8',
               type: 'dashed'
             }
           },
