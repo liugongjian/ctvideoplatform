@@ -120,7 +120,7 @@ class Manage extends Component {
               title={(
                 <>
                   <EIcon type={`myicon-menuIcon-${item.id} ${styles['EMR-manage-tab-iconFs']}`} />
-                  <span className={styles.span10px}>
+                  <span className={styles.menuName}>
                     {item.name}
                   </span>
                 </>
@@ -132,7 +132,7 @@ class Manage extends Component {
                     <Link to={`${pathPrefix}${item.path}${val.path}`}>
                       {/* <Icon type="anticon-service-Cloudhostconsole" /> */}
                       <EIcon type={`myicon-menuIcon-${val.id} ${styles['EMR-manage-tab-iconFs']}`} />
-                      <span className={styles.span10px}>{val.name}</span>
+                      <span className={styles.menuName}>{val.name}</span>
                     </Link>
                   </Menu.Item>
                 ))
@@ -146,7 +146,7 @@ class Manage extends Component {
           <Link to={`${pathPrefix}${item.path}`}>
             {/* <Icon type="desktop" /> */}
             <EIcon type={`myicon-menuIcon-${item.id} ${styles['EMR-manage-tab-iconFs']}`} />
-            <span className={styles.span10px} style={{ verticalAlign: 'middle' }}>{item.name}</span>
+            <span className={styles.menuName}>{item.name}</span>
           </Link>
         </Menu.Item>
       );
