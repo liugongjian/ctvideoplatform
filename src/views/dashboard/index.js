@@ -3,6 +3,7 @@ import {
   Select,
   Spin,
 } from 'antd';
+import nodataImg from 'Assets/nodata.png';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
@@ -14,14 +15,14 @@ import math from 'Utils/math';
 import Pie from 'Components/echarts/Pie';
 import Bar from 'Components/echarts/SimpleBar';
 import moment from 'moment';
+import EIcon from 'Components/Icon';
 import PeriodFilter from './components/periodFilter';
 import AlarmList from './components/alarmList';
-import EIcon from 'Components/Icon';
 
 import styles from './index.less';
 
 const { Option } = Select;
-var interval;
+let interval;
 const dateFormat = 'YYYY-MM-DD';
 const TYPE_ALL_ALGO_STATC = '0';
 const mapStateToProps = state => ({ dashboard: state.dashboard });
@@ -214,16 +215,22 @@ class Dashboard extends Component {
                 </div>
                 <div className={styles['SubContents-AlarmDist']}>
                   <div className={styles.panelSubTitle}>近两周摄像头告警分布</div>
-                  <ul className={styles.alarmRanking}>
-                    {
-                      alarmTrend?.alarmDistributionList?.map(({ name, totalCount }, idx) => (
-                        <li key={`ditributeRanking-${idx}`}>
-                          <span className={styles['alarmRanking-name']} title={name}>{name}</span>
-                          <span className={styles['alarmRanking-total']}>{totalCount}</span>
-                        </li>
-                      ))
-                    }
-                  </ul>
+                  {
+                      alarmTrend?.alarmDistributionList?.length > 0 ? (
+                        <ul className={styles.alarmRanking}>
+                          {alarmTrend.alarmDistributionList.map(({ name, totalCount }, idx) => (
+                            <li key={`ditributeRanking-${idx}`}>
+                              <span className={styles['alarmRanking-name']} title={name}>{name}</span>
+                              <span className={styles['alarmRanking-total']}>{totalCount}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <div className={styles.noDataImgWrapper}>
+                          <img src={nodataImg} alt="暂无数据" />
+                        </div>
+                      )
+                  }
                 </div>
               </div>
             </div>
@@ -236,19 +243,19 @@ class Dashboard extends Component {
         <div className={styles.panelBottom}>
           <div className={styles['panelBottom-algoStatus']}>
             <div className={styles.panelTitle}>算法已配置设备数量</div>
-            <div style={{ width:"100%", height:"calc(100% - 40px)"}}>
+            <div style={{ width: '100%', height: 'calc(100% - 40px)' }}>
               <Bar
-              key='algoConfigs'
-              id="algoConfigs"
-             
-              data={{
-                yAxisData: algoConfs?.seriesData,
-                xAxisData: algoConfs?.xaxisData,
+                key="algoConfigs"
+                id="algoConfigs"
+
+                data={{
+                  yAxisData: algoConfs?.seriesData,
+                  xAxisData: algoConfs?.xaxisData,
                 // yAxisName: '算法已配置设备数/个'
-              }}
-              loading={algoConfsLoading}
-            />
-             </div>
+                }}
+                loading={algoConfsLoading}
+              />
+            </div>
           </div>
           <div className={styles['panelBottom-algoTimes']}>
             <div className={styles.panelTitle}>
