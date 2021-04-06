@@ -132,7 +132,7 @@ class Dashboard extends Component {
                 <div className={styles['PreviewData-split']} />
                 <div className={styles['PreviewData-title']}>算法配置占比</div>
                 <div className={styles['PreviewData-number']}>
-                  {algoConfs?.algorithmicRatio ? parseFloat(algoConfs.algorithmicRatio * 100).toFixed(2) : '-'}
+                  {algoConfs?.algorithmicRatio || algoConfs?.algorithmicRatio === 0 ? parseFloat(algoConfs.algorithmicRatio * 100).toFixed(2) : '-'}
                   %
                 </div>
                 <div className={styles['PreviewData-text']}>
