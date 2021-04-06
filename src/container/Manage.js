@@ -146,7 +146,7 @@ class Manage extends Component {
           <Link to={`${pathPrefix}${item.path}`}>
             {/* <Icon type="desktop" /> */}
             <EIcon type={`myicon-menuIcon-${item.id} ${styles['EMR-manage-tab-iconFs']}`} />
-            <span className={styles.span10px}>{item.name}</span>
+            <span className={styles.span10px} style={{ verticalAlign: 'middle' }}>{item.name}</span>
           </Link>
         </Menu.Item>
       );

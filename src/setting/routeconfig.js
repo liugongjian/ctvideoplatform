@@ -215,6 +215,18 @@ const menuRoutes = [
     ]
   },
   {
+    path: '/tasks',
+    pageTitle: '算法任务',
+    exact: true,
+    component: DefaultPage,
+  },
+  {
+    path: '/tenants',
+    pageTitle: '租户管理',
+    exact: true,
+    component: DefaultPage,
+  },
+  {
     path: '/',
     pageTitle: '首页',
     exact: true,
