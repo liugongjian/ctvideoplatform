@@ -247,7 +247,6 @@ class Dashboard extends Component {
               <Bar
                 key="algoConfigs"
                 id="algoConfigs"
-
                 data={{
                   yAxisData: algoConfs?.seriesData,
                   xAxisData: algoConfs?.xaxisData,
@@ -267,14 +266,14 @@ class Dashboard extends Component {
                 />
               </div>
             </div>
-            <Pie
-              id="alarmDistribute"
-              key="alarmDistribute"
-              width="100%"
-              height="calc(100% - 52px)"
-              data={{ data: alarmDistribute?.distributorPieMap, total: alarmDistribute?.alarmTotal, title: '算法告警分布' }}
-              loading={alarmDistributeLoading}
-            />
+            <div style={{ width: '100%', height: 'calc(100% - 52px)' }}>
+              <Pie
+                id="alarmDistribute"
+                key="alarmDistribute"
+                data={{ data: alarmDistribute?.distributorPieMap, total: alarmDistribute?.alarmTotal, title: '算法告警分布' }}
+                loading={alarmDistributeLoading}
+              />
+            </div>
           </div>
         </div>
       </div>
