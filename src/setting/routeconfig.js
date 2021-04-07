@@ -60,6 +60,7 @@ import AddAccount from 'Views/system/user/addUser';
 import Face from 'Views/gallery/face';
 import ImportFace from 'Views/gallery/face/import';
 import Alarms from 'Views/alarms';
+import AlgoTask from 'Views/algotask';
 import { pathPrefix } from 'Constants/Dictionary';
 
 
@@ -127,7 +128,7 @@ const menuRoutes = [
         path: '/account',
         exact: true,
         pageTitle: '账号管理',
-        component: Account,
+        component: AlgoTask,
         children: [
           {
             path: '/add',
