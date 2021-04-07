@@ -8,6 +8,7 @@ import {
   Input,
   Button,
   Icon,
+  message,
 } from 'antd';
 import PropTypes from 'prop-types';
 import { constant } from 'lodash';
@@ -235,6 +236,11 @@ class CanvasOperator extends Component {
     const {
       canvas, canvasDom, points, mode, isDraw
     } = this.state;
+    const { areas } = this.props;
+    if (areas?.length > 0) {
+      this.showSingleAreaMessage();
+      return;
+    }
     const curPoint = this.getLocation(e.clientX, e.clientY);
     if (curPoint) {
       switch (mode) {
@@ -262,10 +268,10 @@ class CanvasOperator extends Component {
 
   onMouseMove = (e) => {
     const {
-      isDraw, canvas, canvasDom, mode,
+      isDraw, canvas, canvasDom, mode, points
     } = this.state;
-    const { points } = this.state;
-    if (!isDraw) {
+    const { areas } = this.props;
+    if (!isDraw || areas?.length > 0) {
       return;
     }
     // console.log('e.clientX', e.clientX);
@@ -337,13 +343,17 @@ class CanvasOperator extends Component {
     this.props.onAreasChange([]);
   }
 
+  showSingleAreaMessage = () => {
+    message.warn('仅允许配置单个区域');
+  }
+
   onMouseUp = (e) => {
     console.log('onMouseUp');
     const {
       isDraw, canvas, canvasDom, mode, points, ratio, imageHeight, imageWidth
     } = this.state;
     const { areas, onAreasChange } = this.props;
-    if (!isDraw) {
+    if (!isDraw || areas?.length > 0) {
       return;
     }
     const curPoint = this.getLocation(e.clientX, e.clientY);

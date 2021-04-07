@@ -44,7 +44,7 @@
         .PreviewData{
           .DeviceStatus:last-of-type{
             height: 70px;
-            &Icon{
+            .DeviceStatusIcon{
               line-height: 70px;
             }
           }
@@ -115,11 +115,24 @@
           &-AlarmDist{
             width: 30%;
             max-width: 450px;
+            .noDataImgWrapper{
+              height: calc(100% - 22px);
+              width: 100%;
+              position: relative;
+              img{
+                height: 120px;
+                width: 102px;
+                /* margin-top: calc(50%); */
+                position: absolute;
+                top: calc(50% - 60px - 22px);
+                left: calc(50% - 51px);
+              }
+            }
             .alarmRanking{
               margin-top: 15px;
               padding-inline-start: 0;
               counter-reset:section;
-              height: 100%;
+              height: calc(100% - 37px);
               overflow-y:auto;
               &-name{
                 width: calc(100% - 30px - 65px); 

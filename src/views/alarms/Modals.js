@@ -26,7 +26,8 @@ class LicenseImportModalComp extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps?.initailVal !== this.props.initailVal) {
+    if (nextProps?.initailVal !== this.props.initailVal
+      || nextProps?.visible !== this.props.visible) {
       this.initData(nextProps);
     }
   }
@@ -36,7 +37,7 @@ class LicenseImportModalComp extends Component {
     const { licenseNo: licenseOrigin, label: labelOrigin, color } = initailVal || {};
     const licenseProvince = licenseOrigin && licenseOrigin[0] || undefined;
     const licenseNo = licenseOrigin && licenseOrigin.slice(1, licenseOrigin.length);
-    const label = labelOrigin;
+    const label = labelOrigin === 'OTHER' ? null : labelOrigin;
     // switch (labelOrigin) {
     //   case 'WHITE':
     //     label = 1;
@@ -80,9 +81,13 @@ class LicenseImportModalComp extends Component {
     const licenseNo = val?.licenseNo || form.getFieldValue('licenseNo');
     const licenseProvince = form.getFieldValue('licenseProvince');
     if (licenseNo && licenseProvince) {
-      const license = `${licenseProvince}${licenseNo}`;
-      isLicenseExist(license).then((res) => {
-        this.setState({ exist: res });
+      form.validateFields(['licenseNo', 'licenseProvince'], (err) => {
+        if (!err) {
+          const license = `${licenseProvince}${licenseNo}`;
+          isLicenseExist(license).then((res) => {
+            this.setState({ exist: res });
+          });
+        }
       });
     }
   }
@@ -126,17 +131,12 @@ class LicenseImportModalComp extends Component {
                           callback('请补充车牌号！');
                         }
                         callback();
+                        this.validateExist();
                       }
                     }
                   ],
                 })(
-                  <Select
-                    onSelect={() => {
-                      form.validateFields(['licenseNo']);
-                      this.validateExist();
-                    }}
-                    placeholder="-"
-                  >
+                  <Select>
                     {
                       LicenseProvinces.map(item => (
                         <Select.Option value={item}>{item}</Select.Option>
@@ -156,16 +156,24 @@ class LicenseImportModalComp extends Component {
                     },
                     {
                       validator: (rule, val, callback) => {
+                        const reg = /^[0-9a-zA-Z]+$/;
                         form.validateFields(['licenseProvince']);
                         if (!val || !form.getFieldValue('licenseProvince')) {
                           callback(' ');
                         }
+                        if (val.length > 7) {
+                          callback('车牌号不能超过8位');
+                        }
+                        if (!reg.test(val)) {
+                          callback('车牌号只能包含数字和字母');
+                        }
                         callback();
+                        this.validateExist({ licenseNo: val });
                       }
                     }
                   ],
                 })(<Input
-                  onChange={e => this.validateExist({ licenseNo: e.target.value })}
+                  // onChange={e => this.validateExist({ licenseNo: e.target.value })}
                   placeholder="请输入车牌号"
                 />)}
               </Form.Item>
@@ -207,7 +215,7 @@ class LicenseImportModalComp extends Component {
           { exist ? (
             <div className={styles.existMsg}>
               <span className={styles['existMsg-icon']}><Icon type="exclamation-circle" /></span>
-              该车牌已经在车辆库中，确定则覆盖原数据。
+              该车牌已经在车牌库中，确定则覆盖原数据。
             </div>
           ) : null}
         </div>

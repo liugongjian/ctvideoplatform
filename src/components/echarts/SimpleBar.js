@@ -145,7 +145,7 @@ class BarChart extends PureComponent {
 
   render() {
     const {
-      id, width, height, className, data
+      id, className, data
     } = this.props;
     return (
       <React.Fragment>

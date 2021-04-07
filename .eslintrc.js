@@ -9,6 +9,7 @@ module.exports = {
   },
   parser: 'babel-eslint',
   rules: {
+    'linebreak-style': ["off", "windows"],
     'new-cap': [2, { capIsNewExceptions: ['List', 'Map', 'Set'] }],
     'react/no-multi-comp': 0,
     'import/default': 0,

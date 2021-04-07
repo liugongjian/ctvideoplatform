@@ -214,6 +214,36 @@ const menuRoutes = [
       },
     ]
   },
+  // {
+  //   path: '/tasks',
+  //   pageTitle: '算法任务',
+  //   exact: true,
+  //   component: DefaultPage,
+  // },
+  {
+    path: '/tenants',
+    pageTitle: '租户管理',
+    exact: true,
+    component: DefaultPage,
+    children: [
+      {
+        path: '/add',
+        pageTitle: '添加租户',
+        component: DefaultPage,
+      },
+      {
+        path: '/:tenantId',
+        pageTitle: '租户详情',
+        component: DefaultPage,
+      },
+    ]
+  },
+  {
+    path: '/licenseManage',
+    pageTitle: '许可管理',
+    exact: true,
+    component: DefaultPage,
+  },
   {
     path: '/',
     pageTitle: '首页',

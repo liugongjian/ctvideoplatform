@@ -13,6 +13,10 @@
     }
   }
 }
+.menuName{
+  display: inline-block;
+  vertical-align: middle;
+}
 .@{manage-prefix-cls} {
   &-container {
     // position: relative;
@@ -53,6 +57,10 @@
   }
   &-tab {
     :global{
+      .ant-menu-vertical-right .ant-menu-submenu-title, .ant-menu-inline .ant-menu-submenu-title{
+        margin-top: 0px;
+        margin-bottom: 0px;
+      }
       .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected{
         background-color: #2A89E0;
       }
@@ -122,7 +130,7 @@
       //   vertical-align: baseline;
       // }
     }
-    .span10px{
+    .menuName{
       display: inline-block;
       vertical-align: middle;
       color:white;
@@ -132,6 +140,7 @@
       font-size: 16px;
       padding-right: 16px;
       display: inline-block;
+      vertical-align: middle;
     }
     &-full{
       .@{manage-prefix-cls}-tab-iconFs{

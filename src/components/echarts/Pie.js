@@ -121,12 +121,12 @@ class PieChart extends PureComponent {
 
     render() {
       const {
-        id, width, height, className, data
+        id, className, data
       } = this.props;
       return (
         <React.Fragment>
-          <div id={`pie-${id}`} className={`${className || ''}`} style={{ display: this.hasData ? 'block' : 'none', width, height }} />
-          <NoChart show={!this.hasData} width={width} height={height} />
+          <div id={`pie-${id}`} className={`${className || ''}`} style={{ display: this.hasData ? 'block' : 'none', width: '100%', height: '100%' }} />
+          <NoChart show={!this.hasData} width="100%" height="100%" />
         </React.Fragment>
       );
     }
