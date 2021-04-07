@@ -32,8 +32,16 @@ const proxyServer = {
     secure: false,
     changeOrigin: true
   },
+  '/zhujianxia': {
+    target: 'http://192.168.4.251:8670', //
+    pathRewrite: {
+      '^/zhujianxia': ''
+    },
+    secure: false,
+    changeOrigin: true
+  },
   '/zhoulingpeng': {
-    target: 'http://192.168.1.199:8670',
+    target: 'http://192.168.4.199:8670',
     pathRewrite: {
       '^/zhoulingpeng': ''
     },

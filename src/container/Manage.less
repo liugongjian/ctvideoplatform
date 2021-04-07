@@ -13,6 +13,10 @@
     }
   }
 }
+.menuName{
+  display: inline-block;
+  vertical-align: middle;
+}
 .@{manage-prefix-cls} {
   &-container {
     // position: relative;
@@ -44,15 +48,19 @@
     }
     .menu {
       width: 240px;
-      transition: width 0.5s cubic-bezier(0.49, -0.3, 0.68, 1.23);
+      transition: width 0.1s cubic-bezier(0.49, -0.3, 0.68, 1.23);
     }
     .menuInline{
       width: 50px;
-      transition: width 0.3s ;
+      transition: width 0.1s;
     }
   }
   &-tab {
     :global{
+      .ant-menu-vertical-right .ant-menu-submenu-title, .ant-menu-inline .ant-menu-submenu-title{
+        margin-top: 0px;
+        margin-bottom: 0px;
+      }
       .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected{
         background-color: #2A89E0;
       }
@@ -97,7 +105,7 @@
       :global{
         .ant-menu-inline-collapsed > .ant-menu-item, .ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-item,
          .ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-inline-collapsed > .ant-menu-submenu > .ant-menu-submenu-title{
-          padding:0 20px !important;
+          padding:0 17px !important;
           // width: 15px;
           overflow: hidden;
           a{
@@ -118,8 +126,11 @@
           margin: 0;
         }
       }
+      // .@{manage-prefix-cls}-tab-iconFs{
+      //   vertical-align: baseline;
+      // }
     }
-    .span10px{
+    .menuName{
       display: inline-block;
       vertical-align: middle;
       color:white;
@@ -127,10 +138,15 @@
     &-iconFs{
       color:white;
       font-size: 16px;
-      padding-right: 13px;
+      padding-right: 16px;
       display: inline-block;
       vertical-align: middle;
     }
+    &-full{
+      .@{manage-prefix-cls}-tab-iconFs{
+        vertical-align: middle;
+      }
+    } 
 
     // width: 240px;
     // position: fixed;

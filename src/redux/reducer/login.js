@@ -14,6 +14,7 @@ const LOGOUT_FAIL = 'LOGOUT_FAIL';
 const USERINFO = 'USERINFO';
 const USERINFO_SUCCESS = 'USERINFO_SUCCESS';
 const USERINFO_FAIL = 'USERINFO_FAIL';
+const LOAD_SUCCESS = 'LOAD_SUCCESS';
 
 const initialState = {
   loginInfo: {},
@@ -67,6 +68,10 @@ export default function login(state = initialState, action = {}) {
         ...state,
         error: action.error
       };
+    case LOAD_SUCCESS:
+      return {
+        ...state
+      };
     default:
       return {
         ...state
@@ -96,5 +101,15 @@ export function userInfo() {
   return {
     type: [LOGOUT, LOGOUT_SUCCESS, LOGOUT_FAIL],
     promise: apiClient => apiClient.get(`${urlPrefix}/userInfo`)
+  };
+}
+
+export function updatePassword(data) {
+  return {
+    type: LOAD_SUCCESS,
+    promise: apiClient => apiClient.post(`${urlPrefix}/user/renewpassword/`,
+      {
+        data
+      })
   };
 }

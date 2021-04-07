@@ -34,6 +34,10 @@ class RoleAdd extends Component {
       menuIds:[],
       areaIds:[]
     },
+    withParentCheckedKeys: {
+      menuIds:[],
+      areaIds:[]
+    },
     selectedKeys: [],
     autoExpandParent: true,
     name:'',
@@ -125,14 +129,43 @@ onSearchInput(value){
     })
   }
 
-  
+  getKeysParents(keys){
+    if(keys.length == 0){
+      return []; 
+    }
+    let pkeys = [];
+    keys.forEach((item) => {
+      this.state.tempData.forEach((data)=>{
+        if(item == data.id){
+          pkeys.push(data.pid);
+        }
+      })
+    });
+    let temp1 = this.getKeysParents(pkeys);
+    let result = pkeys.concat(temp1).concat(keys);
+    return result;
+  }
+
+  filterArray(keys){
+    keys.forEach((item,index,arr) => {
+      if(typeof(item) == 'number'){
+        arr[index] = item + '';
+      }
+    })
+    keys = Array.from(new Set(keys));
+    keys.splice(keys.findIndex(item => item == '0'), 1);
+    return keys;
+  }
+
   onCheck(keys){
     console.log('onCheck--',keys);
+
     if(this.state.activeMenuKey.key === '1'){
-      
-      this.setState({checkedKeys : {...this.state.checkedKeys , menuIds : keys}},() => console.log('onCheck--1',this.state.checkedKeys));
+      const menukeys = this.filterArray(this.getKeysParents(keys));
+      this.setState({checkedKeys : {...this.state.checkedKeys , menuIds : keys} , withParentCheckedKeys : {...this.state.withParentCheckedKeys , menuIds : menukeys}} );
     }else{
-      this.setState({checkedKeys : {...this.state.checkedKeys , areaIds : keys}},() => console.log('onCheck--2',this.state.checkedKeys));
+      const areakeys = this.filterArray(this.getKeysParents(keys));
+      this.setState({checkedKeys : {...this.state.checkedKeys , areaIds : keys} , withParentCheckedKeys : {...this.state.withParentCheckedKeys , areaIds : areakeys}});
     }
   };
 
@@ -147,8 +180,8 @@ onSearchInput(value){
     this.props.addRole({
       name:this.state.name,
       description:this.state.description,
-      menuIds : this.state.checkedKeys.menuIds,
-      areaIds : this.state.checkedKeys.areaIds,
+      menuIds : this.state.withParentCheckedKeys.menuIds,
+      areaIds : this.state.withParentCheckedKeys.areaIds,
     }).then((data)=>{
       if(data){
         message.success('添加成功')
@@ -161,6 +194,10 @@ onSearchInput(value){
           },
           expandedKeys: [],
           checkedKeys: {
+            menuIds:[],
+            areaIds:[]
+          },
+          withParentCheckedKeys: {
             menuIds:[],
             areaIds:[]
           },

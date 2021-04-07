@@ -36,6 +36,10 @@ class RoleEdit extends Component {
       menuIds:[],
       areaIds:[]
     },
+    withParentCheckedKeys: {
+      menuIds:[],
+      areaIds:[]
+    },
     selectedKeys: [],
     autoExpandParent: true,
     name:'',
@@ -87,10 +91,12 @@ class RoleEdit extends Component {
         this.props.getAreaList(0,null).then((res) => {
           const treeDatas = this.dataToTree(res);
           const expandedKeys = res.map((item)=>item.id)
+          let areaIds = this.checkIfParentChecked(res,this.state.checkedKeys.areaIds);
           this.setState({
             tempData: res,
             treeDatas,
             expandedKeys,
+            checkedKeys:{...this.state.checkedKeys , areaIds },
           });
         });
       }
@@ -98,12 +104,14 @@ class RoleEdit extends Component {
   }
   onCheck(keys){
     if(this.state.activeMenuKey.key === '1'){
-      let newCheckeKeys = this.getNewCheckeKeys(keys,'menuIds')
-      this.setState({checkedKeys : {...this.state.checkedKeys,menuIds : newCheckeKeys}});
+      let newCheckeKeys1 = this.getNewCheckeKeys(keys,'menuIds')
+      const menukeys = this.filterArray(this.getKeysParents(newCheckeKeys1));
+      this.setState({checkedKeys : {...this.state.checkedKeys,menuIds : newCheckeKeys1} , withParentCheckedKeys : {...this.state.withParentCheckedKeys , menuIds : menukeys}});
     }else{
-      debugger;
-      let newCheckeKeys = this.getNewCheckeKeys(keys,'areaIds')
-      this.setState({checkedKeys : {...this.state.checkedKeys , areaIds : newCheckeKeys}});
+      let newCheckeKeys2 = this.getNewCheckeKeys(keys,'areaIds')
+      const areakeys = this.filterArray(this.getKeysParents(newCheckeKeys2));
+
+      this.setState({checkedKeys : {...this.state.checkedKeys , areaIds : newCheckeKeys2} , withParentCheckedKeys : {...this.state.withParentCheckedKeys , areaIds : areakeys}});
     }
   };
 
@@ -154,8 +162,8 @@ class RoleEdit extends Component {
       id:this.state.roleid,
       name:this.state.name,
       description:this.state.description,
-      menuIds : this.state.checkedKeys.menuIds,
-      areaIds : this.state.checkedKeys.areaIds,
+      menuIds : this.state.withParentCheckedKeys.menuIds,
+      areaIds : this.state.withParentCheckedKeys.areaIds,
     }).then((data)=>{
       if(data){
         message.success('添加成功')
@@ -169,6 +177,10 @@ class RoleEdit extends Component {
           },
           expandedKeys: [],
           checkedKeys: {
+            menuIds:[],
+            areaIds:[]
+          },
+          withParentCheckedKeys:{
             menuIds:[],
             areaIds:[]
           },
@@ -235,13 +247,83 @@ class RoleEdit extends Component {
     })
   }
 
+  checkIfParentChecked(rawtree,checkedKeys){
+
+    let parentCheckedKeys = [];
+    let rawtreekeys = [];
+    let leafCheckedKeys = [];
+    let parentKeysInfo = {};
+    //找到父节点
+    checkedKeys.forEach((item) => {
+      rawtree.forEach((data)=>{
+        if(item == data.pid){
+          parentCheckedKeys.push(item);
+        }
+      });
+    });
+    //去重
+    parentCheckedKeys = Array.from(new Set(parentCheckedKeys));
+    rawtree.forEach(item=>{
+      rawtreekeys.push(item.id)
+    })
+    leafCheckedKeys = rawtreekeys.filter(key => !parentCheckedKeys.includes(key) && checkedKeys.includes(key));
+    // console.log('checkedKeys',checkedKeys)
+    // console.log('parentCheckedKeys',parentCheckedKeys);
+    // console.log('leafCheckedKeys',leafCheckedKeys);
+    parentCheckedKeys.forEach((item)=>{
+      let leafTotal = rawtree.filter((k) => k.pid == item ).length; //原树中当前父节点子节点的总个数
+      let leafChecked = 0;
+      leafCheckedKeys.forEach((leaf) => {
+        rawtree.forEach((node) => {
+          if(leaf == node.id && item == node.pid){
+            leafChecked++;
+          }
+        }) 
+      });
+      if(leafTotal == leafChecked){
+        leafCheckedKeys.push(item);
+      }
+    })
+    console.log('leafCheckedKeys',leafCheckedKeys);
+    return leafCheckedKeys
+  }
+
+  
+  getKeysParents(keys){
+    if(keys.length == 0){
+      return []; 
+    }
+    let pkeys = [];
+    keys.forEach((item) => {
+      this.state.tempData.forEach((data)=>{
+        if(item == data.id){
+          pkeys.push(data.pid);
+        }
+      })
+    });
+    let temp1 = this.getKeysParents(pkeys);
+    let result = pkeys.concat(temp1).concat(keys);
+    return result;
+  }
+
+  filterArray(keys){
+    keys.forEach((item,index,arr) => {
+      if(typeof(item) == 'number'){
+        arr[index] = item + '';
+      }
+    })
+    keys = Array.from(new Set(keys));
+    keys.splice(keys.findIndex(item => item == '0'), 1);
+    return keys;
+  }
+
 
   componentDidMount() {
     const { roleid } = this.props.match.params;
 
     this.props.getMenuList().then((res)=>{
       const expandedKeys = res.map((item)=>item.id)
-      // console.log('expandedKeys',expandedKeys)
+      console.log('res',res)
       const treeDatas = this.dataToTree(res);
       this.setState({
         tempData: res,
@@ -249,16 +331,28 @@ class RoleEdit extends Component {
         expandedKeys
       },()=>{
         this.props.getRoleInfo( roleid ).then((res)=>{
+          console.log('res1111',res)
+          // const checkedKeys = {
+          //   menuIds : JSON.parse(res[0].menuIds),
+          //   areaIds : JSON.parse(res[0].areaIds),
+          // }
+          let menuIds = this.checkIfParentChecked(this.state.tempData,JSON.parse(res[0].menuIds));
+          let areaIds = JSON.parse(res[0].areaIds);
+
           const checkedKeys = {
-            menuIds : JSON.parse(res[0].menuIds),
-            areaIds : JSON.parse(res[0].areaIds),
+            menuIds,
+            areaIds,
           }
           this.setState({
             roleid : roleid,
             name : res[0].name,
             description : res[0].description,
             checkedKeys,
-          },console.log());
+            withParentCheckedKeys:{
+                menuIds : JSON.parse(res[0].menuIds),
+                areaIds : JSON.parse(res[0].areaIds),
+            },
+          });
         })
       });
     })

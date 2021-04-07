@@ -14,6 +14,7 @@ import 'antd/dist/antd.css';
 import styles from './index.less';
 import warnPic from '@/assets/role/warn.png'
 import EIcon from 'Components/Icon';
+import DeleteModal from 'Components/modals/warnModal';
 const { Column } = Table;
 const { Dragger } = Upload;
 
@@ -119,7 +120,7 @@ class AddPlate extends Component {
                 </p>
                 <p className="ant-upload-text">点击或将文件拖拽到这里上传</p>
                 <p className="ant-upload-hint">
-                  支持的格式：仅支持csv、xlsx、xls格式文件
+                  支持的格式：仅支持xlsx、xls格式文件
                 </p>
               </Dragger>
               <div className={styles.buttonWrapper}>
@@ -135,7 +136,7 @@ class AddPlate extends Component {
     
     const confirmer = ()=>(
       <div className={styles.confirmerWrapper}>
-          <Table dataSource={importedPlateInfo.list} pagination={false} rowClassName={styles.tabRow}>
+          <Table dataSource={importedPlateInfo.list} pagination={false} rowClassName={styles.tabRow} rowKey={record => record.licenseNo + Math.random()}>
           <Column title="车牌号" dataIndex="licenseNo" width={'14%'} className="tabble-row" align="center" 
             render= {(text,record) => (
                 <div>
@@ -173,7 +174,10 @@ class AddPlate extends Component {
         </div>
           <div>
             <div className={styles.buttonWrapper2}>
-              <Button key="cancel"className={styles.btnBack2} onClick={()=>this.setState({step : 1})}>上一步</Button>
+              {/* <Button key="cancel"className={styles.btnBack2} onClick={()=>this.setState({step : 1})}>上一步</Button> */}
+              <Button key="cancel" className={styles.btnBack2} onClick={()=>this.onBackToMain()}>
+               返回
+                </Button>
               <Button type="primary" onClick={()=>this.onCheckAndSubmit()}>提交</Button>
             </div>
           </div>
@@ -183,7 +187,7 @@ class AddPlate extends Component {
     return (
       <div className={styles.mainWrapper}>
         {this.state.step > 1 ? confirmer() : uploader()}
-
+{/* 
         <Modal
           centered
           width={412}
@@ -206,7 +210,14 @@ class AddPlate extends Component {
               <span>你添加的人脸数据有{this.state.duplicatedPlates}条已存在是否要覆盖</span>
             </div>
           </div>
-        </Modal>
+        </Modal> */}
+
+        <DeleteModal
+              visible={this.state.submitModalVisible}
+              handleOk={this.onSubmitDuplicatedPlates}
+              closeModal={() => {this.setState({submitModalVisible:false})}}
+              content={`你添加的车牌数据有${this.state.duplicatedPlates}条已存在是否要覆盖`}
+            />
 
 
       </div>

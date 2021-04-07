@@ -40,9 +40,8 @@ class Face extends Component {
       },
       delModalVisible: false,
       selectedRowKeys: [],
-      repeatModalVisible: false,
       total: 0,
-      pageSize: 12,
+      pageSize: document.documentElement.clientWidth >= 1600 ? 16 : 12,
       pageNum: 1,
       loading: false,
       faceData: [
@@ -53,12 +52,41 @@ class Face extends Component {
       delName: '',
       delIds: [],
       editId: '',
-      editFaceId: ''
+      submitBtnDis: false,
+      editFaceId: '',
+      pageSizeOptions: document.documentElement.clientWidth >= 1600 ? ['16', '32', '48', '64'] : ['12', '24', '36', '48'],
+      isBigScreen: document.documentElement.clientWidth >= 1600,
     };
 
     componentDidMount() {
       this.getTableList();
+      window.addEventListener('resize', this.resize.bind(this));
     }
+
+
+    componentWillUnmount() {
+      window.removeEventListener('resize', this.resize.bind(this));
+    }
+
+    resize = () => {
+      const screenWidth = document.documentElement.clientWidth;
+      if (!this.state.isBigScreen && screenWidth >= 1600) {
+        this.setState({
+          isBigScreen: true,
+          pageNum: 1,
+          pageSize: 16,
+          pageSizeOptions: ['16', '32', '48', '64']
+        }, () => this.getTableList());
+      } else if (this.state.isBigScreen && screenWidth < 1600) {
+        this.setState({
+          pageNum: 1,
+          isBigScreen: false,
+          pageSize: 12,
+          pageSizeOptions: ['12', '24', '36', '48']
+        }, () => this.getTableList());
+      }
+    };
+
 
     getTableList = () => {
       const { getFaceList } = this.props;
@@ -124,18 +152,21 @@ class Face extends Component {
     };
 
     // 提交添加人脸数据的表单
-    addFace = (isReplaced) => {
+    addFace = () => {
       const { addFace } = this.props;
       this.props.form.validateFields((errors, values) => {
         if (!errors) {
+          this.setState({
+            submitBtnDis: true,
+            modalVisible: false,
+          });
           delete values.imageUrl;
-          // const data = Object.assign({ isReplaced }, values);
           addFace(values).then(
             (res) => {
               message.success('新增人脸数据成功');
               this.setState({
-                modalVisible: false,
                 pageNum: 1,
+                submitBtnDis: false
               }, () => {
                 this.getTableList();
               });
@@ -185,6 +216,10 @@ class Face extends Component {
     editFace = (e) => {
       const { editFace } = this.props;
       const { editId, editFaceId } = this.state;
+      this.setState({
+        submitBtnDis: false,
+        modalVisible: false,
+      });
       this.props.form.validateFields((errors, values) => {
         if (!errors) {
           const data = Object.assign({ id: editId, faceId: editFaceId }, values);
@@ -193,7 +228,7 @@ class Face extends Component {
             (res) => {
               message.success('编辑人脸数据成功');
               this.setState({
-                modalVisible: false
+                submitBtnDis: true,
               }, () => this.getTableList());
             }
           ).catch((err) => {
@@ -204,21 +239,6 @@ class Face extends Component {
     };
 
     handleDelFace = (isSingleDel, item) => {
-      // const { id } = item;
-      // let ids;
-      // let nameTemp;
-      // if (this.state.selectedRowKeys.length > 0) {
-      //   ids = this.state.selectedRowKeys;
-      //   nameTemp = '';
-      // } else {
-      //   ids = [id];
-      //   nameTemp = item.name;
-      // }
-      // this.setState({
-      //   delModalVisible: true,
-      //   delIds: ids,
-      //   delName: nameTemp
-      // });
       const id = isSingleDel ? item.id : '';
       let ids;
       let nameTemp;
@@ -264,37 +284,17 @@ class Face extends Component {
       const data = {
         userFaceIdList: this.state.delIds
       };
+      this.setState({
+        delModalVisible: false,
+        loading: true,
+      });
       delFace(data).then((res) => {
         message.success('删除成功');
         this.setState({
-          delModalVisible: false,
           pageNum: 1,
           selectedRowKeys: [],
         }, () => this.getTableList());
       });
-    };
-
-    replaceFace = () => {
-      const { replaceFace } = this.props;
-      // const data = {
-      //   isReplaced: true,
-      // };
-      // replaceFace(data).then((res) => {
-      //   // message.success('新增人脸数据成功');
-      //   // this.setState({
-      //   //   modalVisible: false
-      //   // });
-      //   // this.getTableList();
-      // });
-      const isReplaced = true;
-      this.addFace(isReplaced);
-    };
-
-    handleReplaceCancel = () => {
-      const isReplaced = false;
-      this.setState({
-        repeatModalVisible: false
-      }, () => this.addFace(isReplaced));
     };
 
     beforeUpload = (file) => {
@@ -346,7 +346,7 @@ class Face extends Component {
               value={name}
               onPressEnter={() => this.setState({ pageNum: 1 }, () => { this.getTableList(); })}
               suffix={
-                <SearchOutlined style={{ color: 'rgba(0,0,0,.45)' }} onClick={() => { this.getTableList(); }} />
+                <SearchOutlined style={{ color: 'rgba(0,0,0,.45)' }} onClick={() => this.setState({ pageNum: 1 }, () => { this.getTableList(); })} />
               }
             />
           </div>
@@ -437,7 +437,7 @@ class Face extends Component {
 
     renderTable = () => {
       const {
-        loading, uploadUrl, faceData, modalVisible, textMap, modalStatus, imageLoading, imageUrl, delModalVisible, selectedRowKeys, delName, delIds, total, pageNum, pageSize, repeatModalVisible
+        loading, uploadUrl, faceData, modalVisible, textMap, modalStatus, imageLoading, imageUrl, delModalVisible, selectedRowKeys, delName, delIds, total, pageNum, pageSize, pageSizeOptions, submitBtnDis
       } = this.state;
       const delIdsLength = delIds.length;
       const {
@@ -519,7 +519,7 @@ class Face extends Component {
               width="600px"
               onCancel={this.handleCancel}
               footer={[
-                <Button key="submit" type="primary" onClick={modalStatus === 'add' ? this.addFace : this.editFace}>
+                <Button key="submit" type="primary" onClick={modalStatus === 'add' ? this.addFace : this.editFace} disabled={submitBtnDis}>
                   确定
                 </Button>,
                 <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleCancel}>
@@ -546,7 +546,7 @@ class Face extends Component {
                     rules: [
                       { required: true, message: '请上传人脸图像' }
                     ],
-                    validateTrigger: 'onBlur',
+                    validateTrigger: 'onChange',
                     valuePropName: 'avatar'
                   })(
                     <Upload
@@ -568,7 +568,7 @@ class Face extends Component {
                     rules: [
                       { required: true, message: '请选择一个标签' }
                     ],
-                    validateTrigger: 'onBlur'
+                    validateTrigger: 'onChange'
                   })(
                     <Radio.Group>
                       <Radio value={0}>白名单</Radio>
@@ -586,33 +586,14 @@ class Face extends Component {
               content={`您确定要删除${selectedRowKeys.length > 0 ? `这${delIdsLength}个人脸数据吗？` : `${delName.split('.')[0]}的人脸数据吗？`}`}
             />
 
-            <Modal
-              visible={repeatModalVisible}
-              className={styles.repeatModal}
-              width="400px"
-              closable={false}
-              footer={[
-                <Button key="submit" type="primary" onClick={this.replaceFace}>
-                  确定
-                </Button>,
-                <Button key="back" style={{ margin: '0 0 0 20px' }} onClick={this.handleReplaceCancel}>
-                  取消
-                </Button>,
-              ]}
-            >
-              <div>
-                <Icon type="warning" />
-                <div>您添加的人脸数据已存在，是否要覆盖？</div>
-              </div>
-            </Modal>
           </div>
           <Pagination
             total={total}
             current={pageNum}
-            defaultPageSize={pageSize}
+            pageSize={pageSize}
             onChange={this.onPageChange}
             onShowSizeChange={this.onPageChange}
-            pageSizeOptions={['12', '24', '36', '48']}
+            pageSizeOptions={pageSizeOptions}
             hideOnSinglePage={false}
             showSizeChanger
             showQuickJumper

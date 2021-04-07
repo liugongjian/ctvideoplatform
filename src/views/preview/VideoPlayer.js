@@ -46,6 +46,10 @@ class VideoPlayer extends Component {
         preload: 'auto',
         fluid: true,
         autoplay: 'any',
+        errorDisplay: false,
+        // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
+        // notSupportedMessage: '视频流离家出走了，请稍后再试',
+        techOrder: ['html5'],
         sources: [
           {
             src,
@@ -62,7 +66,7 @@ class VideoPlayer extends Component {
       const { videoId } = this.state;
       return (
         <div className={styles.videoWrap}>
-          <video className={`${styles.videojs} video-js`} id={videoId} ref={node => this.videoNode = node} />
+          <video className={`${styles.videojs} video-js`} id={videoId} ref={node => this.videoNode = node} data-setup="{}" />
         </div>
       );
     }

@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'cloudFont';
   src:
-    url('fonts/cloudFont.ttf?pja5s') format('truetype'),
-    url('fonts/cloudFont.woff?pja5s') format('woff'),
-    url('fonts/cloudFont.svg?pja5s#cloudFont') format('svg');
+    url('fonts/cloudFont.ttf?olb9p2') format('truetype'),
+    url('fonts/cloudFont.woff?olb9p2') format('woff'),
+    url('fonts/cloudFont.svg?olb9p2#cloudFont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -24,11 +24,20 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.myicon-canvas-del:before {
+.myicon-dashboardCamera:before {
+  content: "\eb5b";
+}
+.myicon-monitorIcon:before {
+  content: "\eb56";
+}
+.myicon-monitorOff:before {
   content: "\eb58";
 }
 .myicon-canvas-reset:before {
   content: "\eb59";
+}
+.myicon-canvas-del:before {
+  content: "\eb5a";
 }
 .myicon-downloadicon:before {
   content: "\eb57";
@@ -52,9 +61,6 @@
 }
 .myicon-folderopen:before {
   content: "\eb55";
-}
-.myicon-monitorIcon:before {
-  content: "\eb56";
 }
 .myicon-import:before {
   content: "\eb4c";

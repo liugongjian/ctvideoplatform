@@ -1,0 +1,193 @@
+p {
+  margin-bottom: 10px;
+}
+.span10px {
+  width: 10px;
+  display: inline-block;
+}
+.span20px {
+  width: 20px;
+  display: inline-block;
+}
+.areaCascader {
+  position: absolute;
+  z-index: 1050;
+  font-size: 14px;
+  white-space: nowrap;
+  background: #fff;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+.areaCascader :global .ant-cascader-menu {
+  height: 280px;
+}
+.areaCascader :global .ant-cascader-menu > .ant-cascader-menu-item {
+  width: 195px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cameraDetail {
+  background-color: white;
+  min-height: calc(100% - 30px);
+  margin: 10px 10px 20px 10px;
+  border-radius: 2px;
+}
+.cameraDetail :global .ant-tabs-nav-wrap {
+  margin-top: 10px;
+}
+.cameraDetail :global .ant-tabs-bar {
+  border-color: #e8e8e8;
+}
+.cameraDetail :global .ant-tabs-ink-bar {
+  height: 2px;
+  background-color: #fa8334;
+}
+.cameraDetail :global .ant-tabs-tab {
+  font-family: PingFangSC-Medium;
+  font-size: 16px;
+  line-height: 22px;
+  margin: 0 20px;
+}
+.cameraDetail :global .ant-tabs-tab-active,
+.cameraDetail :global .ant-tabs-tab-active:hover,
+.cameraDetail :global .ant-tabs-tab:hover {
+  color: #fa8334;
+}
+.cameraDetail :global .ant-form-item-required::before {
+  color: #f5222d;
+}
+.cameraDetail :global .ant-btn {
+  width: 78px;
+}
+.cameraDetail .span10px {
+  width: 10px;
+  display: inline-block;
+}
+.cameraDetail .span20px {
+  width: 20px;
+  display: inline-block;
+}
+.cameraDetail .basicSetting :global .ant-form > .ant-form-item > .ant-form-item-label {
+  width: 150px;
+  vertical-align: top;
+}
+.cameraDetail .basicSetting :global .ant-form > .ant-form-item > .ant-form-item-control-wrapper {
+  width: 390px;
+  display: inline-block;
+}
+.cameraDetail .basicSetting .locationInputSplit {
+  display: inline-block;
+  width: 20px;
+}
+.cameraDetail .basicSetting .locationInputNumber {
+  display: inline-block;
+  width: calc(50% - 10px);
+}
+.cameraDetail .basicSetting .addItemRequiredIcon label::before {
+  display: inline-block;
+  margin-right: 4px;
+  color: #f5222d;
+  font-size: 14px;
+  font-family: SimSun, sans-serif;
+  line-height: 1;
+  content: "*";
+}
+.cameraDetail .basicSetting .questionIcon {
+  color: #666;
+  cursor: pointer;
+}
+.cameraDetail .basicSetting .questionIcon:hover {
+  color: #ff9832;
+}
+.cameraDetail .algorithmSetting {
+  margin: 10px 20px;
+}
+.cameraDetail .algorithmSetting .algorithmList .algoItem {
+  display: table;
+  font-size: 12px;
+  width: 100%;
+  height: 50px;
+  padding: 0 20px;
+  border: 1px solid #e9e9e9;
+}
+.cameraDetail .algorithmSetting .algorithmList .algoItem:not(:last-child) {
+  border-bottom: 0px;
+}
+.cameraDetail .algorithmSetting .algorithmList .algoItem-checked,
+.cameraDetail .algorithmSetting .algorithmList .algoItem-title,
+.cameraDetail .algorithmSetting .algorithmList .algoItem-desp,
+.cameraDetail .algorithmSetting .algorithmList .algoItem-configBtn {
+  display: table-cell;
+  vertical-align: middle;
+}
+.cameraDetail .algorithmSetting .algorithmList .algoItem-checked {
+  width: 40px;
+}
+.cameraDetail .algorithmSetting .algorithmList .algoItem-title {
+  width: 150px;
+}
+.cameraDetail .algorithmSetting .algorithmList .algoItem-title-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+.cameraDetail .algorithmSetting .algorithmList .algoItem-configBtn {
+  width: 80px;
+  text-align: right;
+}
+.cameraDetail .algorithmSetting .algorithmList .algoItem-configBtn a {
+  display: inline-block;
+  width: 76px;
+  height: 26px;
+  line-height: 24px;
+  border: 1px solid #ff9832;
+  color: #ff9832;
+  border-radius: 4px;
+  font-size: 12px;
+  text-align: center;
+}
+.cameraDetail .algorithmSetting .algorithmList .algoItem-desp {
+  color: #666;
+  width: calc(100% - 270px);
+}
+.cameraDetail .algorithmSetting .btnWrapper {
+  margin-top: 20px;
+  width: 100%;
+  text-align: left;
+}
+.algoConfig-content > div:not(:first-child) {
+  margin-top: 15px;
+}
+.algoConfig .timeSplit {
+  display: inline-block;
+  color: #9b9b9b;
+  padding: 0 10px;
+}
+.modalSubTitle {
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 22px;
+  word-wrap: break-word;
+  margin-bottom: 15px;
+}
+.aiParams {
+  height: 50px;
+}
+.aiParams .paramName {
+  overflow: hidden;
+  width: 150px;
+  display: inline-block;
+}
+.aiParams .paramName > span {
+  margin-bottom: 8px;
+  float: right;
+}
+.aiParams .paramValue {
+  overflow: hidden;
+  width: 200px;
+  display: inline-block;
+}

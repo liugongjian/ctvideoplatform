@@ -610,11 +610,11 @@ class Account extends Component {
         render: (text, record) => (
           <div className={styles.operation}>
             <div>
-              <a onClick={() => this.handleEdit(record)}>编辑</a>
+              <a onClick={() => this.setState({ selectedRowKeys: [] }, () => this.handleEdit(record))}>编辑</a>
               <div className={styles.line} />
             </div>
             <div>
-              <a onClick={() => this.handlePassword(record)}>重置密码</a>
+              <a onClick={() => this.setState({ selectedRowKeys: [] }, this.handlePassword(record))}>重置密码</a>
               <div className={styles.line} />
             </div>
             <div>
@@ -687,7 +687,7 @@ class Account extends Component {
             </Form>
           </Modal>
           <Modal
-            title="重置密码"
+            title="修改密码"
             visible={this.state.pswModalVisible}
             onCancel={this.handlePswCancel}
             className={styles.pswModal}
@@ -754,7 +754,7 @@ class Account extends Component {
               </FormItem>
             </Form>
           </Modal>
-          
+
           <DeleteModal
             visible={deleteModelVisible}
             handleOk={this.delAccount}
@@ -782,7 +782,6 @@ class Account extends Component {
             defaultPageSize={pageSize}
             onChange={this.onPageChange}
             onShowSizeChange={this.onPageChange}
-            pageSizeOptions={['12', '24', '36', '48']}
             hideOnSinglePage={false}
             showSizeChanger
             showQuickJumper

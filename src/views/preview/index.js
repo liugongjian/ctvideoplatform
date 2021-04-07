@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { bindActionCreators } from 'redux';
 import {
-  Tree, Input, Select, Icon, Card, Spin
+  Tree, Input, Select, Icon, Card, Spin, Modal
 } from 'antd';
 import EIcon from 'Components/Icon';
 import { connect } from 'react-redux';
@@ -14,9 +14,9 @@ import {
 import { getAlgorithmList } from 'Redux/reducer/monitor';
 import { urlPrefix } from 'Constants/Dictionary';
 
-import {
-  ImageModal,
-} from 'Views/alarms/Modals';
+// import {
+//   ImageModal,
+// } from 'Views/alarms/Modals';
 
 import nostatus from 'Assets/nostatus.png';
 import nodata from 'Assets/nodata.png';
@@ -41,6 +41,15 @@ const { Search } = Input;
 const { Option } = Select;
 const { Meta } = Card;
 
+const LABEL_PERSON = {
+  WHITE: '白名单', BLACK: '黑名单', OTHER: '陌生人'
+};
+
+const LABEL_CAR = {
+  WHITE: '白名单', BLACK: '黑名单', OTHER: '其他'
+};
+
+
 class Preview extends PureComponent {
   constructor(props) {
     super(props);
@@ -52,7 +61,13 @@ class Preview extends PureComponent {
       keyword: '',
       videoSrc: null,
       historyListData: {},
-      imgDialogVisible: false
+      imgDialogVisible: false,
+      algorithmIds: [],
+      showText: '无信号',
+      tempTotal: -1,
+      historyID: '',
+      timer: null,
+      modalShowInfo: ''
     };
   }
 
@@ -62,6 +77,11 @@ class Preview extends PureComponent {
     this.getAlgorithmList();
   }
 
+  componentWillUnmount() {
+    this.clearTimer();
+  }
+
+
     getTreeData = () => {
       const { getAreaList } = this.props;
       const { keyword, algorithmIds } = this.state;
@@ -70,10 +90,22 @@ class Preview extends PureComponent {
         algorithmIds
       };
       getAreaList(param).then((res) => {
-        const treeDatas = this.dataToTree(res);
-        this.setState({
-          treeDatas
-        });
+        if (res) {
+          const treeDatas = this.dataToTree(res);
+          let expendsIds = ['1'];
+          if (keyword || algorithmIds.length) {
+            expendsIds = res.map(item => item.id);
+          }
+          this.setState({
+            treeDatas,
+            expandedKeys: expendsIds
+          });
+        } else {
+          this.setState({
+            treeDatas: [],
+            expandedKeys: ['1']
+          });
+        }
       });
     }
 
@@ -99,54 +131,102 @@ class Preview extends PureComponent {
     }
 
     doubleClickHandle = (e, val) => {
-    //   console.log('曲线救国思密达----->', val);
-      this.setState({
-        selectAreaKeys: [val.id]
-      }, () => {
-        this.getHistory(val.id);
-        this.getVideoSrc(val.id, val.name);
-      });
+      this.clearTimer();
+      if (val.online) {
+        this.setState({
+          selectAreaKeys: [val.id],
+          videoSrc: null,
+          tempTotal: -1,
+          historyID: val.id
+        }, () => {
+          this.getHistory();
+          this.setIntervalTimer();
+          this.getVideoSrc(val.id, val.name);
+        });
+      } else {
+        this.setState({
+          selectAreaKeys: [val.id],
+          videoSrc: null,
+          showText: '设备已离线',
+          historyListData: {}
+        });
+      }
     }
 
     getHistory=(id) => {
+      const { historyID } = this.state;
       const { getHistoryListTopTen } = this.props;
       const param = {
         pageSize: 10,
         pageNo: 0,
-        deviceId: id
+        deviceId: historyID
       };
       getHistoryListTopTen(param).then((res) => {
-        console.log('res', res);
-        this.setState({
-          historyListData: res
-        });
+        const { tempTotal } = this.state;
+        if (tempTotal === -1) {
+          this.setState({
+            historyListData: res,
+            tempTotal: res.recordsTotal
+          });
+        } else if (res.recordsTotal > tempTotal) {
+          this.setState({
+            historyListData: res,
+            tempTotal: res.recordsTotal
+          });
+        } else {
+          // this.timer = window.setInterval(getTopTenList, 5000);
+        }
       });
     }
 
+    setIntervalTimer = () => {
+      this.state.timer = window.setInterval(() => {
+        this.getHistory();
+      }, 5000);
+    }
+
+    clearTimer = () => {
+      window.clearInterval(this.state.timer);
+      this.state.timer = null;
+    }
+
+
     getVideoSrc = (id, name) => {
       const { getVideoSrc } = this.props;
-      console.log('id', id);
-      getVideoSrc(id).then((res) => {
-        if (res && res.m3u8uri) {
-          this.setState({
-            videoSrc: res.m3u8uri,
-            noVideo: false,
-            videoName: name,
-          });
-        } else {
-          this.setState({
-            videoSrc: '',
-            noVideo: true,
-            videoName: '',
-          });
-        }
+      this.setState({
+        showText: '加载中...'
+      }, () => {
+        getVideoSrc(id).then((res) => {
+          if (res && res.m3u8uri) {
+            this.setState({
+              videoSrc: res.m3u8uri,
+              noVideo: false,
+              videoName: name,
+              showText: '无信号'
+            }, () => {
+              window.clearTimeout(this.timer);
+              this.timer = null;
+            });
+          } else {
+            this.setState({
+              videoSrc: '',
+              noVideo: true,
+              videoName: '',
+              showText: '无信号'
+            }, () => {
+              window.clearTimeout(this.timer);
+              this.timer = null;
+            });
+          }
+        });
       });
     }
 
     clearVideo = () => {
       this.setState({
         videoSrc: '',
-        historyListData: {}
+        historyListData: {},
+        showText: '无信号'
       });
     }
 
@@ -166,10 +246,9 @@ class Preview extends PureComponent {
         return val.name;
       };
       const getIcon = (val) => {
-        console.log('val.online', val.online);
         if (val.type === 1) {
           return (
-            <EIcon type={val.online ? `${styles.monitorOnline} myicon-monitorIcon` : `${styles.monitorOffline} myicon-monitorIcon`} />
+            <EIcon type={val.online ? `${styles.monitorOnline} myicon-monitorIcon` : `${styles.monitorOffline} myicon-monitorOff`} />
           );
         }
         return (<Icon type="folder" />);
@@ -244,10 +323,11 @@ class Preview extends PureComponent {
       });
     }
 
-    showImgDialog = (src) => {
+    showImgDialog = (value) => {
       this.setState({
         imgDialogVisible: true,
-        imgDialogSrc: src
+        imgDialogSrc: value.image,
+        modalShowInfo: value
       });
     }
 
@@ -262,10 +342,53 @@ class Preview extends PureComponent {
         image.onerror = null;
       };
 
+      getTag = (title, type) => (
+        <span
+          className={`${styles.AlarmCardTag} ${styles[`AlarmCardTag-${type}`]}`}
+        >
+          {title}
+        </span>
+      )
+
+
+      getTypeContent = (val) => {
+        if (val.face && val.face.label !== 'OTHER') {
+          return (
+            <div className={styles.historyTextName}>
+              <span>姓名：</span>
+              <span>
+                {val.face.username || '-'}
+              </span>
+              {this.getTag(LABEL_PERSON[val.face.label], val.face.label)}
+            </div>
+          );
+        }
+        if (val.plate && val.plate.label !== 'OTHER') {
+          return (
+            <div className={styles.historyTextName}>
+              <span>车牌：</span>
+              <span>
+                {val.plate.licenseNo || '-'}
+              </span>
+              {this.getTag(LABEL_CAR[val.plate.label], val.plate.label)}
+            </div>
+          );
+        }
+        return false;
+        // (
+        //   <div className={styles.historyTextName}>
+        //     <span>姓名：</span>
+        //     <span>70 陈丽君</span>
+        //     {this.getTag('白名单', 'BLACK')}
+        //   </div>
+        // );
+      }
+
+
       render() {
         const {
           treeDatas, selectAreaKeys, expandedKeys, algorithmList = [],
-          videoSrc, historyListData, imgDialogVisible, imgDialogSrc, noVideo, videoName
+          videoSrc, historyListData, imgDialogVisible, imgDialogSrc, noVideo, videoName, showText, modalShowInfo
         } = this.state;
 
         const { preview: { loading }, push } = this.props;
@@ -282,21 +405,25 @@ class Preview extends PureComponent {
           </Option>
         ));
 
-        const getImg = () => {
-          if (noVideo) {
-            return (
-              <div className={styles.nodataBox}>
-                <img src={nodata} alt="" />
-              </div>
-            );
-          }
-          return (
-            <div className={styles.nostatusBox}>
-              <img src={nostatus} alt="" />
-              <p>请双击左侧点位播放监控视频</p>
-            </div>
-          );
-        };
+        const getImg = () => (
+          <div className={styles.allStatusBox}>
+            <p>{showText}</p>
+          </div>
+        );
+        // if (noVideo) {
+        //   return (
+        //     <div className={styles.nodataBox}>
+        //       <img src={nodata} alt="" />
+        //     </div>
+        //   );
+        // }
+        // return (
+        //   <div className={styles.nostatusBox}>
+        //     <img src={nostatus} alt="" />
+        //     <p>请双击左侧点位播放监控视频</p>
+        //   </div>
+        // );
+
 
         return (
 
@@ -369,25 +496,60 @@ class Preview extends PureComponent {
                       hoverable
                       style={{ width: 220 }}
                       cover={<img alt="" src={`${urlPrefix}${item.imageCompress}`} onError={this.handleImageError} />}
-                      onClick={() => this.showImgDialog(item.image)}
+                      onClick={() => this.showImgDialog(item)}
                       key={item.id}
                       className={styles.historyListCard}
                     >
-                      <p>
-                        {item.algorithmCnName}
+                      <div className={styles.historyTextBox}>
+                        <span>{item.algorithmCnName}</span>
                         <span className={styles.historyTime}>{item.resTime}</span>
-                      </p>
+                      </div>
+                      {this.getTypeContent(item)}
+
                     </Card>
                   ))
                 }
               </div>
             </div>
-            <ImageModal
+            {/* <ImageModal
               visible={imgDialogVisible}
               closeModal={this.closeImgDialog}
               src={`${urlPrefix}${imgDialogSrc}`}
               handleImageError={e => this.handleImageError(e)}
-            />
+            /> */}
+            <Modal
+              title="告警记录"
+              visible={imgDialogVisible}
+              onCancel={this.closeImgDialog}
+              // className={styles.pswModal}
+              forceRender
+              destroyOnClose
+              width="560px"
+              footer={null}
+              wrapClassName={styles.alarmDetailModal}
+            >
+              <div className={styles.alarmListImg}>
+                <img src={`${urlPrefix}${imgDialogSrc}`} onError={this.handleImageError} alt="" />
+                <div className={styles.alarmModalName}>{modalShowInfo.algorithmCnName}</div>
+              </div>
+              <p>
+                告警时间：
+                <span>{modalShowInfo.resTime}</span>
+              </p>
+              <p>
+                告警区域：
+                <span>{modalShowInfo.areaPath}</span>
+              </p>
+              <p>
+                告警位置：
+                <span>{modalShowInfo.deviceName}</span>
+              </p>
+              {this.getTypeContent(modalShowInfo)}
+              <p>
+                告警规则：
+                <span>{modalShowInfo.controlRule}</span>
+              </p>
+            </Modal>
           </div>
         );
       }

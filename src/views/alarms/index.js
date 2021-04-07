@@ -38,14 +38,14 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   dispatch
 );
 
-const initialVals = {
+const initialVals = () => ({
   startTime: moment().subtract('days', 7),
   endTime: moment(),
   deviceVal: [],
   algoVal: [],
   pageSize: 12,
   current: 1,
-};
+});
 
 const timeFormat = 'YYYY-MM-DD HH:mm:ss';
 class Alarms extends Component {
@@ -61,7 +61,7 @@ class Alarms extends Component {
       listLoading: false,
       total: 0,
       algorithmIdList: undefined,
-      ...initialVals,
+      ...initialVals(),
     };
   }
 
@@ -105,16 +105,23 @@ class Alarms extends Component {
       current,
       pageSize,
       algorithmIdList,
-      startTime, endTime, algoVal, deviceVal
+      startTime, endTime, algoVal, deviceVal, deviceList
     } = this.state;
+
     const params = {
       pageNo: current - 1,
       pageSize,
       algorithmIdList: algoVal,
       startTime: startTime.format(timeFormat),
       endTime: endTime.format(timeFormat),
-      deviceId: deviceVal ? deviceVal[deviceVal.length - 1] : undefined,
     };
+    const deviceOrAreaId = deviceVal ? deviceVal[deviceVal.length - 1] : undefined;
+    const item = deviceOrAreaId ? deviceList.find(({ id }) => id == deviceOrAreaId) : {};
+    if (item && item.type == 0) {
+      params.areaId = deviceOrAreaId;
+    } else if (item && item.type == 1) {
+      params.deviceId = deviceOrAreaId;
+    }
     this.props.getAlarmList(params).then((res) => {
       console.log('getAlarmList', res);
       const {
@@ -169,16 +176,16 @@ class Alarms extends Component {
       }
     });
     // 子节点为区域，不是设备，不可选
-    const setAreaNodeDisabled = (tree) => {
-      tree.forEach((item) => {
-        if (item.children) {
-          setAreaNodeDisabled(item.children);
-        } else {
-          item.disabled = item.type == 0;
-        }
-      });
-    };
-    setAreaNodeDisabled(val);
+    // const setAreaNodeDisabled = (tree) => {
+    //   tree.forEach((item) => {
+    //     if (item.children) {
+    //       setAreaNodeDisabled(item.children);
+    //     } else {
+    //       item.disabled = item.type == 0;
+    //     }
+    //   });
+    // };
+    // setAreaNodeDisabled(val);
     return val;
   };
 
@@ -214,7 +221,7 @@ class Alarms extends Component {
     }
 
     onReset = () => {
-      this.setState(initialVals, this.getAlarms);
+      this.setState(initialVals(), this.getAlarms);
     }
 
     showTotal = total => (<span className={styles.totalText}>{`总条数： ${total}`}</span>)
@@ -263,6 +270,7 @@ class Alarms extends Component {
               </Select>
               <span className={styles.span10px} />
               <Cascader
+                changeOnSelect
                 placeholder="请选择设备"
                 popupClassName={styles.cameraCascader}
                 options={deviceTree}
@@ -305,10 +313,11 @@ class Alarms extends Component {
               total={total}
               current={current}
               // pageSize={pageSize}
-              defaultPageSize={initialVals.pageSize}
+              defaultPageSize={initialVals().pageSize}
               onChange={this.onPageChange}
               onShowSizeChange={this.onPageChange}
               pageSizeOptions={['12', '24', '36', '48']}
+              pageSize={pageSize}
               hideOnSinglePage={false}
               showSizeChanger
               showQuickJumper

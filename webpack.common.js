@@ -39,9 +39,10 @@ module.exports = {
     }),
     new CopyPlugin([
       { from: './src/assets/cloud-l.gif', to: `${prodUrl}cloud-l.gif` },
-      { from: './template/config.js', to: `${prodUrl}config.js` },
-      { from: './template/header.css', to: `${prodUrl}header.css` },
-      { from: './template/header.js', to: `${prodUrl}header.js` },
+      // { from: './template/config.js', to: `${prodUrl}config.js` },
+      // { from: './template/header.css', to: `${prodUrl}header.css` },
+      // { from: './template/header.js', to: `${prodUrl}header.js` },
+      { from: './template/favicon.ico', to: `${prodUrl}favicon.ico` }
     ]),
     new HappyPack({
       id: 'babel',

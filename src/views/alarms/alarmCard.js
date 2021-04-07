@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
 import React, { Component } from 'react';
@@ -37,7 +38,8 @@ const showFormat = 'YYYY/MM/DD HH:mm:ss';
 const getImgUrl = (name) => {
   const arr = [
     'carPersonCheck', 'faceRecognize', 'plateRecognize', 'areaAlarm', 'stepWallCheck', 'peopleTraffic', 'plateTraffic', 'safetyHat',
-    'workingClothes', 'carTypeDetect', 'peopleCrowd', 'fightDetect', 'fallDownDetect', 'roadsideStall', 'wanderTarry', 'maskDetect'
+    'workingClothes', 'carTypeDetect', 'peopleCrowd', 'fightDetect', 'fallDownDetect', 'roadsideStall', 'wanderTarry', 'maskDetect',
+    'sleepDetect', 'fireDetect', 'dutyDetect',
   ];
   if (arr.indexOf(name) > -1) {
     return require(`Assets/algorithmIcons/${name}.png`);
@@ -228,27 +230,31 @@ class AlarmCard extends Component {
               : (
                 <React.Fragment>
                   {recognizeType === 'car' ? (
-                    <div>
-                      车牌：
-                      {plate?.licenseNo || '-'}
-                      <React.Fragment>
-                        {
-                          plate.label && LABEL[plate.label]
-                            ? (<Tag title={LABEL[plate.label]} type={plate.label} />)
-                            : null}
-                      </React.Fragment>
-                    </div>
+                    plate?.licenseNo ? (
+                      <div>
+                        车牌：
+                        {plate?.licenseNo || '-'}
+                        <React.Fragment>
+                          {
+                            plate.label && LABEL[plate.label]
+                              ? (<Tag title={LABEL[plate.label]} type={plate.label} />)
+                              : null}
+                        </React.Fragment>
+                      </div>
+                    ) : null
                   ) : (
-                    <div>
-                      姓名：
-                      {face?.username || '-'}
-                      <React.Fragment>
-                        {
+                      face?.username ? (
+                        <div>
+                          姓名：
+                          {face?.username || '-'}
+                          <React.Fragment>
+                            {
                         face?.label && LABEL[face.label]
                           ? <Tag title={LABEL[face.label]} type={face.label} />
                           : null}
-                      </React.Fragment>
-                    </div>
+                          </React.Fragment>
+                        </div>
+                      ) : null
                   )}
                 </React.Fragment>
               )

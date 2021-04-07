@@ -39,7 +39,7 @@ const mapDispathToProps = dispatch => bindActionCreators({
 
 class Manage extends Component {
   state = {
-    collapsed: false,
+    collapsed: true,
     menuRouter: null,
   }
 
@@ -120,7 +120,7 @@ class Manage extends Component {
               title={(
                 <>
                   <EIcon type={`myicon-menuIcon-${item.id} ${styles['EMR-manage-tab-iconFs']}`} />
-                  <span className={styles.span10px}>
+                  <span className={styles.menuName}>
                     {item.name}
                   </span>
                 </>
@@ -132,7 +132,7 @@ class Manage extends Component {
                     <Link to={`${pathPrefix}${item.path}${val.path}`}>
                       {/* <Icon type="anticon-service-Cloudhostconsole" /> */}
                       <EIcon type={`myicon-menuIcon-${val.id} ${styles['EMR-manage-tab-iconFs']}`} />
-                      <span className={styles.span10px}>{val.name}</span>
+                      <span className={styles.menuName}>{val.name}</span>
                     </Link>
                   </Menu.Item>
                 ))
@@ -146,7 +146,7 @@ class Manage extends Component {
           <Link to={`${pathPrefix}${item.path}`}>
             {/* <Icon type="desktop" /> */}
             <EIcon type={`myicon-menuIcon-${item.id} ${styles['EMR-manage-tab-iconFs']}`} />
-            <span className={styles.span10px}>{item.name}</span>
+            <span className={styles.menuName}>{item.name}</span>
           </Link>
         </Menu.Item>
       );
@@ -164,7 +164,7 @@ class Manage extends Component {
     }
     return (
       <div className={styles['EMR-manage-container']}>
-        <div className={`${styles['EMR-manage-tab']} ${collapsed ? styles['EMR-manage-tab-collapsed'] : ''}`}>
+        <div className={`${styles['EMR-manage-tab']} ${collapsed ? styles['EMR-manage-tab-collapsed'] : styles['EMR-manage-tab-full']}`}>
           <Spin spinning={menuListLoading}>
             {
               collapsed
@@ -190,6 +190,7 @@ class Manage extends Component {
               mode="inline"
               className={collapsed ? `${styles.menuInline}` : `${styles.menu}`}
               inlineCollapsed={collapsed}
+              onClick={() => { this.changeMenuCollapsed(true); }}
             >
               {leftMenu}
             </Menu>
@@ -198,7 +199,7 @@ class Manage extends Component {
 
         <div className={styles['EMR-manage-content']}>
           <div className={styles['EMR-manage-content-inner']}>
-            <PageHeader changeCollapsed={this.changeMenuCollapsed} />
+            <PageHeader changeCollapsed={this.changeMenuCollapsed} collapsed={collapsed} />
             <div className={styles['EMR-manage-main']}>
               { menuRouter }
             </div>
