@@ -39,7 +39,7 @@ const getImgUrl = (name) => {
   const arr = [
     'carPersonCheck', 'faceRecognize', 'plateRecognize', 'areaAlarm', 'stepWallCheck', 'peopleTraffic', 'plateTraffic', 'safetyHat',
     'workingClothes', 'carTypeDetect', 'peopleCrowd', 'fightDetect', 'fallDownDetect', 'roadsideStall', 'wanderTarry', 'maskDetect',
-    'sleepDetect', 'fireDetect', 'dutyDetect',
+    'sleepDetect', 'fireDetect', 'dutyDetect', // 'fireEngineBlock'
   ];
   if (arr.indexOf(name) > -1) {
     return require(`Assets/algorithmIcons/${name}.png`);

@@ -30,6 +30,8 @@ import {
   ALGO_CONFIG_TRIGGER_RULE,
   ALGO_CONFIG_TRIGGER_TIME_TYPE,
   ALGO_CONFIG_TYPE,
+  DIRECTION_OPTIONS, // 人流方向
+  TIME_INTERVAL, // 判定周期
 } from '../constants';
 
 import styles from '../index.less';
@@ -103,6 +105,8 @@ class CameraDetail extends Component {
       imgLoading: false,
       // areasConfig: undefined,
       aiParams: [],
+      streamDirection: DIRECTION_OPTIONS.DEFAULT.value, // 人流方向
+      timeInterval: TIME_INTERVAL[0].value, // 判定周期
     };
   }
 
@@ -123,7 +127,8 @@ class CameraDetail extends Component {
       if (curAlgo.isPick) {
         this.initAlgoConfig(curAlgo);
       }
-      if (configTypes.indexOf(ALGO_CONFIG_TYPE.AREA) > -1) {
+      if (configTypes.indexOf(ALGO_CONFIG_TYPE.AREA) > -1
+        || configTypes.indexOf(ALGO_CONFIG_TYPE.LINE) > -1) {
         this.setState({ imgLoading: true });
         getAlgoAreaImage(cameraId)
           .then(imgSrc => this.setState({ imgSrc, imgLoading: false }))
@@ -143,6 +148,7 @@ class CameraDetail extends Component {
       triggerType,
       timeSetting,
       areas,
+      timeInterval,
     } = algoConfigs || {};
     const nextState = {};
     if (timeSetting !== undefined) {
@@ -152,6 +158,9 @@ class CameraDetail extends Component {
       } else {
         nextState.timeType = ALGO_CONFIG_TRIGGER_TIME_TYPE.BY_SEL.value;
       }
+    }
+    if (timeInterval) {
+      nextState.timeInterval = timeInterval;
     }
     if (triggerType !== undefined) {
       nextState.ruleConfig = `${triggerType}`;
@@ -175,7 +184,7 @@ class CameraDetail extends Component {
 
   handleOk = () => {
     const {
-      areas, timeSetting, ruleConfig, timeType
+      areas, timeSetting, ruleConfig, timeType, timeInterval
     } = this.state;
     console.log('areas', areas);
     const {
@@ -192,6 +201,10 @@ class CameraDetail extends Component {
     const configEnable = {};
     for (const config of configTypes) {
       configEnable[config] = true;
+    }
+    // TODO
+    if (configEnable[ALGO_CONFIG_TYPE.PERIOD]) {
+      postData.timeInterval = timeInterval;
     }
     if (configEnable[ALGO_CONFIG_TYPE.AREA]) {
       postData.areas = areas.map(({
@@ -305,6 +318,56 @@ class CameraDetail extends Component {
     }, () => console.log('this.state.aiParams', this.state.aiParams));
   }
 
+  onDirectionChange = (streamDirection) => {
+    this.setState({ streamDirection });
+  }
+
+  onTimeIntervalChange = (timeInterval) => {
+    this.setState({ timeInterval });
+  }
+
+  renderCanvas = (configEnable) => {
+    const {
+      curAlgo
+    } = this.props;
+    const {
+      areas = [],
+      initalAreas = [],
+      imgSrc, imgLoading, streamDirection,
+    } = this.state;
+    if (configEnable[ALGO_CONFIG_TYPE.AREA] || configEnable[ALGO_CONFIG_TYPE.LINE]) {
+      const operators = [];
+      if (configEnable[ALGO_CONFIG_TYPE.LINE]) {
+        operators.push(DRAW_MODES.LINE);
+      }
+      if (configEnable[ALGO_CONFIG_TYPE.AREA]) {
+        operators.push(DRAW_MODES.RECT);
+        operators.push(DRAW_MODES.POLYGON);
+      }
+      return (
+        <Spin spinning={imgLoading}>
+          <div className={styles.areaChooose}>
+            <p>
+              请设置
+              {curAlgo?.cnName}
+              视频区域:
+            </p>
+            <CanvasOperator
+              imgSrc={imgSrc}
+              width="550px"
+              id="1"
+              areas={areas}
+              operator={operators}
+              initalAreas={initalAreas}
+              direction={streamDirection}
+              onAreasChange={this.onAreasChange}
+            />
+          </div>
+        </Spin>
+      );
+    } return null;
+  }
+
   render() {
     const {
       visible, configTypes, curAlgo
@@ -314,8 +377,9 @@ class CameraDetail extends Component {
       initalAreas = [],
       ruleConfig,
       timeType,
-      imgSrc, imgLoading,
-      timeSetting
+      imgSrc, imgLoading, streamDirection,
+      timeSetting, // 触发时间段
+      timeInterval, // 判定周期
     } = this.state;
     const configEnable = {};
     for (const config of configTypes) {
@@ -348,26 +412,52 @@ class CameraDetail extends Component {
       >
         <div className={styles['algoConfig-content']}>
           {
-            configEnable[ALGO_CONFIG_TYPE.AREA]
-            && (
-              <Spin spinning={imgLoading}>
-                <div className={styles.areaChooose}>
-                  <p>
-                    请设置
-                    {curAlgo?.cnName}
-                    视频区域:
-                  </p>
-                  <CanvasOperator
-                    imgSrc={imgSrc}
-                    width="550px"
-                    id="1"
-                    areas={areas}
-                    initalAreas={initalAreas}
-                    onAreasChange={this.onAreasChange}
-                  />
+            this.renderCanvas(configEnable)
+          }
+          {
+            configEnable[ALGO_CONFIG_TYPE.LINE] && (
+              <div className={styles.directionChoose}>
+                请设置
+                {curAlgo?.cnName.indexOf('人') > -1 ? '人流' : ''}
+                方向:
+                <div style={{ marginTop: '15px' }}>
+                  <Select
+                    style={{ width: 200 }}
+                    onChange={this.onDirectionChange}
+                    value={streamDirection}
+                  >
+                    {
+                      Object.values(DIRECTION_OPTIONS).map(({ value, title }) => (
+                        <Option key={value} value={value}>{title}</Option>
+                      ))
+                    }
+                  </Select>
                 </div>
-              </Spin>
-            )}
+              </div>
+            )
+          }
+          {
+            configEnable[ALGO_CONFIG_TYPE.PERIOD] && (
+              <div className={styles.periodChoose}>
+                请设置
+                {curAlgo?.cnName}
+                判定周期:
+                <div style={{ marginTop: '15px' }}>
+                  <Select
+                    style={{ width: 200 }}
+                    onChange={this.onTimeIntervalChange}
+                    value={timeInterval}
+                  >
+                    {
+                      Object.values(TIME_INTERVAL).map(({ value, title }) => (
+                        <Option key={value} value={value}>{title}</Option>
+                      ))
+                    }
+                  </Select>
+                </div>
+              </div>
+            )
+          }
           {
             configEnable[ALGO_CONFIG_TYPE.RULE] && (
               <div className={styles.timeChooose}>

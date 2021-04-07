@@ -6,7 +6,7 @@ export const DRAW_MODES = {
 };
 
 export const DRAW_MODES_CN = {
-  RECT: '矩形',
-  LINE: '线',
-  POLYGON: '多边形',
+  [DRAW_MODES.RECT]: '矩形选框',
+  [DRAW_MODES.LINE]: '画线',
+  [DRAW_MODES.POLYGON]: '多边形选框',
 };
