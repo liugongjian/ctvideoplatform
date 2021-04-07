@@ -12,11 +12,16 @@ const GET_VIDEOSRC = 'GET_VIDEOSRC';
 const GET_VIDEOSRC_SUCCESS = 'GET_VIDEOSRC_SUCCESS';
 const GET_VIDEOSRC_FAIL = 'GET_VIDEOSRC_FAIL';
 
+const GET_PEOPLEAREA = 'GET_PEOPLEAREA';
+const GET_PEOPLEAREA_SUCCESS = 'GET_PEOPLEAREA_SUCCESS';
+const GET_PEOPLEAREA_FAIL = 'GET_PEOPLEAREA_FAIL';
+
 const initialState = {
   areatList: [],
   loading: false,
   historyTop: [],
-  videoUrl: {}
+  videoUrl: {},
+  areaInfo: {},
 };
 
 export default function preview(state = initialState, action = {}) {
@@ -72,6 +77,23 @@ export default function preview(state = initialState, action = {}) {
         loading: false,
         error: action.error
       };
+    case GET_PEOPLEAREA:
+      return {
+        ...state,
+        loading: true
+      };
+    case GET_PEOPLEAREA_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        areaInfo: action.data
+      };
+    case GET_PEOPLEAREA_FAIL:
+      return {
+        ...state,
+        error: action.error,
+        loading: false
+      };
     default:
       return {
         ...state
@@ -101,5 +123,12 @@ export function getVideoSrc(id) {
   return {
     type: [GET_VIDEOSRC, GET_VIDEOSRC_SUCCESS, GET_VIDEOSRC_FAIL],
     promise: apiClient => apiClient.get(`${urlPrefix}/device/stream/${id}`)
+  };
+}
+
+export function getAreaInfo(did, aid) {
+  return {
+    type: [GET_PEOPLEAREA, GET_PEOPLEAREA_SUCCESS, GET_PEOPLEAREA_FAIL],
+    promise: apiClient => apiClient.get(`${urlPrefix}/task/area/${did}/${aid}`)
   };
 }
