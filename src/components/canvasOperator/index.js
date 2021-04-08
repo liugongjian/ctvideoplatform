@@ -418,11 +418,22 @@ class CanvasOperator extends Component {
           imageWidth,
           name: `area-${areas.length}`
         };
-        // TODO 绘制方向
+        // TODO 绘制方向 中垂线求法
+        // 设两点的坐标分别为A（x1,y1）,B（x2,y2）.中垂线L的方程为y=kx+b,则：
+        // A,B两点间的中点坐标为C （ (x1+x2)/2,(y1+y2)/2 ）
+        // A,B两点所在直线的斜率k'=(y1-y2)/(x1-x2)
+        // 所以中垂线L的斜率k=-1/k'=-(x1-x2)/(y1-y2)
+        // 因为中垂线经过点C,将C点的坐标和斜率k'代入方程式y=kx+b,得：
+        // (y1+y2)/2 =-(x1-x2)/(y1-y2)*(x1+x2)/2+b 解得：
+        // b=(y1+y2)/2+(x1-x2)/(y1-y2)*(x1+x2)/2
+        // 将斜率k和b分别代入方程式L,可得：
+        // y=-(x1-x2)/(y1-y2)x+(y1+y2)/2+(x1-x2)/(y1-y2)*(x1+x2)/2
         // 将区域暂存；清空轨迹；清除作画状态
+        // const direction = {
+        //   shape: DRAW_MODES.DIRECTION,
+        // }
         this.setState({ points: [], isDraw: false, });
         onAreasChange([...areas, newArea]);
-        break;
         break;
       }
       default:
