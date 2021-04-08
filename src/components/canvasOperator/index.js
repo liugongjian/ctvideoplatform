@@ -15,7 +15,7 @@ import { constant } from 'lodash';
 import EIcon from 'Components/Icon';
 import math from 'Utils/math';
 import { DRAW_MODES, DRAW_MODES_CN } from './constants';
-import { getRectPropFromPoints } from './utils';
+import { getRectPropFromPoints, getVerticalLinePoints, drawArrow } from './utils';
 
 import styles from './index.less';
 
@@ -163,7 +163,7 @@ class CanvasOperator extends Component {
   // 绘制已暂存在areas中的区域
   renderBeforeAreas = () => {
     const { canvas, ratio } = this.state;
-    const { areas } = this.props;
+    const { areas, direction } = this.props;
     console.log(areas);
     if (areas?.length) {
       for (const area of areas) {
@@ -223,10 +223,12 @@ class CanvasOperator extends Component {
             const startPoint = [toRatio(points[0][0]), toRatio(points[0][1])];
             const endPoint = [toRatio(points[1][0]), toRatio(points[1][1])];
             canvas.beginPath();
-            canvas.moveTo(startPoint[0], startPoint[1]);
-            canvas.lineTo(endPoint[0], endPoint[1]);
-            // 绘制方向
-            canvas.stroke();
+            canvas.setLineDash([3, 1]);
+            if (direction) {
+              drawArrow(canvas, endPoint[0], endPoint[1], startPoint[0], startPoint[1]);
+            } else {
+              drawArrow(canvas, startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
+            }
             canvas.closePath();
             break;
           }
@@ -394,6 +396,9 @@ class CanvasOperator extends Component {
     const {
       isDraw, canvas, canvasDom, mode, points, ratio, imageHeight, imageWidth
     } = this.state;
+    const {
+      direction
+    } = this.props;
     const { areas, onAreasChange } = this.props;
     if (!isDraw || areas?.length > 0) {
       return;
@@ -432,32 +437,7 @@ class CanvasOperator extends Component {
           name: `area-${areas.length}`
         };
         // TODO 绘制方向 中垂线求法
-        // 设两点的坐标分别为A（x1,y1）,B（x2,y2）.中垂线L的方程为y=kx+b,则：
-        // A,B两点间的中点坐标为C （ (x1+x2)/2,(y1+y2)/2 ）
-        // A,B两点所在直线的斜率k'=(y1-y2)/(x1-x2)
-        // 所以中垂线L的斜率k=-1/k'=-(x1-x2)/(y1-y2)
-        // 因为中垂线经过点C,将C点的坐标和斜率k'代入方程式y=kx+b,得：
-        // (y1+y2)/2 =-(x1-x2)/(y1-y2)*(x1+x2)/2+b 解得：
-        // b=(y1+y2)/2+(x1-x2)/(y1-y2)*(x1+x2)/2
-        // 将斜率k和b分别代入方程式L,可得：
-        // y=-(x1-x2)/(y1-y2)x+(y1+y2)/2+(x1-x2)/(y1-y2)*(x1+x2)/2
-        // 求中点
-        const midPoint = [
-          math.divide(points[0][0] + curPoint[0], 2),
-          math.divide(points[0][1] + curPoint[1], 2)
-        ];
-        // 中垂线斜率
-        const verticalK = -1 * math.divide(points[0][0] - curPoint[0], points[0][1] - curPoint[1]);
-        // 中垂线起止点距离中点的偏移量
-        const offsetX = 50;
-        // 中垂线方程 y=-(x1-x2)/(y1-y2)x+(y1+y2)/2+(x1-x2)/(y1-y2)*(x1+x2)/2
-        const C = math.divide(points[0][1] + curPoint[1], 2)
-                  + math.divide(points[0][0] - curPoint[0], points[0][1] - curPoint[1])
-                  * math.divide(points[0][0] + curPoint[0], 2);
-        // 中垂线方程
-        const getVeticalY = x => (verticalK * x + C);
-        const startPoint = [midPoint[0] - offsetX, getVeticalY(midPoint[0] - offsetX)];
-        const endPoint = [midPoint[0] + offsetX, getVeticalY(midPoint[0] + offsetX)];
+        const [startPoint, endPoint] = getVerticalLinePoints(points[0], curPoint, 140);
         const director = {
           shape: DRAW_MODES.DIRECTION,
           points: [startPoint, endPoint],

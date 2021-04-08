@@ -172,7 +172,7 @@ class CameraDetail extends Component {
         }
         return ({
           ...item,
-          shape: 'polygon',
+          shape: item.name || 'polygon',
           origin: true, // 代表是原始尺寸
         });
       });
@@ -184,7 +184,8 @@ class CameraDetail extends Component {
 
   handleOk = () => {
     const {
-      areas, timeSetting, ruleConfig, timeType, timeInterval
+      areas, timeSetting, ruleConfig, timeType, timeInterval,
+      streamDirection,
     } = this.state;
     console.log('areas', areas);
     const {
@@ -206,7 +207,7 @@ class CameraDetail extends Component {
     if (configEnable[ALGO_CONFIG_TYPE.PERIOD]) {
       postData.timeInterval = timeInterval;
     }
-    if (configEnable[ALGO_CONFIG_TYPE.AREA]) {
+    if (configEnable[ALGO_CONFIG_TYPE.AREA] || configEnable[ALGO_CONFIG_TYPE.LINE]) {
       postData.areas = areas.map(({
         shape, points, ratio, origin, ...otherdata
       }) => {
@@ -223,6 +224,11 @@ class CameraDetail extends Component {
           const point4 = [startPoint[0], endPoint[1]];
           points = [startPoint, point2, endPoint, point4];
         }
+        // 如果方向为逆
+        if (shape === DRAW_MODES.DIRECTION && streamDirection) {
+          const [startPoint, endPoint] = points;
+          points = [endPoint, startPoint];
+        }
         // 四舍五入
         const realPoints = points.map(point => ({
           x: math.round(math.multiply(point[0], ratio)),
@@ -231,6 +237,7 @@ class CameraDetail extends Component {
         return {
           points: realPoints,
           ...otherdata,
+          name: shape,
         };
       });
     }
@@ -344,6 +351,7 @@ class CameraDetail extends Component {
         operators.push(DRAW_MODES.RECT);
         operators.push(DRAW_MODES.POLYGON);
       }
+      console.log('streamDirection', streamDirection);
       return (
         <Spin spinning={imgLoading}>
           <div className={styles.areaChooose}>
@@ -417,7 +425,7 @@ class CameraDetail extends Component {
           {
             configEnable[ALGO_CONFIG_TYPE.LINE] && (
               <div className={styles.directionChoose}>
-                请设置流入方向:
+                请设置流入方向（如图上箭头所示）:
                 <div style={{ marginTop: '15px' }}>
                   <Select
                     style={{ width: 200 }}
