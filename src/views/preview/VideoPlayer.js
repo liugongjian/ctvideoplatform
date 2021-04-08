@@ -37,7 +37,11 @@ class VideoPlayer extends Component {
     drawLine = () => {
       const { pointsInfo = {} } = this.props;
       const { area = {} } = pointsInfo;
-      const { points = [], imageWidth = 1920, imageHeight = 1080 } = area;
+      const { points = [] } = area;
+      let { imageWidth, imageHeight } = area;
+      // 当返回值为 null 时，解构设置默认值无效，因为null不是严格意义的undefined
+      imageWidth = imageWidth || 1920;
+      imageHeight = imageHeight || 1080;
       const [a = { x: 1, y: 1 }, b = { x: 1, y: 1 }] = points;
       const tempWidth = this.player.currentWidth();
       const tempHeight = parseInt(this.player.currentWidth() / 16 * 9, 10);
@@ -87,9 +91,8 @@ class VideoPlayer extends Component {
           }
         ]
       }, function onPlayerReady() {
-        self.drawLine();
-        this.on('timeupdate', () => {
-          // console.log('I`m playing');
+        this.on('playing', () => {
+          self.drawLine();
         });
         this.on('playerresize', () => {
           self.drawLine();
@@ -98,7 +101,6 @@ class VideoPlayer extends Component {
       this.player.src({ src }); // 解决更换src时，videojs不切换视频源的问题
     }
 
-
     render() {
       const {
         videoId, canvasLineStyle, canvasWidth, canvasHeight
@@ -106,7 +108,7 @@ class VideoPlayer extends Component {
       return (
         <div className={styles.videoWrap}>
           <video className={`${styles.videojs} video-js`} id={videoId} ref={node => this.videoNode = node} data-setup="{}" />
-          <div className={styles.testLine} style={canvasLineStyle}>
+          <div className={styles.canvasLine} style={canvasLineStyle}>
             <canvas width={canvasWidth} height={canvasHeight} id="pointToPoint" />
           </div>
         </div>

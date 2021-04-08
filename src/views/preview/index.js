@@ -1,14 +1,16 @@
 import React, { PureComponent, Fragment } from 'react';
 import { bindActionCreators } from 'redux';
 import {
-  Tree, Input, Select, Icon, Card, Spin, Modal
+  Tree, Input, Select, Icon, Card, Spin, Modal, Button
 } from 'antd';
+import echarts from 'echarts';
 import EIcon from 'Components/Icon';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
 import {
-  getAreaList, getHistoryListTopTen, getVideoSrc, getAreaInfo
+  getAreaList, getHistoryListTopTen, getVideoSrc,
+  getAreaInfo, getPeopleLIne, getCurrentTraffic
 } from 'Redux/reducer/preview';
 
 import { getAlgorithmList } from 'Redux/reducer/monitor';
@@ -32,7 +34,9 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     getAlgorithmList,
     getHistoryListTopTen,
     getVideoSrc,
-    getAreaInfo
+    getAreaInfo,
+    getPeopleLIne,
+    getCurrentTraffic
   },
   dispatch
 );
@@ -70,8 +74,12 @@ class Preview extends PureComponent {
       timer: null,
       modalShowInfo: '',
       pointsInfo: [],
-      ifShowMoreDialog: false
+      ifShowMoreDialog: false,
+      tempTrafficEntry: -1,
+      tempTrafficExit: -1,
+      traffiInfoData: {}
     };
+    this.mychart = null;
   }
 
 
@@ -143,9 +151,10 @@ class Preview extends PureComponent {
           historyID: val.id
         }, () => {
           this.getHistory();
-          this.setIntervalTimer();
+          this.getCurrentDay();
           this.getVideoSrc(val.id, val.name);
-          this.getPeopleArea();
+          this.getPeopleArea(val.id);
+          this.setIntervalTimer();
         });
       } else {
         this.setState({
@@ -157,33 +166,17 @@ class Preview extends PureComponent {
       }
     }
 
-    getPeopleArea = () => {
+    getPeopleArea = (id) => {
       const { getAreaInfo } = this.props;
-      const tempData = {
-        applied: true,
-        area: {
-          type: 0,
-          name: 'line',
-          imageWidth: 1920,
-          imageHeight: 1080,
-          points: [
-            {
-              x: 10,
-              y: 10
-            },
-            {
-              x: 20,
-              y: 20
-            },
-          ]
-        }
-      };
-      this.setState({
-        pointsInfo: tempData
+      // 人流量检测算法id为 10
+      getAreaInfo(id, 10).then((res) => {
+        this.setState({
+          pointsInfo: res
+        });
       });
     }
 
-    getHistory=(id) => {
+    getHistory=() => {
       const { historyID } = this.state;
       const { getHistoryListTopTen } = this.props;
       const param = {
@@ -209,9 +202,31 @@ class Preview extends PureComponent {
       });
     }
 
+    getCurrentDay = () => {
+      const { getCurrentTraffic } = this.props;
+      const { historyID } = this.state;
+      getCurrentTraffic(historyID, 10).then((res) => {
+        const { tempTrafficEntry, tempTrafficExit } = this.state;
+        if (tempTrafficEntry === -1 || tempTrafficExit === -1) {
+          this.setState({
+            traffiInfoData: res,
+            tempTrafficExit: res.exitNo,
+            tempTrafficEntry: res.entryNo
+          });
+        } else if (res.exitNo > tempTrafficExit || res.exitNo > tempTrafficExit) {
+          this.setState({
+            traffiInfoData: res,
+            tempTrafficExit: res.exitNo,
+            tempTrafficEntry: res.entryNo
+          });
+        }
+      });
+    }
+
     setIntervalTimer = () => {
       this.state.timer = window.setInterval(() => {
         this.getHistory();
+        this.getCurrentDay();
       }, 5000);
     }
 
@@ -420,11 +435,50 @@ class Preview extends PureComponent {
         });
       }
 
+      closeMoreDialog = () => {
+        this.setState({
+          ifShowMoreDialog: false
+        });
+      }
+
+      initChartsData = () => {
+        const { getPeopleLIne } = this.props;
+        const chartNode = document.getElementById('modalChartsInfo');
+        this.mychart = echarts.init(chartNode);
+        const timeData = {
+          serisData: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+          xaxisData: ['00:00', '02:00', '04:00', '06:00', '08:00', '10:00', '12:00', '14:00', '16:00',
+            '18:00', '20:00', '22:00', '24:00']
+        };
+        const dayData = {
+          serisData: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+          xaxisData: ['2021-03-24', '2021-03-25', '2021-03-26', '2021-03-27', '2021-03-28', '2021-03-29', '2021-03-30', '2021-03-31', '2021-04-01', '2021-04-02', '2021-04-03',
+            '2021-04-04', '2021-04-05', '2021-04-06', '2021-04-07']
+        };
+        const option = {
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['流入', '流出']
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: timeData.xaxisData
+          },
+          yAxis: {
+            type: 'value',
+            data: dayData.serisData
+          },
+        };
+      }
+
       render() {
         const {
           treeDatas, selectAreaKeys, expandedKeys, algorithmList = [],
           videoSrc, historyListData, imgDialogVisible, imgDialogSrc,
-          noVideo, videoName, showText, modalShowInfo, pointsInfo
+          noVideo, videoName, showText, modalShowInfo, pointsInfo, ifShowMoreDialog, traffiInfoData
         } = this.state;
 
         const { preview: { loading }, push } = this.props;
@@ -519,24 +573,27 @@ class Preview extends PureComponent {
 
             </div>
             <div className={styles.historyList}>
-              <div className={styles.peopleAreaCounts}>
-                <div className={styles.peopleAreaTotal}>
-                  <p>
-                    实时人流量统计
-                    <a onClick={this.showMoreDialog}>更多数据</a>
-                  </p>
-                </div>
-                <div className={styles.peopleAreaNum}>
-                  <div>
-                    <span className={styles.peopleAreaKind}>流入</span>
-                    <span className={styles.peopleAreaAll}>111</span>
+              {traffiInfoData.entryNo || traffiInfoData.exitNo ? (
+                <div className={styles.peopleAreaCounts}>
+                  <div className={styles.peopleAreaTotal}>
+                    <p>
+                      实时人流量统计
+                      <a onClick={this.showMoreDialog}>更多数据</a>
+                    </p>
                   </div>
-                  <div>
-                    <span className={styles.peopleAreaKind}>流出</span>
-                    <span className={styles.peopleAreaAll}>222</span>
+                  <div className={styles.peopleAreaNum}>
+                    <div>
+                      <span className={styles.peopleAreaKind}>流入</span>
+                      <span className={styles.peopleAreaAll}>{traffiInfoData.entryNo}</span>
+                    </div>
+                    <div>
+                      <span className={styles.peopleAreaKind}>流出</span>
+                      <span className={styles.peopleAreaAll}>{traffiInfoData.exitNo}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ) : null}
+
               <div className={styles.historyTitle}>
                 <p>
                   实时告警记录
@@ -603,6 +660,20 @@ class Preview extends PureComponent {
                 告警规则：
                 <span>{modalShowInfo.controlRule}</span>
               </p>
+            </Modal>
+            <Modal
+              title="人流量统计"
+              visible={ifShowMoreDialog}
+              onCancel={this.closeMoreDialog}
+              forceRender
+              destroyOnClose
+              footer={null}
+            >
+              <div className={styles.modalPeopleInfo}>
+                <Button>小时</Button>
+                <Button>天</Button>
+              </div>
+              <div className={styles.modalChartsInfo} id="modalChartsInfo" />
             </Modal>
           </div>
         );
