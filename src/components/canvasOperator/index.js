@@ -473,7 +473,7 @@ class CanvasOperator extends Component {
                   onClick={() => this.setDrawMode(item)}
                   title={DRAW_MODES_CN[item]}
                 >
-                  {item === DRAW_MODES.LINE ? '—' : <EIcon type={`myicon-${item}`} />}
+                  <EIcon type={`myicon-canvas-${item}`} />
                 </div>
               ))
             }
