@@ -14,8 +14,8 @@ import PropTypes from 'prop-types';
 import { constant } from 'lodash';
 import EIcon from 'Components/Icon';
 import math from 'Utils/math';
-import { DRAW_MODES } from './constants';
-import { getRectPropFromPoints } from './utils';
+import { DRAW_MODES, DRAW_MODES_CN } from './constants';
+import { getRectPropFromPoints, getVerticalLinePoints, drawArrow } from './utils';
 
 import styles from './index.less';
 
@@ -39,6 +39,7 @@ class CanvasOperator extends Component {
   }
 
   componentDidMount() {
+    console.log('imgSrc', this.props);
     if (this.props.imgSrc) {
       this.initData(this.props);
     }
@@ -162,7 +163,7 @@ class CanvasOperator extends Component {
   // 绘制已暂存在areas中的区域
   renderBeforeAreas = () => {
     const { canvas, ratio } = this.state;
-    const { areas } = this.props;
+    const { areas, direction } = this.props;
     console.log(areas);
     if (areas?.length) {
       for (const area of areas) {
@@ -201,6 +202,34 @@ class CanvasOperator extends Component {
               const pointXY = [toRatio(point[0]), toRatio(point[1])];
               this.drawPoint(canvas, pointXY[0], pointXY[1]);
             }
+            break;
+          }
+          case DRAW_MODES.LINE: {
+            const curRatio = area.origin ? ratio : 1;
+            const toRatio = x => math.divide(x, curRatio);
+            const startPoint = [toRatio(points[0][0]), toRatio(points[0][1])];
+            const endPoint = [toRatio(points[1][0]), toRatio(points[1][1])];
+            canvas.beginPath();
+            canvas.moveTo(startPoint[0], startPoint[1]);
+            canvas.lineTo(endPoint[0], endPoint[1]);
+            // 绘制方向
+            canvas.stroke();
+            canvas.closePath();
+            break;
+          }
+          case DRAW_MODES.DIRECTION: {
+            const curRatio = area.origin ? ratio : 1;
+            const toRatio = x => math.divide(x, curRatio);
+            const startPoint = [toRatio(points[0][0]), toRatio(points[0][1])];
+            const endPoint = [toRatio(points[1][0]), toRatio(points[1][1])];
+            canvas.beginPath();
+            canvas.setLineDash([3, 1]);
+            if (direction) {
+              drawArrow(canvas, endPoint[0], endPoint[1], startPoint[0], startPoint[1]);
+            } else {
+              drawArrow(canvas, startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
+            }
+            canvas.closePath();
             break;
           }
           default: break;
@@ -323,6 +352,21 @@ class CanvasOperator extends Component {
         // canvas.closePath();
         break;
       }
+      case DRAW_MODES.LINE: {
+        canvas.beginPath();
+        canvas.lineWidth = lineWidth;
+        canvas.strokeStyle = strokeStyle;
+        // 清除绘图区域
+        canvas.clearRect(0, 0, canvasDom.width, canvasDom.height);
+        // 绘制已暂存区域
+        this.renderBeforeAreas();
+        // 开始绘制当前多边形
+        canvas.moveTo(points[0][0], points[0][1]);
+        canvas.lineTo(curPoint[0], curPoint[1]);
+        canvas.stroke();
+        canvas.closePath();
+        break;
+      }
       default:
 
         break;
@@ -352,6 +396,9 @@ class CanvasOperator extends Component {
     const {
       isDraw, canvas, canvasDom, mode, points, ratio, imageHeight, imageWidth
     } = this.state;
+    const {
+      direction
+    } = this.props;
     const { areas, onAreasChange } = this.props;
     if (!isDraw || areas?.length > 0) {
       return;
@@ -380,6 +427,30 @@ class CanvasOperator extends Component {
         this.setState({ points: [...points, curPoint] });
         break;
       }
+      case DRAW_MODES.LINE: {
+        const newArea = {
+          shape: DRAW_MODES.LINE,
+          points: [points[0], curPoint],
+          ratio,
+          imageHeight,
+          imageWidth,
+          name: `area-${areas.length}`
+        };
+        // TODO 绘制方向 中垂线求法
+        const [startPoint, endPoint] = getVerticalLinePoints(points[0], curPoint, 140);
+        const director = {
+          shape: DRAW_MODES.DIRECTION,
+          points: [startPoint, endPoint],
+          ratio,
+          imageHeight,
+          imageWidth,
+          name: `area-${areas.length + 1}`
+        };
+        // 将区域暂存；清空轨迹；清除作画状态
+        this.setState({ points: [], isDraw: false, });
+        onAreasChange([...areas, newArea, director]);
+        break;
+      }
       default:
         this.setState({ points: [] });
         break;
@@ -387,26 +458,25 @@ class CanvasOperator extends Component {
   }
 
   render() {
-    const { id, width, imgSrc } = this.props;
+    const {
+      id, width, imgSrc, operator
+    } = this.props;
     const { mode } = this.state;
     return (
       <div className={styles.canvasOperator}>
         <div style={{ opacity: imgSrc ? '1' : '0' }}>
           <div className={styles.optButtonWrapper} style={{ width }}>
-            <div
-              className={`${styles.optButton} ${mode === DRAW_MODES.RECT ? styles['optButton-selected'] : ''}`}
-              onClick={() => this.setDrawMode(DRAW_MODES.RECT)}
-              title="矩形选框"
-            >
-              <EIcon type="myicon-rect" />
-            </div>
-            <div
-              className={`${styles.optButton} ${mode === DRAW_MODES.POLYGON ? styles['optButton-selected'] : ''}`}
-              onClick={() => this.setDrawMode(DRAW_MODES.POLYGON)}
-              title="多边形选框"
-            >
-              <EIcon type="myicon-polygon" />
-            </div>
+            {
+              operator.map(item => (
+                <div
+                  className={`${styles.optButton} ${mode === item ? styles['optButton-selected'] : ''}`}
+                  onClick={() => this.setDrawMode(item)}
+                  title={DRAW_MODES_CN[item]}
+                >
+                  <EIcon type={`myicon-canvas-${item}`} />
+                </div>
+              ))
+            }
             <div
               className={`${styles.optButton}`}
               onClick={() => this.reset()}
@@ -453,6 +523,12 @@ CanvasOperator.propTypes = {
   width: PropTypes.string.isRequired,
   areas: PropTypes.array.isRequired, // 当前已绘制图案, eg:[{shape: 'rect', points:[]]
   onAreasChange: PropTypes.func.isRequired,
+  operator: PropTypes.array,
+  direction: PropTypes.number,
+};
+CanvasOperator.defaultProps = {
+  operator: [DRAW_MODES.RECT, DRAW_MODES.POLYGON],
+  direction: 0,
 };
 
 export default CanvasOperator;

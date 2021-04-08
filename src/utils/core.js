@@ -5,6 +5,7 @@ import {
 import routerconfig from 'Setting/routeconfig';
 import { pathPrefix } from 'Constants/Dictionary';
 import routerHook from './routerHook';
+import DefaultPage from 'Views/defaultPage';
 
 const mapRouter = (routers, routersConfig, prePath) => {
   routersConfig.forEach((item) => {
@@ -20,6 +21,7 @@ const mapRouter = (routers, routersConfig, prePath) => {
 
 export const createRouter = (routeConfig, withHook, parentPath) => {
   const { pageTitle, ...restProps } = routeConfig;
+  console.log('routerconfig',routerconfig)
   let { path, key, component } = restProps;
   if (parentPath) {
     path = parentPath + (path === '/' ? '' : path);
@@ -50,10 +52,11 @@ export const createRouterByApiData = (routersconfig, apiData, withHook, parentPa
   const routers = copyApiData?.map((item) => {
     item.path = getRealPath(item.id, apiData);
     const { path, name } = item;
-    const localConf = localRouters.find(route => route.path === path);
+    let localConf = localRouters.find(route => route.path === path);
     if (!localConf) {
       // throw Error(`${path}菜单本地尚未配置！`);
       console.log(`${path}菜单本地尚未配置！`)
+      localConf = {component: DefaultPage};
     }
     return {
       pageTitle: name,

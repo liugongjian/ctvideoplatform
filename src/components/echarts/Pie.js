@@ -98,7 +98,8 @@ class PieChart extends PureComponent {
                   formatter: `{b}\n{c}${data?.unit || ''} ({d}%)`,
                   textStyle: {
                     color: '#666',
-                    fontSize: '20',
+                    fontSize: 16,
+                    lineHeight: 22,
                     fontWeight: 'bold'
                   }
                 }

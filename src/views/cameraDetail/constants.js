@@ -44,16 +44,46 @@ const ALGO_CONFIG_TRIGGER_TIME_TYPE = {
   },
 };
 
-// 1:触发规则，2:触发时间 3:触发区域
+// 1:触发规则，2:触发时间 3:触发区域 4:画线 5:判定周期
 const ALGO_CONFIG_TYPE = {
   RULE: '1',
   TIME: '2',
   AREA: '3',
+  LINE: '4',
+  PERIOD: '5',
 };
+
+const DIRECTION_OPTIONS = {
+  DEFAULT: {
+    value: 0,
+    title: '默认方向',
+  },
+  REVERSAL: {
+    value: 1,
+    title: '逆方向',
+  },
+};
+
+const TIME_INTERVAL = [
+  {
+    value: 10,
+    title: '10分钟',
+  },
+  {
+    value: 30,
+    title: '30分钟',
+  },
+  {
+    value: 60,
+    title: '60分钟',
+  }
+];
 
 export {
   TRIGGER_ORIGIN,
   ALGO_CONFIG_TRIGGER_RULE,
   ALGO_CONFIG_TRIGGER_TIME_TYPE,
-  ALGO_CONFIG_TYPE
+  ALGO_CONFIG_TYPE,
+  DIRECTION_OPTIONS,
+  TIME_INTERVAL
 };
