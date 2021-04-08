@@ -38,6 +38,10 @@
       width: 100%;
       height: 100%;
       overflow: auto;
+      .noData{
+        text-align: center;
+        margin-top: 20px;
+      }
     }
     .treeTitleInfo{
       .treeBtnBox{
@@ -82,11 +86,12 @@
     flex: 1;
     min-width: 900px;
     border-left: 1px solid #EEE;
-    margin: 10px 0 15px 0;
-    height: calc(100% - 60px);
+    // margin: 10px 0 15px 0;
+    // height: calc(100% - 60px);
     background: #fff;
-    padding:0 10px;
-    overflow: auto;
+    padding: 10px;
+    position: relative;
+    // overflow: auto;
     // .totalText{
     //     position: absolute;
     //     left:0;
@@ -143,6 +148,19 @@
         border-radius: 3px;
         background: #52C41A;
         margin-right: 5px;
+      }
+    }
+    .tableList{
+      width: 100%;
+      height: calc(100vh - 280px);
+      overflow-y: auto;
+      :global{
+        .ant-pagination{
+          position: absolute;
+          bottom: 15px;
+          width: calc(100% - 30px);
+          z-index: 19;
+        }
       }
     }
     table{

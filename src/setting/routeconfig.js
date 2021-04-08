@@ -223,35 +223,35 @@ const menuRoutes = [
   //   component: DefaultPage,
   // },
   {
-    path: '/tenants',
-    pageTitle: '租户管理',
+    path: '/platform',
+    pageTitle: '平台管理',
     exact: true,
     component: Tenants,
     children: [
       {
-        path: '/add',
+        path: '/tenant/add',
         pageTitle: '添加租户',
         component: TenantsDetail,
       },
       {
-        path: '/:tenantId',
+        path: '/tenant/:tenantId',
         pageTitle: '租户详情',
         component: TenantsDetail,
       },
     ]
   },
-  {
-    path: '/licenseManage',
-    pageTitle: '许可管理',
-    exact: true,
-    component: DefaultPage,
-  },
+  // {
+  //   path: '/licenseManage',
+  //   pageTitle: '许可管理',
+  //   exact: true,
+  //   component: DefaultPage,
+  // },
   {
     path: '/',
     pageTitle: '首页',
     exact: true,
     component: Dashboard,
-  }
+  },
 ];
 
 // const menuRoutes = [

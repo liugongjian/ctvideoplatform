@@ -365,7 +365,7 @@ class Monitor extends Component {
   cancel = (e, key) => {
     e.stopPropagation();
     const temp = this.state.tempData.filter(({ id }) => id !== -1);
-    console.log('temp', temp);
+    // console.log('temp', temp);
     const tempData = temp.map((item) => {
       item.ifEdit = false;
       item.hasSame = false;
@@ -489,7 +489,8 @@ class Monitor extends Component {
 
   changePageSize = (current, size) => {
     this.setState({
-      pageSize: size
+      pageSize: size,
+      pageNo: 0
     }, () => this.getDeviceList());
   }
 
@@ -750,7 +751,7 @@ class Monitor extends Component {
   }
 
   tableChange = (page, filter, sorter, extra) => {
-    console.log(page, filter, sorter, extra);
+    // console.log(page, filter, sorter, extra);
   }
 
   render() {
@@ -786,14 +787,14 @@ class Monitor extends Component {
       },
       {
         title: '区域名称',
-        dataIndex: 'areaPath',
+        dataIndex: 'areaName',
         key: 'areaPath',
-        render: (text) => {
+        render: (text, record) => {
           const arr = text.split('/');
           const showText = arr[arr.length - 1];
           return (
-            <Tooltip placement="topLeft" title={text}>
-              <span className={styles.cursorPoniter}>{showText}</span>
+            <Tooltip placement="topLeft" title={record.areaPath}>
+              <span className={styles.cursorPoniter}>{text}</span>
             </Tooltip>
           );
         }
@@ -947,7 +948,7 @@ class Monitor extends Component {
                 >
                   {this.renderTreeNodes(treeDatas)}
                 </Tree>
-              ) : null
+              ) : <div className={styles.noData}>暂无区域</div>
             }
           </div>
         </div>
@@ -999,20 +1000,22 @@ class Monitor extends Component {
                 <Icon type="export" />
                 <span>批量导入</span>
               </Button>
-              <Button type="link" className={styles.handleBtn} onClick={this.delThisKeys} disabled={!checkedKeys.length}>
+              <Button type="link" className={styles.handleBtn} onClick={this.delThisKeys} disabled={!selectedKeys.length}>
                 <Icon type="delete" />
                 <span>批量删除</span>
               </Button>
               <Checkbox onChange={this.changeStatus}>包含下级区域</Checkbox>
             </div>
-            <ETable
-              rowSelection={rowSelection}
-              columns={columns}
-              dataSource={tableData.list || []}
-              scroll={{ x: 'max-content' }}
-              pagination={pagination}
-              onChange={this.tableChange}
-            />
+            <div className={styles.tableList}>
+              <ETable
+                rowSelection={rowSelection}
+                columns={columns}
+                dataSource={tableData.list || []}
+                scroll={{ x: 'max-content' }}
+                pagination={pagination}
+                onChange={this.tableChange}
+              />
+            </div>
           </div>
         </div>
 

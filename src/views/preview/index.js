@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
 import {
-  getAreaList, getHistoryListTopTen, getVideoSrc
+  getAreaList, getHistoryListTopTen, getVideoSrc, getAreaInfo
 } from 'Redux/reducer/preview';
 
 import { getAlgorithmList } from 'Redux/reducer/monitor';
@@ -31,7 +31,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     getAreaList,
     getAlgorithmList,
     getHistoryListTopTen,
-    getVideoSrc
+    getVideoSrc,
+    getAreaInfo
   },
   dispatch
 );
@@ -67,7 +68,9 @@ class Preview extends PureComponent {
       tempTotal: -1,
       historyID: '',
       timer: null,
-      modalShowInfo: ''
+      modalShowInfo: '',
+      pointsInfo: [],
+      ifShowMoreDialog: false
     };
   }
 
@@ -142,6 +145,7 @@ class Preview extends PureComponent {
           this.getHistory();
           this.setIntervalTimer();
           this.getVideoSrc(val.id, val.name);
+          this.getPeopleArea();
         });
       } else {
         this.setState({
@@ -151,6 +155,32 @@ class Preview extends PureComponent {
           historyListData: {}
         });
       }
+    }
+
+    getPeopleArea = () => {
+      const { getAreaInfo } = this.props;
+      const tempData = {
+        applied: true,
+        area: {
+          type: 0,
+          name: 'line',
+          imageWidth: 1920,
+          imageHeight: 1080,
+          points: [
+            {
+              x: 10,
+              y: 10
+            },
+            {
+              x: 20,
+              y: 20
+            },
+          ]
+        }
+      };
+      this.setState({
+        pointsInfo: tempData
+      });
     }
 
     getHistory=(id) => {
@@ -384,11 +414,17 @@ class Preview extends PureComponent {
         // );
       }
 
+      showMoreDialog = () => {
+        this.setState({
+          ifShowMoreDialog: true
+        });
+      }
 
       render() {
         const {
           treeDatas, selectAreaKeys, expandedKeys, algorithmList = [],
-          videoSrc, historyListData, imgDialogVisible, imgDialogSrc, noVideo, videoName, showText, modalShowInfo
+          videoSrc, historyListData, imgDialogVisible, imgDialogSrc,
+          noVideo, videoName, showText, modalShowInfo, pointsInfo
         } = this.state;
 
         const { preview: { loading }, push } = this.props;
@@ -476,13 +512,31 @@ class Preview extends PureComponent {
                       </div>
                       <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={this.clearVideo} />
                     </div>
-                    <VideoPlayer src={videoSrc} />
+                    <VideoPlayer src={videoSrc} pointsInfo={pointsInfo} />
                   </Fragment>
                 )
                 : getImg()}
 
             </div>
             <div className={styles.historyList}>
+              <div className={styles.peopleAreaCounts}>
+                <div className={styles.peopleAreaTotal}>
+                  <p>
+                    实时人流量统计
+                    <a onClick={this.showMoreDialog}>更多数据</a>
+                  </p>
+                </div>
+                <div className={styles.peopleAreaNum}>
+                  <div>
+                    <span className={styles.peopleAreaKind}>流入</span>
+                    <span className={styles.peopleAreaAll}>111</span>
+                  </div>
+                  <div>
+                    <span className={styles.peopleAreaKind}>流出</span>
+                    <span className={styles.peopleAreaAll}>222</span>
+                  </div>
+                </div>
+              </div>
               <div className={styles.historyTitle}>
                 <p>
                   实时告警记录
