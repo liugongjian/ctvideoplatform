@@ -417,9 +417,7 @@ class CameraDetail extends Component {
           {
             configEnable[ALGO_CONFIG_TYPE.LINE] && (
               <div className={styles.directionChoose}>
-                请设置
-                {curAlgo?.cnName.indexOf('人') > -1 ? '人流' : ''}
-                方向:
+                请设置流入方向:
                 <div style={{ marginTop: '15px' }}>
                   <Select
                     style={{ width: 200 }}

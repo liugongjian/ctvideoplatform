@@ -217,6 +217,19 @@ class CanvasOperator extends Component {
             canvas.closePath();
             break;
           }
+          case DRAW_MODES.DIRECTION: {
+            const curRatio = area.origin ? ratio : 1;
+            const toRatio = x => math.divide(x, curRatio);
+            const startPoint = [toRatio(points[0][0]), toRatio(points[0][1])];
+            const endPoint = [toRatio(points[1][0]), toRatio(points[1][1])];
+            canvas.beginPath();
+            canvas.moveTo(startPoint[0], startPoint[1]);
+            canvas.lineTo(endPoint[0], endPoint[1]);
+            // 绘制方向
+            canvas.stroke();
+            canvas.closePath();
+            break;
+          }
           default: break;
         }
       }
@@ -428,12 +441,34 @@ class CanvasOperator extends Component {
         // b=(y1+y2)/2+(x1-x2)/(y1-y2)*(x1+x2)/2
         // 将斜率k和b分别代入方程式L,可得：
         // y=-(x1-x2)/(y1-y2)x+(y1+y2)/2+(x1-x2)/(y1-y2)*(x1+x2)/2
+        // 求中点
+        const midPoint = [
+          math.divide(points[0][0] + curPoint[0], 2),
+          math.divide(points[0][1] + curPoint[1], 2)
+        ];
+        // 中垂线斜率
+        const verticalK = -1 * math.divide(points[0][0] - curPoint[0], points[0][1] - curPoint[1]);
+        // 中垂线起止点距离中点的偏移量
+        const offsetX = 50;
+        // 中垂线方程 y=-(x1-x2)/(y1-y2)x+(y1+y2)/2+(x1-x2)/(y1-y2)*(x1+x2)/2
+        const C = math.divide(points[0][1] + curPoint[1], 2)
+                  + math.divide(points[0][0] - curPoint[0], points[0][1] - curPoint[1])
+                  * math.divide(points[0][0] + curPoint[0], 2);
+        // 中垂线方程
+        const getVeticalY = x => (verticalK * x + C);
+        const startPoint = [midPoint[0] - offsetX, getVeticalY(midPoint[0] - offsetX)];
+        const endPoint = [midPoint[0] + offsetX, getVeticalY(midPoint[0] + offsetX)];
+        const director = {
+          shape: DRAW_MODES.DIRECTION,
+          points: [startPoint, endPoint],
+          ratio,
+          imageHeight,
+          imageWidth,
+          name: `area-${areas.length + 1}`
+        };
         // 将区域暂存；清空轨迹；清除作画状态
-        // const direction = {
-        //   shape: DRAW_MODES.DIRECTION,
-        // }
         this.setState({ points: [], isDraw: false, });
-        onAreasChange([...areas, newArea]);
+        onAreasChange([...areas, newArea, director]);
         break;
       }
       default:
