@@ -60,6 +60,8 @@ import AddAccount from 'Views/system/user/addUser';
 import Face from 'Views/gallery/face';
 import ImportFace from 'Views/gallery/face/import';
 import Alarms from 'Views/alarms';
+import Tenants from 'Views/tenants';
+import TenantsDetail from 'Views/tenants/detail';
 import { pathPrefix } from 'Constants/Dictionary';
 
 
@@ -224,17 +226,17 @@ const menuRoutes = [
     path: '/tenants',
     pageTitle: '租户管理',
     exact: true,
-    component: DefaultPage,
+    component: Tenants,
     children: [
       {
         path: '/add',
         pageTitle: '添加租户',
-        component: DefaultPage,
+        component: TenantsDetail,
       },
       {
         path: '/:tenantId',
         pageTitle: '租户详情',
-        component: DefaultPage,
+        component: TenantsDetail,
       },
     ]
   },

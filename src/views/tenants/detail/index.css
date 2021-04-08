@@ -1,0 +1,50 @@
+.contentWrapper {
+  background: #fff;
+  padding: 20px 30px;
+  position: relative;
+}
+.contentWrapper .subTitle {
+  margin: 20px 0px;
+  display: inline-block;
+  font-family: MicrosoftYaHei;
+  font-size: 16px;
+  color: #333333;
+}
+.contentWrapper .tree {
+  width: 150%;
+  height: 500px;
+  margin-left: 60px;
+  border: 1px solid #e9e9e9;
+}
+.contentWrapper .tree .treefl {
+  display: inline-block;
+  float: left;
+  width: 25%;
+  height: 100%;
+  border-right: 1px solid #e9e9e9;
+}
+.contentWrapper .tree .treefr {
+  display: inline-block;
+  float: right;
+  width: 75%;
+  height: 100%;
+}
+.contentWrapper .tree .treefr .treeRegion {
+  overflow-y: scroll;
+  height: 90%;
+  width: 100%;
+}
+.contentWrapper .tree .treefr .treeRegion :global .ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected {
+  background-color: #bfe5ff;
+}
+.contentWrapper .formItemInput {
+  width: 390px;
+}
+.contentWrapper .btnWrapper {
+  margin-left: 38px;
+  height: 32px;
+}
+.contentWrapper .btnWrapper > button {
+  width: 78px;
+  height: 32px;
+}
