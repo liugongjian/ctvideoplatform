@@ -14,9 +14,11 @@ import PropTypes from 'prop-types';
 import { constant } from 'lodash';
 import EIcon from 'Components/Icon';
 import math from 'Utils/math';
+import {
+  DIRECTION_OPTIONS, // 人流方向
+} from 'Views/cameraDetail/constants';
 import { DRAW_MODES, DRAW_MODES_CN } from './constants';
 import { getRectPropFromPoints, getVerticalLinePoints, drawArrow } from './utils';
-
 import styles from './index.less';
 
 
@@ -386,9 +388,11 @@ class CanvasOperator extends Component {
       areas,
       initalAreas,
       onAreasChange,
+      onDirectionChange,
     } = this.props;
     // const newArea = areas.filter(area => area.origin);
     onAreasChange(initalAreas);
+    onDirectionChange(DIRECTION_OPTIONS.DEFAULT.value);
   }
 
   clearAll =() => {
@@ -531,12 +535,14 @@ CanvasOperator.propTypes = {
   width: PropTypes.string.isRequired,
   areas: PropTypes.array.isRequired, // 当前已绘制图案, eg:[{shape: 'rect', points:[]]
   onAreasChange: PropTypes.func.isRequired,
+  onDirectionChange: PropTypes.func,
   operator: PropTypes.array,
   direction: PropTypes.number,
 };
 CanvasOperator.defaultProps = {
   operator: [DRAW_MODES.RECT, DRAW_MODES.POLYGON],
-  direction: 0,
+  direction: DIRECTION_OPTIONS.DEFAULT.value,
+  onDirectionChange: () => {},
 };
 
 export default CanvasOperator;

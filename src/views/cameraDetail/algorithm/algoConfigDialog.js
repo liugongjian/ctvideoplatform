@@ -325,7 +325,7 @@ class CameraDetail extends Component {
     }, () => console.log('this.state.aiParams', this.state.aiParams));
   }
 
-  onDirectionChange = (e) => {
+  onDirectionSwitch = (e) => {
     // this.setState({ streamDirection });
     this.setState((state) => {
       let newVal;
@@ -337,6 +337,13 @@ class CameraDetail extends Component {
       return {
         streamDirection: newVal
       };
+    });
+  }
+
+  // canvasOperator传过来的事件
+  onDirectionChange = (streamDirection) => {
+    this.setState({
+      streamDirection
     });
   }
 
@@ -380,6 +387,7 @@ class CameraDetail extends Component {
               initalAreas={initalAreas}
               direction={streamDirection}
               onAreasChange={this.onAreasChange}
+              onDirectionChange={this.onDirectionChange}
             />
           </div>
         </Spin>
@@ -440,7 +448,7 @@ class CameraDetail extends Component {
                 {/* <div style={{ marginTop: '15px' }}>
                    <Select
                     style={{ width: 200 }}
-                    onChange={this.onDirectionChange}
+                    onChange={this.onDirectionSwitch}
                     value={streamDirection}
                   >
                     {
@@ -451,7 +459,7 @@ class CameraDetail extends Component {
                   </Select>
                 </div> */}
                 <Button
-                  onClick={this.onDirectionChange}
+                  onClick={this.onDirectionSwitch}
                   style={{
                     height: '25px', width: '75px', marginLeft: '10px', padding: 0
                   }}

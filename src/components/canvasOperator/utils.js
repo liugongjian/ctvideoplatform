@@ -1,4 +1,7 @@
 import math from 'Utils/math';
+import {
+  DIRECTION_OPTIONS, // 人流方向
+} from 'Views/cameraDetail/constants';
 
 export const getRectPropFromPoints = (startPoint, endPoint) => {
   const left = startPoint[0];
@@ -49,7 +52,7 @@ export const getVerticalLinePoints = (start, end, length, direction) => {
     const verticalLen = math.divide(length, 2);
     const startPoint = [midPoint[0], midPoint[1] - verticalLen];
     const endPoint = [midPoint[0], midPoint[1] + verticalLen];
-    if (direction) {
+    if (direction === DIRECTION_OPTIONS.REVERSAL.value) {
       return [endPoint, startPoint];
     }
     return [startPoint, endPoint];
@@ -68,7 +71,7 @@ export const getVerticalLinePoints = (start, end, length, direction) => {
   const getVeticalY = x => (verticalK * x + C);
   const startPoint = [midPoint[0] - offsetX, getVeticalY(midPoint[0] - offsetX)];
   const endPoint = [midPoint[0] + offsetX, getVeticalY(midPoint[0] + offsetX)];
-  if (direction) {
+  if (direction === DIRECTION_OPTIONS.REVERSAL.value) {
     return [endPoint, startPoint];
   }
   return [startPoint, endPoint];
