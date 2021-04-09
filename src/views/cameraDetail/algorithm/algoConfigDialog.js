@@ -12,7 +12,7 @@ import {
   Spin,
   TimePicker,
   message,
-  Button,
+  Button, Icon,
 } from 'antd';
 import math from 'Utils/math';
 import { bindActionCreators } from 'redux';
@@ -325,8 +325,19 @@ class CameraDetail extends Component {
     }, () => console.log('this.state.aiParams', this.state.aiParams));
   }
 
-  onDirectionChange = (streamDirection) => {
-    this.setState({ streamDirection });
+  onDirectionChange = (e) => {
+    // this.setState({ streamDirection });
+    this.setState((state) => {
+      let newVal;
+      if (state.streamDirection === DIRECTION_OPTIONS.DEFAULT.value) {
+        newVal = DIRECTION_OPTIONS.REVERSAL.value;
+      } else if (state.streamDirection === DIRECTION_OPTIONS.REVERSAL.value) {
+        newVal = DIRECTION_OPTIONS.DEFAULT.value;
+      }
+      return {
+        streamDirection: newVal
+      };
+    });
   }
 
   onTimeIntervalChange = (timeInterval) => {
@@ -425,9 +436,9 @@ class CameraDetail extends Component {
           {
             configEnable[ALGO_CONFIG_TYPE.LINE] && (
               <div className={styles.directionChoose}>
-                请设置流入方向（如图上箭头所示）:
-                <div style={{ marginTop: '15px' }}>
-                  <Select
+                请调整流入方向（上图中箭头方向）:
+                {/* <div style={{ marginTop: '15px' }}>
+                   <Select
                     style={{ width: 200 }}
                     onChange={this.onDirectionChange}
                     value={streamDirection}
@@ -438,7 +449,16 @@ class CameraDetail extends Component {
                       ))
                     }
                   </Select>
-                </div>
+                </div> */}
+                <Button
+                  onClick={this.onDirectionChange}
+                  style={{
+                    height: '25px', width: '75px', marginLeft: '10px', padding: 0
+                  }}
+                >
+                  <Icon type="swap" />
+                  翻转
+                </Button>
               </div>
             )
           }
@@ -523,7 +543,7 @@ class CameraDetail extends Component {
             </div>
           )}
           {
-            curAlgo && curAlgo.aiParams && (
+            curAlgo && curAlgo.aiParams && this.state.aiParams?.length > 0 && (
               <div>
                 <div className={styles.modalSubTitle}>其它算法配置</div>
                 {
