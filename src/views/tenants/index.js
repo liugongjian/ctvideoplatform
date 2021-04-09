@@ -1,82 +1,125 @@
 import React, { Component } from 'react';
 import {
-  Table, Input, Divider, Card, Tabs, Tag
+  Table, Input, Divider, Tabs, Switch, message
 } from 'antd';
 import Pagination from 'Components/EPagination';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { getTenantsList, getStatis, activeTenants } from '@/redux/reducer/platform';
 import InnerTable from './components';
 
-// import { getRoleList, deleteRoles } from '@/redux/reducer/role';
 
 import 'antd/dist/antd.css';
 import styles from './index.less';
 
-const { Column } = Table;
-const { Search } = Input;
 const { TabPane } = Tabs;
 
 
 const mapStateToProps = state => ({ role: state.role });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  {},
+  { getTenantsList, getStatis, activeTenants },
   dispatch
 );
 
 
 class Tenants extends Component {
   state = {
+    tenantsData: {},
+    statis: {}
   };
 
   componentDidMount() {
+    const { getTenantsList, getStatis } = this.props;
+    getStatis().then((res) => {
+      this.setState({ statis: res });
+    });
+    getTenantsList({ pageNo: 0, pageSize: 10 }).then((res) => {
+      console.log('tenantdata:', res);
+      this.setState({ tenantsData: res });
+    });
   }
 
+  onPageSizeChange = (current, size) => {
+    this.props.getTenantsList({
+      pageNo: 0,
+      pageSize: size
+    }).then((data) => {
+      // console.log(data);
+      this.setState({ tenantsData: data });
+    });
+  }
+
+  onPageNumChange = (pageNo) => {
+    this.props.getTenantsList({
+      pageNo: pageNo - 1,
+      pageSize: this.state.tenantsData.pageSize
+    }).then((data) => {
+      this.setState({ tenantsData: data });
+    });
+  }
+
+  handleActivate= (checked, record) => {
+    const { activeTenants, getTenantsList } = this.props;
+    const { id } = record;
+    const ids = [id];
+    activeTenants({ tenantIdArr: ids, isActive: checked }).then((res) => {
+      if (res) {
+        message.success('更新成功');
+        getTenantsList({
+          pageNo: this.state.tenantsData.pageNo,
+          pageSize: this.state.tenantsData.pageSize
+        }).then((data) => {
+          if (data) {
+            this.setState({ tenantsData: data });
+          }
+        });
+      }
+    });
+  };
+
   render() {
+    const { tenantsData, statis } = this.state;
     const columns = [
       {
-        title: 'Name',
+        title: '租户名称',
         dataIndex: 'name',
-        key: 'name',
-        render: text => <a>{text}</a>,
       },
       {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
+        title: '设备接入额度',
+        dataIndex: 'deviceQuota',
       },
       {
-        title: 'Address',
+        title: '算法额度',
+        dataIndex: 'algorithmQuota',
+      },
+      {
+        title: '创建时间',
+        dataIndex: 'createTime',
+      },
+      {
+        title: '启用状态',
+        dataIndex: 'isActive',
+        render: (text, record) => (
+
+          <div className={styles.active}>
+            <Switch checked={record.isActive} onChange={checked => this.handleActivate(checked, record)} size="small" />
+            <span>{record.isActive ? '已启用' : '已禁用'}</span>
+          </div>
+        )
+      },
+      {
+        title: '备注',
         dataIndex: 'address',
         key: 'address',
-      },
-      {
-        title: 'Tags',
-        key: 'tags',
-        dataIndex: 'tags',
-        render: tags => (
-          <span>
-            {tags.map((tag) => {
-              let color = tag.length > 5 ? 'geekblue' : 'green';
-              if (tag === 'loser') {
-                color = 'volcano';
-              }
-              return (
-                <Tag color={color} key={tag}>
-                  {tag.toUpperCase()}
-                </Tag>
-              );
-            })}
-          </span>
-        ),
       },
       {
         title: '操作',
         key: 'action',
         render: (text, record) => (
           <span>
-            <Link to={`/tenants/${record.key}`}>
+            <Link to={`/platform/tenant/${record.key}`}>
               编辑
             </Link>
             <Divider type="vertical" />
@@ -85,49 +128,57 @@ class Tenants extends Component {
         ),
       },
     ];
-
-    const data = [
-      {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-        tags: ['nice', 'developer'],
-      },
-      {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-        tags: ['loser'],
-      },
-      {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sidney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
-      },
-    ];
-    return (
-      <div className={styles.mainWrapper}>
-        <div>
-          <Card style={{ width: 150 }}>
-            <p>可接入设备</p>
-            <p>6,560</p>
-          </Card>
-        </div>
-        <div>
-          <Tabs defaultActiveKey="1" size={{ size: 'small' }}>
-            <TabPane tab="租户管理" key="1">
-              <InnerTable columns={columns} data={data} />
-            </TabPane>
-            <TabPane tab="License管理" key="2">
-              License管理
-            </TabPane>
-          </Tabs>
-        </div>
+    const carditem = (title, no) => (
+      <div className={styles.cardItem}>
+        <p className={styles.cardItemTitle}>{title}</p>
+        <p className={styles.cardItemNo}>{no}</p>
       </div>
+    );
+    return (
+      <>
+        <div className={styles.cardWrapper}>
+          <div className={styles.card}>
+            {carditem('可接入设备额度', statis.availableDevice)}
+            {carditem('已接入设备数', statis.connectedDevicesNums)}
+          </div>
+
+          <div className={styles.card}>
+            {carditem('在线设备数', statis.onLineDevicesNums)}
+            {carditem('离线设备数', statis.offLineDevicesNums)}
+          </div>
+
+          <div className={styles.card}>
+            {carditem('算法总额度', statis.totalAlgAmount)}
+            {carditem('已分配算法量', statis.allocatedAg)}
+          </div>
+
+          <div className={styles.card}>
+            {carditem('租户数', statis.rentAmount)}
+          </div>
+        </div>
+        <div className={styles.mainWrapper}>
+          <div>
+            <Tabs defaultActiveKey="1" size={{ size: 'small' }}>
+              <TabPane tab="租户管理" key="1">
+                <InnerTable
+                  columns={columns}
+                  data={tenantsData}
+                  btndata={{ path: '/platform/tenant/add', name: '添加租户' }}
+                  onPageSizeChange={this.onPageSizeChange}
+                  onPageNumChange={this.onPageNumChange}
+                />
+              </TabPane>
+              <TabPane tab="License管理" key="2">
+                <InnerTable
+                  columns={columns}
+                  data={tenantsData}
+                  btndata={{ name: '导入Licence' }}
+                />
+              </TabPane>
+            </Tabs>
+          </div>
+        </div>
+      </>
     );
   }
 }

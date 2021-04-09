@@ -3,3 +3,44 @@
   padding: 20px;
   position: relative;
 }
+.cardWrapper {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  justify-content: left;
+  margin-top: 22px;
+  margin-bottom: 22px;
+  border-radius: 4px;
+}
+.cardWrapper .card {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  background: #fff;
+  justify-content: left;
+  margin-right: 35px;
+}
+.cardWrapper .card .cardItem {
+  display: inline-block;
+  width: 190px;
+  height: 124px;
+}
+.cardWrapper .card .cardItem .cardItemTitle {
+  font-family: PingFangSC-Regular;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.45);
+  line-height: 22px;
+  font-weight: 400;
+  margin-top: 30px;
+  margin-left: 36px;
+}
+.cardWrapper .card .cardItem .cardItemNo {
+  font-family: HelveticaNeue;
+  font-size: 30px;
+  color: rgba(0, 0, 0, 0.85);
+  line-height: 38px;
+  font-weight: 400;
+  margin-left: 36px;
+}
