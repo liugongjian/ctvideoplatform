@@ -218,7 +218,7 @@ class CameraDetail extends Component {
           //   ...otherdata
           // };
         }
-        if (shape === DRAW_MODES.RECT) {
+        if (shape === DRAW_MODES.RECT && points.length === 2) {
           const [startPoint, endPoint] = points;
           const point2 = [endPoint[0], startPoint[1]];
           const point4 = [startPoint[0], endPoint[1]];
