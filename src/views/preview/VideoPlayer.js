@@ -35,38 +35,41 @@ class VideoPlayer extends Component {
     }
 
     drawLine = () => {
-      const { pointsInfo = {} } = this.props;
-      const { area = {} } = pointsInfo;
-      const { points = [] } = area;
-      let { imageWidth, imageHeight } = area;
-      // 当返回值为 null 时，解构设置默认值无效，因为null不是严格意义的undefined
-      imageWidth = imageWidth || 1920;
-      imageHeight = imageHeight || 1080;
-      const [a = { x: 1, y: 1 }, b = { x: 1, y: 1 }] = points;
-      const tempWidth = this.player.currentWidth();
-      const tempHeight = parseInt(this.player.currentWidth() / 16 * 9, 10);
-      this.setState({
-        canvasLineStyle: {
-          width: `${tempWidth}px`,
-          height: `${tempHeight}px`,
-          top: `${(this.player.currentHeight() - tempHeight) / 2}px`
-        },
-        canvasWidth: tempWidth,
-        canvasHeight: tempHeight
-      }, () => {
-        // 将接口返回的坐标换算成当前视频尺寸格式的点坐标
-        const startPX = tempWidth * a.x / imageWidth;
-        const startPY = tempHeight * a.y / imageHeight;
-        const endPX = tempWidth * b.x / imageWidth;
-        const endPY = tempHeight * b.y / imageHeight;
-        const canvas = document.getElementById('pointToPoint');
-        const context = canvas.getContext('2d');
-        context.moveTo(startPX, startPY);
-        context.lineTo(endPX, endPY);
-        context.lineWidth = 4;
-        context.strokeStyle = 'red';
-        context.stroke();
-      });
+      const { pointsInfo = {}, appliedTraffic = false } = this.props;
+      if (appliedTraffic) {
+        let { area } = pointsInfo;
+        area = area === null ? {} : area;
+        const { points = [] } = area;
+        let { imageWidth, imageHeight } = area;
+        // 当返回值为 null 时，解构设置默认值无效，因为null不是严格意义的undefined
+        imageWidth = imageWidth || 1920;
+        imageHeight = imageHeight || 1080;
+        const [a = { x: 1, y: 1 }, b = { x: 1, y: 1 }] = points;
+        const tempWidth = this.player.currentWidth();
+        const tempHeight = parseInt(this.player.currentWidth() / 16 * 9, 10);
+        this.setState({
+          canvasLineStyle: {
+            width: `${tempWidth}px`,
+            height: `${tempHeight}px`,
+            top: `${(this.player.currentHeight() - tempHeight) / 2}px`
+          },
+          canvasWidth: tempWidth,
+          canvasHeight: tempHeight
+        }, () => {
+          // 将接口返回的坐标换算成当前视频尺寸格式的点坐标
+          const startPX = tempWidth * a.x / imageWidth;
+          const startPY = tempHeight * a.y / imageHeight;
+          const endPX = tempWidth * b.x / imageWidth;
+          const endPY = tempHeight * b.y / imageHeight;
+          const canvas = document.getElementById('pointToPoint');
+          const context = canvas.getContext('2d');
+          context.moveTo(startPX, startPY);
+          context.lineTo(endPX, endPY);
+          context.lineWidth = 4;
+          context.strokeStyle = 'red';
+          context.stroke();
+        });
+      }
     }
 
     initVideo(src) {

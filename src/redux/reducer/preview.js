@@ -177,10 +177,10 @@ export function getAreaInfo(did, aid) {
   };
 }
 
-export function getPeopleLIne(id, type) {
+export function getPeopleLIne(id, aid, type) {
   return {
     type: [GET_PEOPLEAREA, GET_PEOPLEAREA_SUCCESS, GET_PEOPLEAREA_FAIL],
-    promise: apiClient => apiClient.get(`${urlPrefix}/statistic/traffic/${id}?type=${type}`)
+    promise: apiClient => apiClient.get(`${urlPrefix}/task/result/statistic/traffic/${id}/${aid}?type=${type}`)
   };
 }
 

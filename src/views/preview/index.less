@@ -143,12 +143,12 @@
         display: flex;
         a{
             // display: inline-block;
-            margin-left: 110px;
+            margin-left: 100px;
         }
     }
     .peopleAreaTotal{
         a{
-            margin-left: 100px;
+            margin-left: 90px;
         }
     }
     p{
@@ -283,5 +283,35 @@
             border-color: #91D5FF;
             background:#E6F7FF;
         }
+    }
+}
+.chartsDetailModal{
+    .chartsModalBox{
+        width: 700px;
+        height: 380px;
+    }
+   .modalPeopleInfo{
+       span{
+           cursor: pointer;
+           display: inline-block;
+           width: 63px;
+           font-size: 14px;
+           text-align: center;
+           height: 32px;
+           line-height: 32px;
+           color: #8c8c8c;
+           border: 1px solid #d9d9d9;
+           -webkit-user-select: none; /* Safari */
+           -ms-user-select: none; /* IE 10 and IE 11 */
+           user-select: none; /* Standard syntax */
+           &.btnActive{
+             color: #1890FF;
+             border-color: #1890FF;
+           }
+       }
+       
+   }
+    .modalChartsInfo{
+        height: 340px;
     }
 }

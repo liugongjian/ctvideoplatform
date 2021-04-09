@@ -73,11 +73,13 @@ class Preview extends PureComponent {
       historyID: '',
       timer: null,
       modalShowInfo: '',
-      pointsInfo: [],
+      pointsInfo: {},
       ifShowMoreDialog: false,
       tempTrafficEntry: -1,
       tempTrafficExit: -1,
-      traffiInfoData: {}
+      traffiInfoData: {},
+      sourceType: 1,
+      appliedTraffic: false
     };
     this.mychart = null;
   }
@@ -170,7 +172,9 @@ class Preview extends PureComponent {
       const { getAreaInfo } = this.props;
       // 人流量检测算法id为 10
       getAreaInfo(id, 10).then((res) => {
+        const { applied } = res;
         this.setState({
+          appliedTraffic: applied,
           pointsInfo: res
         });
       });
@@ -432,6 +436,8 @@ class Preview extends PureComponent {
       showMoreDialog = () => {
         this.setState({
           ifShowMoreDialog: true
+        }, () => {
+          this.initChartsData();
         });
       }
 
@@ -443,42 +449,58 @@ class Preview extends PureComponent {
 
       initChartsData = () => {
         const { getPeopleLIne } = this.props;
-        const chartNode = document.getElementById('modalChartsInfo');
-        this.mychart = echarts.init(chartNode);
-        const timeData = {
-          serisData: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
-          xaxisData: ['00:00', '02:00', '04:00', '06:00', '08:00', '10:00', '12:00', '14:00', '16:00',
-            '18:00', '20:00', '22:00', '24:00']
-        };
-        const dayData = {
-          serisData: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-          xaxisData: ['2021-03-24', '2021-03-25', '2021-03-26', '2021-03-27', '2021-03-28', '2021-03-29', '2021-03-30', '2021-03-31', '2021-04-01', '2021-04-02', '2021-04-03',
-            '2021-04-04', '2021-04-05', '2021-04-06', '2021-04-07']
-        };
-        const option = {
-          tooltip: {
-            trigger: 'axis'
-          },
-          legend: {
-            data: ['流入', '流出']
-          },
-          xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            data: timeData.xaxisData
-          },
-          yAxis: {
-            type: 'value',
-            data: dayData.serisData
-          },
-        };
+        const { historyID, sourceType } = this.state;
+        getPeopleLIne(historyID, 10, sourceType).then((res) => {
+          console.log('Res----->', res);
+          const chartNode = document.getElementById('modalChartsInfo');
+          this.mychart = echarts.init(chartNode);
+          const { serisDataEntry, serisDateExit, xaxisData } = res;
+          const option = {
+            tooltip: {
+              trigger: 'axis'
+            },
+            legend: {
+              data: ['流入', '流出'],
+              bottom: '0'
+            },
+            xAxis: {
+              type: 'category',
+              boundaryGap: false,
+              data: xaxisData
+            },
+            yAxis: {
+              type: 'value',
+              // data:
+            },
+            color: ['#5B8FF9', '#5AD8A6'],
+            series: [
+              {
+                name: '流入',
+                type: 'line',
+                data: serisDataEntry
+              }, {
+                name: '流出',
+                type: 'line',
+                data: serisDateExit
+              }
+            ]
+          };
+          this.mychart.setOption(option);
+        });
+      }
+
+      changeType = (sourceType) => {
+        this.setState({
+          sourceType
+        }, () => this.initChartsData());
       }
 
       render() {
         const {
           treeDatas, selectAreaKeys, expandedKeys, algorithmList = [],
           videoSrc, historyListData, imgDialogVisible, imgDialogSrc,
-          noVideo, videoName, showText, modalShowInfo, pointsInfo, ifShowMoreDialog, traffiInfoData
+          noVideo, videoName, showText, modalShowInfo, pointsInfo,
+          ifShowMoreDialog, traffiInfoData, historyID, sourceType, appliedTraffic
         } = this.state;
 
         const { preview: { loading }, push } = this.props;
@@ -514,6 +536,7 @@ class Preview extends PureComponent {
         //   </div>
         // );
 
+        const ifActive = type => (sourceType === type ? `${styles.btnActive}` : '');
 
         return (
 
@@ -566,14 +589,14 @@ class Preview extends PureComponent {
                       </div>
                       <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={this.clearVideo} />
                     </div>
-                    <VideoPlayer src={videoSrc} pointsInfo={pointsInfo} />
+                    <VideoPlayer src={videoSrc} pointsInfo={pointsInfo} appliedTraffic={appliedTraffic} />
                   </Fragment>
                 )
                 : getImg()}
 
             </div>
             <div className={styles.historyList}>
-              {traffiInfoData.entryNo || traffiInfoData.exitNo ? (
+              {historyID && appliedTraffic ? (
                 <div className={styles.peopleAreaCounts}>
                   <div className={styles.peopleAreaTotal}>
                     <p>
@@ -584,15 +607,16 @@ class Preview extends PureComponent {
                   <div className={styles.peopleAreaNum}>
                     <div>
                       <span className={styles.peopleAreaKind}>流入</span>
-                      <span className={styles.peopleAreaAll}>{traffiInfoData.entryNo}</span>
+                      <span className={styles.peopleAreaAll}>{traffiInfoData.entryNo || 0}</span>
                     </div>
                     <div>
                       <span className={styles.peopleAreaKind}>流出</span>
-                      <span className={styles.peopleAreaAll}>{traffiInfoData.exitNo}</span>
+                      <span className={styles.peopleAreaAll}>{traffiInfoData.exitNo || 0}</span>
                     </div>
                   </div>
                 </div>
-              ) : null}
+              )
+                : null}
 
               <div className={styles.historyTitle}>
                 <p>
@@ -668,12 +692,18 @@ class Preview extends PureComponent {
               forceRender
               destroyOnClose
               footer={null}
+              wrapClassName={styles.chartsDetailModal}
+              width="740px"
+              // style={{ height: '400px', width: '560px' }}
             >
-              <div className={styles.modalPeopleInfo}>
-                <Button>小时</Button>
-                <Button>天</Button>
+              <div className={styles.chartsModalBox}>
+                <div className={styles.modalPeopleInfo}>
+                  <span onClick={() => this.changeType(1)} className={ifActive(1)}>小时</span>
+                  <span onClick={() => this.changeType(2)} className={ifActive(2)}>天</span>
+                </div>
+                <div className={styles.modalChartsInfo} id="modalChartsInfo" />
               </div>
-              <div className={styles.modalChartsInfo} id="modalChartsInfo" />
+
             </Modal>
           </div>
         );
