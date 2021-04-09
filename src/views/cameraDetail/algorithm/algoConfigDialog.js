@@ -12,7 +12,7 @@ import {
   Spin,
   TimePicker,
   message,
-  Button,
+  Button, Icon,
 } from 'antd';
 import math from 'Utils/math';
 import { bindActionCreators } from 'redux';
@@ -30,6 +30,8 @@ import {
   ALGO_CONFIG_TRIGGER_RULE,
   ALGO_CONFIG_TRIGGER_TIME_TYPE,
   ALGO_CONFIG_TYPE,
+  DIRECTION_OPTIONS, // 人流方向
+  TIME_INTERVAL, // 判定周期
 } from '../constants';
 
 import styles from '../index.less';
@@ -103,6 +105,8 @@ class CameraDetail extends Component {
       imgLoading: false,
       // areasConfig: undefined,
       aiParams: [],
+      streamDirection: DIRECTION_OPTIONS.DEFAULT.value, // 人流方向
+      timeInterval: TIME_INTERVAL[0].value, // 判定周期
     };
   }
 
@@ -123,7 +127,8 @@ class CameraDetail extends Component {
       if (curAlgo.isPick) {
         this.initAlgoConfig(curAlgo);
       }
-      if (configTypes.indexOf(ALGO_CONFIG_TYPE.AREA) > -1) {
+      if (configTypes.indexOf(ALGO_CONFIG_TYPE.AREA) > -1
+        || configTypes.indexOf(ALGO_CONFIG_TYPE.LINE) > -1) {
         this.setState({ imgLoading: true });
         getAlgoAreaImage(cameraId)
           .then(imgSrc => this.setState({ imgSrc, imgLoading: false }))
@@ -143,6 +148,7 @@ class CameraDetail extends Component {
       triggerType,
       timeSetting,
       areas,
+      timeInterval,
     } = algoConfigs || {};
     const nextState = {};
     if (timeSetting !== undefined) {
@@ -152,6 +158,9 @@ class CameraDetail extends Component {
       } else {
         nextState.timeType = ALGO_CONFIG_TRIGGER_TIME_TYPE.BY_SEL.value;
       }
+    }
+    if (timeInterval) {
+      nextState.timeInterval = timeInterval;
     }
     if (triggerType !== undefined) {
       nextState.ruleConfig = `${triggerType}`;
@@ -163,7 +172,7 @@ class CameraDetail extends Component {
         }
         return ({
           ...item,
-          shape: 'polygon',
+          shape: item.name || 'polygon',
           origin: true, // 代表是原始尺寸
         });
       });
@@ -175,7 +184,8 @@ class CameraDetail extends Component {
 
   handleOk = () => {
     const {
-      areas, timeSetting, ruleConfig, timeType
+      areas, timeSetting, ruleConfig, timeType, timeInterval,
+      streamDirection,
     } = this.state;
     console.log('areas', areas);
     const {
@@ -193,7 +203,14 @@ class CameraDetail extends Component {
     for (const config of configTypes) {
       configEnable[config] = true;
     }
-    if (configEnable[ALGO_CONFIG_TYPE.AREA]) {
+    if (configEnable[ALGO_CONFIG_TYPE.LINE] && !areas?.length) {
+      message.warn('请设置视频区域！');
+      return;
+    }
+    if (configEnable[ALGO_CONFIG_TYPE.PERIOD]) {
+      postData.timeInterval = timeInterval;
+    }
+    if (configEnable[ALGO_CONFIG_TYPE.AREA] || configEnable[ALGO_CONFIG_TYPE.LINE]) {
       postData.areas = areas.map(({
         shape, points, ratio, origin, ...otherdata
       }) => {
@@ -204,11 +221,16 @@ class CameraDetail extends Component {
           //   ...otherdata
           // };
         }
-        if (shape === DRAW_MODES.RECT) {
+        if (shape === DRAW_MODES.RECT && points.length === 2) {
           const [startPoint, endPoint] = points;
           const point2 = [endPoint[0], startPoint[1]];
           const point4 = [startPoint[0], endPoint[1]];
           points = [startPoint, point2, endPoint, point4];
+        }
+        // 如果方向为逆
+        if (shape === DRAW_MODES.DIRECTION && streamDirection) {
+          const [startPoint, endPoint] = points;
+          points = [endPoint, startPoint];
         }
         // 四舍五入
         const realPoints = points.map(point => ({
@@ -218,6 +240,7 @@ class CameraDetail extends Component {
         return {
           points: realPoints,
           ...otherdata,
+          name: shape,
         };
       });
     }
@@ -305,6 +328,76 @@ class CameraDetail extends Component {
     }, () => console.log('this.state.aiParams', this.state.aiParams));
   }
 
+  onDirectionSwitch = (e) => {
+    // this.setState({ streamDirection });
+    this.setState((state) => {
+      let newVal;
+      if (state.streamDirection === DIRECTION_OPTIONS.DEFAULT.value) {
+        newVal = DIRECTION_OPTIONS.REVERSAL.value;
+      } else if (state.streamDirection === DIRECTION_OPTIONS.REVERSAL.value) {
+        newVal = DIRECTION_OPTIONS.DEFAULT.value;
+      }
+      return {
+        streamDirection: newVal
+      };
+    });
+  }
+
+  // canvasOperator传过来的事件
+  onDirectionChange = (streamDirection) => {
+    this.setState({
+      streamDirection
+    });
+  }
+
+  onTimeIntervalChange = (timeInterval) => {
+    this.setState({ timeInterval });
+  }
+
+  renderCanvas = (configEnable) => {
+    const {
+      curAlgo
+    } = this.props;
+    const {
+      areas = [],
+      initalAreas = [],
+      imgSrc, imgLoading, streamDirection,
+    } = this.state;
+    if (configEnable[ALGO_CONFIG_TYPE.AREA] || configEnable[ALGO_CONFIG_TYPE.LINE]) {
+      const operators = [];
+      if (configEnable[ALGO_CONFIG_TYPE.LINE]) {
+        operators.push(DRAW_MODES.LINE);
+      }
+      if (configEnable[ALGO_CONFIG_TYPE.AREA]) {
+        operators.push(DRAW_MODES.RECT);
+        operators.push(DRAW_MODES.POLYGON);
+      }
+      console.log('streamDirection', streamDirection);
+      return (
+        <Spin spinning={imgLoading}>
+          <div className={styles.areaChooose}>
+            <p>
+              请设置
+              {curAlgo?.cnName}
+              视频区域:
+            </p>
+            <CanvasOperator
+              imgSrc={imgSrc}
+              width="550px"
+              id="1"
+              areas={areas}
+              operator={operators}
+              initalAreas={initalAreas}
+              direction={streamDirection}
+              onAreasChange={this.onAreasChange}
+              onDirectionChange={this.onDirectionChange}
+            />
+          </div>
+        </Spin>
+      );
+    } return null;
+  }
+
   render() {
     const {
       visible, configTypes, curAlgo
@@ -314,8 +407,9 @@ class CameraDetail extends Component {
       initalAreas = [],
       ruleConfig,
       timeType,
-      imgSrc, imgLoading,
-      timeSetting
+      imgSrc, imgLoading, streamDirection,
+      timeSetting, // 触发时间段
+      timeInterval, // 判定周期
     } = this.state;
     const configEnable = {};
     for (const config of configTypes) {
@@ -348,26 +442,59 @@ class CameraDetail extends Component {
       >
         <div className={styles['algoConfig-content']}>
           {
-            configEnable[ALGO_CONFIG_TYPE.AREA]
-            && (
-              <Spin spinning={imgLoading}>
-                <div className={styles.areaChooose}>
-                  <p>
-                    请设置
-                    {curAlgo?.cnName}
-                    视频区域:
-                  </p>
-                  <CanvasOperator
-                    imgSrc={imgSrc}
-                    width="550px"
-                    id="1"
-                    areas={areas}
-                    initalAreas={initalAreas}
-                    onAreasChange={this.onAreasChange}
-                  />
+            this.renderCanvas(configEnable)
+          }
+          {
+            configEnable[ALGO_CONFIG_TYPE.LINE] && (
+              <div className={styles.directionChoose}>
+                请调整流入方向（上图中箭头方向）:
+                {/* <div style={{ marginTop: '15px' }}>
+                   <Select
+                    style={{ width: 200 }}
+                    onChange={this.onDirectionSwitch}
+                    value={streamDirection}
+                  >
+                    {
+                      Object.values(DIRECTION_OPTIONS).map(({ value, title }) => (
+                        <Option key={value} value={value}>{title}</Option>
+                      ))
+                    }
+                  </Select>
+                </div> */}
+                <Button
+                  onClick={this.onDirectionSwitch}
+                  style={{
+                    height: '25px', width: '75px', marginLeft: '10px', padding: 0
+                  }}
+                >
+                  <Icon type="swap" />
+                  翻转
+                </Button>
+              </div>
+            )
+          }
+          {
+            configEnable[ALGO_CONFIG_TYPE.PERIOD] && (
+              <div className={styles.periodChoose}>
+                请设置
+                {curAlgo?.cnName}
+                判定周期:
+                <div style={{ marginTop: '15px' }}>
+                  <Select
+                    style={{ width: 200 }}
+                    onChange={this.onTimeIntervalChange}
+                    value={timeInterval}
+                  >
+                    {
+                      Object.values(TIME_INTERVAL).map(({ value, title }) => (
+                        <Option key={value} value={value}>{title}</Option>
+                      ))
+                    }
+                  </Select>
                 </div>
-              </Spin>
-            )}
+              </div>
+            )
+          }
           {
             configEnable[ALGO_CONFIG_TYPE.RULE] && (
               <div className={styles.timeChooose}>
@@ -427,7 +554,7 @@ class CameraDetail extends Component {
             </div>
           )}
           {
-            curAlgo && curAlgo.aiParams && (
+            curAlgo && curAlgo.aiParams && this.state.aiParams?.length > 0 && (
               <div>
                 <div className={styles.modalSubTitle}>其它算法配置</div>
                 {

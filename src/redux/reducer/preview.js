@@ -16,12 +16,22 @@ const GET_PEOPLEAREA = 'GET_PEOPLEAREA';
 const GET_PEOPLEAREA_SUCCESS = 'GET_PEOPLEAREA_SUCCESS';
 const GET_PEOPLEAREA_FAIL = 'GET_PEOPLEAREA_FAIL';
 
+const GET_PEOPLELINE = 'GET_PEOPLELINE';
+const GET_PEOPLELINE_SUCCESS = 'GET_PEOPLELINE_SUCCESS';
+const GET_PEOPLELINE_FAIL = 'GET_PEOPLELINE_FAIL';
+
+const GET_CURRENTTRAFFIC = 'GET_CURRENTTRAFFIC';
+const GET_CURRENTTRAFFIC_SUCCESS = 'GET_CURRENTTRAFFIC_SUCCESS';
+const GET_CURRENTTRAFFIC_FAIL = 'GET_CURRENTTRAFFIC_FAIL';
+
 const initialState = {
   areatList: [],
   loading: false,
   historyTop: [],
   videoUrl: {},
   areaInfo: {},
+  peopleLine: {},
+  currentTraffic: {}
 };
 
 export default function preview(state = initialState, action = {}) {
@@ -94,6 +104,40 @@ export default function preview(state = initialState, action = {}) {
         error: action.error,
         loading: false
       };
+    case GET_PEOPLELINE:
+      return {
+        ...state,
+        loading: true
+      };
+    case GET_PEOPLELINE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        peopleLine: action.data
+      };
+    case GET_PEOPLELINE_FAIL:
+      return {
+        ...state,
+        error: action.error,
+        loading: false
+      };
+    case GET_CURRENTTRAFFIC:
+      return {
+        ...state,
+        loading: true
+      };
+    case GET_CURRENTTRAFFIC_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        currentTraffic: action.data
+      };
+    case GET_CURRENTTRAFFIC_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: action.error
+      };
     default:
       return {
         ...state
@@ -130,5 +174,19 @@ export function getAreaInfo(did, aid) {
   return {
     type: [GET_PEOPLEAREA, GET_PEOPLEAREA_SUCCESS, GET_PEOPLEAREA_FAIL],
     promise: apiClient => apiClient.get(`${urlPrefix}/task/area/${did}/${aid}`)
+  };
+}
+
+export function getPeopleLIne(id, aid, type) {
+  return {
+    type: [GET_PEOPLEAREA, GET_PEOPLEAREA_SUCCESS, GET_PEOPLEAREA_FAIL],
+    promise: apiClient => apiClient.get(`${urlPrefix}/task/result/statistic/traffic/${id}/${aid}?type=${type}`)
+  };
+}
+
+export function getCurrentTraffic(id, type) {
+  return {
+    type: [GET_CURRENTTRAFFIC, GET_CURRENTTRAFFIC_SUCCESS, GET_CURRENTTRAFFIC_FAIL],
+    promise: apiClient => apiClient.get(`${urlPrefix}/task/result/currday/traffic/${id}/${type}`)
   };
 }

@@ -204,7 +204,7 @@ class Contents extends Component {
                 validateTrigger: 'onBlur'
               },
               { initialValue: '' })(
-                <Input placeholder="请输入旧密码" />
+                <Input.Password placeholder="请输入旧密码" />
               )}
             </FormItem>
             <FormItem label="新密码" autoComplete="new-password" {...formItemLayout}>

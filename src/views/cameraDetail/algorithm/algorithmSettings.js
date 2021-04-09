@@ -12,6 +12,7 @@ import {
   message,
   Spin,
 } from 'antd';
+import EIcon from 'Components/Icon';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
@@ -43,7 +44,7 @@ const getImgUrl = (name) => {
   const arr = [
     'carPersonCheck', 'faceRecognize', 'plateRecognize', 'areaAlarm', 'stepWallCheck', 'peopleTraffic', 'plateTraffic', 'safetyHat',
     'workingClothes', 'carTypeDetect', 'peopleCrowd', 'fightDetect', 'fallDownDetect', 'roadsideStall', 'wanderTarry', 'maskDetect',
-    'sleepDetect', 'fireDetect', 'dutyDetect',
+    'sleepDetect', 'fireDetect', 'dutyDetect', // 'fireEngineBlock'
   ];
   if (arr.indexOf(name) > -1) {
     return require(`Assets/algorithmIcons/${name}.png`);
@@ -87,8 +88,8 @@ class AlgorithmItem extends React.Component {
           />
         </span>
         <span className={styles['algoItem-title']}>
-          <img src={imgSrc} alt="icon" className={styles['algoItem-title-icon']} />
-          {/* <img src={defaultIcon} alt="icon" /> */}
+          {/* <img src={imgSrc} alt="icon" className={styles['algoItem-title-icon']} /> */}
+          <span className={styles['algoItem-title-icon']}><EIcon type={`myicon-algo-${curAlgo?.name}`} alt="icon" /></span>
           {curAlgo?.cnName}
         </span>
         <span className={styles['algoItem-desp']}>{curAlgo?.description}</span>
