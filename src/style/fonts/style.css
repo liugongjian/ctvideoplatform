@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'cloudFont';
   src:
-    url('fonts/cloudFont.ttf?wpbgd1') format('truetype'),
-    url('fonts/cloudFont.woff?wpbgd1') format('woff'),
-    url('fonts/cloudFont.svg?wpbgd1#cloudFont') format('svg');
+    url('fonts/cloudFont.ttf?jb66gp') format('truetype'),
+    url('fonts/cloudFont.woff?jb66gp') format('woff'),
+    url('fonts/cloudFont.svg?jb66gp#cloudFont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -24,6 +24,39 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.myicon-algo-areaAlarm:before {
+  content: "\eb5e";
+}
+.myicon-algo-carPersonCheck:before {
+  content: "\eb5f";
+}
+.myicon-algo-dutyDetect:before {
+  content: "\eb60";
+}
+.myicon-algo-faceRecognize:before {
+  content: "\eb61";
+}
+.myicon-algo-fireDetect:before {
+  content: "\eb62";
+}
+.myicon-algo-fireExitBlock:before {
+  content: "\eb63";
+}
+.myicon-algo-maskDetect:before {
+  content: "\eb64";
+}
+.myicon-algo-peopleTraffic:before {
+  content: "\eb65";
+}
+.myicon-algo-plateRecognize:before {
+  content: "\eb66";
+}
+.myicon-algo-safetyHat:before {
+  content: "\eb67";
+}
+.myicon-algo-sleepDetect:before {
+  content: "\eb68";
+}
 .myicon-menuIcon-24:before {
   content: "\eb5c";
 }

@@ -160,6 +160,26 @@ class CanvasOperator extends Component {
     return [startPoint, point2, endPoint, point4];
   }
 
+  drawPoligon = (canvas, area, points, ratio) => {
+    const curRatio = area.origin ? ratio : 1;
+    const toRatio = x => math.divide(x, curRatio);
+    const startPoint = [toRatio(points[0][0]), toRatio(points[0][1])];
+    canvas.beginPath();
+    canvas.moveTo(startPoint[0], startPoint[1]);
+    for (const point of points) {
+      const pointXY = [toRatio(point[0]), toRatio(point[1])];
+      canvas.lineTo(pointXY[0], pointXY[1]);
+      // this.drawPoint(canvas, pointXY[0], pointXY[1]);
+    }
+    canvas.lineTo(startPoint[0], startPoint[1]);
+    canvas.stroke();
+    canvas.closePath();
+    for (const point of points) {
+      const pointXY = [toRatio(point[0]), toRatio(point[1])];
+      this.drawPoint(canvas, pointXY[0], pointXY[1]);
+    }
+  }
+
   // 绘制已暂存在areas中的区域
   renderBeforeAreas = () => {
     const { canvas, ratio } = this.state;
@@ -173,6 +193,10 @@ class CanvasOperator extends Component {
         switch (area.shape) {
           case DRAW_MODES.RECT: {
             canvas.beginPath();
+            if (points && points.length > 2) {
+              this.drawPoligon(canvas, area, points, ratio);
+              break;
+            }
             const {
               left, top, width, height
             } = getRectPropFromPoints(points[0], points[1]);
@@ -185,23 +209,7 @@ class CanvasOperator extends Component {
             break;
           }
           case DRAW_MODES.POLYGON: {
-            const curRatio = area.origin ? ratio : 1;
-            const toRatio = x => math.divide(x, curRatio);
-            const startPoint = [toRatio(points[0][0]), toRatio(points[0][1])];
-            canvas.beginPath();
-            canvas.moveTo(startPoint[0], startPoint[1]);
-            for (const point of points) {
-              const pointXY = [toRatio(point[0]), toRatio(point[1])];
-              canvas.lineTo(pointXY[0], pointXY[1]);
-              // this.drawPoint(canvas, pointXY[0], pointXY[1]);
-            }
-            canvas.lineTo(startPoint[0], startPoint[1]);
-            canvas.stroke();
-            canvas.closePath();
-            for (const point of points) {
-              const pointXY = [toRatio(point[0]), toRatio(point[1])];
-              this.drawPoint(canvas, pointXY[0], pointXY[1]);
-            }
+            this.drawPoligon(canvas, area, points, ratio);
             break;
           }
           case DRAW_MODES.LINE: {
