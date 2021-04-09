@@ -9,6 +9,7 @@ import {
 import {
   getHistoryListTopTen
 } from 'Redux/reducer/preview';
+import EIcon from 'Components/Icon';
 import { urlPrefix } from 'Constants/Dictionary';
 import noImage from 'Assets/defaultFace.png';
 import styles from './index.less';
@@ -160,7 +161,8 @@ class AlarmList extends Component {
     const getAlarmDom = () => alarmData.list && alarmData.list.map(item => (
       <div key={item.id} className={styles.alarmDetail}>
         <div className={styles.alramDetailIcon}>
-          <img src={getImgUrl(item.algorithmName)} alt="" />
+          {/** <img src={getImgUrl(item.algorithmName)} alt="" /> */}
+          <EIcon type={`myicon-algo-${item?.algorithmName}`} alt="icon" />
         </div>
         <div className={styles.alarmDetailInfo}>
           <p>

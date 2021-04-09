@@ -451,7 +451,6 @@ class Preview extends PureComponent {
         const { getPeopleLIne } = this.props;
         const { historyID, sourceType } = this.state;
         getPeopleLIne(historyID, 10, sourceType).then((res) => {
-          console.log('Res----->', res);
           const chartNode = document.getElementById('modalChartsInfo');
           this.mychart = echarts.init(chartNode);
           const { serisDataEntry, serisDateExit, xaxisData } = res;
@@ -589,7 +588,11 @@ class Preview extends PureComponent {
                       </div>
                       <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={this.clearVideo} />
                     </div>
-                    <VideoPlayer src={videoSrc} pointsInfo={pointsInfo} appliedTraffic={appliedTraffic} />
+                    <VideoPlayer
+                      src={videoSrc}
+                      pointsInfo={pointsInfo}
+                      appliedTraffic={appliedTraffic}
+                    />
                   </Fragment>
                 )
                 : getImg()}
