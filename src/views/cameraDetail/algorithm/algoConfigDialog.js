@@ -203,7 +203,10 @@ class CameraDetail extends Component {
     for (const config of configTypes) {
       configEnable[config] = true;
     }
-    // TODO
+    if (configEnable[ALGO_CONFIG_TYPE.LINE] && !areas?.length) {
+      message.warn('请设置视频区域！');
+      return;
+    }
     if (configEnable[ALGO_CONFIG_TYPE.PERIOD]) {
       postData.timeInterval = timeInterval;
     }
