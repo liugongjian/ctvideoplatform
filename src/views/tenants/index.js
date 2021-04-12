@@ -7,7 +7,10 @@ import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getTenantsList, getStatis, activeTenants } from '@/redux/reducer/platform';
+import {
+  getTenantsList, getStatis, activeTenants, getLicenceList
+} from '@/redux/reducer/platform';
+import { urlPrefix } from '@/constants/Dictionary';
 import InnerTable from './components';
 
 
@@ -19,7 +22,9 @@ const { TabPane } = Tabs;
 
 const mapStateToProps = state => ({ role: state.role });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  { getTenantsList, getStatis, activeTenants },
+  {
+    getTenantsList, getStatis, activeTenants, getLicenceList
+  },
   dispatch
 );
 
@@ -27,17 +32,25 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 class Tenants extends Component {
   state = {
     tenantsData: {},
-    statis: {}
+    statis: {},
+    licenseData: [],
+    licenseDate: '',
   };
 
   componentDidMount() {
-    const { getTenantsList, getStatis } = this.props;
+    const { getTenantsList, getStatis, getLicenceList } = this.props;
     getStatis().then((res) => {
       this.setState({ statis: res });
     });
     getTenantsList({ pageNo: 0, pageSize: 10 }).then((res) => {
       console.log('tenantdata:', res);
       this.setState({ tenantsData: res });
+    });
+    getLicenceList().then((ld) => {
+      console.log('ld', ld);
+      if (ld) {
+        this.setState({ licenseData: ld.extra.algorithmInfos, licenseDate: ld.issued });
+      }
     });
   }
 
@@ -80,7 +93,9 @@ class Tenants extends Component {
   };
 
   render() {
-    const { tenantsData, statis } = this.state;
+    const {
+      tenantsData, statis, licenseData, licenseDate
+    } = this.state;
     const columns = [
       {
         title: '租户名称',
@@ -119,7 +134,7 @@ class Tenants extends Component {
         key: 'action',
         render: (text, record) => (
           <span>
-            <Link to={`/platform/tenant/${record.key}`}>
+            <Link to={`/platform/tenant/${record.id}`}>
               编辑
             </Link>
             <Divider type="vertical" />
@@ -128,12 +143,30 @@ class Tenants extends Component {
         ),
       },
     ];
+    const licensecolumns = [
+      {
+        title: 'License项',
+        dataIndex: 'name',
+        key: 'name'
+      },
+      {
+        title: '额度',
+        dataIndex: 'quota',
+        key: 'quota'
+      },
+    ];
     const carditem = (title, no) => (
       <div className={styles.cardItem}>
         <p className={styles.cardItemTitle}>{title}</p>
         <p className={styles.cardItemNo}>{no}</p>
       </div>
     );
+    const uploadProps = {
+      showUploadList: false,
+      action: `${urlPrefix}/license/upload`,
+      multiple: false,
+      accept: '.lic',
+    };
     return (
       <>
         <div className={styles.cardWrapper}>
@@ -170,9 +203,10 @@ class Tenants extends Component {
               </TabPane>
               <TabPane tab="License管理" key="2">
                 <InnerTable
-                  columns={columns}
-                  data={tenantsData}
+                  columns={licensecolumns}
+                  data={{ list: licenseData, issued: licenseDate }}
                   btndata={{ name: '导入Licence' }}
+                  uploadProps={uploadProps}
                 />
               </TabPane>
             </Tabs>

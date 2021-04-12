@@ -8,10 +8,6 @@ import Pagination from 'Components/EPagination';
 import {
   Button, Table, Upload
 } from 'antd';
-import {
-  getHistoryListTopTen
-} from 'Redux/reducer/preview';
-import { urlPrefix } from 'Constants/Dictionary';
 import styles from './index.less';
 
 const mapStateToProps = state => ({ preview: state.preview });
@@ -44,7 +40,7 @@ class InnerTable extends Component {
         </Button>
       </Link>
     ) : (
-      <Upload>
+      <Upload {...this.props.uploadProps}>
         <Button type="primary" className={styles.addBtn}>
           +
           {this.props.btndata.name}
@@ -64,15 +60,24 @@ class InnerTable extends Component {
         onShowSizeChange={(current, size) => this.props.onPageSizeChange(current, size)}
       />
     ) : (
-      <p>当前Licence购买日期为2021年3越12日</p>
+      <p>
+        当前Licence购买日期为
+        {this.props.data.issued.split(' ')[0].split('-')[0]}
+        年
+        {this.props.data.issued.split(' ')[0].split('-')[1]}
+        月
+        {this.props.data.issued.split(' ')[0].split('-')[2]}
+        日
+      </p>
     );
+    const dataSource = this.props.data.list;
     return (
       <div>
         {btn}
         <Table
           rowKey={record => record.id}
           columns={this.props.columns}
-          dataSource={this.props.data.list}
+          dataSource={dataSource}
           pagination={false}
         />
         <div style={{ marginTop: 24 }}>

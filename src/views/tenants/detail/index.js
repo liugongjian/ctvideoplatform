@@ -9,8 +9,8 @@ import {
   Modal, Button, Table, Tag, Divider, Form, Input, Select
 } from 'antd';
 import {
-  getHistoryListTopTen
-} from 'Redux/reducer/preview';
+  getTenantDetail
+} from 'Redux/reducer/platform';
 import { urlPrefix } from 'Constants/Dictionary';
 import styles from './index.less';
 
@@ -20,7 +20,7 @@ const { TextArea } = Input;
 
 const mapStateToProps = state => ({ preview: state.preview });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  {},
+  { getTenantDetail },
   dispatch
 );
 
@@ -28,15 +28,32 @@ class TenantDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      tenantDetail: null
     };
   }
 
   componentDidMount() {
+    const { tenantId } = this.props.match.params;
     console.log('this.props', this.props.match.params.tenantId);
-    // this.props.match.params.tenantId && 请求后端接口
+    if (tenantId) {
+      this.props.getTenantDetail(tenantId).then((res) => {
+        console.log('res-id', res);
+        this.setState({ tenantDetail: res });
+      });
+    }
   }
 
   render() {
+    const emptyDetail = {
+      algorithmIds: '',
+      algorithmQuota: 0,
+      algorithmsInfoJson: [],
+      description: '',
+      deviceQuota: 0,
+      deviceSupplierInfo: [],
+      name: '',
+    };
+    const td = this.state.tenantDetail || emptyDetail;
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
       labelCol: {
@@ -54,37 +71,14 @@ class TenantDetail extends Component {
       },
       {
         title: '额度(路)',
-        dataIndex: 'age',
-        key: 'age',
+        dataIndex: 'quota',
+        key: 'quota',
         render: text => (
           <Input value={text} />
         ),
       },
     ];
-
-    const data = [
-      {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-        tags: ['nice', 'developer'],
-      },
-      {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-        tags: ['loser'],
-      },
-      {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sidney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
-      },
-    ];
+    console.log(td);
     return (
       <div className={styles.contentWrapper}>
         <span className={styles.subTitle}>基础信息</span>
@@ -99,8 +93,8 @@ class TenantDetail extends Component {
         >
           <div className={styles.basicInfoWrapper}>
             <Form.Item label="租户名称" name="name">
-              {getFieldDecorator('input', {
-                initialValue: this.props.name || '',
+              {getFieldDecorator('name', {
+                initialValue: td.name || '',
                 rules: [{ required: true, message: '请输入租户名' }],
               })(
                 <Input className={styles.formItemInput} onChange={e => this.props.onNameChange(e.target.value)} />
@@ -108,13 +102,13 @@ class TenantDetail extends Component {
             </Form.Item>
 
             <Form.Item label="租户密码" name="password">
-              <Input.Password className={styles.formItemInput} onChange={e => this.props.onDescriptionChange(e.target.value)} value={this.props.description} />
+              <Input.Password className={styles.formItemInput} onChange={e => this.props.onDescriptionChange(e.target.value)} />
             </Form.Item>
             <Form.Item label="密码确认" name="pwdconfirm">
-              <Input.Password className={styles.formItemInput} onChange={e => this.props.onDescriptionChange(e.target.value)} value={this.props.description} />
+              <Input.Password className={styles.formItemInput} onChange={e => this.props.onDescriptionChange(e.target.value)} />
             </Form.Item>
             <Form.Item label="备注" name="description">
-              <TextArea className={styles.formItemInput} rows={4} autoSize={false} />
+              <TextArea className={styles.formItemInput} rows={4} autoSize={false} value={td.description} />
             </Form.Item>
             <span className={styles.subTitle}>规则配置</span>
             <Form.Item label="视频源类型" name="videotype">
@@ -145,7 +139,7 @@ class TenantDetail extends Component {
             </Form.Item>
 
             <span className={styles.subTitle}>算法配置</span>
-            <Table columns={columns} dataSource={data} pagination={false} />
+            <Table columns={columns} dataSource={[]} pagination={false} />
           </div>
 
           <Form.Item>
