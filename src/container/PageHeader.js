@@ -47,9 +47,16 @@ class Contents extends Component {
   }
 
   getUserInfo = () => {
-    const { userInfo } = this.props;
+    const { userInfo, push } = this.props;
     userInfo().then((res) => {
-      this.setState({ userinfo: res });
+      this.setState({
+        userinfo: res
+      }, () => {
+        const { type } = res;
+        if (type === 'ADMIN') { // 根据账号type决定默认页，后续需优化
+          push('/platform');
+        }
+      });
     });
   }
 
