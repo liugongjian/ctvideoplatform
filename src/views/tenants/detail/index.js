@@ -10,7 +10,7 @@ import {
   Button, Table, message, Form, Input, Select
 } from 'antd';
 import {
-  getTenantDetail, getDeviceSupplier, updateTenant, addTenant, getAlgorithmList
+  getTenantDetail, getDeviceSupplier, updateTenant, addTenant, getAlgorithmList, getDeviceQuota, getAllAlgorithmQuota
 } from 'Redux/reducer/platform';
 import { urlPrefix } from 'Constants/Dictionary';
 import { pathPrefix } from '@/constants/Dictionary';
@@ -23,7 +23,7 @@ const { TextArea } = Input;
 const mapStateToProps = state => ({ preview: state.preview });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    push, getTenantDetail, getDeviceSupplier, updateTenant, addTenant, getAlgorithmList
+    push, getTenantDetail, getDeviceSupplier, updateTenant, addTenant, getAlgorithmList, getDeviceQuota, getAllAlgorithmQuota
   },
   dispatch
 );
@@ -38,11 +38,14 @@ class TenantDetail extends Component {
       currentKey: '',
       algorithmConfig: [],
       algorithmList: [],
+      deviceQuota: 0,
     };
   }
 
   componentDidMount() {
-    const { getTenantDetail, getDeviceSupplier, getAlgorithmList } = this.props;
+    const {
+      getTenantDetail, getDeviceSupplier, getAlgorithmList, getDeviceQuota, getAllAlgorithmQuota
+    } = this.props;
     const { tenantId } = this.props.match.params;
     let calgolist; let algoTableData;
     console.log('this.props', this.props.match.params.tenantId);
@@ -76,23 +79,31 @@ class TenantDetail extends Component {
           getAlgorithmList().then((list) => {
             console.log('getAlgorithmList', list);
             console.log('calgolist', calgolist);
+
             if (list) {
-              algoTableData = list.map((algo) => {
-                // eslint-disable-next-line no-restricted-syntax
-                let quota = null;
-                calgolist.forEach((item) => {
-                  if (item.name === algo.name) {
-                    // eslint-disable-next-line prefer-destructuring
-                    quota = item.quota;
+              getAllAlgorithmQuota().then((allquota) => {
+                console.log('getAllAlgorithmQuota', allquota);
+                algoTableData = list.map((algo) => {
+                  // eslint-disable-next-line no-restricted-syntax
+                  let quota = null;
+                  calgolist.forEach((item) => {
+                    if (item.name === algo.name) {
+                      // eslint-disable-next-line prefer-destructuring
+                      quota = item.quota;
+                    }
+                  });
+                  if (quota) {
+                    return {
+                      name: algo.name, quota, cnName: algo.cnName, quotaTotal: allquota[algo.name]
+                    };
                   }
+                  return {
+                    name: algo.name, quota: 0, cnName: algo.cnName, quotaTotal: allquota[algo.name]
+                  };
                 });
-                if (quota) {
-                  return { name: algo.name, quota, cnName: algo.cnName };
-                }
-                return { name: algo.name, quota: 0, cnName: algo.cnName };
+                console.log('algoTableData', algoTableData);
+                this.setState({ algorithmList: list, algorithmConfig: algoTableData });
               });
-              console.log('algoTableData', algoTableData);
-              this.setState({ algorithmList: list, algorithmConfig: algoTableData });
             }
           });
         });
@@ -107,11 +118,22 @@ class TenantDetail extends Component {
       getAlgorithmList().then((list) => {
         console.log('getAlgorithmList', list);
         if (list) {
-          const table = list.map(item => ({ name: item.name, quota: 0, cnName: item.cnName }));
-          this.setState({ algorithmList: list, algorithmConfig: table });
+          getAllAlgorithmQuota().then((allquota) => {
+            const table = list.map(item => ({
+              name: item.name, quota: 0, cnName: item.cnName, quotaTotal: allquota[item.name]
+            }));
+            this.setState({ algorithmList: list, algorithmConfig: table });
+          });
         }
       });
     }
+
+
+    getDeviceQuota().then((quota) => {
+      if (quota) {
+        this.setState({ deviceQuota: quota });
+      }
+    });
   }
 
   handleSelectChange = (supkey) => {
@@ -220,6 +242,11 @@ class TenantDetail extends Component {
         key: 'cnName',
       },
       {
+        title: '剩余额度',
+        dataIndex: 'quotaTotal',
+        key: 'quotaTotal',
+      },
+      {
         title: '额度(路)',
         dataIndex: 'quota',
         key: 'quota',
@@ -306,6 +333,10 @@ class TenantDetail extends Component {
               })(
                 <Input className={styles.formItemInput} />
               )}
+              <span className={styles.quota}>
+                剩余额度：
+                <span className={`${styles.quota} ${styles.warn}`}>{this.state.deviceQuota}</span>
+              </span>
             </Form.Item>
             <span className={styles.subTitle}>算法配置</span>
             <Table rowKey={record => record.name} columns={columns} dataSource={this.state.algorithmConfig} pagination={false} />

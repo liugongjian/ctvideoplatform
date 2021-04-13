@@ -48,3 +48,10 @@
   width: 78px;
   height: 32px;
 }
+.quota {
+  margin-left: 10px;
+  font-size: 10px;
+}
+.quota .warn {
+  color: brown;
+}

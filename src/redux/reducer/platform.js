@@ -12,6 +12,8 @@ const GET_DEVICE_SUPPLIER = 'GET_DEVICE_SUPPLIER';
 const UPDATE_TENANT = 'UPDATE_TENANT';
 const ADD_TENANT = 'ADD_TENANT';
 const GET_ALGORITHMLIST = 'GET_ALGORITHMLIST';
+const GET_DEVICEQUOTA = 'GET_DEVICEQUOTA';
+const GET_ALLALGORITHMQUOTA = 'GET_ALLALGORITHMQUOTA';
 
 const initialState = {
 };
@@ -57,6 +59,11 @@ export default function account(state = initialState, action = {}) {
       return {
         ...state
       };
+    case GET_ALLALGORITHMQUOTA:
+      return {
+        ...state
+      };
+
     default:
       return state;
   }
@@ -125,5 +132,17 @@ export function getAlgorithmList() {
   return {
     type: GET_ALGORITHMLIST,
     promise: apiClient => apiClient.get(`${urlPrefix}/admin/getAlgorithmList`)
+  };
+}
+export function getDeviceQuota() {
+  return {
+    type: GET_DEVICEQUOTA,
+    promise: apiClient => apiClient.get(`${urlPrefix}/tenant/getDeviceQuota`)
+  };
+}
+export function getAllAlgorithmQuota() {
+  return {
+    type: GET_ALLALGORITHMQUOTA,
+    promise: apiClient => apiClient.get(`${urlPrefix}/tenant/getAllAlgorithmQuota`)
   };
 }
