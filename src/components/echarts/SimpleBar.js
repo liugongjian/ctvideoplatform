@@ -68,6 +68,10 @@ class BarChart extends PureComponent {
           axisLabel: {
             fontSize: 12,
             color: '#999',
+            rotate: 30,
+            // formatter: function (value, index) {
+            //     return value + 'kg';
+            // },
           },
           axisTick: {
             show: false
@@ -120,7 +124,7 @@ class BarChart extends PureComponent {
           left: 40,
           top: 40,
           right: 30,
-          bottom: 50,
+          bottom: 80,
         },
         color: ['#1890FF'], // ['#4E98BA', '#99DAF0', '#F8CC5B'],
         series: [{
