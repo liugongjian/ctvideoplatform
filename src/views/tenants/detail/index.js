@@ -56,15 +56,19 @@ class TenantDetail extends Component {
     getDeviceSupplier().then((supplier) => {
       console.log(supplier, 'supplier');
       let mkey;
-      if (supplier && ckey) {
-        supplier.forEach((item, index) => {
-          if (item.name === ckey) {
-            mkey = index;
-          }
-        });
-        console.log('mkey', mkey);
-        console.log('supplier[mkey].supplierParams', supplier[mkey].supplierParam);
-        this.setState({ deviceSupplier: supplier, supplierParams: supplier[mkey].supplierParam });
+      if (supplier) {
+        if (ckey) {
+          supplier.forEach((item, index) => {
+            if (item.name === ckey) {
+              mkey = index;
+            }
+          });
+          console.log('mkey', mkey);
+          console.log('supplier[mkey].supplierParams', supplier[mkey].supplierParam);
+          this.setState({ deviceSupplier: supplier, supplierParams: supplier[mkey].supplierParam });
+        } else {
+          this.setState({ deviceSupplier: supplier, currentKey: 0, supplierParams: supplier[0].supplierParam });
+        }
       }
     });
   }
@@ -110,12 +114,11 @@ class TenantDetail extends Component {
         console.log('data', data);
         console.log('supplierParams', this.state.supplierParams);
         postTenant(tenantId, data).then(
-          res => console.log(res)
-          // (res) => {
-          //   message.success('添加租户成功');
-          //   this.props.form.resetFields();
-          //   this.props.history.go(-1);
-          // }
+          (res) => {
+            message.success('提交成功');
+            this.props.form.resetFields();
+            this.props.history.go(-1);
+          }
         ).catch((err) => {
           // message.warning('添加账户失败')
         });
