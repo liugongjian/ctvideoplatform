@@ -182,7 +182,7 @@ class Tenants extends Component {
 
           <div className={styles.card}>
             {carditem('算法总额度', statis.totalAlgAmount)}
-            {carditem('已分配算法量', statis.allocatedAg)}
+            {carditem('已分配算法额度', statis.allocatedAg)}
           </div>
 
           <div className={styles.card}>

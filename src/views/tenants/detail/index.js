@@ -4,12 +4,11 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import {
-  Modal, Button, Table, Tag, Divider, Form, Input, Select
+  Button, Table, message, Form, Input, Select
 } from 'antd';
 import {
-  getTenantDetail
+  getTenantDetail, getDeviceSupplier, updateTenant, addTenant
 } from 'Redux/reducer/platform';
 import { urlPrefix } from 'Constants/Dictionary';
 import styles from './index.less';
@@ -20,7 +19,9 @@ const { TextArea } = Input;
 
 const mapStateToProps = state => ({ preview: state.preview });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  { getTenantDetail },
+  {
+    getTenantDetail, getDeviceSupplier, updateTenant, addTenant
+  },
   dispatch
 );
 
@@ -28,32 +29,132 @@ class TenantDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tenantDetail: null
+      tenantDetail: null,
+      deviceSupplier: [],
+      supplierParams: [],
+      currentKey: '',
+      algorithmConfig: [],
     };
   }
 
   componentDidMount() {
+    const { getTenantDetail, getDeviceSupplier } = this.props;
     const { tenantId } = this.props.match.params;
     console.log('this.props', this.props.match.params.tenantId);
+    let ckey;
     if (tenantId) {
-      this.props.getTenantDetail(tenantId).then((res) => {
-        console.log('res-id', res);
-        this.setState({ tenantDetail: res });
+      getTenantDetail(tenantId).then((res) => {
+        console.log('tenantDetail', res);
+        ckey = JSON.parse(res.deviceSupplierInfo).supplier;
+        const algolist = JSON.parse(res.algorithmsInfoJson).map((item) => {
+          delete item.createTime;
+          return item;
+        });
+        this.setState({ tenantDetail: res, currentKey: ckey, algorithmConfig: algolist });
       });
     }
+    getDeviceSupplier().then((supplier) => {
+      console.log(supplier, 'supplier');
+      let mkey;
+      if (supplier && ckey) {
+        supplier.forEach((item, index) => {
+          if (item.name === ckey) {
+            mkey = index;
+          }
+        });
+        console.log('mkey', mkey);
+        console.log('supplier[mkey].supplierParams', supplier[mkey].supplierParam);
+        this.setState({ deviceSupplier: supplier, supplierParams: supplier[mkey].supplierParam });
+      }
+    });
+  }
+
+  handleSelectChange = (supkey) => {
+    //
+    console.log('supkey', supkey);
+    this.state.deviceSupplier.forEach((item) => {
+      if (item.name === supkey) {
+        this.setState({ supplierParams: item.supplierParam, currentKey: supkey });
+      }
+    });
+  }
+
+  handleCfmPwd = (rules, value, callback) => {
+    const loginpass = this.props.form.getFieldValue('password');
+    if (loginpass && loginpass !== value) {
+      callback(new Error('两次密码输入不一致'));
+    } else {
+      callback();
+    }
+  }
+
+  onSave = () => {
+    const { updateTenant, addTenant } = this.props;
+    const { getFieldValue, validateFields } = this.props.form;
+    const { tenantId } = this.props.match.params;
+    const postTenant = tenantId ? updateTenant : addTenant;
+    validateFields((errors, values) => {
+      if (!errors) {
+        const sources = {};
+        this.state.supplierParams.forEach((item) => {
+          sources[item] = getFieldValue(item + this.state.currentKey);
+        });
+        const data = {
+          name: getFieldValue('name'),
+          password: getFieldValue('password'),
+          deviceQuota: getFieldValue('deviceQuota'),
+          description: getFieldValue('description'),
+          algorithmConfig: this.state.algorithmConfig,
+          sourceList: [sources]
+        };
+        console.log('data', data);
+        console.log('supplierParams', this.state.supplierParams);
+        postTenant(tenantId, data).then(
+          res => console.log(res)
+          // (res) => {
+          //   message.success('添加租户成功');
+          //   this.props.form.resetFields();
+          //   this.props.history.go(-1);
+          // }
+        ).catch((err) => {
+          // message.warning('添加账户失败')
+        });
+      }
+    });
+  }
+
+  onAlgoChange = (record, e) => {
+    console.log('record1', record);
+    console.log('value', e.target.value);
+    const algorithmConfig = Object.assign(this.state.algorithmConfig);
+    let found = false;
+    const result = algorithmConfig.map((item) => {
+      if (item.name === record.name) {
+        found = true;
+        return { ...item, quota: e.target.value };
+      }
+      return item;
+    });
+    if (!found) {
+      result.push({ name: record.name, quota: e.target.value });
+    }
+    this.setState({ algorithmConfig: result });
   }
 
   render() {
     const emptyDetail = {
       algorithmIds: '',
       algorithmQuota: 0,
-      algorithmsInfoJson: [],
+      algorithmsInfoJson: '[]',
       description: '',
       deviceQuota: 0,
-      deviceSupplierInfo: [],
+      deviceSupplierInfo: '[]',
       name: '',
     };
-    const td = this.state.tenantDetail || emptyDetail;
+    const {
+      deviceSupplier, supplierParams, currentKey, tenantDetail
+    } = this.state;
+    const td = tenantDetail || emptyDetail;
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
       labelCol: {
@@ -73,12 +174,9 @@ class TenantDetail extends Component {
         title: '额度(路)',
         dataIndex: 'quota',
         key: 'quota',
-        render: text => (
-          <Input value={text} />
-        ),
+        render: (text, record) => (<Input defaultValue={text} onChange={e => this.onAlgoChange(record, e)} />),
       },
     ];
-    console.log(td);
     return (
       <div className={styles.contentWrapper}>
         <span className={styles.subTitle}>基础信息</span>
@@ -87,9 +185,6 @@ class TenantDetail extends Component {
           labelAlign="middle"
           layout="horizontal"
           name="basic"
-          initialValues={{
-            remember: true,
-          }}
         >
           <div className={styles.basicInfoWrapper}>
             <Form.Item label="租户名称" name="name">
@@ -97,49 +192,74 @@ class TenantDetail extends Component {
                 initialValue: td.name || '',
                 rules: [{ required: true, message: '请输入租户名' }],
               })(
-                <Input className={styles.formItemInput} onChange={e => this.props.onNameChange(e.target.value)} />
+                <Input className={styles.formItemInput} />
               )}
             </Form.Item>
 
             <Form.Item label="租户密码" name="password">
-              <Input.Password className={styles.formItemInput} onChange={e => this.props.onDescriptionChange(e.target.value)} />
+              {getFieldDecorator('password', {
+                rules: [{ required: true, message: '请输入密码！' }]
+              })(<Input.Password autoComplete="new-password" className={styles.formItemInput} />)}
             </Form.Item>
             <Form.Item label="密码确认" name="pwdconfirm">
-              <Input.Password className={styles.formItemInput} onChange={e => this.props.onDescriptionChange(e.target.value)} />
+              {getFieldDecorator('pwdconfirm', {
+                rules: [{ required: true, message: '请确认密码！' },
+                  {
+                    validator: (rules, value, callback) => { this.handleCfmPwd(rules, value, callback); }
+                  }]
+              })(<Input.Password autoComplete="new-password" className={styles.formItemInput} />)}
             </Form.Item>
             <Form.Item label="备注" name="description">
-              <TextArea className={styles.formItemInput} rows={4} autoSize={false} value={td.description} />
+              {getFieldDecorator('description', {
+                initialValue: td.description,
+                rules: [{ required: true, message: '请确认备注！' }]
+              })(<TextArea className={styles.formItemInput} rows={4} autoSize={false} />)}
             </Form.Item>
             <span className={styles.subTitle}>规则配置</span>
             <Form.Item label="视频源类型" name="videotype">
               {getFieldDecorator('videotype', {
-                rules: [{ required: true, message: 'Please select your videotype!' }],
+                initialValue: JSON.parse(td.deviceSupplierInfo).supplier || '',
+                rules: [{ required: true, message: '请选择类型!' }],
               })(
                 <Select
                   className={styles.formItemInput}
-                  placeholder="Select a option and change input text above"
                   onChange={this.handleSelectChange}
                 >
-                  <Option value="male">male</Option>
-                  <Option value="female">female</Option>
+                  {deviceSupplier.map(sup => (
+                    <Option key={sup.name}>{sup.cnName}</Option>
+                  ))}
                 </Select>,
               )}
             </Form.Item>
-            <Form.Item label="APPKey" name="pwdconfirm">
-              <Input.Password className={styles.formItemInput} onChange={e => this.props.onDescriptionChange(e.target.value)} value={this.props.description} />
+            {supplierParams.map((item) => {
+              if (currentKey === JSON.parse(td.deviceSupplierInfo).supplier) {
+                return (
+                  <Form.Item label={item}>
+                    {getFieldDecorator(item + currentKey, {
+                      initialValue: JSON.parse(td.deviceSupplierInfo)[item],
+                      rules: [{ required: true, message: `请确认${item}！` }]
+                    })(<Input className={styles.formItemInput} />)}
+                  </Form.Item>
+                );
+              }
+              return (
+                <Form.Item label={item}>
+                  {getFieldDecorator(item + currentKey, {
+                    rules: [{ required: true, message: `请确认${item}！` }]
+                  })(<Input className={styles.formItemInput} />)}
+                </Form.Item>
+              );
+            })}
+            <Form.Item label="视频接入额度" name="deviceQuota">
+              {getFieldDecorator('deviceQuota', {
+                initialValue: td.deviceQuota || '',
+                rules: [{ required: true, message: '请输入额度' }],
+              })(
+                <Input className={styles.formItemInput} />
+              )}
             </Form.Item>
-            <Form.Item label="SecretKey" name="pwdconfirm">
-              <Input.Password className={styles.formItemInput} onChange={e => this.props.onDescriptionChange(e.target.value)} value={this.props.description} />
-            </Form.Item>
-            <Form.Item label="NumberKey" name="pwdconfirm">
-              <Input.Password className={styles.formItemInput} onChange={e => this.props.onDescriptionChange(e.target.value)} value={this.props.description} />
-            </Form.Item>
-            <Form.Item label="视频接入额度" name="pwdconfirm">
-              <Input.Password className={styles.formItemInput} onChange={e => this.props.onDescriptionChange(e.target.value)} value={this.props.description} />
-            </Form.Item>
-
             <span className={styles.subTitle}>算法配置</span>
-            <Table columns={columns} dataSource={[]} pagination={false} />
+            <Table columns={columns} dataSource={JSON.parse(td.algorithmsInfoJson)} pagination={false} />
           </div>
 
           <Form.Item>

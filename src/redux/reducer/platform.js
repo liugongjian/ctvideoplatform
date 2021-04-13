@@ -8,6 +8,9 @@ const GET_STATIS = 'GET_STATIS';
 const ACTIVATE_TENANTS = 'ACTIVATE_TENANTS';
 const GET_LICENCE_LIST = 'GET_LICENCE_LIST';
 const GET_TENANT_DETAIL = 'GET_TENANT_DETAIL';
+const GET_DEVICE_SUPPLIER = 'GET_DEVICE_SUPPLIER';
+const UPDATE_TENANT = 'UPDATE_TENANT';
+const ADD_TENANT = 'ADD_TENANT';
 
 const initialState = {
 };
@@ -34,6 +37,18 @@ export default function account(state = initialState, action = {}) {
         ...state
       };
     case GET_LICENCE_LIST:
+      return {
+        ...state
+      };
+    case GET_DEVICE_SUPPLIER:
+      return {
+        ...state
+      };
+    case UPDATE_TENANT:
+      return {
+        ...state
+      };
+    case ADD_TENANT:
       return {
         ...state
       };
@@ -76,5 +91,28 @@ export function getLicenceList() {
   return {
     type: GET_LICENCE_LIST,
     promise: apiClient => apiClient.get(`${urlPrefix}/license/get`)
+  };
+}
+
+export function getDeviceSupplier() {
+  return {
+    type: GET_DEVICE_SUPPLIER,
+    promise: apiClient => apiClient.get(`${urlPrefix}/tenant/getDeviceSupplier`)
+  };
+}
+export function updateTenant(tid, data) {
+  return {
+    type: UPDATE_TENANT,
+    promise: apiClient => apiClient.put(`${urlPrefix}/tenant/update/${tid}`, {
+      data
+    })
+  };
+}
+export function addTenant(tid, data) {
+  return {
+    type: ADD_TENANT,
+    promise: apiClient => apiClient.post(`${urlPrefix}/tenant/add`, {
+      data
+    })
   };
 }
