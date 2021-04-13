@@ -221,7 +221,7 @@ class Tenants extends Component {
                   onPageNumChange={this.onPageNumChange}
                 />
               </TabPane>
-              <TabPane tab="License管理" key="2">
+              <TabPane tab="许可管理" key="2">
                 <InnerTable
                   columns={licensecolumns}
                   data={{ list: licenseData, issued: licenseDate }}
