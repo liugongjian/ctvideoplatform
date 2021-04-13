@@ -11,6 +11,7 @@ const GET_TENANT_DETAIL = 'GET_TENANT_DETAIL';
 const GET_DEVICE_SUPPLIER = 'GET_DEVICE_SUPPLIER';
 const UPDATE_TENANT = 'UPDATE_TENANT';
 const ADD_TENANT = 'ADD_TENANT';
+const GET_ALGORITHMLIST = 'GET_ALGORITHMLIST';
 
 const initialState = {
 };
@@ -49,6 +50,10 @@ export default function account(state = initialState, action = {}) {
         ...state
       };
     case ADD_TENANT:
+      return {
+        ...state
+      };
+    case GET_ALGORITHMLIST:
       return {
         ...state
       };
@@ -114,5 +119,11 @@ export function addTenant(tid, data) {
     promise: apiClient => apiClient.post(`${urlPrefix}/tenant/add`, {
       data
     })
+  };
+}
+export function getAlgorithmList() {
+  return {
+    type: GET_ALGORITHMLIST,
+    promise: apiClient => apiClient.get(`${urlPrefix}/admin/getAlgorithmList`)
   };
 }
