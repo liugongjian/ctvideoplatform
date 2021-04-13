@@ -38,24 +38,19 @@ class Tenants extends Component {
   };
 
   componentDidMount() {
-    const { getStatis } = this.props;
+    this.initDatas();
+  }
+
+
+  initDatas = () => {
+    const { getLicenceList, getTenantsList, getStatis } = this.props;
     getStatis().then((res) => {
       this.setState({ statis: res });
     });
-    this.getTenantTableData();
-    this.getLicenseTableData();
-  }
-
-  getTenantTableData = () => {
-    const { getTenantsList } = this.props;
     getTenantsList({ pageNo: 0, pageSize: 10 }).then((res) => {
       console.log('tenantdata:', res);
       this.setState({ tenantsData: res });
     });
-  }
-
-  getLicenseTableData = () => {
-    const { getLicenceList } = this.props;
     getLicenceList().then((ld) => {
       console.log('ld', ld);
       if (ld) {
@@ -182,8 +177,7 @@ class Tenants extends Component {
         }
         if (info.file.status === 'done') {
           message.success(`${info.file.name}上传成功！`);
-          this.getLicenseTableData();
-          this.getTenantTableData();
+          this.initDatas();
         } else if (info.file.status === 'error') {
           message.error(`${info.file.name}上传失败！`);
         }
