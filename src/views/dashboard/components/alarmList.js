@@ -162,7 +162,7 @@ class AlarmList extends Component {
       <div key={item.id} className={styles.alarmDetail}>
         <div className={styles.alramDetailIcon}>
           {/** <img src={getImgUrl(item.algorithmName)} alt="" /> */}
-          <EIcon type={`myicon-algo-${item?.algorithmName}`} alt="icon" />
+          <EIcon type={`myicon-algo-${item?.algorithmName} ${styles.algorithmIcon}`} alt="icon" />
         </div>
         <div className={styles.alarmDetailInfo}>
           <p>
