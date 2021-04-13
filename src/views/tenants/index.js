@@ -38,7 +38,12 @@ class Tenants extends Component {
   };
 
   componentDidMount() {
-    const { getTenantsList, getStatis, getLicenceList } = this.props;
+    this.initDatas();
+  }
+
+
+  initDatas = () => {
+    const { getLicenceList, getTenantsList, getStatis } = this.props;
     getStatis().then((res) => {
       this.setState({ statis: res });
     });
@@ -166,6 +171,17 @@ class Tenants extends Component {
       action: `${urlPrefix}/license/upload`,
       multiple: false,
       accept: '.lic',
+      onChange: (info) => {
+        if (info.file.status !== 'uploading') {
+          console.log(info.file, info.fileList);
+        }
+        if (info.file.status === 'done') {
+          message.success(`${info.file.name}上传成功！`);
+          this.initDatas();
+        } else if (info.file.status === 'error') {
+          message.error(`${info.file.name}上传失败！`);
+        }
+      },
     };
     return (
       <>
