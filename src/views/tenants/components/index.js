@@ -1,6 +1,6 @@
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -47,6 +47,7 @@ class InnerTable extends Component {
         </Button>
       </Upload>
     );
+
     const footer = this.props.btndata.path ? (
       <Pagination
         total={this.props.data.recordsTotal}
@@ -59,21 +60,32 @@ class InnerTable extends Component {
         pageSizeOptions={['10', '20', '50']}
         onShowSizeChange={(current, size) => this.props.onPageSizeChange(current, size)}
       />
-    ) : (
-      <p>
-        当前Licence购买日期为
-        {this.props.data.issued.split(' ')[0].split('-')[0]}
-        年
-        {this.props.data.issued.split(' ')[0].split('-')[1]}
-        月
-        {this.props.data.issued.split(' ')[0].split('-')[2]}
-        日
-      </p>
-    );
+    ) : null;
     const dataSource = this.props.data.list;
+    const showInfo = () => {
+      const { path, deviceQuota } = this.props.btndata;
+      return !path && this.props.data.issued ? (
+        <Fragment>
+          <p>
+            当前许可证书到期日期为
+            {this.props.data.issued.split(' ')[0].split('-')[0]}
+            年
+            {this.props.data.issued.split(' ')[0].split('-')[1]}
+            月
+            {this.props.data.issued.split(' ')[0].split('-')[2]}
+            日
+          </p>
+          <p>
+            设备接入总额度：
+            {deviceQuota}
+          </p>
+        </Fragment>
+      ) : null;
+    };
     return (
       <div>
         {btn}
+        {showInfo()}
         <Table
           rowKey={record => record.id}
           columns={this.props.columns}

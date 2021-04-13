@@ -54,7 +54,11 @@ class Tenants extends Component {
     getLicenceList().then((ld) => {
       console.log('ld', ld);
       if (ld) {
-        this.setState({ licenseData: ld.extra.algorithmInfos, licenseDate: ld.issued });
+        this.setState({
+          licenseData: ld.extra.algorithmInfos,
+          licenseDate: ld.notAfter,
+          deviceQuota: ld.extra.deviceQuota
+        });
       }
     });
   }
@@ -99,7 +103,7 @@ class Tenants extends Component {
 
   render() {
     const {
-      tenantsData, statis, licenseData, licenseDate
+      tenantsData, statis, licenseData, licenseDate, deviceQuota
     } = this.state;
     const columns = [
       {
@@ -150,9 +154,9 @@ class Tenants extends Component {
     ];
     const licensecolumns = [
       {
-        title: 'License项',
-        dataIndex: 'name',
-        key: 'name'
+        title: '许可项',
+        dataIndex: 'cnName',
+        key: 'cnName'
       },
       {
         title: '额度',
@@ -221,7 +225,7 @@ class Tenants extends Component {
                 <InnerTable
                   columns={licensecolumns}
                   data={{ list: licenseData, issued: licenseDate }}
-                  btndata={{ name: '导入Licence' }}
+                  btndata={{ name: '导入许可证书', deviceQuota }}
                   uploadProps={uploadProps}
                 />
               </TabPane>
