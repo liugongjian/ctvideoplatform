@@ -48,63 +48,70 @@ class TenantDetail extends Component {
     console.log('this.props', this.props.match.params.tenantId);
     let ckey;
     if (tenantId) {
-      getTenantDetail(tenantId).then((res) => {
-        console.log('tenantDetail', res);
-        ckey = JSON.parse(res.deviceSupplierInfo).supplier;
-        const algolist = JSON.parse(res.algorithmsInfoJson).map((item) => {
-          delete item.createTime;
-          return item;
-        });
-        this.setState({ tenantDetail: res, currentKey: ckey });
-        console.log('res.algorithmsInfoJson', res.algorithmsInfoJson);
-        calgolist = JSON.parse(res.algorithmsInfoJson);
-      });
-    }
-    getDeviceSupplier().then((supplier) => {
-      console.log(supplier, 'supplier');
-      let mkey;
-      if (supplier) {
-        if (ckey) {
-          supplier.forEach((item, index) => {
-            if (item.name === ckey) {
-              mkey = index;
+      getTenantDetail(tenantId)
+        .then((res) => {
+          console.log('tenantDetail', res);
+          ckey = JSON.parse(res.deviceSupplierInfo).supplier;
+          const algolist = JSON.parse(res.algorithmsInfoJson).map((item) => {
+            delete item.createTime;
+            return item;
+          });
+          this.setState({ tenantDetail: res, currentKey: ckey });
+          console.log('res.algorithmsInfoJson', res.algorithmsInfoJson);
+          calgolist = JSON.parse(res.algorithmsInfoJson);
+          getDeviceSupplier().then((supplier) => {
+            console.log(supplier, 'supplier');
+            let mkey;
+            if (supplier) {
+              supplier.forEach((item, index) => {
+                if (item.name === ckey) {
+                  mkey = index;
+                }
+              });
+              console.log('mkey', mkey);
+              console.log('supplier[mkey].supplierParams', supplier[mkey].supplierParam);
+              this.setState({ deviceSupplier: supplier, supplierParams: supplier[mkey].supplierParam });
             }
           });
-          console.log('mkey', mkey);
-          console.log('supplier[mkey].supplierParams', supplier[mkey].supplierParam);
-          this.setState({ deviceSupplier: supplier, supplierParams: supplier[mkey].supplierParam });
-        } else {
+          getAlgorithmList().then((list) => {
+            console.log('getAlgorithmList', list);
+            console.log('calgolist', calgolist);
+            if (list) {
+              algoTableData = list.map((algo) => {
+                // eslint-disable-next-line no-restricted-syntax
+                let quota = null;
+                calgolist.forEach((item) => {
+                  if (item.name === algo.name) {
+                    // eslint-disable-next-line prefer-destructuring
+                    quota = item.quota;
+                  }
+                });
+                if (quota) {
+                  return { name: algo.name, quota, cnName: algo.cnName };
+                }
+                return { name: algo.name, quota: 0, cnName: algo.cnName };
+              });
+              console.log('algoTableData', algoTableData);
+              this.setState({ algorithmList: list, algorithmConfig: algoTableData });
+            }
+          });
+        });
+    } else {
+      getDeviceSupplier().then((supplier) => {
+        console.log(supplier, 'supplier');
+        let mkey;
+        if (supplier) {
           this.setState({ deviceSupplier: supplier, currentKey: supplier[0].name, supplierParams: supplier[0].supplierParam });
         }
-      }
-    });
-    getAlgorithmList().then((list) => {
-      console.log('getAlgorithmList', list);
-      console.log('calgolist', calgolist);
-      if (list) {
-        if (calgolist) {
-          algoTableData = list.map((algo) => {
-          // eslint-disable-next-line no-restricted-syntax
-            let quota = null;
-            calgolist.forEach((item) => {
-              if (item.name === algo.name) {
-              // eslint-disable-next-line prefer-destructuring
-                quota = item.quota;
-              }
-            });
-            if (quota) {
-              return { name: algo.name, quota, cnName: algo.cnName };
-            }
-            return { name: algo.name, quota: 0, cnName: algo.cnName };
-          });
-          console.log('algoTableData', algoTableData);
-          this.setState({ algorithmList: list, algorithmConfig: algoTableData });
-        } else {
+      });
+      getAlgorithmList().then((list) => {
+        console.log('getAlgorithmList', list);
+        if (list) {
           const table = list.map(item => ({ name: item.name, quota: 0, cnName: item.cnName }));
           this.setState({ algorithmList: list, algorithmConfig: table });
         }
-      }
-    });
+      });
+    }
   }
 
   handleSelectChange = (supkey) => {
