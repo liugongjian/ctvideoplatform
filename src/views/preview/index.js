@@ -223,6 +223,12 @@ class Preview extends PureComponent {
             tempTrafficExit: res.exitNo,
             tempTrafficEntry: res.entryNo
           });
+        } else if (res.exitNo === null || res.entryNo === null) {
+          this.setState({
+            traffiInfoData: res,
+            tempTrafficExit: res.exitNo || 0,
+            tempTrafficEntry: res.entryNo || 0
+          });
         }
       });
     }
