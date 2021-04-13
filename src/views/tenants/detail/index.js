@@ -1,6 +1,8 @@
+/* eslint-disable guard-for-in */
 /* eslint-disable max-len */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
+import { push } from 'react-router-redux';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -8,9 +10,10 @@ import {
   Button, Table, message, Form, Input, Select
 } from 'antd';
 import {
-  getTenantDetail, getDeviceSupplier, updateTenant, addTenant
+  getTenantDetail, getDeviceSupplier, updateTenant, addTenant, getAlgorithmList
 } from 'Redux/reducer/platform';
 import { urlPrefix } from 'Constants/Dictionary';
+import { pathPrefix } from '@/constants/Dictionary';
 import styles from './index.less';
 
 
@@ -20,7 +23,7 @@ const { TextArea } = Input;
 const mapStateToProps = state => ({ preview: state.preview });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    getTenantDetail, getDeviceSupplier, updateTenant, addTenant
+    push, getTenantDetail, getDeviceSupplier, updateTenant, addTenant, getAlgorithmList
   },
   dispatch
 );
@@ -34,39 +37,81 @@ class TenantDetail extends Component {
       supplierParams: [],
       currentKey: '',
       algorithmConfig: [],
+      algorithmList: [],
     };
   }
 
   componentDidMount() {
-    const { getTenantDetail, getDeviceSupplier } = this.props;
+    const { getTenantDetail, getDeviceSupplier, getAlgorithmList } = this.props;
     const { tenantId } = this.props.match.params;
+    let calgolist; let algoTableData;
     console.log('this.props', this.props.match.params.tenantId);
     let ckey;
     if (tenantId) {
-      getTenantDetail(tenantId).then((res) => {
-        console.log('tenantDetail', res);
-        ckey = JSON.parse(res.deviceSupplierInfo).supplier;
-        const algolist = JSON.parse(res.algorithmsInfoJson).map((item) => {
-          delete item.createTime;
-          return item;
+      getTenantDetail(tenantId)
+        .then((res) => {
+          console.log('tenantDetail', res);
+          ckey = JSON.parse(res.deviceSupplierInfo).supplier;
+          const algolist = JSON.parse(res.algorithmsInfoJson).map((item) => {
+            delete item.createTime;
+            return item;
+          });
+          this.setState({ tenantDetail: res, currentKey: ckey });
+          console.log('res.algorithmsInfoJson', res.algorithmsInfoJson);
+          calgolist = JSON.parse(res.algorithmsInfoJson);
+          getDeviceSupplier().then((supplier) => {
+            console.log(supplier, 'supplier');
+            let mkey;
+            if (supplier) {
+              supplier.forEach((item, index) => {
+                if (item.name === ckey) {
+                  mkey = index;
+                }
+              });
+              console.log('mkey', mkey);
+              console.log('supplier[mkey].supplierParams', supplier[mkey].supplierParam);
+              this.setState({ deviceSupplier: supplier, supplierParams: supplier[mkey].supplierParam });
+            }
+          });
+          getAlgorithmList().then((list) => {
+            console.log('getAlgorithmList', list);
+            console.log('calgolist', calgolist);
+            if (list) {
+              algoTableData = list.map((algo) => {
+                // eslint-disable-next-line no-restricted-syntax
+                let quota = null;
+                calgolist.forEach((item) => {
+                  if (item.name === algo.name) {
+                    // eslint-disable-next-line prefer-destructuring
+                    quota = item.quota;
+                  }
+                });
+                if (quota) {
+                  return { name: algo.name, quota, cnName: algo.cnName };
+                }
+                return { name: algo.name, quota: 0, cnName: algo.cnName };
+              });
+              console.log('algoTableData', algoTableData);
+              this.setState({ algorithmList: list, algorithmConfig: algoTableData });
+            }
+          });
         });
-        this.setState({ tenantDetail: res, currentKey: ckey, algorithmConfig: algolist });
+    } else {
+      getDeviceSupplier().then((supplier) => {
+        console.log(supplier, 'supplier');
+        let mkey;
+        if (supplier) {
+          this.setState({ deviceSupplier: supplier, currentKey: supplier[0].name, supplierParams: supplier[0].supplierParam });
+        }
+      });
+      getAlgorithmList().then((list) => {
+        console.log('getAlgorithmList', list);
+        if (list) {
+          const table = list.map(item => ({ name: item.name, quota: 0, cnName: item.cnName }));
+          this.setState({ algorithmList: list, algorithmConfig: table });
+        }
       });
     }
-    getDeviceSupplier().then((supplier) => {
-      console.log(supplier, 'supplier');
-      let mkey;
-      if (supplier && ckey) {
-        supplier.forEach((item, index) => {
-          if (item.name === ckey) {
-            mkey = index;
-          }
-        });
-        console.log('mkey', mkey);
-        console.log('supplier[mkey].supplierParams', supplier[mkey].supplierParam);
-        this.setState({ deviceSupplier: supplier, supplierParams: supplier[mkey].supplierParam });
-      }
-    });
   }
 
   handleSelectChange = (supkey) => {
@@ -96,6 +141,7 @@ class TenantDetail extends Component {
     validateFields((errors, values) => {
       if (!errors) {
         const sources = {};
+        sources.supplier = this.state.currentKey;
         this.state.supplierParams.forEach((item) => {
           sources[item] = getFieldValue(item + this.state.currentKey);
         });
@@ -110,17 +156,20 @@ class TenantDetail extends Component {
         console.log('data', data);
         console.log('supplierParams', this.state.supplierParams);
         postTenant(tenantId, data).then(
-          res => console.log(res)
-          // (res) => {
-          //   message.success('添加租户成功');
-          //   this.props.form.resetFields();
-          //   this.props.history.go(-1);
-          // }
+          (res) => {
+            message.success('提交成功');
+            this.props.form.resetFields();
+            this.props.history.go(-1);
+          }
         ).catch((err) => {
           // message.warning('添加账户失败')
         });
       }
     });
+  }
+
+  onCancel = () => {
+    this.props.push(`${pathPrefix}/platform`);
   }
 
   onAlgoChange = (record, e) => {
@@ -148,7 +197,7 @@ class TenantDetail extends Component {
       algorithmsInfoJson: '[]',
       description: '',
       deviceQuota: 0,
-      deviceSupplierInfo: '[]',
+      deviceSupplierInfo: '[{"supplier":"ffcs3"}]',
       name: '',
     };
     const {
@@ -167,8 +216,8 @@ class TenantDetail extends Component {
     const columns = [
       {
         title: '算法类型',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'cnName',
+        key: 'cnName',
       },
       {
         title: '额度(路)',
@@ -192,7 +241,7 @@ class TenantDetail extends Component {
                 initialValue: td.name || '',
                 rules: [{ required: true, message: '请输入租户名' }],
               })(
-                <Input className={styles.formItemInput} />
+                <Input className={styles.formItemInput} disabled={this.props.match.params.tenantId} />
               )}
             </Form.Item>
 
@@ -218,7 +267,7 @@ class TenantDetail extends Component {
             <span className={styles.subTitle}>规则配置</span>
             <Form.Item label="视频源类型" name="videotype">
               {getFieldDecorator('videotype', {
-                initialValue: JSON.parse(td.deviceSupplierInfo).supplier || '',
+                initialValue: JSON.parse(td.deviceSupplierInfo).supplier || currentKey,
                 rules: [{ required: true, message: '请选择类型!' }],
               })(
                 <Select
@@ -259,7 +308,7 @@ class TenantDetail extends Component {
               )}
             </Form.Item>
             <span className={styles.subTitle}>算法配置</span>
-            <Table columns={columns} dataSource={JSON.parse(td.algorithmsInfoJson)} pagination={false} />
+            <Table rowKey={record => record.name} columns={columns} dataSource={this.state.algorithmConfig} pagination={false} />
           </div>
 
           <Form.Item>

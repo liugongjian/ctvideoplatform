@@ -143,7 +143,7 @@ class Tenants extends Component {
               编辑
             </Link>
             <Divider type="vertical" />
-            <a>删除</a>
+            <a className={styles.disabled}>删除</a>
           </span>
         ),
       },
