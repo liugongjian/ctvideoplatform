@@ -23,7 +23,8 @@ import styles from './index.less';
 
 const { Option } = Select;
 let interval;
-const dateFormat = 'YYYY-MM-DD';
+const dateYearFormat = 'YYYY-MM-DD';
+const dateFormat = 'MM-DD';
 const TYPE_ALL_ALGO_STATC = '0';
 const mapStateToProps = state => ({ dashboard: state.dashboard });
 const mapDispatchToProps = dispatch => bindActionCreators(
@@ -81,8 +82,8 @@ class Dashboard extends Component {
     const { period, startTime, endTime } = this.state;
     this.props.getAlarmDistribute({
       period,
-      startTime: moment(startTime).format(dateFormat),
-      endTime: moment(endTime).format(dateFormat),
+      startTime: moment(startTime).format(dateYearFormat),
+      endTime: moment(endTime).format(dateYearFormat),
     });
   }
 
@@ -207,7 +208,10 @@ class Dashboard extends Component {
                     height="calc(100% - 22px)"
                     data={{
                       yAxisData: alarmTrend?.seriesData,
+                      // xAxisData: alarmTrend?.xaxisData?.map(val =>
+                      //            moment(val).format(dateFormat)),
                       xAxisData: alarmTrend?.xaxisData,
+                      xAxisDataFormatter: val => moment(val).format(dateFormat),
                       // yAxisName: '告警数/个'
                     }}
                     loading={alarmTrendLoading}
@@ -250,6 +254,9 @@ class Dashboard extends Component {
                 data={{
                   yAxisData: algoConfs?.seriesData,
                   xAxisData: algoConfs?.xaxisData,
+                  // xAxisDataLabel: algoConfs?.xaxisData?.map(val =>
+                  //             val.length > 4 ? `${val.slice(0,3)}...` : val),
+                  xAxisDataFormatter: val => (val.length > 4 ? `${val.slice(0, 3)}...` : val)
                 // yAxisName: '算法已配置设备数/个'
                 }}
                 loading={algoConfsLoading}

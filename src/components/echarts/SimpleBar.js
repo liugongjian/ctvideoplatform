@@ -9,6 +9,7 @@ import NoChart from './noChartPlaceholder';
 import styles from './charts.less';
 
 const recordwidth = 0;
+const bigScreenWidth = 1800;
 class BarChart extends PureComponent {
   constructor(props) {
     super(props);
@@ -54,6 +55,9 @@ class BarChart extends PureComponent {
     this.myChart = echarts.init(domNode);
     // window.addEventListener('resize', this.handleResize.bind(this));
     if (data && data.yAxisData && data.yAxisData.length) {
+      if (data && !data.xAxisDataFormatter) {
+        data.xAxisDataFormatter = x => x;
+      }
       this.hasData = true;
       const option = {
         tooltip: {
@@ -68,10 +72,8 @@ class BarChart extends PureComponent {
           axisLabel: {
             fontSize: 12,
             color: '#999',
-            rotate: 30,
-            // formatter: function (value, index) {
-            //     return value + 'kg';
-            // },
+            rotate: window?.outerWidth < bigScreenWidth ? 30 : 0,
+            formatter: value => data?.xAxisDataFormatter(value)
           },
           axisTick: {
             show: false
@@ -124,7 +126,7 @@ class BarChart extends PureComponent {
           left: 40,
           top: 40,
           right: 30,
-          bottom: 80,
+          bottom: window?.outerWidth < bigScreenWidth ? 65 : 50,
         },
         color: ['#1890FF'], // ['#4E98BA', '#99DAF0', '#F8CC5B'],
         series: [{
