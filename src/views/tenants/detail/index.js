@@ -164,14 +164,19 @@ class TenantDetail extends Component {
         temp = item;
       }
     });
-    const algorithmsInfo = JSON.parse(this.state.tenantDetail.algorithmsInfoJson);
-    algorithmsInfo.forEach((item) => {
-      if (item.name === record.name) {
-        temp2 = item;
-      }
-    });
+    if (this.state.tenantDetail) {
+      const algorithmsInfo = JSON.parse(this.state.tenantDetail.algorithmsInfoJson);
+      algorithmsInfo.forEach((item) => {
+        if (item.name === record.name) {
+          temp2 = item;
+        }
+      });
+      return (
+        <span>{`${record.quota} / ${parseInt(temp.quotaTotal, 10) + parseInt(temp2.quota, 10)}`}</span>
+      );
+    }
     return (
-      <span>{`${record.quota} / ${parseInt(temp.quotaTotal, 10) + parseInt(temp2.quota, 10)}`}</span>
+      <span>{`${record.quota} / ${parseInt(temp.quotaTotal, 10)}`}</span>
     );
   }
 
