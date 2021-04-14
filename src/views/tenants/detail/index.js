@@ -1,3 +1,4 @@
+/* eslint-disable react/sort-comp */
 /* eslint-disable guard-for-in */
 /* eslint-disable max-len */
 /* eslint-disable import/no-dynamic-require */
@@ -92,13 +93,11 @@ class TenantDetail extends Component {
                       quota = item.quota;
                     }
                   });
-                  if (quota) {
-                    return {
-                      name: algo.name, quota, cnName: algo.cnName, quotaTotal: allquota[algo.name]
-                    };
-                  }
                   return {
-                    name: algo.name, quota: 0, cnName: algo.cnName, quotaTotal: allquota[algo.name]
+                    name: algo.name,
+                    quota: quota || 0,
+                    cnName: algo.cnName,
+                    quotaTotal: allquota[algo.name]
                   };
                 });
                 console.log('algoTableData', algoTableData);
@@ -120,7 +119,10 @@ class TenantDetail extends Component {
         if (list) {
           getAllAlgorithmQuota().then((allquota) => {
             const table = list.map(item => ({
-              name: item.name, quota: 0, cnName: item.cnName, quotaTotal: allquota[item.name]
+              name: item.name,
+              quota: 0,
+              cnName: item.cnName,
+              quotaTotal: allquota[item.name]
             }));
             this.setState({ algorithmList: list, algorithmConfig: table });
           });
@@ -155,12 +157,26 @@ class TenantDetail extends Component {
     }
   }
 
+  handleCalcQuotaTotal(record) {
+    let temp;
+    this.state.algorithmConfig.forEach((item) => {
+      if (item.name === record.name) {
+        temp = item;
+      }
+    });
+    return (
+      <span>{`${record.quota} / ${temp.quotaTotal + temp.quota}`}</span>
+    );
+  }
+
   onSave = () => {
     const { updateTenant, addTenant } = this.props;
     const { getFieldValue, validateFields } = this.props.form;
     const { tenantId } = this.props.match.params;
     const postTenant = tenantId ? updateTenant : addTenant;
+    console.log('11111');
     validateFields((errors, values) => {
+      console.log('22222');
       if (!errors) {
         const sources = {};
         sources.supplier = this.state.currentKey;
@@ -212,6 +228,19 @@ class TenantDetail extends Component {
     this.setState({ algorithmConfig: result });
   }
 
+  validatorDeviceQuota = (rule, value, callback) => {
+    try {
+      const tdQuota = this.state.tenantDetail ? this.state.tenantDetail.deviceQuota : 0;
+      if (parseInt(value, 10) > tdQuota + this.state.deviceQuota) {
+        callback(new Error(`不能超过总额度${tdQuota + this.state.deviceQuota}`));
+      } else {
+        callback();
+      }
+    } catch (err) {
+      callback(err);
+    }
+  };
+
   render() {
     const emptyDetail = {
       algorithmIds: '',
@@ -245,6 +274,7 @@ class TenantDetail extends Component {
         title: '剩余额度',
         dataIndex: 'quotaTotal',
         key: 'quotaTotal',
+        render: (text, record) => this.handleCalcQuotaTotal(record),
       },
       {
         title: '额度(路)',
@@ -329,13 +359,17 @@ class TenantDetail extends Component {
             <Form.Item label="视频接入额度" name="deviceQuota">
               {getFieldDecorator('deviceQuota', {
                 initialValue: td.deviceQuota || '',
-                rules: [{ required: true, message: '请输入额度' }],
+                rules: [
+                  { required: true, message: '请输入额度' },
+                  { validator: (rule, value, callback) => this.validatorDeviceQuota(rule, value, callback) }
+                ],
+                validateTrigger: 'onBlur'
               })(
                 <Input className={styles.formItemInput} />
               )}
               <span className={styles.quota}>
                 剩余额度：
-                <span className={`${styles.quota} ${styles.warn}`}>{this.state.deviceQuota}</span>
+                <span className={`${styles.quota} ${styles.warn}`}>{`${this.props.form.getFieldValue('deviceQuota') || 0} / ${this.state.deviceQuota + td.deviceQuota || 0}`}</span>
               </span>
             </Form.Item>
             <span className={styles.subTitle}>算法配置</span>

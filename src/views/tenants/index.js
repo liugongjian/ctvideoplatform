@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import {
   Table, Input, Divider, Tabs, Switch, message
 } from 'antd';
@@ -188,7 +188,7 @@ class Tenants extends Component {
       },
     };
     return (
-      <>
+      <Fragment>
         <div className={styles.cardWrapper}>
           <div className={styles.card}>
             {carditem('可接入设备额度', statis.availableDevice)}
@@ -232,7 +232,7 @@ class Tenants extends Component {
             </Tabs>
           </div>
         </div>
-      </>
+      </Fragment>
     );
   }
 }

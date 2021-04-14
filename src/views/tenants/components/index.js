@@ -8,6 +8,7 @@ import Pagination from 'Components/EPagination';
 import {
   Button, Table, Upload
 } from 'antd';
+import moment from 'moment';
 import styles from './index.less';
 
 const mapStateToProps = state => ({ preview: state.preview });
@@ -25,14 +26,8 @@ class InnerTable extends Component {
     };
   }
 
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
-  }
-
-  render() {
-    const btn = this.props.btndata.path ? (
+  btn = () => (
+    this.props.btndata.path ? (
       <Link to={this.props.btndata.path}>
         <Button type="primary" className={styles.addBtn}>
           +
@@ -46,9 +41,11 @@ class InnerTable extends Component {
           {this.props.btndata.name}
         </Button>
       </Upload>
-    );
+    )
+  )
 
-    const footer = this.props.btndata.path ? (
+  footer = () => (
+    this.props.btndata.path ? (
       <Pagination
         total={this.props.data.recordsTotal}
         onChange={pageNo => this.props.onPageNumChange(pageNo)}
@@ -60,20 +57,18 @@ class InnerTable extends Component {
         pageSizeOptions={['10', '20', '50']}
         onShowSizeChange={(current, size) => this.props.onPageSizeChange(current, size)}
       />
-    ) : null;
+    ) : null
+  )
+
+  render() {
     const dataSource = this.props.data.list;
     const showInfo = () => {
       const { path, deviceQuota } = this.props.btndata;
       return !path && this.props.data.issued ? (
         <Fragment>
           <p>
-            当前许可证书到期日期为
-            {this.props.data.issued.split(' ')[0].split('-')[0]}
-            年
-            {this.props.data.issued.split(' ')[0].split('-')[1]}
-            月
-            {this.props.data.issued.split(' ')[0].split('-')[2]}
-            日
+            当前许可证书到期日期：
+            {moment(this.props.data.issued).format('YYYY年MM月DD日')}
           </p>
           <p>
             设备接入总额度：
@@ -84,7 +79,7 @@ class InnerTable extends Component {
     };
     return (
       <div>
-        {btn}
+        {this.btn()}
         {showInfo()}
         <Table
           rowKey={record => record.id}
@@ -93,7 +88,7 @@ class InnerTable extends Component {
           pagination={false}
         />
         <div style={{ marginTop: 24 }}>
-          {footer}
+          {this.footer()}
         </div>
       </div>
     );
