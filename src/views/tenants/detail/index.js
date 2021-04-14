@@ -158,14 +158,20 @@ class TenantDetail extends Component {
   }
 
   handleCalcQuotaTotal(record) {
-    let temp;
+    let temp; let temp2;
     this.state.algorithmConfig.forEach((item) => {
       if (item.name === record.name) {
         temp = item;
       }
     });
+    const algorithmsInfo = JSON.parse(this.state.tenantDetail.algorithmsInfoJson);
+    algorithmsInfo.forEach((item) => {
+      if (item.name === record.name) {
+        temp2 = item;
+      }
+    });
     return (
-      <span>{`${record.quota} / ${temp.quotaTotal + temp.quota}`}</span>
+      <span>{`${record.quota} / ${parseInt(temp.quotaTotal, 10) + parseInt(temp2.quota, 10)}`}</span>
     );
   }
 
