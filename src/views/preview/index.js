@@ -635,7 +635,7 @@ class Preview extends PureComponent {
               </div>
               <div className={styles.historyCard}>
                 {
-                  list.map(item => (
+                  list && list.length ? list.map(item => (
                     <Card
                       hoverable
                       style={{ width: 220 }}
@@ -652,6 +652,11 @@ class Preview extends PureComponent {
 
                     </Card>
                   ))
+                    : (
+                      <div className={styles.nodataBox}>
+                        <img src={nodata} alt="" />
+                      </div>
+                    )
                 }
               </div>
             </div>
