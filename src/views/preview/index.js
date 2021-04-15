@@ -609,7 +609,7 @@ class Preview extends PureComponent {
                 <div className={styles.peopleAreaCounts}>
                   <div className={styles.peopleAreaTotal}>
                     <p>
-                      实时人流量统计
+                      今日人流量统计
                       <a onClick={this.showMoreDialog}>更多数据</a>
                     </p>
                   </div>
