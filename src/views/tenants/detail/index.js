@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /* eslint-disable react/sort-comp */
 /* eslint-disable guard-for-in */
 /* eslint-disable max-len */
@@ -8,7 +9,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Button, Table, message, Form, Input, Select
+  Button, Table, message, Form, Input, Select, Tooltip
 } from 'antd';
 import {
   getTenantDetail, getDeviceSupplier, updateTenant, addTenant, getAlgorithmList, getDeviceQuota, getAllAlgorithmQuota
@@ -53,13 +54,12 @@ class TenantDetail extends Component {
     } = this.props;
     const { tenantId } = this.props.match.params;
     let calgolist; let algoTableData;
-    console.log('this.props', this.props.match.params.tenantId);
     let ckey;
     if (tenantId) {
       getTenantDetail(tenantId)
         .then((res) => {
           console.log('tenantDetail', res);
-          ckey = JSON.parse(res.deviceSupplierInfo).supplier;
+          ckey = res.deviceSupplierInfo ? JSON.parse(res.deviceSupplierInfo).supplier : 'ffcs2';
           const algolist = JSON.parse(res.algorithmsInfoJson).map((item) => {
             delete item.createTime;
             return item;
@@ -194,7 +194,7 @@ class TenantDetail extends Component {
         const sources = {};
         sources.supplier = this.state.currentKey;
         this.state.supplierParams.forEach((item) => {
-          sources[item] = getFieldValue(item + this.state.currentKey);
+          sources[item.name] = getFieldValue(item.name + this.state.currentKey);
         });
         const data = tenantId
           ? {
@@ -315,40 +315,46 @@ class TenantDetail extends Component {
     }
   };
 
-  renderEncodeFormat = (item, currentKey, td) => {
+  renderEncodeFormat = (item, currentKey, deviceSupplierInfo) => {
     const { getFieldDecorator } = this.props.form;
     return (
-      <Form.Item label={item}>
-        {getFieldDecorator(item + currentKey, {
-          initialValue: currentKey === JSON.parse(td.deviceSupplierInfo).supplier ? JSON.parse(td.deviceSupplierInfo)[item] : '',
-          rules: [{ required: true, message: `请确认${item}！` }]
+      <Form.Item label={item.name}>
+        {getFieldDecorator(item.name + currentKey, {
+          initialValue: currentKey === deviceSupplierInfo.supplier ? deviceSupplierInfo[item.name] : '',
+          rules: [{ required: true, message: `请确认${item.name}！` }]
         })(
-          <Select
-            className={styles.formItemInput}
-          >
-            {encodeFormatOptions.map(option => (
-              <Option key={option}>{option}</Option>
-            ))}
-          </Select>
+          <Tooltip placement="right" title={item.desc}>
+            <Select
+              className={styles.formItemInput}
+            >
+              {encodeFormatOptions.map(option => (
+                <Option key={option}>{option}</Option>
+              ))}
+            </Select>
+          </Tooltip>
         )}
       </Form.Item>
     );
   }
 
-  renderBaseUri = (item, currentKey, td) => {
+  renderBaseUri = (item, currentKey, deviceSupplierInfo) => {
     const { getFieldDecorator } = this.props.form;
     console.log('item + currentKey', item + currentKey);
-    console.log('JSON.parse(td.deviceSupplierInfo)[item]', JSON.parse(td.deviceSupplierInfo)[item]);
-    console.log('JSON.parse(td.deviceSupplierInfo)[item]', JSON.parse(td.deviceSupplierInfo));
+    console.log('JSON.parse(td.deviceSupplierInfo)[item]', deviceSupplierInfo);
+    console.log('JSON.parse(td.deviceSupplierInfo)[item]', deviceSupplierInfo.deviceSupplierInfo);
     return (
-      <Form.Item label={item}>
-        {getFieldDecorator(item + currentKey, {
-          initialValue: currentKey === JSON.parse(td.deviceSupplierInfo).supplier ? JSON.parse(td.deviceSupplierInfo)[item] : '',
+      <Form.Item label={item.name}>
+        {getFieldDecorator(item.name + currentKey, {
+          initialValue: currentKey === deviceSupplierInfo.supplier ? deviceSupplierInfo[item.name] : '',
           rules: [
-            { required: true, message: `请确认${item}！` },
+            { required: true, message: `请确认${item.name}！` },
             { validator: (rule, value, callback) => this.validatorUrl(rule, value, callback) }
           ]
-        })(<Input className={styles.formItemInput} />)}
+        })(
+          <Tooltip placement="right" title={item.desc}>
+            <Input className={styles.formItemInput} />
+          </Tooltip>
+        )}
       </Form.Item>
     );
   }
@@ -360,13 +366,15 @@ class TenantDetail extends Component {
       algorithmsInfoJson: '[]',
       description: '',
       deviceQuota: 0,
-      deviceSupplierInfo: '[{"supplier":"ffcs3"}]',
+      deviceSupplierInfo: '[{"supplier":"ffcs2"}]',
       name: '',
     };
+    const { tenantId } = this.props.match.params;
     const {
       deviceSupplier, supplierParams, currentKey, tenantDetail
     } = this.state;
     const td = tenantDetail || emptyDetail;
+    const deviceSupplierInfo = td.deviceSupplierInfo ? JSON.parse(td.deviceSupplierInfo) : null;
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
       labelCol: {
@@ -418,11 +426,11 @@ class TenantDetail extends Component {
                 initialValue: td.name || '',
                 rules: [{ required: true, message: '请输入租户名' }],
               })(
-                <Input className={styles.formItemInput} disabled={!!this.props.match.params.tenantId} />
+                <Input className={styles.formItemInput} disabled={!!tenantId} />
               )}
             </Form.Item>
             {
-              !tenantDetail && (
+              !tenantId && (
                 <Fragment>
                   <Form.Item label="租户密码" name="password">
                     {getFieldDecorator('password', {
@@ -453,7 +461,7 @@ class TenantDetail extends Component {
             <span className={styles.subTitle}>规则配置</span>
             <Form.Item label="视频源类型" name="videotype">
               {getFieldDecorator('videotype', {
-                initialValue: JSON.parse(td.deviceSupplierInfo).supplier || currentKey,
+                initialValue: deviceSupplierInfo ? deviceSupplierInfo.supplier : currentKey,
                 rules: [{ required: true, message: '请选择类型!' }],
               })(
                 <Select
@@ -467,33 +475,41 @@ class TenantDetail extends Component {
               )}
             </Form.Item>
             {supplierParams.map((item) => {
-              if (currentKey === JSON.parse(td.deviceSupplierInfo).supplier) {
-                if (item === encodeFormat) {
-                  return this.renderEncodeFormat(item, currentKey, td);
+              if (currentKey === deviceSupplierInfo.supplier) {
+                if (item.name === encodeFormat) {
+                  return this.renderEncodeFormat(item, currentKey, deviceSupplierInfo);
                 }
-                if (item === baseUri) {
-                  return this.renderBaseUri(item, currentKey, td);
+                if (item.name === baseUri) {
+                  return this.renderBaseUri(item, currentKey, deviceSupplierInfo);
                 }
                 return (
-                  <Form.Item label={item}>
-                    {getFieldDecorator(item + currentKey, {
-                      initialValue: JSON.parse(td.deviceSupplierInfo)[item],
-                      rules: [{ required: true, message: `请确认${item}！` }]
-                    })(<Input className={styles.formItemInput} />)}
+                  <Form.Item label={item.name}>
+                    {getFieldDecorator(item.name + currentKey, {
+                      initialValue: deviceSupplierInfo[item.name],
+                      rules: [{ required: true, message: `请确认${item.name}！` }]
+                    })(
+                      <Tooltip placement="right" title={item.desc}>
+                        <Input className={styles.formItemInput} />
+                      </Tooltip>
+                    )}
                   </Form.Item>
                 );
               }
-              if (item === encodeFormat) {
-                return this.renderEncodeFormat(item, currentKey, td);
+              if (item.name === encodeFormat) {
+                return this.renderEncodeFormat(item, currentKey, deviceSupplierInfo);
               }
-              if (item === baseUri) {
-                return this.renderBaseUri(item, currentKey, td);
+              if (item.name === baseUri) {
+                return this.renderBaseUri(item, currentKey, deviceSupplierInfo);
               }
               return (
-                <Form.Item label={item}>
-                  {getFieldDecorator(item + currentKey, {
-                    rules: [{ required: true, message: `请确认${item}！` }]
-                  })(<Input className={styles.formItemInput} />)}
+                <Form.Item label={item.name}>
+                  {getFieldDecorator(item.name + currentKey, {
+                    rules: [{ required: true, message: `请确认${item.name}！` }]
+                  })(
+                    <Tooltip placement="right" title={item.desc}>
+                      <Input className={styles.formItemInput} />
+                    </Tooltip>
+                  )}
                 </Form.Item>
               );
             })}

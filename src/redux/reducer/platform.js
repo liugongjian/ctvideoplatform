@@ -14,6 +14,7 @@ const ADD_TENANT = 'ADD_TENANT';
 const GET_ALGORITHMLIST = 'GET_ALGORITHMLIST';
 const GET_DEVICEQUOTA = 'GET_DEVICEQUOTA';
 const GET_ALLALGORITHMQUOTA = 'GET_ALLALGORITHMQUOTA';
+const GET_TENANT_PASSWORD = 'GET_TENANT_PASSWORD';
 
 const initialState = {
 };
@@ -63,7 +64,10 @@ export default function account(state = initialState, action = {}) {
       return {
         ...state
       };
-
+    case GET_TENANT_PASSWORD:
+      return {
+        ...state
+      };
     default:
       return state;
   }
@@ -144,5 +148,11 @@ export function getAllAlgorithmQuota() {
   return {
     type: GET_ALLALGORITHMQUOTA,
     promise: apiClient => apiClient.get(`${urlPrefix}/tenant/getAllAlgorithmQuota`)
+  };
+}
+export function resetTenantPassword(tid) {
+  return {
+    type: GET_TENANT_PASSWORD,
+    promise: apiClient => apiClient.get(`${urlPrefix}/tenant/resetPassword/${tid}`)
   };
 }
