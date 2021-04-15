@@ -15,11 +15,15 @@ import {
 } from 'Redux/reducer/platform';
 import { urlPrefix } from 'Constants/Dictionary';
 import { pathPrefix } from '@/constants/Dictionary';
+import { Fragment } from 'react';
 import styles from './index.less';
 
 
 const { Option } = Select;
 const { TextArea } = Input;
+const encodeFormat = 'encodeFormat';
+const baseUri = 'baseUri';
+const encodeFormatOptions = ['H.264', 'H.265'];
 
 const mapStateToProps = state => ({ preview: state.preview });
 const mapDispatchToProps = dispatch => bindActionCreators(
@@ -185,23 +189,28 @@ class TenantDetail extends Component {
     const { getFieldValue, validateFields } = this.props.form;
     const { tenantId } = this.props.match.params;
     const postTenant = tenantId ? updateTenant : addTenant;
-    console.log('11111');
     validateFields((errors, values) => {
-      console.log('22222');
       if (!errors) {
         const sources = {};
         sources.supplier = this.state.currentKey;
         this.state.supplierParams.forEach((item) => {
           sources[item] = getFieldValue(item + this.state.currentKey);
         });
-        const data = {
-          name: getFieldValue('name'),
-          password: getFieldValue('password'),
-          deviceQuota: getFieldValue('deviceQuota'),
-          description: getFieldValue('description'),
-          algorithmConfig: this.state.algorithmConfig,
-          sourceList: [sources]
-        };
+        const data = tenantId
+          ? {
+            name: getFieldValue('name'),
+            deviceQuota: getFieldValue('deviceQuota'),
+            description: getFieldValue('description'),
+            algorithmConfig: this.state.algorithmConfig,
+            sourceList: [sources]
+          } : {
+            name: getFieldValue('name'),
+            password: getFieldValue('password'),
+            deviceQuota: getFieldValue('deviceQuota'),
+            description: getFieldValue('description'),
+            algorithmConfig: this.state.algorithmConfig,
+            sourceList: [sources]
+          };
         console.log('data', data);
         console.log('supplierParams', this.state.supplierParams);
         postTenant(tenantId, data).then(
@@ -239,6 +248,38 @@ class TenantDetail extends Component {
     this.setState({ algorithmConfig: result });
   }
 
+  validatorPsw = (rule, value, callback) => {
+    if (!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?_~.])(.{12,26})/.test(value)) && value) {
+      callback(new Error('密码至少包含大小写字母、数字和特殊字符(!@#$%^&*?_~.)，且长度为12～26位字符'));
+    } else {
+      callback();
+    }
+  };
+
+  validatorUrl = (rule, value, callback) => {
+    try {
+      console.log('validatorUrl', value);
+      const strReg = '^((https|http|ftp|rtsp|mms)?://)'
+    + "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?" // ftp的user@
+     + '(([0-9]{1,3}\.){3}[0-9]{1,3}' // IP形式的URL- 199.194.52.184
+     + '|' // 允许IP和DOMAIN（域名）
+     + "([0-9a-z_!~*'()-]+\.)*" // 域名- www.
+     + '([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\.' // 二级域名
+     + '[a-z]{2,6})' // first level domain- .com or .museum
+     + '(:[0-9]{1,4})?' // 端口- :80
+     + '((/?)|' // a slash isn't required if there is no file name
+     + "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$";
+      const re = new RegExp(strReg);
+      if (!(re.test(value)) && value) {
+        callback(new Error('不是有效的URL地址，请更正！'));
+      } else {
+        callback();
+      }
+    } catch (err) {
+      callback(err);
+    }
+  };
+
   validatorDeviceQuota = (rule, value, callback) => {
     try {
       const tdQuota = this.state.tenantDetail ? this.state.tenantDetail.deviceQuota : 0;
@@ -251,6 +292,66 @@ class TenantDetail extends Component {
       callback(err);
     }
   };
+
+  validatorAlgoQuota = (rule, value, callback, record) => {
+    try {
+      const algoQuota = this.state.tenantDetail ? JSON.parse(this.state.tenantDetail.algorithmsInfoJson) : null;
+      let ifValid = true;
+      if (algoQuota) {
+        console.log(algoQuota);
+        algoQuota.forEach((algo) => {
+          if (algo.name === record.name && algo.quota + record.quotaTotal < record.quota) {
+            ifValid = false;
+          }
+        });
+      } else if (record.quota > record.quotaTotal) {
+        ifValid = false;
+      } else {
+        ifValid = true;
+      }
+      ifValid ? callback() : callback(new Error('超过总额度，请修改'));
+    } catch (err) {
+      callback(err);
+    }
+  };
+
+  renderEncodeFormat = (item, currentKey, td) => {
+    const { getFieldDecorator } = this.props.form;
+    return (
+      <Form.Item label={item}>
+        {getFieldDecorator(item + currentKey, {
+          initialValue: currentKey === JSON.parse(td.deviceSupplierInfo).supplier ? JSON.parse(td.deviceSupplierInfo)[item] : '',
+          rules: [{ required: true, message: `请确认${item}！` }]
+        })(
+          <Select
+            className={styles.formItemInput}
+          >
+            {encodeFormatOptions.map(option => (
+              <Option key={option}>{option}</Option>
+            ))}
+          </Select>
+        )}
+      </Form.Item>
+    );
+  }
+
+  renderBaseUri = (item, currentKey, td) => {
+    const { getFieldDecorator } = this.props.form;
+    console.log('item + currentKey', item + currentKey);
+    console.log('JSON.parse(td.deviceSupplierInfo)[item]', JSON.parse(td.deviceSupplierInfo)[item]);
+    console.log('JSON.parse(td.deviceSupplierInfo)[item]', JSON.parse(td.deviceSupplierInfo));
+    return (
+      <Form.Item label={item}>
+        {getFieldDecorator(item + currentKey, {
+          initialValue: currentKey === JSON.parse(td.deviceSupplierInfo).supplier ? JSON.parse(td.deviceSupplierInfo)[item] : '',
+          rules: [
+            { required: true, message: `请确认${item}！` },
+            { validator: (rule, value, callback) => this.validatorUrl(rule, value, callback) }
+          ]
+        })(<Input className={styles.formItemInput} />)}
+      </Form.Item>
+    );
+  }
 
   render() {
     const emptyDetail = {
@@ -291,7 +392,15 @@ class TenantDetail extends Component {
         title: '额度(路)',
         dataIndex: 'quota',
         key: 'quota',
-        render: (text, record) => (<Input defaultValue={text} onChange={e => this.onAlgoChange(record, e)} />),
+        render: (text, record) => (
+          <Form.Item>
+            {getFieldDecorator(record.name, {
+              initialValue: text,
+              rules: [{ validator: (rule, value, callback) => this.validatorAlgoQuota(rule, value, callback, record) }],
+              validateTrigger: 'onBlur'
+            })(<Input onChange={e => this.onAlgoChange(record, e)} />)}
+          </Form.Item>
+        ),
       },
     ];
     return (
@@ -309,23 +418,32 @@ class TenantDetail extends Component {
                 initialValue: td.name || '',
                 rules: [{ required: true, message: '请输入租户名' }],
               })(
-                <Input className={styles.formItemInput} disabled={this.props.match.params.tenantId} />
+                <Input className={styles.formItemInput} disabled={!!this.props.match.params.tenantId} />
               )}
             </Form.Item>
-
-            <Form.Item label="租户密码" name="password">
-              {getFieldDecorator('password', {
-                rules: [{ required: true, message: '请输入密码！' }]
-              })(<Input.Password autoComplete="new-password" className={styles.formItemInput} />)}
-            </Form.Item>
-            <Form.Item label="密码确认" name="pwdconfirm">
-              {getFieldDecorator('pwdconfirm', {
-                rules: [{ required: true, message: '请确认密码！' },
-                  {
-                    validator: (rules, value, callback) => { this.handleCfmPwd(rules, value, callback); }
-                  }]
-              })(<Input.Password autoComplete="new-password" className={styles.formItemInput} />)}
-            </Form.Item>
+            {
+              !tenantDetail && (
+                <Fragment>
+                  <Form.Item label="租户密码" name="password">
+                    {getFieldDecorator('password', {
+                      rules: [
+                        { required: true, message: '请输入密码！' },
+                        { validator: (rule, value, callback) => this.validatorPsw(rule, value, callback) }
+                      ]
+                    })(<Input.Password autoComplete="new-password" className={styles.formItemInput} />)}
+                  </Form.Item>
+                  <Form.Item label="密码确认" name="pwdconfirm">
+                    {getFieldDecorator('pwdconfirm', {
+                      rules: [
+                        { required: true, message: '请确认密码！' },
+                        {
+                          validator: (rules, value, callback) => { this.handleCfmPwd(rules, value, callback); }
+                        }]
+                    })(<Input.Password autoComplete="new-password" className={styles.formItemInput} />)}
+                  </Form.Item>
+                </Fragment>
+              )
+            }
             <Form.Item label="备注" name="description">
               {getFieldDecorator('description', {
                 initialValue: td.description,
@@ -345,11 +463,17 @@ class TenantDetail extends Component {
                   {deviceSupplier.map(sup => (
                     <Option key={sup.name}>{sup.cnName}</Option>
                   ))}
-                </Select>,
+                </Select>
               )}
             </Form.Item>
             {supplierParams.map((item) => {
               if (currentKey === JSON.parse(td.deviceSupplierInfo).supplier) {
+                if (item === encodeFormat) {
+                  return this.renderEncodeFormat(item, currentKey, td);
+                }
+                if (item === baseUri) {
+                  return this.renderBaseUri(item, currentKey, td);
+                }
                 return (
                   <Form.Item label={item}>
                     {getFieldDecorator(item + currentKey, {
@@ -358,6 +482,12 @@ class TenantDetail extends Component {
                     })(<Input className={styles.formItemInput} />)}
                   </Form.Item>
                 );
+              }
+              if (item === encodeFormat) {
+                return this.renderEncodeFormat(item, currentKey, td);
+              }
+              if (item === baseUri) {
+                return this.renderBaseUri(item, currentKey, td);
               }
               return (
                 <Form.Item label={item}>
