@@ -180,8 +180,12 @@ class Tenants extends Component {
           console.log(info.file, info.fileList);
         }
         if (info.file.status === 'done') {
-          message.success(`${info.file.name}上传成功！`);
-          this.initDatas();
+          if (info.file.response.data) {
+            message.success(`${info.file.name}上传成功！`);
+            this.initDatas();
+          } else {
+            message.error(`${info.file.name}上传失败！`);
+          }
         } else if (info.file.status === 'error') {
           message.error(`${info.file.name}上传失败！`);
         }
