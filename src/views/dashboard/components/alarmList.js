@@ -12,6 +12,7 @@ import {
 import EIcon from 'Components/Icon';
 import { urlPrefix } from 'Constants/Dictionary';
 import noImage from 'Assets/defaultFace.png';
+import nodata from 'Assets/nodata.png';
 import styles from './index.less';
 
 const mapStateToProps = state => ({ preview: state.preview });
@@ -158,7 +159,7 @@ class AlarmList extends Component {
 
   render() {
     const { alarmData, ifShowModal, modalShowInfo } = this.state;
-    const getAlarmDom = () => alarmData.list && alarmData.list.map(item => (
+    const getAlarmDom = () => (alarmData.list ? alarmData.list.map(item => (
       <div key={item.id} className={styles.alarmDetail}>
         <div className={styles.alramDetailIcon}>
           {/** <img src={getImgUrl(item.algorithmName)} alt="" /> */}
@@ -179,6 +180,10 @@ class AlarmList extends Component {
           <p className={styles.alarmDetailDeviceName}>{item.deviceName}</p>
         </div>
         <div className={styles.lookDetail} onClick={() => this.detailModal(item)}>查看</div>
+      </div>
+    )) : (
+      <div className={styles.nodataBox}>
+        <img src={nodata} alt="" />
       </div>
     ));
     return (

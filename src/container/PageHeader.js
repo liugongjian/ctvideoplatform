@@ -219,7 +219,7 @@ class Contents extends Component {
                 rules: [
                   { required: true, message: '新密码不能为空！' },
                   // eslint-disable-next-line max-len
-                  // { validator: (rule, value, callback) => { this.validatorRePsw(rule, value, callback); } }
+                  { validator: (rule, value, callback) => { this.validatorRePsw(rule, value, callback); } }
                 ],
                 validateTrigger: 'onBlur'
               },
