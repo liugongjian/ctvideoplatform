@@ -9,7 +9,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Button, Table, message, Form, Input, Select, Tooltip
+  Button, Table, message, Form, Input, Select, Tooltip, Icon
 } from 'antd';
 import {
   getTenantDetail, getDeviceSupplier, updateTenant, addTenant, getAlgorithmList, getDeviceQuota, getAllAlgorithmQuota
@@ -319,11 +319,11 @@ class TenantDetail extends Component {
     const { getFieldDecorator } = this.props.form;
     return (
       <Form.Item label={item.name}>
-        {getFieldDecorator(item.name + currentKey, {
-          initialValue: currentKey === deviceSupplierInfo.supplier ? deviceSupplierInfo[item.name] : '',
-          rules: [{ required: true, message: `请确认${item.name}！` }]
-        })(
-          <Tooltip placement="right" title={item.desc}>
+        <Tooltip placement="right" title={item.desc}>
+          {getFieldDecorator(item.name + currentKey, {
+            initialValue: currentKey === deviceSupplierInfo.supplier ? deviceSupplierInfo[item.name] : '',
+            rules: [{ required: true, message: `请确认${item.name}！` }]
+          })(
             <Select
               className={styles.formItemInput}
             >
@@ -331,8 +331,8 @@ class TenantDetail extends Component {
                 <Option key={option}>{option}</Option>
               ))}
             </Select>
-          </Tooltip>
-        )}
+          )}
+        </Tooltip>
       </Form.Item>
     );
   }
@@ -344,17 +344,19 @@ class TenantDetail extends Component {
     console.log('JSON.parse(td.deviceSupplierInfo)[item]', deviceSupplierInfo.deviceSupplierInfo);
     return (
       <Form.Item label={item.name}>
-        {getFieldDecorator(item.name + currentKey, {
-          initialValue: currentKey === deviceSupplierInfo.supplier ? deviceSupplierInfo[item.name] : '',
-          rules: [
-            { required: true, message: `请确认${item.name}！` },
-            { validator: (rule, value, callback) => this.validatorUrl(rule, value, callback) }
-          ]
-        })(
-          <Tooltip placement="right" title={item.desc}>
-            <Input className={styles.formItemInput} />
-          </Tooltip>
-        )}
+        <Tooltip placement="right" title={item.desc}>
+          {getFieldDecorator(item.name + currentKey, {
+            initialValue: currentKey === deviceSupplierInfo.supplier ? deviceSupplierInfo[item.name] : '',
+            rules: [
+              { required: true, message: `请确认${item.name}！` },
+              { validator: (rule, value, callback) => this.validatorUrl(rule, value, callback) }
+            ]
+          })(
+            <Input
+              className={styles.formItemInput}
+            />
+          )}
+        </Tooltip>
       </Form.Item>
     );
   }
@@ -366,7 +368,7 @@ class TenantDetail extends Component {
       algorithmsInfoJson: '[]',
       description: '',
       deviceQuota: 0,
-      deviceSupplierInfo: '[{"supplier":"ffcs2"}]',
+      deviceSupplierInfo: '{"supplier":"ffcs2"}',
       name: '',
     };
     const { tenantId } = this.props.match.params;
@@ -374,7 +376,8 @@ class TenantDetail extends Component {
       deviceSupplier, supplierParams, currentKey, tenantDetail
     } = this.state;
     const td = tenantDetail || emptyDetail;
-    const deviceSupplierInfo = td.deviceSupplierInfo ? JSON.parse(td.deviceSupplierInfo) : null;
+    const deviceSupplierInfo = JSON.parse(td.deviceSupplierInfo);
+    console.log('deviceSupplierInfo111', deviceSupplierInfo);
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
       labelCol: {
@@ -461,7 +464,7 @@ class TenantDetail extends Component {
             <span className={styles.subTitle}>规则配置</span>
             <Form.Item label="视频源类型" name="videotype">
               {getFieldDecorator('videotype', {
-                initialValue: deviceSupplierInfo ? deviceSupplierInfo.supplier : currentKey,
+                initialValue: deviceSupplierInfo.supplier,
                 rules: [{ required: true, message: '请选择类型!' }],
               })(
                 <Select
@@ -476,6 +479,7 @@ class TenantDetail extends Component {
             </Form.Item>
             {supplierParams.map((item) => {
               if (currentKey === deviceSupplierInfo.supplier) {
+                console.log('deviceSupplierInfo', deviceSupplierInfo);
                 if (item.name === encodeFormat) {
                   return this.renderEncodeFormat(item, currentKey, deviceSupplierInfo);
                 }
@@ -484,14 +488,16 @@ class TenantDetail extends Component {
                 }
                 return (
                   <Form.Item label={item.name}>
-                    {getFieldDecorator(item.name + currentKey, {
-                      initialValue: deviceSupplierInfo[item.name],
-                      rules: [{ required: true, message: `请确认${item.name}！` }]
-                    })(
-                      <Tooltip placement="right" title={item.desc}>
-                        <Input className={styles.formItemInput} />
-                      </Tooltip>
-                    )}
+                    <Tooltip placement="right" title={item.desc}>
+                      {getFieldDecorator(item.name + currentKey, {
+                        initialValue: deviceSupplierInfo[item.name],
+                        rules: [{ required: true, message: `请确认${item.name}！` }]
+                      })(
+                        <Input
+                          className={styles.formItemInput}
+                        />
+                      )}
+                    </Tooltip>
                   </Form.Item>
                 );
               }
@@ -503,13 +509,15 @@ class TenantDetail extends Component {
               }
               return (
                 <Form.Item label={item.name}>
-                  {getFieldDecorator(item.name + currentKey, {
-                    rules: [{ required: true, message: `请确认${item.name}！` }]
-                  })(
-                    <Tooltip placement="right" title={item.desc}>
-                      <Input className={styles.formItemInput} />
-                    </Tooltip>
-                  )}
+                  <Tooltip placement="right" title={item.desc}>
+                    {getFieldDecorator(item.name + currentKey, {
+                      rules: [{ required: true, message: `请确认${item.name}！` }]
+                    })(
+                      <Input
+                        className={styles.formItemInput}
+                      />
+                    )}
+                  </Tooltip>
                 </Form.Item>
               );
             })}
