@@ -226,7 +226,7 @@ class Role extends Component {
         >
           <div className={styles.deleteModal}>
             <div className={styles.deleteModalImg}>
-              <img src={warnPic} />
+              <img alt="" src={warnPic} />
             </div>
             <div className={styles.deleteModalInfo}>
               <span>

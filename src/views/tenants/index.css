@@ -67,3 +67,38 @@
   font-size: 40px;
   font-weight: 800;
 }
+.deleteModal {
+  width: 350px;
+  height: 120px;
+}
+.deleteModal .deleteModalImg {
+  margin-top: 40px;
+  display: inline-block;
+  float: left;
+  margin-left: 20px;
+}
+.deleteModal .deleteModalImg > img {
+  margin-top: 10px;
+  width: 32px;
+  height: 27px;
+}
+.deleteModal .deleteModalInfo {
+  margin-top: 50px;
+  display: inline-block;
+  margin-left: 25px;
+}
+.deleteModal .deleteModalInfo > span {
+  display: block;
+  font-family: MicrosoftYaHei;
+  font-size: 14px;
+  color: #333333;
+  text-align: left;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+.deleteModal .deleteModalInfo > p {
+  font-family: MicrosoftYaHei;
+  font-size: 12px;
+  color: #999999;
+  margin-bottom: 11px;
+}

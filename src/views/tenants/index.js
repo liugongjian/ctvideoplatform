@@ -38,7 +38,7 @@ class Tenants extends Component {
     licenseDate: '',
     modalVisible: false,
     resetPwdTenant: null,
-    newPwd: '',
+    newPwd: null,
   };
 
   componentDidMount() {
@@ -108,9 +108,43 @@ class Tenants extends Component {
   onResetPassword = (record) => {
     console.log('record', record);
     this.props.resetTenantPassword(record.id).then((res) => {
-      this.setState({ newPwd: res, modalVisible: true });
+      if (res) {
+        this.setState({ newPwd: res });
+      } else {
+        this.setState({ modalVisible: false });
+      }
     });
   }
+
+  onCancelModal = () => {
+    this.setState({ modalVisible: false, resetPwdTenant: null });
+    const that = this;
+    if (this.timer) {
+      clearTimeout(this.timer);
+    }
+    this.timer = setTimeout(() => {
+      that.setState({
+        newPwd: null
+      });
+    }, 500);
+  }
+
+  renderModal = () => (
+    <div className={styles.deleteModal}>
+      <div>
+        <div className={styles.deleteModalImg}>
+          { !this.state.newPwd && (<img alt="" src={warnPic} />)}
+        </div>
+      </div>
+      <div className={styles.deleteModalInfo}>
+        <span>
+          {this.state.newPwd
+            ? `重置成功！新密码为：${this.state.newPwd}`
+            : '您确定要重置当前租户的密码？'}
+        </span>
+      </div>
+    </div>
+  )
 
   render() {
     const {
@@ -145,8 +179,8 @@ class Tenants extends Component {
       },
       {
         title: '备注',
-        dataIndex: 'address',
-        key: 'address',
+        dataIndex: 'description',
+        key: 'description',
       },
       {
         title: '操作',
@@ -157,7 +191,7 @@ class Tenants extends Component {
               编辑
             </Link>
             <Divider type="vertical" />
-            <a onClick={() => this.onResetPassword(record)}>
+            <a onClick={() => this.setState({ resetPwdTenant: record, modalVisible: true })}>
               重置密码
             </a>
             <Divider type="vertical" />
@@ -252,7 +286,7 @@ class Tenants extends Component {
         </div>
 
 
-        <Modal
+        {/* <Modal
           centered
           width={412}
           visible={this.state.modalVisible}
@@ -267,6 +301,24 @@ class Tenants extends Component {
               </span>
             </div>
           </div>
+
+        </Modal> */}
+
+        <Modal
+          centered
+          width={412}
+          visible={this.state.modalVisible}
+          onCancel={this.onCancelModal}
+          footer={!this.state.newPwd && [
+            <Button key="submit" type="primary" onClick={() => this.onResetPassword(this.state.resetPwdTenant)} style={{ margin: '0 0 0 5px' }}>
+              确定
+            </Button>,
+            <Button key="back" style={{ margin: '0 0 0 30px' }} disabled={this.state.isDeleting} onClick={this.onCancelModal}>
+              取消
+            </Button>,
+          ]}
+        >
+          {this.renderModal()}
 
         </Modal>
 

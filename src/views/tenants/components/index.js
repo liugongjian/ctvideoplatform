@@ -78,9 +78,10 @@ class InnerTable extends Component {
       ) : null;
     };
     return (
-      <div>
+      <div style={{ width: '1420px' }}>
         {this.btn()}
         {showInfo()}
+
         <Table
           rowKey={record => record.id}
           columns={this.props.columns}
@@ -90,6 +91,7 @@ class InnerTable extends Component {
         <div style={{ marginTop: 24 }}>
           {this.footer()}
         </div>
+
       </div>
     );
   }

@@ -176,20 +176,20 @@ class TenantDetail extends Component {
         }
       });
       return (
-        <span>{`${record.quota} / ${parseInt(temp.quotaTotal, 10) + parseInt(temp2.quota, 10)}`}</span>
+        <span>{`${record.quota || '0'} / ${parseInt(temp.quotaTotal, 10) + parseInt(temp2.quota, 10)}`}</span>
       );
     }
     return (
-      <span>{`${record.quota} / ${parseInt(temp.quotaTotal, 10)}`}</span>
+      <span>{`${record.quota || '0'} / ${parseInt(temp.quotaTotal, 10)}`}</span>
     );
   }
 
   onSave = () => {
     const { updateTenant, addTenant } = this.props;
-    const { getFieldValue, validateFields } = this.props.form;
+    const { getFieldValue, validateFieldsAndScroll } = this.props.form;
     const { tenantId } = this.props.match.params;
     const postTenant = tenantId ? updateTenant : addTenant;
-    validateFields((errors, values) => {
+    validateFieldsAndScroll((errors, values) => {
       if (!errors) {
         const sources = {};
         sources.supplier = this.state.currentKey;
@@ -297,10 +297,11 @@ class TenantDetail extends Component {
     try {
       const algoQuota = this.state.tenantDetail ? JSON.parse(this.state.tenantDetail.algorithmsInfoJson) : null;
       let ifValid = true;
+      // const re = /^([0]|[1-9][0-9]*)$/;
       if (algoQuota) {
         console.log(algoQuota);
         algoQuota.forEach((algo) => {
-          if (algo.name === record.name && algo.quota + record.quotaTotal < record.quota) {
+          if (algo.name === record.name && (algo.quota + record.quotaTotal < record.quota)) {
             ifValid = false;
           }
         });
@@ -309,7 +310,7 @@ class TenantDetail extends Component {
       } else {
         ifValid = true;
       }
-      ifValid ? callback() : callback(new Error('超过总额度，请修改'));
+      ifValid ? callback() : callback(new Error('不能大于总额度！'));
     } catch (err) {
       callback(err);
     }
@@ -407,7 +408,10 @@ class TenantDetail extends Component {
           <Form.Item>
             {getFieldDecorator(record.name, {
               initialValue: text,
-              rules: [{ validator: (rule, value, callback) => this.validatorAlgoQuota(rule, value, callback, record) }],
+              rules: [
+                { required: true, message: `请输入${record.cnName}额度！` },
+                { pattern: /^([0]|[1-9][0-9]*)$/, message: '必须大于等于0的整数' },
+                { validator: (rule, value, callback) => this.validatorAlgoQuota(rule, value, callback, record) }],
               validateTrigger: 'onBlur'
             })(<Input onChange={e => this.onAlgoChange(record, e)} />)}
           </Form.Item>
@@ -537,7 +541,7 @@ class TenantDetail extends Component {
                 <span className={`${styles.quota} ${styles.warn}`}>{`${this.props.form.getFieldValue('deviceQuota') || 0} / ${this.state.deviceQuota + td.deviceQuota || 0}`}</span>
               </span>
             </Form.Item>
-            <span className={styles.subTitle}>算法配置</span>
+            <span className={styles.subTitle}>算法额度配置</span>
             <Table rowKey={record => record.name} columns={columns} dataSource={this.state.algorithmConfig} pagination={false} />
           </div>
 
