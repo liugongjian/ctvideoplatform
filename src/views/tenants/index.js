@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import {
-  Table, Input, Divider, Tabs, Switch, message
+  Table, Input, Divider, Tabs, Switch, message, Modal, Button
 } from 'antd';
 import Pagination from 'Components/EPagination';
 import { Link } from 'react-router-dom';
@@ -8,9 +8,10 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
-  getTenantsList, getStatis, activeTenants, getLicenceList
+  getTenantsList, getStatis, activeTenants, getLicenceList, resetTenantPassword
 } from '@/redux/reducer/platform';
 import { urlPrefix } from '@/constants/Dictionary';
+import warnPic from '@/assets/role/warn.png';
 import InnerTable from './components';
 
 
@@ -23,7 +24,7 @@ const { TabPane } = Tabs;
 const mapStateToProps = state => ({ role: state.role });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    getTenantsList, getStatis, activeTenants, getLicenceList
+    getTenantsList, getStatis, activeTenants, getLicenceList, resetTenantPassword
   },
   dispatch
 );
@@ -35,6 +36,9 @@ class Tenants extends Component {
     statis: {},
     licenseData: [],
     licenseDate: '',
+    modalVisible: false,
+    resetPwdTenant: null,
+    newPwd: '',
   };
 
   componentDidMount() {
@@ -101,6 +105,13 @@ class Tenants extends Component {
     });
   };
 
+  onResetPassword = (record) => {
+    console.log('record', record);
+    this.props.resetTenantPassword(record.id).then((res) => {
+      this.setState({ newPwd: res, modalVisible: true });
+    });
+  }
+
   render() {
     const {
       tenantsData, statis, licenseData, licenseDate, deviceQuota
@@ -126,7 +137,6 @@ class Tenants extends Component {
         title: '启用状态',
         dataIndex: 'isActive',
         render: (text, record) => (
-
           <div className={styles.active}>
             <Switch checked={record.isActive} onChange={checked => this.handleActivate(checked, record)} size="small" />
             <span>{record.isActive ? '已启用' : '已禁用'}</span>
@@ -146,6 +156,10 @@ class Tenants extends Component {
             <Link to={`/platform/tenant/${record.id}`}>
               编辑
             </Link>
+            <Divider type="vertical" />
+            <a onClick={() => this.onResetPassword(record)}>
+              重置密码
+            </a>
             <Divider type="vertical" />
             <a className={styles.disabled}>删除</a>
           </span>
@@ -236,6 +250,26 @@ class Tenants extends Component {
             </Tabs>
           </div>
         </div>
+
+
+        <Modal
+          centered
+          width={412}
+          visible={this.state.modalVisible}
+          onCancel={() => this.setState({ modalVisible: false, newPwd: null })}
+          footer={null}
+          title="密码重置成功！新密码:"
+        >
+          <div className={styles.modalContainer}>
+            <div className={styles.modalInfo}>
+              <span>
+                {this.state.newPwd}
+              </span>
+            </div>
+          </div>
+
+        </Modal>
+
       </Fragment>
     );
   }
