@@ -176,7 +176,7 @@ class TenantDetail extends Component {
         }
       });
       return (
-        <span>{`${record.quota || '0'} / ${parseInt(temp.quotaTotal, 10) + parseInt(temp2.quota, 10)}`}</span>
+        <span>{`${record.quota || '0'} / ${parseInt(temp.quotaTotal, 10) + parseInt(temp2 ? temp2.quota : '0', 10)}`}</span>
       );
     }
     return (
@@ -377,7 +377,12 @@ class TenantDetail extends Component {
       deviceSupplier, supplierParams, currentKey, tenantDetail
     } = this.state;
     const td = tenantDetail || emptyDetail;
-    const deviceSupplierInfo = JSON.parse(td.deviceSupplierInfo);
+    const deviceSupplierInfo = td.deviceSupplierInfo === ''
+      ? {
+        supplier: 'ffcs2', appkey: '', secretkey: '', acount_name: '', baseUri: '', encodeFormat: ''
+      }
+      : JSON.parse(td.deviceSupplierInfo);
+    // const deviceSupplierInfo = JSON.parse(td.deviceSupplierInfo);
     console.log('deviceSupplierInfo111', deviceSupplierInfo);
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
