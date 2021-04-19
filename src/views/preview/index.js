@@ -266,7 +266,7 @@ class Preview extends PureComponent {
         showText: '加载中...'
       }, () => {
         getVideoSrc(id).then((res) => {
-          if (res && res.m3u8uri) {
+          if (res && res.flvuri) {
             this.setState({
               // videoSrc: res.m3u8uri,
               videoSrc: res.flvuri,
