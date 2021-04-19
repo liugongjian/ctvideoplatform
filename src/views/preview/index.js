@@ -112,7 +112,7 @@ class Preview extends PureComponent {
           this.setState({
             treeDatas,
             expandedKeys: expendsIds
-          });
+          }, () => this.initCurVideo());
         } else {
           this.setState({
             treeDatas: [],
@@ -120,6 +120,19 @@ class Preview extends PureComponent {
           });
         }
       });
+    }
+
+    initCurVideo = () => {
+      const {
+        history: {
+          location: {
+            state: curDevice
+          }
+        }
+      } = this.props;
+      if (curDevice) {
+        this.doubleClickHandle(undefined, curDevice);
+      }
     }
 
 

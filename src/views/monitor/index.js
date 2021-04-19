@@ -754,6 +754,10 @@ class Monitor extends Component {
     // console.log(page, filter, sorter, extra);
   }
 
+  openVideo = (record) => {
+    this.props.history.push('/videoService/realtime', record);
+  }
+
   render() {
     const {
       treeDatas, expandedKeys, tableData, showModal, showDelModal,
@@ -768,15 +772,15 @@ class Monitor extends Component {
         dataIndex: 'name',
         key: 'name',
         fixed: 'left',
-        render: (text) => {
+        render: (text, record) => {
           if (text.length > 10) {
             return (
               <Tooltip title={text}>
-                <span className={styles.toolPointer}>{`${text.substring(0, 10)}...`}</span>
+                <a href="javascript:void(0);" className={styles.toolPointer} onClick={() => this.openVideo(record)}>{`${text.substring(0, 10)}...`}</a>
               </Tooltip>
             );
           }
-          return <span>{text.substring(0, 10)}</span>;
+          return <a href="javascript:void(0);" onClick={() => this.openVideo(record)}>{text.substring(0, 10)}</a>;
         },
       },
       {
