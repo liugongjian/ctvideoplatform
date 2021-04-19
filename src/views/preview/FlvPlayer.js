@@ -95,6 +95,12 @@ class FlvPlayer extends Component {
           context.strokeStyle = 'red';
           context.stroke();
         });
+      } else {
+        this.setState({
+          canvasLineStyle: {
+            display: 'none'
+          }
+        });
       }
     }
 
