@@ -24,6 +24,7 @@ import nostatus from 'Assets/nostatus.png';
 import nodata from 'Assets/nodata.png';
 import noImage from 'Assets/defaultFace.png';
 import VideoPlayer from './VideoPlayer';
+import FlvPlayer from './FlvPlayer';
 import styles from './index.less';
 
 const mapStateToProps = state => ({ preview: state.preview });
@@ -254,7 +255,8 @@ class Preview extends PureComponent {
         getVideoSrc(id).then((res) => {
           if (res && res.m3u8uri) {
             this.setState({
-              videoSrc: res.m3u8uri,
+              // videoSrc: res.m3u8uri,
+              videoSrc: res.flvuri,
               noVideo: false,
               videoName: name,
               showText: '无信号'
@@ -594,7 +596,12 @@ class Preview extends PureComponent {
                       </div>
                       <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={this.clearVideo} />
                     </div>
-                    <VideoPlayer
+                    {/* <VideoPlayer
+                      src={videoSrc}
+                      pointsInfo={pointsInfo}
+                      appliedTraffic={appliedTraffic}
+                    /> */}
+                    <FlvPlayer
                       src={videoSrc}
                       pointsInfo={pointsInfo}
                       appliedTraffic={appliedTraffic}
