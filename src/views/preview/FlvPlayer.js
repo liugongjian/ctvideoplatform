@@ -28,7 +28,6 @@ class FlvPlayer extends Component {
       // 销毁播放器
       if (this.player) {
         this.player.pause();
-        this.player.off(flvjs.Events.MEDIA_INFO);
         this.player.unload();
         this.player.detachMediaElement();
         this.player.destroy();
@@ -48,6 +47,7 @@ class FlvPlayer extends Component {
         });
         this.player.attachMediaElement(this.videoNode);
         this.player.load();
+        this.player.pause();
         this.player.play();
         // this.drawLine();
         this.player.on(flvjs.Events.MEDIA_INFO, (info) => {
