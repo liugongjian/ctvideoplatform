@@ -28,6 +28,7 @@ class FlvPlayer extends Component {
       // 销毁播放器
       if (this.player) {
         this.player.pause();
+        this.player.off(flvjs.Events.MEDIA_INFO);
         this.player.unload();
         this.player.detachMediaElement();
         this.player.destroy();
@@ -42,7 +43,7 @@ class FlvPlayer extends Component {
           type: 'flv',
           isLive: true,
           url: src,
-          hasAudio: false
+          hasAudio: false // 视频中的音频格式不是AAC，flvjs会报错，所以暂时把声音关掉
         });
         this.player.attachMediaElement(this.videoNode);
         this.player.load();
@@ -52,11 +53,14 @@ class FlvPlayer extends Component {
           console.log('MEDIA_INFO', info);
           self.drawLine();
         });
+        this.player.on('play', (info) => { console.log('timeupdateInfo', info); });
         // this.player.on(flvjs.Events.SCRIPTDATA_ARRIVED, (info) => {
         //   console.log('SCRIPTDATA_ARRIVED', info);
         // });
         // console.log('testFlv', this.player, 'test', this.player._mediaElement.offsetWidth);
         // console.log('mediaInfo', flvjs.Events.MEDIA_INFO);
+        // console.log('getConfig----------------->', flvjs.LoggingControl.getConfig());
+        // flvjs.LoggingControl.addLogListener((log) => { console.log('addLog-------->', log); });
       }
     }
 
