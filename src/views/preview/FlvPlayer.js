@@ -43,6 +43,7 @@ class FlvPlayer extends Component {
           type: 'flv',
           isLive: true,
           url: src,
+          controls: true,
           hasAudio: false // 视频中的音频格式不是AAC，flvjs会报错，所以暂时把声音关掉
         });
         this.player.attachMediaElement(this.videoNode);
@@ -53,7 +54,7 @@ class FlvPlayer extends Component {
           console.log('MEDIA_INFO', info);
           self.drawLine();
         });
-        this.player.on('play', (info) => { console.log('timeupdateInfo', info); });
+        // this.player.on('play', (info) => { console.log('timeupdateInfo', info); });
         // this.player.on(flvjs.Events.SCRIPTDATA_ARRIVED, (info) => {
         //   console.log('SCRIPTDATA_ARRIVED', info);
         // });
@@ -114,7 +115,7 @@ class FlvPlayer extends Component {
       } = this.state;
       return (
         <div className={styles.videoWrap}>
-          <video className={`${styles.videojs} video-js`} id={videoId} ref={node => this.videoNode = node} data-setup="{}" />
+          <video className={`${styles.videojs} video-js`} id={videoId} ref={node => this.videoNode = node} controls />
           <div className={styles.canvasLine} style={canvasLineStyle}>
             <canvas width={canvasWidth} height={canvasHeight} id="pointToPoint" />
           </div>
