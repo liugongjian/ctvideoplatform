@@ -299,7 +299,6 @@ class TenantDetail extends Component {
       let ifValid = true;
       // const re = /^([0]|[1-9][0-9]*)$/;
       if (algoQuota) {
-        console.log(algoQuota);
         algoQuota.forEach((algo) => {
           if (algo.name === record.name && (algo.quota + record.quotaTotal < record.quota)) {
             ifValid = false;
@@ -323,7 +322,8 @@ class TenantDetail extends Component {
         <Tooltip placement="right" title={item.desc}>
           {getFieldDecorator(item.name + currentKey, {
             initialValue: currentKey === deviceSupplierInfo.supplier ? deviceSupplierInfo[item.name] : '',
-            rules: [{ required: true, message: `请确认${item.name}！` }]
+            rules: [{ required: true, message: `请确认${item.name}！` }],
+            validateTrigger: ['onBlur', 'onInput']
           })(
             <Select
               className={styles.formItemInput}
@@ -351,7 +351,9 @@ class TenantDetail extends Component {
             rules: [
               { required: true, message: `请确认${item.name}！` },
               { validator: (rule, value, callback) => this.validatorUrl(rule, value, callback) }
-            ]
+            ],
+            validateTrigger: ['onBlur', 'onInput'],
+            validateFirst: true,
           })(
             <Input
               className={styles.formItemInput}
@@ -387,10 +389,10 @@ class TenantDetail extends Component {
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
       labelCol: {
-        span: 2,
+        span: 3,
       },
       wrapperCol: {
-        span: 14,
+        span: 13,
       },
     };
     const columns = [
@@ -410,16 +412,28 @@ class TenantDetail extends Component {
         dataIndex: 'quota',
         key: 'quota',
         render: (text, record) => (
-          <Form.Item>
-            {getFieldDecorator(record.name, {
+          <div style={{ marginTop: '24px' }}>
+            <Form.Item>
+              {/* {getFieldDecorator(record.name, {
               initialValue: text,
               rules: [
                 { required: true, message: `请输入${record.cnName}额度！` },
                 { pattern: /^([0]|[1-9][0-9]*)$/, message: '必须大于等于0的整数' },
                 { validator: (rule, value, callback) => this.validatorAlgoQuota(rule, value, callback, record) }],
-              validateTrigger: 'onBlur'
-            })(<Input onChange={e => this.onAlgoChange(record, e)} />)}
-          </Form.Item>
+              validateTrigger: 'onChange' */}
+              {getFieldDecorator(record.name,
+                {
+                  initialValue: text,
+                  validateTrigger: ['onInput', 'onBlur'],
+                  validateFirst: true,
+                  rules: [
+                    { required: true, message: `请输入${record.cnName}额度！` },
+                    { pattern: /^([0]|[1-9][0-9]*)$/, message: '必须大于等于0的整数' },
+                    { validator: (rule, value, callback) => this.validatorAlgoQuota(rule, value, callback, record) }
+                  ]
+                })(<Input onChange={e => this.onAlgoChange(record, e)} />)}
+            </Form.Item>
+          </div>
         ),
       },
     ];
@@ -437,6 +451,7 @@ class TenantDetail extends Component {
               {getFieldDecorator('name', {
                 initialValue: td.name || '',
                 rules: [{ required: true, message: '请输入租户名' }],
+                validateTrigger: ['onBlur', 'onInput']
               })(
                 <Input className={styles.formItemInput} disabled={!!tenantId} />
               )}
@@ -449,7 +464,9 @@ class TenantDetail extends Component {
                       rules: [
                         { required: true, message: '请输入密码！' },
                         { validator: (rule, value, callback) => this.validatorPsw(rule, value, callback) }
-                      ]
+                      ],
+                      validateTrigger: ['onBlur', 'onInput'],
+                      validateFirst: true
                     })(<Input.Password autoComplete="new-password" className={styles.formItemInput} />)}
                   </Form.Item>
                   <Form.Item label="密码确认" name="pwdconfirm">
@@ -458,7 +475,9 @@ class TenantDetail extends Component {
                         { required: true, message: '请确认密码！' },
                         {
                           validator: (rules, value, callback) => { this.handleCfmPwd(rules, value, callback); }
-                        }]
+                        }],
+                      validateTrigger: ['onBlur', 'onInput'],
+                      validateFirst: true
                     })(<Input.Password autoComplete="new-password" className={styles.formItemInput} />)}
                   </Form.Item>
                 </Fragment>
@@ -467,7 +486,8 @@ class TenantDetail extends Component {
             <Form.Item label="备注" name="description">
               {getFieldDecorator('description', {
                 initialValue: td.description,
-                rules: [{ required: true, message: '请确认备注！' }]
+                rules: [{ required: true, message: '请确认备注！' }],
+                validateTrigger: ['onBlur', 'onInput']
               })(<TextArea className={styles.formItemInput} rows={4} autoSize={false} />)}
             </Form.Item>
             <span className={styles.subTitle}>规则配置</span>
@@ -475,6 +495,7 @@ class TenantDetail extends Component {
               {getFieldDecorator('videotype', {
                 initialValue: deviceSupplierInfo.supplier,
                 rules: [{ required: true, message: '请选择类型!' }],
+                validateTrigger: ['onBlur', 'onInput']
               })(
                 <Select
                   className={styles.formItemInput}
@@ -500,7 +521,8 @@ class TenantDetail extends Component {
                     <Tooltip placement="right" title={item.desc}>
                       {getFieldDecorator(item.name + currentKey, {
                         initialValue: deviceSupplierInfo[item.name],
-                        rules: [{ required: true, message: `请确认${item.name}！` }]
+                        rules: [{ required: true, message: `请确认${item.name}！` }],
+                        validateTrigger: ['onBlur', 'onInput']
                       })(
                         <Input
                           className={styles.formItemInput}
@@ -520,7 +542,8 @@ class TenantDetail extends Component {
                 <Form.Item label={item.name}>
                   <Tooltip placement="right" title={item.desc}>
                     {getFieldDecorator(item.name + currentKey, {
-                      rules: [{ required: true, message: `请确认${item.name}！` }]
+                      rules: [{ required: true, message: `请确认${item.name}！` }],
+                      validateTrigger: ['onBlur', 'onInput']
                     })(
                       <Input
                         className={styles.formItemInput}
@@ -537,7 +560,8 @@ class TenantDetail extends Component {
                   { required: true, message: '请输入额度' },
                   { validator: (rule, value, callback) => this.validatorDeviceQuota(rule, value, callback) }
                 ],
-                validateTrigger: 'onBlur'
+                validateTrigger: ['onBlur', 'onInput'],
+                validateFirst: true,
               })(
                 <Input className={styles.formItemInput} />
               )}
