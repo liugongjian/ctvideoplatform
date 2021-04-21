@@ -63,6 +63,7 @@ import Alarms from 'Views/alarms';
 import Tenants from 'Views/tenants';
 import TenantsDetail from 'Views/tenants/detail';
 import { pathPrefix } from 'Constants/Dictionary';
+import AlgoTask from 'Views/algotask';
 
 
 const routesConfig = [
@@ -163,7 +164,7 @@ const menuRoutes = [
     path: '/alarms',
     exact: true,
     pageTitle: '告警信息',
-    component: Alarms,
+    component: AlgoTask,
     // children: [
     //   {
     //     path: '/videoAnalyze',

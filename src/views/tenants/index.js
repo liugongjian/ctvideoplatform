@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { Component, Fragment } from 'react';
 import {
   Table, Input, Divider, Tabs, Switch, message, Modal, Button
@@ -8,7 +9,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
-  getTenantsList, getStatis, activeTenants, getLicenceList, resetTenantPassword
+  getTenantsList, getStatis, activeTenants, getLicenceList, resetTenantPassword, deleteTenant
 } from '@/redux/reducer/platform';
 import { urlPrefix } from '@/constants/Dictionary';
 import warnPic from '@/assets/role/warn.png';
@@ -24,7 +25,7 @@ const { TabPane } = Tabs;
 const mapStateToProps = state => ({ role: state.role });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    getTenantsList, getStatis, activeTenants, getLicenceList, resetTenantPassword
+    getTenantsList, getStatis, activeTenants, getLicenceList, resetTenantPassword, deleteTenant
   },
   dispatch
 );
@@ -39,6 +40,7 @@ class Tenants extends Component {
     modalVisible: false,
     resetPwdTenant: null,
     newPwd: null,
+    deleteTenant: null,
   };
 
   componentDidMount() {
@@ -112,38 +114,83 @@ class Tenants extends Component {
         this.setState({ newPwd: res });
       } else {
         this.setState({ modalVisible: false });
+        message.success('重置失败，请联系管理员');
       }
     });
   }
 
+  onDeletetenant = (record) => {
+    console.log('record', record);
+    this.props.deleteTenant(record.id).then((res) => {
+      if (res) {
+        message.success('删除成功');
+      } else {
+        message.error('删除失败，请联系管理员');
+      }
+      this.setState({ modalVisible: false, deleteTenant: null });
+      this.props.getTenantsList({
+        pageNo: this.state.tenantsData.pageNo,
+        pageSize: this.state.tenantsData.pageSize
+      }).then((data) => {
+        this.setState({ tenantsData: data });
+      });
+    });
+  }
+
   onCancelModal = () => {
-    this.setState({ modalVisible: false, resetPwdTenant: null });
+    this.setState({ modalVisible: false });
     const that = this;
     if (this.timer) {
       clearTimeout(this.timer);
     }
     this.timer = setTimeout(() => {
       that.setState({
-        newPwd: null
+        newPwd: null,
+        resetPwdTenant: null,
+        deleteTenant: null
       });
     }, 500);
   }
 
   renderModal = () => (
-    <div className={styles.deleteModal}>
-      <div>
-        <div className={styles.deleteModalImg}>
-          { !this.state.newPwd && (<img alt="" src={warnPic} />)}
+    <Modal
+      centered
+      width={412}
+      visible={this.state.modalVisible}
+      onCancel={this.onCancelModal}
+      footer={!this.state.newPwd && [
+        <Button
+          key="submit"
+          type="primary"
+          onClick={() => (this.state.resetPwdTenant
+            ? this.onResetPassword(this.state.resetPwdTenant)
+            : this.onDeletetenant(this.state.deleteTenant))}
+          style={{ margin: '0 0 0 5px' }}
+        >
+          确定
+        </Button>,
+        <Button key="back" style={{ margin: '0 0 0 30px' }} onClick={this.onCancelModal}>
+          取消
+        </Button>,
+      ]}
+    >
+      <div className={styles.deleteModal}>
+        <div>
+          <div className={styles.deleteModalImg}>
+            { !this.state.newPwd && (<img alt="" src={warnPic} />)}
+          </div>
+        </div>
+        <div className={styles.deleteModalInfo}>
+          <span>
+            {this.state.resetPwdTenant
+              ? (this.state.newPwd
+                ? `重置成功！新密码为：${this.state.newPwd}`
+                : '您确定要重置当前租户的密码？')
+              : '您确定要删除当前用户吗？'}
+          </span>
         </div>
       </div>
-      <div className={styles.deleteModalInfo}>
-        <span>
-          {this.state.newPwd
-            ? `重置成功！新密码为：${this.state.newPwd}`
-            : '您确定要重置当前租户的密码？'}
-        </span>
-      </div>
-    </div>
+    </Modal>
   )
 
   render() {
@@ -195,7 +242,7 @@ class Tenants extends Component {
               重置密码
             </a>
             <Divider type="vertical" />
-            <a className={styles.disabled}>删除</a>
+            <a onClick={() => this.setState({ deleteTenant: record, modalVisible: true })}>删除</a>
           </span>
         ),
       },
@@ -285,42 +332,7 @@ class Tenants extends Component {
           </div>
         </div>
 
-
-        {/* <Modal
-          centered
-          width={412}
-          visible={this.state.modalVisible}
-          onCancel={() => this.setState({ modalVisible: false, newPwd: null })}
-          footer={null}
-          title="密码重置成功！新密码:"
-        >
-          <div className={styles.modalContainer}>
-            <div className={styles.modalInfo}>
-              <span>
-                {this.state.newPwd}
-              </span>
-            </div>
-          </div>
-
-        </Modal> */}
-
-        <Modal
-          centered
-          width={412}
-          visible={this.state.modalVisible}
-          onCancel={this.onCancelModal}
-          footer={!this.state.newPwd && [
-            <Button key="submit" type="primary" onClick={() => this.onResetPassword(this.state.resetPwdTenant)} style={{ margin: '0 0 0 5px' }}>
-              确定
-            </Button>,
-            <Button key="back" style={{ margin: '0 0 0 30px' }} disabled={this.state.isDeleting} onClick={this.onCancelModal}>
-              取消
-            </Button>,
-          ]}
-        >
-          {this.renderModal()}
-
-        </Modal>
+        {this.renderModal()}
 
       </Fragment>
     );
