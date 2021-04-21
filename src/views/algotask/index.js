@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React, { Component } from 'react';
 import {
-  Select, Button, Modal, Form, Input, Switch, Icon, message, Table, Tooltip
+  Select, Button, Modal, Form, Input, Switch, Icon, message, Table, Tooltip, Divider
 } from 'antd';
 import Pagination from 'Components/EPagination';
 import { Link } from 'react-router-dom';
@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import {
-  getAlgoTaskList
+  getAlgoTaskList, getAlgoTaskDetail
 } from 'Redux/reducer/algotask';
 import DeleteModal from 'Components/modals/warnModal';
 import attentionPic from '@/assets/user/attention.png';
@@ -23,7 +23,7 @@ const { Option } = Select;
 const mapStateToProps = state => ({ account: state.account });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    push, getAlgoTaskList
+    push, getAlgoTaskList, getAlgoTaskDetail
   },
   dispatch
 );
@@ -43,6 +43,8 @@ class AlgoTask extends Component {
       algorithmId: '',
     }, // 模糊搜索
     selectedRowKeys: [],
+    detailModalVisible: false,
+    detailData: null,
   };
 
   componentDidMount() {
@@ -52,7 +54,7 @@ class AlgoTask extends Component {
   getTableList = (pageNo, pageSize) => {
     const { getAlgoTaskList } = this.props;
     const data = {
-      ...this.state.searchParams,
+      // ...this.state.searchParams,
       pageSize,
       pageNo: pageNo - 1,
     };
@@ -91,6 +93,12 @@ class AlgoTask extends Component {
         break;
     }
     this.setState({ searchParams });
+  }
+
+  handleTaskDetail = (record) => {
+    this.props.getAlgoTaskDetail(record).then((res) => {
+      res && this.setState({ detailData: res, detailModalVisible: true });
+    });
   }
 
   onPageSizeChange = (current, size) => {
@@ -150,6 +158,26 @@ class AlgoTask extends Component {
       pageSizeOptions={['1', '2', '10']}
       onShowSizeChange={this.onPageSizeChange}
     />
+  )
+
+  renderModal = () => (
+    <Modal
+      centered
+      width={412}
+      visible={this.state.detailModalVisible}
+      footer={[
+        <Button key="back" onClick={this.onCancelModal}>
+          取消
+        </Button>,
+      ]}
+    >
+      <div className={styles.deleteModal}>
+        <div className={styles.deleteModalInfo}>
+          {
+          }
+        </div>
+      </div>
+    </Modal>
   )
 
   renderTable = () => {
@@ -226,6 +254,20 @@ class AlgoTask extends Component {
         title: '租户名称',
         dataIndex: 'tenantName',
       },
+      {
+        title: '操作',
+        render: (text, record) => (
+          <div>
+            <a onClick={() => this.handleTaskDetail(record)}>
+              查看
+            </a>
+            <Divider type="vertical" />
+            <a>
+              取消
+            </a>
+          </div>
+        ),
+      },
     ];
     const rowSelection = {
       selectedRowKeys,
@@ -265,6 +307,7 @@ class AlgoTask extends Component {
         {this.renderTableHeaders()}
         {this.renderTable()}
         {this.pagination()}
+        {this.renderModal()}
       </div>
     );
   }

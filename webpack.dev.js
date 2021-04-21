@@ -15,8 +15,8 @@ const common = require('./webpack.common.js');
 
 const proxyServer = {
   '/devApi': {
-    // target: 'http://192.168.10.146:8670',
-    target: 'http://192.168.4.152:8670',
+    target: 'http://192.168.10.146:8670',
+    // target: 'http://192.168.4.152:8670',
     // target: 'http://192.168.1.199:8670',
     // target: 'http://192.168.1.152:8670',
     pathRewrite: {

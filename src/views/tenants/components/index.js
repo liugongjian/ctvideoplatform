@@ -78,7 +78,7 @@ class InnerTable extends Component {
       ) : null;
     };
     return (
-      <div style={{ width: '1420px' }}>
+      <div>
         {this.btn()}
         {showInfo()}
 

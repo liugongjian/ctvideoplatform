@@ -287,7 +287,7 @@ class Tenants extends Component {
       },
     };
     return (
-      <Fragment>
+      <div className={styles.mainWrapper}>
         <div className={styles.cardWrapper}>
           <div className={styles.card}>
             {carditem('可接入设备额度', statis.availableDevice)}
@@ -308,7 +308,7 @@ class Tenants extends Component {
             {carditem('租户数', statis.rentAmount)}
           </div>
         </div>
-        <div className={styles.mainWrapper}>
+        <div className={styles.tableWrapper}>
           <div>
             <Tabs defaultActiveKey="1" size={{ size: 'small' }}>
               <TabPane tab="租户管理" key="1">
@@ -334,7 +334,7 @@ class Tenants extends Component {
 
         {this.renderModal()}
 
-      </Fragment>
+      </div>
     );
   }
 }

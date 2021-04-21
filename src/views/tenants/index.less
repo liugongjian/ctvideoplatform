@@ -1,7 +1,8 @@
 .mainWrapper {
-  background: #fff;
+  background: rgba(247, 247, 247);
   padding: 20px;
   position: relative;
+  min-width: 1300px;
 }
 
 .cardWrapper {
@@ -9,10 +10,11 @@
   display: flex;
   -webkit-flex-direction: row;
   flex-direction: row;
-  justify-content: left;
+  justify-content: space-between;
   margin-top: 22px;
   margin-bottom: 22px;
   border-radius: 4px;
+  width: 100%;
   .card {
     display: -webkit-flex;
     display: flex;
@@ -44,6 +46,11 @@
       }
     }
   }
+}
+
+.tableWrapper {
+  background-color: #fff;
+  padding: 20px;
 }
 .disabled {
   pointer-events: none;
