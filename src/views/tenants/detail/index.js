@@ -450,7 +450,7 @@ class TenantDetail extends Component {
             <Form.Item label="租户名称" name="name">
               {getFieldDecorator('name', {
                 initialValue: td.name || '',
-                rules: [{ required: true, message: '请输入租户名' }],
+                rules: [{ required: true, message: '请输入租户名' }, { max: 50, message: '不能超过50个字符' }],
                 validateTrigger: ['onBlur', 'onInput']
               })(
                 <Input className={styles.formItemInput} disabled={!!tenantId} />
@@ -486,7 +486,7 @@ class TenantDetail extends Component {
             <Form.Item label="备注" name="description">
               {getFieldDecorator('description', {
                 initialValue: td.description,
-                rules: [{ required: true, message: '请确认备注！' }],
+                rules: [{ required: true, message: '请确认备注！' }, { max: 100, message: '不能超过100个字符' }],
                 validateTrigger: ['onBlur', 'onInput']
               })(<TextArea className={styles.formItemInput} rows={4} autoSize={false} />)}
             </Form.Item>
