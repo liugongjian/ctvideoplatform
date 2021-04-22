@@ -112,8 +112,8 @@ class Alarms extends Component {
       pageNo: current - 1,
       pageSize,
       algorithmIdList: algoVal,
-      startTime: startTime.format(timeFormat),
-      endTime: endTime.format(timeFormat),
+      startTime: startTime.startOf('minute').format(timeFormat),
+      endTime: endTime.startOf('minute').format(timeFormat),
     };
     const deviceOrAreaId = deviceVal ? deviceVal[deviceVal.length - 1] : undefined;
     const item = deviceOrAreaId ? deviceList.find(({ id }) => id == deviceOrAreaId) : {};
