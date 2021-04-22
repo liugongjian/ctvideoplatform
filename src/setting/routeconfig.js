@@ -164,7 +164,7 @@ const menuRoutes = [
     path: '/alarms',
     exact: true,
     pageTitle: '告警信息',
-    component: AlgoTask,
+    component: Alarms,
     // children: [
     //   {
     //     path: '/videoAnalyze',
