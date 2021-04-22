@@ -258,18 +258,18 @@ class TenantDetail extends Component {
 
   validatorUrl = (rule, value, callback) => {
     try {
-      console.log('validatorUrl', value);
-      const strReg = '^((https|http|ftp|rtsp|mms)?://)'
-    + "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?" // ftp的user@
-     + '(([0-9]{1,3}\.){3}[0-9]{1,3}' // IP形式的URL- 199.194.52.184
-     + '|' // 允许IP和DOMAIN（域名）
-     + "([0-9a-z_!~*'()-]+\.)*" // 域名- www.
-     + '([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\.' // 二级域名
-     + '[a-z]{2,6})' // first level domain- .com or .museum
-     + '(:[0-9]{1,10})?' // 端口- :80
-     + '((/?)|' // a slash isn't required if there is no file name
-     + "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$";
-      const re = new RegExp(strReg);
+      //  const strReg = '^((https|http)?://)'
+      //  + "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?" // ftp的user@
+      //   + '(([0-9]{1,3}\.){3}[0-9]{1,3}' // IP形式的URL- 199.194.52.184
+      //   + '|' // 允许IP和DOMAIN（域名）
+      //   + "([0-9a-z_!~*'()-]+\.)*" // 域名- www.
+      //   + '([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\.' // 二级域名
+      //   + '[a-z]{2,6})' // first level domain- .com or .museum
+      //   + '(:[0-9]{1,10})?' // 端口- :80
+      //   + '((/?)|' // a slash isn't required if there is no file name
+      //   + "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$";
+      // const re = new RegExp(strReg);
+      const re = /^((https|http)?:\/\/)(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5]):([0-9]|[1-9]\d|[1-9]\d{2}|[1-9]\d{3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/;
       if (!(re.test(value)) && value) {
         callback(new Error('不是有效的URL地址，请更正！'));
       } else {
@@ -340,9 +340,6 @@ class TenantDetail extends Component {
 
   renderBaseUri = (item, currentKey, deviceSupplierInfo) => {
     const { getFieldDecorator } = this.props.form;
-    console.log('item + currentKey', item + currentKey);
-    console.log('JSON.parse(td.deviceSupplierInfo)[item]', deviceSupplierInfo);
-    console.log('JSON.parse(td.deviceSupplierInfo)[item]', deviceSupplierInfo.deviceSupplierInfo);
     return (
       <Form.Item label={item.name}>
         <Tooltip placement="right" title={item.desc}>
@@ -424,7 +421,7 @@ class TenantDetail extends Component {
               {getFieldDecorator(record.name,
                 {
                   initialValue: text,
-                  validateTrigger: ['onInput', 'onBlur'],
+                  validateTrigger: 'onBlur',
                   validateFirst: true,
                   rules: [
                     { required: true, message: `请输入${record.cnName}额度！` },
@@ -571,7 +568,7 @@ class TenantDetail extends Component {
               </span>
             </Form.Item>
             <span className={styles.subTitle}>算法额度配置</span>
-            <Table rowKey={record => record.name} columns={columns} dataSource={this.state.algorithmConfig} pagination={false} />
+            <Table tableLayout="fixed" rowKey={record => record.name} columns={columns} dataSource={this.state.algorithmConfig} pagination={false} />
           </div>
 
           <Form.Item>
