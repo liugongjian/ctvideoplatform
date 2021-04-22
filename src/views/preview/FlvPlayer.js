@@ -42,7 +42,6 @@ class FlvPlayer extends Component {
           type: 'flv',
           isLive: true,
           url: src,
-          controls: true,
           hasAudio: false // 视频中的音频格式不是AAC，flvjs会报错，所以暂时把声音关掉
         });
         this.player.attachMediaElement(this.videoNode);

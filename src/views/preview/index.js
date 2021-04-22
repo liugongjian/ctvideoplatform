@@ -658,7 +658,7 @@ class Preview extends PureComponent {
                   list && list.length ? list.map(item => (
                     <Card
                       hoverable
-                      style={{ width: 220 }}
+                      style={{ width: 220, margin: '4px 0' }}
                       cover={<img alt="" src={`${urlPrefix}${item.imageCompress}`} onError={this.handleImageError} />}
                       onClick={() => this.showImgDialog(item)}
                       key={item.id}
