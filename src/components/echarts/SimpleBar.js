@@ -60,6 +60,10 @@ class BarChart extends PureComponent {
       }
       this.hasData = true;
       const option = {
+        // tooltip: {
+        //   trigger: 'item',
+
+        // },
         tooltip: {
           trigger: 'item',
           formatter: '{b0}: {c0}',
@@ -74,6 +78,10 @@ class BarChart extends PureComponent {
             color: '#999',
             rotate: window?.outerWidth < bigScreenWidth ? 30 : 0,
             formatter: value => data?.xAxisDataFormatter(value)
+          },
+          axisPointer: {
+            show: true,
+            type: 'line',
           },
           axisTick: {
             show: false
