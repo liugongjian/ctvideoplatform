@@ -96,8 +96,16 @@ class AlgoTask extends Component {
   }
 
   handleTaskDetail = (record) => {
+    const detail = [];
     this.props.getAlgoTaskDetail(record).then((res) => {
-      res && this.setState({ detailData: res, detailModalVisible: true });
+      if (res) {
+        // eslint-disable-next-line no-restricted-syntax
+        for (const [key, value] of Object.entries(res)) {
+          detail.push({ name: key, value: res[key] });
+        }
+      }
+      console.log('detail', detail);
+      this.setState({ detailData: detail, detailModalVisible: true });
     });
   }
 
@@ -158,26 +166,6 @@ class AlgoTask extends Component {
       pageSizeOptions={['1', '2', '10']}
       onShowSizeChange={this.onPageSizeChange}
     />
-  )
-
-  renderModal = () => (
-    <Modal
-      centered
-      width={412}
-      visible={this.state.detailModalVisible}
-      footer={[
-        <Button key="back" onClick={this.onCancelModal}>
-          取消
-        </Button>,
-      ]}
-    >
-      <div className={styles.deleteModal}>
-        <div className={styles.deleteModalInfo}>
-          {
-          }
-        </div>
-      </div>
-    </Modal>
   )
 
   renderTable = () => {
@@ -301,13 +289,39 @@ class AlgoTask extends Component {
     );
   };
 
+  onCancel = () => {
+    this.setState({ detailModalVisible: false });
+  }
+
   render() {
     return (
       <div className={styles.userContent}>
         {this.renderTableHeaders()}
         {this.renderTable()}
         {this.pagination()}
-        {this.renderModal()}
+        <Modal
+          centered
+          width={412}
+          visible={this.state.detailModalVisible}
+          footer={[
+            <Button key="back" onClick={this.onCancel}>
+              取消
+            </Button>
+          ]}
+        >
+          <div className={styles.deleteModal}>
+            <div className={styles.deleteModalInfo}>
+              {
+                this.state.detailData && this.state.detailData.map(item => (
+                  <div>
+                    <span>{item.name}</span>
+                    <Input value={item.value} disabled />
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </Modal>
       </div>
     );
   }
@@ -315,4 +329,4 @@ class AlgoTask extends Component {
 
 AlgoTask.propTypes = {
 };
-export default Form.create()(connect(mapStateToProps, mapDispatchToProps)(AlgoTask));
+export default connect(mapStateToProps, mapDispatchToProps)(AlgoTask);
