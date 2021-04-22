@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { Component, Fragment } from 'react';
 import {
-  Table, Input, Divider, Tabs, Switch, message, Modal, Button
+  Table, Input, Divider, Tabs, Switch, message, Modal, Button, Tooltip
 } from 'antd';
 import Pagination from 'Components/EPagination';
 import { Link } from 'react-router-dom';
@@ -201,6 +201,16 @@ class Tenants extends Component {
       {
         title: '租户名称',
         dataIndex: 'name',
+        render: (text) => {
+          if (text.length > 10) {
+            return (
+              <Tooltip title={text}>
+                <span className={styles.toolPointer}>{`${text.substring(0, 10)}...`}</span>
+              </Tooltip>
+            );
+          }
+          return <span>{text.substring(0, 10)}</span>;
+        },
       },
       {
         title: '设备接入额度',
@@ -227,7 +237,16 @@ class Tenants extends Component {
       {
         title: '备注',
         dataIndex: 'description',
-        key: 'description',
+        render: (text) => {
+          if (text.length > 10) {
+            return (
+              <Tooltip title={text}>
+                <span className={styles.toolPointer}>{`${text.substring(0, 10)}...`}</span>
+              </Tooltip>
+            );
+          }
+          return <span>{text.substring(0, 10)}</span>;
+        },
       },
       {
         title: '操作',

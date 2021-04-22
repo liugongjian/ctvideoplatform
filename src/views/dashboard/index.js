@@ -254,8 +254,6 @@ class Dashboard extends Component {
                 data={{
                   yAxisData: algoConfs?.seriesData,
                   xAxisData: algoConfs?.xaxisData,
-                  // xAxisDataLabel: algoConfs?.xaxisData?.map(val =>
-                  //             val.length > 4 ? `${val.slice(0,3)}...` : val),
                   xAxisDataFormatter: val => (val.length > 4 ? `${val.slice(0, 3)}...` : val)
                 // yAxisName: '算法已配置设备数/个'
                 }}
