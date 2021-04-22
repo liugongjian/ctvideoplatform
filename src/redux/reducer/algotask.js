@@ -3,6 +3,7 @@ import { urlPrefix } from 'Constants/Dictionary';
 const GET_LIST = 'GET_LIST';
 const GET_LIST_SUCCESS = 'GET_LIST_SUCCESS';
 const GET_LIST_FAIL = 'GET_LIST_FAIL';
+const GET_DETAIL = 'GET_DETAIL';
 
 
 const initialState = {
@@ -21,6 +22,10 @@ export default function account(state = initialState, action = {}) {
       return {
         ...state
       };
+    case GET_DETAIL:
+      return {
+        ...state
+      };
     default:
       return state;
   }
@@ -30,6 +35,16 @@ export function getAlgoTaskList(data) {
   return {
     type: [GET_LIST, GET_LIST_SUCCESS, GET_LIST_FAIL],
     promise: apiClient => apiClient.post(`${urlPrefix}/operation/tasks/status`,
+      {
+        data
+      })
+  };
+}
+
+export function getAlgoTaskDetail(data) {
+  return {
+    type: GET_DETAIL,
+    promise: apiClient => apiClient.post(`${urlPrefix}/operation/tasks/detail`,
       {
         data
       })

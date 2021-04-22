@@ -15,6 +15,7 @@ const GET_ALGORITHMLIST = 'GET_ALGORITHMLIST';
 const GET_DEVICEQUOTA = 'GET_DEVICEQUOTA';
 const GET_ALLALGORITHMQUOTA = 'GET_ALLALGORITHMQUOTA';
 const GET_TENANT_PASSWORD = 'GET_TENANT_PASSWORD';
+const DELETE_TENANT = 'DELETE_TENANT';
 
 const initialState = {
 };
@@ -65,6 +66,10 @@ export default function account(state = initialState, action = {}) {
         ...state
       };
     case GET_TENANT_PASSWORD:
+      return {
+        ...state
+      };
+    case DELETE_TENANT:
       return {
         ...state
       };
@@ -154,5 +159,12 @@ export function resetTenantPassword(tid) {
   return {
     type: GET_TENANT_PASSWORD,
     promise: apiClient => apiClient.get(`${urlPrefix}/tenant/resetPassword/${tid}`)
+  };
+}
+
+export function deleteTenant(tid) {
+  return {
+    type: DELETE_TENANT,
+    promise: apiClient => apiClient.del(`${urlPrefix}/tenant/${tid}`)
   };
 }
