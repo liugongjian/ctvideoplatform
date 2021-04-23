@@ -227,7 +227,7 @@ const menuRoutes = [
     path: '/platform',
     pageTitle: '平台管理',
     exact: true,
-    component: AlgoTask,
+    component: Tenants,
     children: [
       {
         path: '/tenant/add',

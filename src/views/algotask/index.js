@@ -1,8 +1,8 @@
 /* eslint-disable react/no-string-refs */
 /* eslint-disable max-len */
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import {
-  Select, Button, Modal, Form, Input, Switch, Icon, message, Table, Tooltip, Divider
+  Select, Button, Modal, Form, Input, message, Table, Tooltip, Divider
 } from 'antd';
 import Pagination from 'Components/EPagination';
 import { Link } from 'react-router-dom';
@@ -11,22 +11,21 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import {
-  getAlgoTaskList, getAlgoTaskDetail, getAlgoAll
+  getAlgoTaskList, getAlgoTaskDetail, getAlgoAll, terminateAlgoTasks
 } from 'Redux/reducer/algotask';
+import warnPic from '@/assets/role/warn.png';
 import DeleteModal from 'Components/modals/warnModal';
 import attentionPic from '@/assets/user/attention.png';
 
-import { Fragment } from 'react';
 import styles from './index.less';
 
 const FormItem = Form.Item;
 const { Option } = Select;
-const { TextArea } = Input;
 
 const mapStateToProps = state => ({ account: state.account });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    push, getAlgoTaskList, getAlgoTaskDetail, getAlgoAll
+    push, getAlgoTaskList, getAlgoTaskDetail, getAlgoAll, terminateAlgoTasks
   },
   dispatch
 );
@@ -49,6 +48,8 @@ class AlgoTask extends Component {
     detailModalVisible: false,
     detailData: null,
     algoOptions: null,
+    terminateTasks: [],
+    modalTasksVisible: false,
   };
 
   componentDidMount() {
@@ -116,6 +117,23 @@ class AlgoTask extends Component {
     });
   }
 
+  handleTerminateTasks = (tids) => {
+    console.log('tids', tids);
+    this.setState({ terminateTasks: tids, modalTasksVisible: true });
+  }
+
+  confirmTerminateTasks = () => {
+    const tasks = { tid: this.state.terminateTasks };
+    console.log('this.state.terminateTasks', this.state.terminateTasks);
+    this.props.terminateAlgoTasks(tasks).then((res) => {
+      if (res) {
+        message.success('操作成功');
+        this.setState({ modalTasksVisible: false });
+        this.getTableList(this.state.pageData.pageNo, this.state.pageData.pageSize);
+      }
+    });
+  }
+
   onPageSizeChange = (current, size) => {
     this.getTableList(1, size);
   }
@@ -172,6 +190,47 @@ class AlgoTask extends Component {
       pageSizeOptions={['1', '2', '10']}
       onShowSizeChange={this.onPageSizeChange}
     />
+  )
+
+  onCancelModal = () => {
+    this.setState({ modalTasksVisible: false });
+  }
+
+  renderModal = () => (
+    <Modal
+      centered
+      width={412}
+      visible={this.state.modalTasksVisible}
+      onCancel={this.onCancelModal}
+      footer={[
+        <Button
+          key="submit"
+          type="primary"
+          onClick={this.confirmTerminateTasks}
+          style={{ margin: '0 0 0 5px' }}
+        >
+          确定
+        </Button>,
+        <Button key="back" style={{ margin: '0 0 0 30px' }} onClick={this.onCancelModal}>
+          取消
+        </Button>,
+      ]}
+    >
+      <div className={styles.deleteModal}>
+        <div>
+          <div className={styles.deleteModalImg}>
+            <img alt="" src={warnPic} />
+          </div>
+        </div>
+        <div className={styles.deleteModalInfo}>
+          <span>
+            您确定要终止选中的
+            {this.state.terminateTasks.length}
+            任务吗？
+          </span>
+        </div>
+      </div>
+    </Modal>
   )
 
   renderTable = () => {
@@ -256,7 +315,7 @@ class AlgoTask extends Component {
               查看
             </a>
             <Divider type="vertical" />
-            <a>
+            <a onClick={() => this.handleTerminateTasks([record.tid])}>
               取消
             </a>
           </div>
@@ -334,6 +393,7 @@ class AlgoTask extends Component {
        {this.renderTableHeaders()}
        {this.renderTable()}
        {this.pagination()}
+       {this.renderModal()}
        <Modal
          centered
          width={630}
