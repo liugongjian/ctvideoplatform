@@ -28,7 +28,6 @@ class FlvPlayer extends Component {
       // 销毁播放器
       if (this.player) {
         this.player.pause();
-        this.player.off(flvjs.Events.MEDIA_INFO);
         this.player.unload();
         this.player.detachMediaElement();
         this.player.destroy();
@@ -47,13 +46,14 @@ class FlvPlayer extends Component {
         });
         this.player.attachMediaElement(this.videoNode);
         this.player.load();
+        this.player.pause();
         this.player.play();
         // this.drawLine();
         this.player.on(flvjs.Events.MEDIA_INFO, (info) => {
           console.log('MEDIA_INFO', info);
           self.drawLine();
         });
-        this.player.on('play', (info) => { console.log('timeupdateInfo', info); });
+        // this.player.on('play', (info) => { console.log('timeupdateInfo', info); });
         // this.player.on(flvjs.Events.SCRIPTDATA_ARRIVED, (info) => {
         //   console.log('SCRIPTDATA_ARRIVED', info);
         // });
@@ -114,7 +114,7 @@ class FlvPlayer extends Component {
       } = this.state;
       return (
         <div className={styles.videoWrap}>
-          <video className={`${styles.videojs} video-js`} id={videoId} ref={node => this.videoNode = node} data-setup="{}" />
+          <video className={`${styles.videojs} video-js`} id={videoId} ref={node => this.videoNode = node} controls />
           <div className={styles.canvasLine} style={canvasLineStyle}>
             <canvas width={canvasWidth} height={canvasHeight} id="pointToPoint" />
           </div>
