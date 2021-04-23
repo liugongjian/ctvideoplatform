@@ -4,7 +4,7 @@ const GET_LIST = 'GET_LIST';
 const GET_LIST_SUCCESS = 'GET_LIST_SUCCESS';
 const GET_LIST_FAIL = 'GET_LIST_FAIL';
 const GET_DETAIL = 'GET_DETAIL';
-
+const GET_ALGO_ALL = 'GET_ALGO_ALL';
 
 const initialState = {
 };
@@ -23,6 +23,10 @@ export default function account(state = initialState, action = {}) {
         ...state
       };
     case GET_DETAIL:
+      return {
+        ...state
+      };
+    case GET_ALGO_ALL:
       return {
         ...state
       };
@@ -48,5 +52,12 @@ export function getAlgoTaskDetail(data) {
       {
         data
       })
+  };
+}
+
+export function getAlgoAll() {
+  return {
+    type: GET_ALGO_ALL,
+    promise: apiClient => apiClient.get(`${urlPrefix}/algorithm/all`)
   };
 }

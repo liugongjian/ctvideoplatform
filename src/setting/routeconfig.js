@@ -217,17 +217,17 @@ const menuRoutes = [
       },
     ]
   },
-  // {
-  //   path: '/tasks',
-  //   pageTitle: '算法任务',
-  //   exact: true,
-  //   component: DefaultPage,
-  // },
+  {
+    path: '/tasks',
+    pageTitle: '算法任务',
+    exact: true,
+    component: AlgoTask,
+  },
   {
     path: '/platform',
     pageTitle: '平台管理',
     exact: true,
-    component: Tenants,
+    component: AlgoTask,
     children: [
       {
         path: '/tenant/add',

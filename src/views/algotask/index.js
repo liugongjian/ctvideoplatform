@@ -1,3 +1,4 @@
+/* eslint-disable react/no-string-refs */
 /* eslint-disable max-len */
 import React, { Component } from 'react';
 import {
@@ -10,20 +11,22 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import {
-  getAlgoTaskList, getAlgoTaskDetail
+  getAlgoTaskList, getAlgoTaskDetail, getAlgoAll
 } from 'Redux/reducer/algotask';
 import DeleteModal from 'Components/modals/warnModal';
 import attentionPic from '@/assets/user/attention.png';
 
+import { Fragment } from 'react';
 import styles from './index.less';
 
 const FormItem = Form.Item;
 const { Option } = Select;
+const { TextArea } = Input;
 
 const mapStateToProps = state => ({ account: state.account });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    push, getAlgoTaskList, getAlgoTaskDetail
+    push, getAlgoTaskList, getAlgoTaskDetail, getAlgoAll
   },
   dispatch
 );
@@ -45,10 +48,15 @@ class AlgoTask extends Component {
     selectedRowKeys: [],
     detailModalVisible: false,
     detailData: null,
+    algoOptions: null,
   };
 
   componentDidMount() {
     this.getTableList(1, 10);
+    this.props.getAlgoAll().then((res) => {
+      console.log('algo-res:', res);
+      this.setState({ algoOptions: res });
+    });
   }
 
   getTableList = (pageNo, pageSize) => {
@@ -104,7 +112,6 @@ class AlgoTask extends Component {
           detail.push({ name: key, value: res[key] });
         }
       }
-      console.log('detail', detail);
       this.setState({ detailData: detail, detailModalVisible: true });
     });
   }
@@ -134,10 +141,9 @@ class AlgoTask extends Component {
         </div>
         <div className={styles.queryEnabled}>
           <span className={styles.queryLabel}>算法名称：</span>
-          <Select onChange={v => this.handleInput(v, 4)}>
-            <Option value={2}>全部</Option>
-            <Option value={0}>启用</Option>
-            <Option value={1}>禁用</Option>
+          <Select defaultValue="" onChange={v => this.handleInput(v, 4)}>
+            <Option value="">全部</Option>
+            {this.state.algoOptions && this.state.algoOptions.map(item => (<Option value={item.id}>{item.cnName}</Option>))}
           </Select>
         </div>
 
@@ -293,38 +299,92 @@ class AlgoTask extends Component {
     this.setState({ detailModalVisible: false });
   }
 
-  render() {
-    return (
-      <div className={styles.userContent}>
-        {this.renderTableHeaders()}
-        {this.renderTable()}
-        {this.pagination()}
-        <Modal
-          centered
-          width={412}
-          visible={this.state.detailModalVisible}
-          footer={[
-            <Button key="back" onClick={this.onCancel}>
-              取消
-            </Button>
-          ]}
-        >
-          <div className={styles.deleteModal}>
-            <div className={styles.deleteModalInfo}>
-              {
-                this.state.detailData && this.state.detailData.map(item => (
-                  <div>
-                    <span>{item.name}</span>
-                    <Input value={item.value} disabled />
-                  </div>
-                ))
-              }
-            </div>
-          </div>
-        </Modal>
-      </div>
-    );
-  }
+  // json格式美化
+ prettyFormat = (str) => {
+   try {
+     // 设置缩进为2个空格
+     str = JSON.stringify(JSON.parse(str), null, 2);
+     str = str
+       .replace(/&/g, '&')
+       .replace(/</g, '<')
+       .replace(/>/g, '>');
+     return str.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
+       let cls = 'number';
+       if (/^"/.test(match)) {
+         if (/:$/.test(match)) {
+           cls = 'key';
+         } else {
+           cls = 'string';
+         }
+       } else if (/true|false/.test(match)) {
+         cls = 'boolean';
+       } else if (/null/.test(match)) {
+         cls = 'null';
+       }
+       return `<span class="${cls}">${match}</span>`;
+     });
+   } catch (e) {
+     alert(`异常信息:${e}`);
+   }
+ }
+
+ render() {
+   return (
+     <div className={styles.userContent} ref="userContent">
+       {this.renderTableHeaders()}
+       {this.renderTable()}
+       {this.pagination()}
+       <Modal
+         centered
+         width={630}
+         visible={this.state.detailModalVisible}
+         title="设备详情"
+         onCancel={this.onCancel}
+         footer={[
+           <Button key="back" onClick={this.onCancel}>
+             取消
+           </Button>
+         ]}
+         // eslint-disable-next-line react/no-string-refs
+         getContainer={() => this.refs.userContent}
+       >
+         <div className={styles.deleteModal}>
+           <div className={styles.deleteModalInfo}>
+             {
+               this.state.detailData && this.state.detailData.map((item) => {
+                 if (item.name === 'params') {
+                   return (
+                     <div className={styles.paramContainer}>
+                       <span className={styles.paramTitle}>{`${item.name}:`}</span>
+                       {/* <TextArea value={item.value} disabled autoSize={{ minRows: 4, maxRows: 8 }} className={styles.paramValue} /> */}
+                       <div style={{
+                         height: '160px', overflow: 'scroll', border: '1px solid rgba(217,217,217)', backgroundColor: 'rgba(245,245,245)', borderRadius: '5px'
+                       }}
+                       >
+                         <pre dangerouslySetInnerHTML={{ __html: this.prettyFormat(item.value) }} />
+                       </div>
+                     </div>
+                   );
+                 }
+                 if (item.name === 'tid') {
+                   return (
+                     <Fragment />
+                   );
+                 }
+                 return (
+                   <div className={styles.paramContainer}>
+                     <span className={styles.paramTitle}>{`${item.name}:`}</span>
+                     <Input value={item.value} disabled className={styles.paramValue} />
+                   </div>
+                 );
+               })
+             }
+           </div>
+         </div>
+       </Modal>
+     </div>
+   );
+ }
 }
 
 AlgoTask.propTypes = {

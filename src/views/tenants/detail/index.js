@@ -269,7 +269,7 @@ class TenantDetail extends Component {
       //   + '((/?)|' // a slash isn't required if there is no file name
       //   + "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$";
       // const re = new RegExp(strReg);
-      const re = /^((https|http)?:\/\/)(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5]):([0-9]|[1-9]\d|[1-9]\d{2}|[1-9]\d{3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/;
+      const re = /^((https|http)?:\/\/)(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5]):([0-9]|[1-9]\d|[1-9]\d{2}|[1-9]\d{3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])/;
       if (!(re.test(value)) && value) {
         callback(new Error('不是有效的URL地址，请更正！'));
       } else {
@@ -460,7 +460,8 @@ class TenantDetail extends Component {
                     {getFieldDecorator('password', {
                       rules: [
                         { required: true, message: '请输入密码！' },
-                        { validator: (rule, value, callback) => this.validatorPsw(rule, value, callback) }
+                        { validator: (rule, value, callback) => this.validatorPsw(rule, value, callback) },
+                        { max: 26, message: '密码不能超过26位！' }
                       ],
                       validateTrigger: ['onBlur', 'onInput'],
                       validateFirst: true
