@@ -460,7 +460,9 @@ class TenantDetail extends Component {
                     {getFieldDecorator('password', {
                       rules: [
                         { required: true, message: '请输入密码！' },
-                        { validator: (rule, value, callback) => this.validatorPsw(rule, value, callback) }
+                        { validator: (rule, value, callback) => this.validatorPsw(rule, value, callback) },
+                        { max: 26, message: '密码不能超过26位' },
+                        { min: 12, message: '密码不能少于12位' }
                       ],
                       validateTrigger: ['onBlur', 'onInput'],
                       validateFirst: true
@@ -484,6 +486,7 @@ class TenantDetail extends Component {
               {getFieldDecorator('description', {
                 initialValue: td.description,
                 rules: [{ required: true, message: '请确认备注！' }, { max: 100, message: '不能超过100个字符' }],
+                validateFirst: true,
                 validateTrigger: ['onBlur', 'onInput']
               })(<TextArea className={styles.formItemInput} rows={4} autoSize={false} />)}
             </Form.Item>
@@ -555,6 +558,7 @@ class TenantDetail extends Component {
                 initialValue: td.deviceQuota || '',
                 rules: [
                   { required: true, message: '请输入额度' },
+                  { pattern: /^([0]|[1-9][0-9]*)$/, message: '必须大于等于0的整数' },
                   { validator: (rule, value, callback) => this.validatorDeviceQuota(rule, value, callback) }
                 ],
                 validateTrigger: ['onBlur', 'onInput'],
