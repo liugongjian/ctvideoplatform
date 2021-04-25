@@ -320,7 +320,7 @@ class CameraDetail extends Component {
     // eslint-disable-next-line array-callback-return
     tmp.map((param) => {
       if (param.name === name) {
-        param.value = value;
+        param.value = value / 100;
       }
     });
     this.setState({
@@ -563,16 +563,17 @@ class CameraDetail extends Component {
                     <div className={styles.aiParams}>
                       <div className={styles.paramName}>
                         <span style={{ marginRight: '15px' }}>
-                          {item.name}
+                          {item.name === 'threshold' ? '检测阈值' : '安全帽像素占比'}
                           :
                         </span>
                       </div>
                       <div className={styles.paramValue}>
                         <Input
                           onChange={e => this.onAiParamsChange(item.name, e.target.value)}
-                          defaultValue={item.value}
+                          defaultValue={item.value * 100}
                         />
                       </div>
+                      <div className={styles.paramPercent}><span>%</span></div>
                     </div>
                   ))
                 }
