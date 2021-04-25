@@ -130,9 +130,9 @@ p {
 }
 .cameraDetail .algorithmSetting .algorithmList .algoItem-title-icon {
   display: inline-block;
-  width: 20px;
-  height: 20px;
+  font-size: 20px;
   margin-right: 10px;
+  vertical-align: middle;
 }
 .cameraDetail .algorithmSetting .algorithmList .algoItem-configBtn {
   width: 80px;
@@ -188,6 +188,12 @@ p {
 }
 .aiParams .paramValue {
   overflow: hidden;
-  width: 200px;
+  width: 90px;
   display: inline-block;
+}
+.aiParams .paramPercent {
+  overflow: hidden;
+  display: inline-block;
+  margin-bottom: 8px;
+  margin-left: 5px;
 }
