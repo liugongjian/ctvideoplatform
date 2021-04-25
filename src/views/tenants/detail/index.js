@@ -194,13 +194,13 @@ class TenantDetail extends Component {
         const sources = {};
         sources.supplier = this.state.currentKey;
         this.state.supplierParams.forEach((item) => {
-          sources[item.name] = getFieldValue(item.name + this.state.currentKey);
+          sources[item.name] = getFieldValue(item.name + this.state.currentKey).trim();
         });
         const data = tenantId
           ? {
             name: getFieldValue('name'),
             deviceQuota: getFieldValue('deviceQuota'),
-            description: getFieldValue('description'),
+            description: getFieldValue('description').trim(),
             algorithmConfig: this.state.algorithmConfig,
             sourceList: [sources]
           } : {
@@ -257,27 +257,28 @@ class TenantDetail extends Component {
   };
 
   validatorUrl = (rule, value, callback) => {
-    try {
-      //  const strReg = '^((https|http)?://)'
-      //  + "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?" // ftp的user@
-      //   + '(([0-9]{1,3}\.){3}[0-9]{1,3}' // IP形式的URL- 199.194.52.184
-      //   + '|' // 允许IP和DOMAIN（域名）
-      //   + "([0-9a-z_!~*'()-]+\.)*" // 域名- www.
-      //   + '([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\.' // 二级域名
-      //   + '[a-z]{2,6})' // first level domain- .com or .museum
-      //   + '(:[0-9]{1,10})?' // 端口- :80
-      //   + '((/?)|' // a slash isn't required if there is no file name
-      //   + "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$";
-      // const re = new RegExp(strReg);
-      const re = /^((https|http)?:\/\/)(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5]):([0-9]|[1-9]\d|[1-9]\d{2}|[1-9]\d{3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/;
-      if (!(re.test(value)) && value) {
-        callback(new Error('不是有效的URL地址，请更正！'));
-      } else {
-        callback();
-      }
-    } catch (err) {
-      callback(err);
-    }
+    // try {
+    //  const strReg = '^((https|http)?://)'
+    //  + "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?" // ftp的user@
+    //   + '(([0-9]{1,3}\.){3}[0-9]{1,3}' // IP形式的URL- 199.194.52.184
+    //   + '|' // 允许IP和DOMAIN（域名）
+    //   + "([0-9a-z_!~*'()-]+\.)*" // 域名- www.
+    //   + '([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\.' // 二级域名
+    //   + '[a-z]{2,6})' // first level domain- .com or .museum
+    //   + '(:[0-9]{1,10})?' // 端口- :80
+    //   + '((/?)|' // a slash isn't required if there is no file name
+    //   + "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$";
+    // const re = new RegExp(strReg);
+    //   const re = /^((https|http)?:\/\/)(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5]):([0-9]|[1-9]\d|[1-9]\d{2}|[1-9]\d{3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/;
+    //   if (!(re.test(value)) && value) {
+    //     callback(new Error('不是有效的URL地址，请更正！'));
+    //   } else {
+    //     callback();
+    //   }
+    // } catch (err) {
+    //   callback(err);
+    // }
+    callback();
   };
 
   validatorDeviceQuota = (rule, value, callback) => {
@@ -342,11 +343,12 @@ class TenantDetail extends Component {
     const { getFieldDecorator } = this.props.form;
     return (
       <Form.Item label={item.name}>
-        <Tooltip placement="right" title={item.desc}>
+        <Tooltip placement="right" title={`${item.desc}（以http(s)://开头的网络地址）`}>
           {getFieldDecorator(item.name + currentKey, {
             initialValue: currentKey === deviceSupplierInfo.supplier ? deviceSupplierInfo[item.name] : '',
             rules: [
               { required: true, message: `请确认${item.name}！` },
+              { max: 50, message: '不能超过50位' },
               { validator: (rule, value, callback) => this.validatorUrl(rule, value, callback) }
             ],
             validateTrigger: ['onBlur', 'onInput'],
@@ -521,7 +523,7 @@ class TenantDetail extends Component {
                     <Tooltip placement="right" title={item.desc}>
                       {getFieldDecorator(item.name + currentKey, {
                         initialValue: deviceSupplierInfo[item.name],
-                        rules: [{ required: true, message: `请确认${item.name}！` }],
+                        rules: [{ required: true, message: `请确认${item.name}！` }, { max: 50, message: '不能超过50位' }],
                         validateTrigger: ['onBlur', 'onInput']
                       })(
                         <Input
@@ -542,7 +544,7 @@ class TenantDetail extends Component {
                 <Form.Item label={item.name}>
                   <Tooltip placement="right" title={item.desc}>
                     {getFieldDecorator(item.name + currentKey, {
-                      rules: [{ required: true, message: `请确认${item.name}！` }],
+                      rules: [{ required: true, message: `请确认${item.name}！` }, { max: 50, message: '不能超过50位' }],
                       validateTrigger: ['onBlur', 'onInput']
                     })(
                       <Input
