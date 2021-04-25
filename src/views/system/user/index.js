@@ -89,13 +89,15 @@ class Account extends Component {
       loading: true
     });
     getAccountList(data).then((res) => {
-      this.setState({
-        accountData: res.list,
-        total: res.recordsTotal,
-        pageNum: res.pageNo + 1,
-        pageSize: res.pageSize,
-        loading: false
-      });
+      if (res) {
+        this.setState({
+          accountData: res.list || [],
+          total: res.recordsTotal,
+          pageNum: res.pageNo + 1,
+          pageSize: res.pageSize,
+          loading: false
+        });
+      }
     });
   };
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import React, { Component } from 'react';
 import {
   Select, Button, Form, Input, Icon, message
@@ -66,7 +67,8 @@ class AddAccount extends Component {
     };
 
     validatorPsw = (rule, value, callback) => {
-      if (!(/^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?_~.])(.{12,26})/.test(value)) && value) {
+      // /^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?_~.])(.{12,26})/.test(value)
+      if (value && !(/(?=^.{12,26}$)(?=(?:.*?\d){1})(?=.*[a-z])(?=(?:.*?[A-Z]){1})(?=(?:.*?[`·~!@#$%^&*()_+}{|:;'",<.>/?\=\[\]\-\\]){1})(?!.*\s)[0-9a-zA-Z`·~!@#$%^&*()_+}{|:;'",<.>/?\=\[\]\-\\]*$/).test(value)) {
         callback(new Error('密码至少包含大小写字母、数字和特殊字符(!@#$%^&*?_~.)，且长度为12～26位字符'));
       } else {
         callback();
