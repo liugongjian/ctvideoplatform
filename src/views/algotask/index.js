@@ -51,6 +51,7 @@ class AlgoTask extends Component {
     algoOptions: null,
     terminateTasks: [],
     modalTasksVisible: false,
+    compAlgorithmNames: null,
   };
 
   componentDidMount() {
@@ -64,10 +65,13 @@ class AlgoTask extends Component {
   getTableList = (pageNo, pageSize) => {
     const { getAlgoTaskList } = this.props;
     const data = {
-      // ...this.state.searchParams,
+      ...this.state.searchParams,
       pageSize,
       pageNo: pageNo - 1,
     };
+    if (data.algorithmId === 0) {
+      Object.assign(data, { algorithmId: null });
+    }
     getAlgoTaskList(data).then((res) => {
       console.log('res', res);
       if (res) {
@@ -79,11 +83,13 @@ class AlgoTask extends Component {
   };
 
   handleRowSelectChange = (selectedRowKeys) => {
+    console.log('selectedRowKeys', selectedRowKeys);
     this.setState({ selectedRowKeys });
   };
 
   reset = () => {
-    this.setState({ searchParams: {} });
+    const searchParams = { algorithmId: '' };
+    this.setState({ searchParams }, () => console.log(this.state.searchParams));
   };
 
   handleInput = (e, inputid) => {
@@ -102,6 +108,7 @@ class AlgoTask extends Component {
         searchParams = Object.assign(this.state.searchParams, { algorithmId: e });
         break;
     }
+    console.log('searchParams', searchParams);
     this.setState({ searchParams });
   }
 
@@ -120,21 +127,44 @@ class AlgoTask extends Component {
 
   handleTerminateTasks = (records) => {
     console.log('tids', records);
-    const { deviceId, tenantId, tid } = records[0];
-    this.props.checkAlgoRelated([{ deviceId, tenantId, tid }]).then((res) => {
-      console.log('1111', res);
+    const terminateTasks = records.map(item => ({
+      deviceId: item.deviceId,
+      tenantId: item.tenantId,
+      tid: item.tid,
+      algorithmId: item.algorithmId
+    }));
+    this.props.checkAlgoRelated(terminateTasks).then((res) => {
+      if (res) {
+        if (res.includeCompAlgorithm) {
+          this.setState({ modalTasksVisible: true, compAlgorithmNames: res.compAlgorithmNames, terminateTasks });
+        } else {
+          this.setState({ modalTasksVisible: true, compAlgorithmNames: null, terminateTasks });
+        }
+      }
     });
     // this.setState({ terminateTasks: tids, modalTasksVisible: true });
   }
 
+  handleBatchTerminateTasks = () => {
+    // const terminateTasks = this.state.pageData.list.filter(item => this.state.selectedRowKeys.indexOf(item.tid) > 0);
+    const selected = this.state.selectedRowKeys.map(index => this.state.pageData.list[index]);
+    const terminateTasks = selected.map(item => ({
+      deviceId: item.deviceId,
+      tenantId: item.tenantId,
+      tid: item.tid,
+      algorithmId: item.algorithmId
+    }));
+    this.setState({ terminateTasks, modalTasksVisible: true });
+  }
+
   confirmTerminateTasks = () => {
-    const tasks = { tid: this.state.terminateTasks };
-    console.log('this.state.terminateTasks', this.state.terminateTasks);
-    this.props.terminateAlgoTasks(tasks).then((res) => {
+    this.props.terminateAlgoTasks(this.state.terminateTasks).then((res) => {
       if (res) {
         message.success('操作成功');
-        this.setState({ modalTasksVisible: false });
-        this.getTableList(this.state.pageData.pageNo, this.state.pageData.pageSize);
+        this.setState({
+          modalTasksVisible: false, terminateTasks: [], compAlgorithmNames: null, selectedRowKeys: []
+        });
+        this.getTableList(this.state.pageData.pageNo + 1, this.state.pageData.pageSize);
       }
     });
   }
@@ -164,8 +194,8 @@ class AlgoTask extends Component {
         </div>
         <div className={styles.queryEnabled}>
           <span className={styles.queryLabel}>算法名称：</span>
-          <Select defaultValue="" onChange={v => this.handleInput(v, 4)}>
-            <Option value="">全部</Option>
+          <Select defaultValue={0} onChange={v => this.handleInput(v, 4)} value={this.state.searchParams.algorithmId}>
+            <Option value={0}>全部</Option>
             {this.state.algoOptions && this.state.algoOptions.map(item => (<Option value={item.id}>{item.cnName}</Option>))}
           </Select>
         </div>
@@ -177,7 +207,7 @@ class AlgoTask extends Component {
       </div>
       <div className={styles.operationAssets}>
         <div className={styles.add}>
-          <Link to="/system/account/add"><Button>批量取消</Button></Link>
+          <Button onClick={this.handleBatchTerminateTasks}>批量取消</Button>
         </div>
       </div>
     </div>
@@ -198,7 +228,9 @@ class AlgoTask extends Component {
   )
 
   onCancelModal = () => {
-    this.setState({ modalTasksVisible: false });
+    this.setState({
+      modalTasksVisible: false, terminateTasks: [], compAlgorithmNames: null, selectedRowKeys: []
+    });
   }
 
   renderModal = () => (
@@ -221,17 +253,15 @@ class AlgoTask extends Component {
         </Button>,
       ]}
     >
-      <div className={styles.deleteModal}>
+      <div className={styles.Modal}>
         <div>
-          <div className={styles.deleteModalImg}>
+          <div className={styles.ModalImg}>
             <img alt="" src={warnPic} />
           </div>
         </div>
-        <div className={styles.deleteModalInfo}>
+        <div className={styles.ModalInfo}>
           <span>
-            您确定要终止选中的
-            {this.state.terminateTasks.length}
-            个任务吗？
+            {this.state.compAlgorithmNames ? `您要取消的算法中包含组合算法，取消该类算法时，${this.state.compAlgorithmNames}都将被取消` : '您确定要终止该任务吗？'}
           </span>
         </div>
       </div>
@@ -329,14 +359,13 @@ class AlgoTask extends Component {
     ];
     const rowSelection = {
       selectedRowKeys,
-      onChange: this.handleRowSelectChange
+      onChange: this.handleRowSelectChange,
     };
     return (
       <div>
         <div className={styles.tableContainer}>
           <Table
             columns={columns}
-            rowKey={record => record.tid}
             dataSource={pageData ? pageData.list : []}
             rowSelection={rowSelection}
             pagination={false}
