@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /* eslint-disable react/no-string-refs */
 /* eslint-disable max-len */
 import React, { Component, Fragment } from 'react';
@@ -11,7 +12,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import {
-  getAlgoTaskList, getAlgoTaskDetail, getAlgoAll, terminateAlgoTasks
+  getAlgoTaskList, getAlgoTaskDetail, getAlgoAll, terminateAlgoTasks, checkAlgoRelated
 } from 'Redux/reducer/algotask';
 import warnPic from '@/assets/role/warn.png';
 import DeleteModal from 'Components/modals/warnModal';
@@ -25,7 +26,7 @@ const { Option } = Select;
 const mapStateToProps = state => ({ account: state.account });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    push, getAlgoTaskList, getAlgoTaskDetail, getAlgoAll, terminateAlgoTasks
+    push, getAlgoTaskList, getAlgoTaskDetail, getAlgoAll, terminateAlgoTasks, checkAlgoRelated
   },
   dispatch
 );
@@ -117,9 +118,13 @@ class AlgoTask extends Component {
     });
   }
 
-  handleTerminateTasks = (tids) => {
-    console.log('tids', tids);
-    this.setState({ terminateTasks: tids, modalTasksVisible: true });
+  handleTerminateTasks = (records) => {
+    console.log('tids', records);
+    const { deviceId, tenantId, tid } = records[0];
+    this.props.checkAlgoRelated([{ deviceId, tenantId, tid }]).then((res) => {
+      console.log('1111', res);
+    });
+    // this.setState({ terminateTasks: tids, modalTasksVisible: true });
   }
 
   confirmTerminateTasks = () => {
@@ -226,7 +231,7 @@ class AlgoTask extends Component {
           <span>
             您确定要终止选中的
             {this.state.terminateTasks.length}
-            任务吗？
+            个任务吗？
           </span>
         </div>
       </div>
@@ -315,7 +320,7 @@ class AlgoTask extends Component {
               查看
             </a>
             <Divider type="vertical" />
-            <a onClick={() => this.handleTerminateTasks([record.tid])}>
+            <a onClick={() => this.handleTerminateTasks([record])}>
               取消
             </a>
           </div>

@@ -6,6 +6,7 @@ const GET_LIST_FAIL = 'GET_LIST_FAIL';
 const GET_DETAIL = 'GET_DETAIL';
 const GET_ALGO_ALL = 'GET_ALGO_ALL';
 const DELETE_ALGO_TASKS = 'DELETE_ALGO_TASKS';
+const CHECK_ALGO_RELATED = 'CHECK_ALGO_RELATED';
 
 const initialState = {
 };
@@ -32,6 +33,10 @@ export default function account(state = initialState, action = {}) {
         ...state
       };
     case DELETE_ALGO_TASKS:
+      return {
+        ...state
+      };
+    case CHECK_ALGO_RELATED:
       return {
         ...state
       };
@@ -71,6 +76,15 @@ export function terminateAlgoTasks(data) {
   return {
     type: DELETE_ALGO_TASKS,
     promise: apiClient => apiClient.del(`${urlPrefix}/operation/tasks`, {
+      data
+    })
+  };
+}
+
+export function checkAlgoRelated(data) {
+  return {
+    type: CHECK_ALGO_RELATED,
+    promise: apiClient => apiClient.post(`${urlPrefix}/operation/tasks/check`, {
       data
     })
   };
