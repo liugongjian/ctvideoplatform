@@ -92,6 +92,8 @@ class LicenseImportModalComp extends Component {
     }
   }
 
+  changeFilter = (inputValue, option) => option.props.children === inputValue.toLowerCase()
+
   render() {
     const {
       visible, closeModal, handleImport, initailVal, form, isLicenseExist
@@ -135,7 +137,7 @@ class LicenseImportModalComp extends Component {
                           callback('车牌号不能超过8位！');
                         }
                         if (!licenseNoReg.test(licenseNo)) {
-                          callback('请输入数字或字母！');
+                          callback('车牌号除省份外仅允许输入数字或字母！');
                         }
                         if (form.getFieldError('licenseNo')) {
                           form.validateFields(['licenseNo']);
@@ -146,6 +148,9 @@ class LicenseImportModalComp extends Component {
                   ],
                 })(
                   <Select
+                    showSearch
+                    optionFilterProp="children"
+                    filterOption={this.changeFilter}
                     onChange={val => this.validateExist({ licenseProvince: val })}
                   >
                     {

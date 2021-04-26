@@ -1,116 +1,115 @@
-.mainWrapper{
-    background: #fff;
-    padding: 20px;
-    position: relative;
-    height: 100%;
-    .uploadWrapper{
-        width: 873px;
-        height: 268px;
-        margin: 100px auto ;
-        .templateWrapper{
-            vertical-align:bottom;
-            height: 30px;
-            &>a{
-                float: right;
-                font-size: 14px;
-                line-height: 22px;
-            }
-        }
+.mainWrapper {
+  background: #fff;
+  padding: 20px;
+  position: relative;
+  min-height: calc(100vh - 20px);
+  .uploadWrapper {
+    width: 873px;
+    height: 268px;
+    margin: 100px auto;
+    .templateWrapper {
+      vertical-align: bottom;
+      height: 30px;
+      & > a {
+        float: right;
+        font-size: 14px;
+        line-height: 22px;
+      }
     }
-    .buttonWrapper{
-        margin-top: 40px;
-        padding:0 340px;
-        .btnNext{
-            width: 78px;
-            height: 31px;
-        }
-        .btnBack{
-            width: 78px;
-            height: 31px;
-            margin-left: 20px;
-        }
+  }
+  .buttonWrapper {
+    margin-top: 40px;
+    padding: 0 340px;
+    .btnNext {
+      width: 78px;
+      height: 31px;
     }
-    .paginationWrapper{
-        &>*{
-          display: inline-block;
-        }
-        &>div{
-          margin-top: 10px;
-          float: right;
-          font-family: HelveticaNeue;
-          font-size: 12px;
-        }
-        &>span{
-          margin-top: 15px;
-          font-family: PingFangSC-Regular;
-          font-size: 12px;
-          color: #666666;
-          text-align: left;
-          line-height: 18px;
-        }
+    .btnBack {
+      width: 78px;
+      height: 31px;
+      margin-left: 20px;
     }
+  }
+  .paginationWrapper {
+    & > * {
+      display: inline-block;
+    }
+    & > div {
+      margin-top: 10px;
+      float: right;
+      font-family: HelveticaNeue;
+      font-size: 12px;
+    }
+    & > span {
+      margin-top: 15px;
+      font-family: PingFangSC-Regular;
+      font-size: 12px;
+      color: #666666;
+      text-align: left;
+      line-height: 18px;
+    }
+  }
 }
 
-.deleteModal{
-    width: 350px;
-    height: 190px;
-    &>div{
-      margin-top: 80px;
-    }
-    .deleteModalImg{
-      display: inline-block;
-      float: left;
-      margin-left: 20px;
-      &>img{
-        margin-top: 10px;
-        width: 32px;
-        height: 27px;
-      }
-  
-    }
-    .deleteModalInfo{
-      display: inline-block;
-      // float: right;
-      &>span{
-        margin-top:10px;
-        margin-left: 10px;
-        display: block;
-        font-family: MicrosoftYaHei;
-        font-size: 14px;
-        color: #333333;
-        text-align: left;
-        font-weight: bold;
-        margin-bottom: 21px;
-      }
-      &>p{
-        font-family: MicrosoftYaHei;
-        font-size: 12px;
-        color: #999999;
-        margin-bottom: 11px;
-      }
+.deleteModal {
+  width: 350px;
+  height: 190px;
+  & > div {
+    margin-top: 80px;
+  }
+  .deleteModalImg {
+    display: inline-block;
+    float: left;
+    margin-left: 20px;
+    & > img {
+      margin-top: 10px;
+      width: 32px;
+      height: 27px;
     }
   }
+  .deleteModalInfo {
+    display: inline-block;
+    // float: right;
+    & > span {
+      margin-top: 10px;
+      margin-left: 10px;
+      display: block;
+      font-family: MicrosoftYaHei;
+      font-size: 14px;
+      color: #333333;
+      text-align: left;
+      font-weight: bold;
+      margin-bottom: 21px;
+    }
+    & > p {
+      font-family: MicrosoftYaHei;
+      font-size: 12px;
+      color: #999999;
+      margin-bottom: 11px;
+    }
+  }
+}
 
-  .buttonWrapper2{
-      padding-top: 50px;
-      width: 300px;
-      height: 100px;
-      margin:0 auto;
-      .btnBack2{
-          :global{
-                margin-right: 50px;
-                height: 34px;
-            }
-      }
-  }
-  .tabRow{
-      height: 30px;
-  }
-  .confirmerWrapper{
-    :global{
-        .ant-table-thead > tr > th{
-            color:#333333;
-            font-weight:bold;
-        }
+.buttonWrapper2 {
+  padding-top: 50px;
+  width: 300px;
+  height: 100px;
+  margin: 0 auto;
+  .btnBack2 {
+    :global {
+      margin-right: 25px;
+      height: 34px;
     }
   }
+}
+.tabRow {
+  height: 30px;
+}
+.confirmerWrapper {
+  :global {
+    .ant-table-thead > tr > th {
+      color: #333333;
+      font-weight: bold;
+    }
+  }
+}
