@@ -93,6 +93,9 @@ class Preview extends PureComponent {
 
   componentWillUnmount() {
     this.clearTimer();
+    // this.setState({
+    //   videoSrc: null
+    // });
   }
 
 
