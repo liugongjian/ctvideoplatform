@@ -31,7 +31,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   dispatch
 );
 
-
+const licenseNoReg = /^[0-9a-zA-Z]+$/;
 class Plate extends Component {
   state = {
     plateListInfo: {
@@ -185,14 +185,28 @@ class Plate extends Component {
     });
   }
 
-  existPlate = () => {
-    const { form } = this.props;
-    const licenseNo = form.getFieldValue('licenseNo');
-    const licenseProvince = form.getFieldValue('licenseProvince');
-    const license = `${licenseProvince}${licenseNo}`;
-    this.props.licenseExist(license).then((res) => {
-      this.setState({ plateExist: res });
-    });
+  // existPlate = () => {
+  //   const { form } = this.props;
+  //   const licenseNo = form.getFieldValue('licenseNo');
+  //   const licenseProvince = form.getFieldValue('licenseProvince');
+  //   const license = `${licenseProvince}${licenseNo}`;
+  //   this.props.licenseExist(license).then((res) => {
+  //     this.setState({ plateExist: res });
+  //   });
+  // }
+
+  validateExist = (val) => {
+    const {
+      licenseExist, form
+    } = this.props;
+    const licenseNo = val?.licenseNo || form.getFieldValue('licenseNo');
+    const licenseProvince = val?.licenseProvince || form.getFieldValue('licenseProvince');
+    if (licenseNo && licenseProvince && licenseNoReg.test(licenseNo)) {
+      const license = `${licenseProvince}${licenseNo}`;
+      licenseExist(license).then((res) => {
+        this.setState({ plateExist: res });
+      });
+    }
   }
 
   changeFilter = (inputValue, option) => option.props.children === inputValue.toLowerCase()
@@ -325,6 +339,16 @@ class Plate extends Component {
                           if (!val || !form.getFieldValue('licenseNo')) {
                             callback('请补充车牌号！');
                           }
+                          const licenseNo = form.getFieldValue('licenseNo');
+                          if (licenseNo.length > 7) {
+                            callback('车牌号不能超过8位！');
+                          }
+                          if (!licenseNoReg.test(licenseNo)) {
+                            callback('车牌号除省份外仅允许输入数字或字母！');
+                          }
+                          if (form.getFieldError('licenseNo')) {
+                            form.validateFields(['licenseNo']);
+                          }
                           callback();
                         }
                       }
@@ -335,6 +359,7 @@ class Plate extends Component {
                       showSearch
                       optionFilterProp="children"
                       filterOption={this.changeFilter}
+                      onChange={val => this.validateExist({ licenseProvince: val })}
                     >
                       {
                         LicenseProvinces.map(item => (
@@ -349,29 +374,21 @@ class Plate extends Component {
                   {getFieldDecorator('licenseNo', {
                     rules: [
                       {
-                        required: true,
-                        message: ' ',
-                      },
-                      {
                         validator: (rule, val, callback) => {
-                          const reg = /^[0-9a-zA-Z]+$/;
-                          form.validateFields(['licenseProvince']);
-                          if (!val || !form.getFieldValue('licenseProvince')) {
-                            callback(' ');
-                          }
-                          if (val.length > 7) {
-                            callback('车牌号不能超过8位');
-                          }
-                          if (!reg.test(val)) {
-                            callback('车牌号只能包含数字和字母');
-                          }
-                          callback();
+                          form.validateFields(['licenseProvince'], (err) => {
+                            if (err) {
+                              callback(' ');
+                            } else {
+                              callback();
+                            }
+                          });
                         }
                       }
                     ],
                   })(<Input
                     placeholder="请输入车牌号"
-                    onBlur={() => this.existPlate()}
+                    onChange={e => this.validateExist({ licenseNo: e.target.value })}
+                    // onBlur={() => this.existPlate()}
                   />)}
                 </Form.Item>
               </Form.Item>
