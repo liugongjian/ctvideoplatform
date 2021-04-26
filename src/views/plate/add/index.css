@@ -2,12 +2,12 @@
   background: #fff;
   padding: 20px;
   position: relative;
-  height: 100%;
+  min-height: calc(100vh - 20px);
 }
 .mainWrapper .uploadWrapper {
   width: 873px;
   height: 268px;
-  margin: 100px auto ;
+  margin: 100px auto;
 }
 .mainWrapper .uploadWrapper .templateWrapper {
   vertical-align: bottom;
@@ -92,7 +92,7 @@
   margin: 0 auto;
 }
 .buttonWrapper2 .btnBack2 :global {
-  margin-right: 50px;
+  margin-right: 25px;
   height: 34px;
 }
 .tabRow {

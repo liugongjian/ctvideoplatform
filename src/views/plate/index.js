@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { Component } from 'react';
 import {
   Table, Input, Modal, Button, message, Tooltip, Icon, Tag, Form, Select, Radio
@@ -251,53 +252,55 @@ class Plate extends Component {
             <Search placeholder="请输入车牌号" icon={searchPic} onSearch={value => this.searchPlate(value)} />
           </div>
         </div>
-        <Table
-          rowSelection={rowSelection}
-          dataSource={plateListInfo.list}
-          pagination={false}
-          rowKey={record => record.id}
-        >
-          <Column title="车牌号" dataIndex="licenseNo" width="24%" className="tabble-row" />
-          <Column
-            title="布控标签"
-            dataIndex="label"
-            width="28%"
-            render={(text, record) => {
-              switch (text) {
-                case 'WHITE':
-                  return (<Tag color="green">白名单</Tag>);
-                case 'BLACK':
-                  return (<Tag color="red">黑名单</Tag>);
-                default:
-                  return (<Tag>其它</Tag>);
-              }
+        <div className={styles.tableWrapper}>
+          <Table
+            rowSelection={rowSelection}
+            dataSource={plateListInfo.list}
+            pagination={false}
+            rowKey={record => record.id}
+          >
+            <Column title="车牌号" dataIndex="licenseNo" width="24%" className="tabble-row" />
+            <Column
+              title="布控标签"
+              dataIndex="label"
+              width="28%"
+              render={(text, record) => {
+                switch (text) {
+                  case 'WHITE':
+                    return (<Tag color="green">白名单</Tag>);
+                  case 'BLACK':
+                    return (<Tag color="red">黑名单</Tag>);
+                  default:
+                    return (<Tag>其它</Tag>);
+                }
               // <div>
               //   {
               //     text === 'WHITE' ? (<Tag color="green">白名单</Tag>) : (<Tag color="red">黑名单</Tag>)
               //   }
               // </div>
-            }}
-          />
-          <Column title="车牌颜色" dataIndex="color" width="33%" />
-          <Column
-            title="操作"
-            key="action"
-            width="20%"
-            render={(text, record) => (
-              <div className={styles.oprationWrapper}>
-                <a onClick={() => this.onModalOpen(record)}>
-                  编辑
-                </a>
-                <span className={styles.separator}> | </span>
-                <span
-                  onClick={() => this.setState({ deleteModalVisible: true, deleteItems: [record.id] })}
-                >
-                  <a>删除</a>
-                </span>
-              </div>
-            )}
-          />
-        </Table>
+              }}
+            />
+            <Column title="车牌颜色" dataIndex="color" width="33%" />
+            <Column
+              title="操作"
+              key="action"
+              width="20%"
+              render={(text, record) => (
+                <div className={styles.oprationWrapper}>
+                  <a onClick={() => this.onModalOpen(record)}>
+                    编辑
+                  </a>
+                  <span className={styles.separator}> | </span>
+                  <span
+                    onClick={() => this.setState({ deleteModalVisible: true, deleteItems: [record.id] })}
+                  >
+                    <a>删除</a>
+                  </span>
+                </div>
+              )}
+            />
+          </Table>
+        </div>
         <div className={styles.paginationWrapper}>
           <span>
             总条数:
@@ -312,6 +315,8 @@ class Plate extends Component {
               showSizeChanger
               showQuickJumper
               pageSize={this.state.plateListInfo.pageSize}
+              hideOnSinglePage={false}
+              showTotal={false}
               onShowSizeChange={(current, size) => this.onPageSizeChange(current, size)}
             />
           </div>
@@ -399,14 +404,14 @@ class Plate extends Component {
                       required: true,
                       message: '请选择布控标签!',
                     },
-                    {
-                      validator: (rule, val, callback) => {
-                        if (!val) {
-                          callback('请选择布控标签!');
-                        }
-                        callback();
-                      }
-                    }
+                    // {
+                    //   validator: (rule, val, callback) => {
+                    //     if (!val) {
+                    //       callback('请选择布控标签!');
+                    //     }
+                    //     callback();
+                    //   }
+                    // }
                   ],
                 })(
                   <Radio.Group>
@@ -475,7 +480,7 @@ class Plate extends Component {
         <DeleteModal
           visible={this.state.deleteModalVisible}
           handleOk={this.onDeleteItems}
-          closeModal={() => { this.setState({ deleteModalVisible: false, deleteItems: [] }); }}
+          closeModal={() => { this.setState({ deleteModalVisible: false, selectedRowKeys: [], deleteItems: [] }); }}
           content={`您确定要删除这${this.state.deleteItems.length}个车牌数据吗？`}
         />
 

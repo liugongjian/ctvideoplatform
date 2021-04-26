@@ -1,8 +1,16 @@
-.mainWrapper{
-  background: #fff;
-  padding: 20px;
-  margin:10px;
+.mainWrapper {
+  // background: #fff;
+  // padding: 20px;
+  // margin: 10px;
+  min-width: 960px;
+  height: calc(100vh - 72px);
   position: relative;
+  background-color: white;
+  min-height: calc(100% - 30px);
+  margin: 10px 10px 20px 10px;
+  padding: 20px 20px 72px 20px;
+  border-radius: 2px;
+  // overflow-y:scroll;
   .ant-table-thead {
     tr {
       th {
@@ -14,36 +22,40 @@
     }
   }
 }
-
-
-
+.tableWrapper {
+  width: 100%;
+  height: calc(100vh - 250px);
+  overflow-y: auto;
+}
 .searchContainer {
-  height: 50px;
-  margin-bottom: 5px;
-  img{
+  background: rgba(0, 0, 0, 0.03);
+  width: 100%;
+  height: 72px;
+  padding: 20px;
+  margin-bottom: 20px;
+  img {
     margin-top: 5px;
     margin-right: 10px;
     height: 25px;
   }
-  .searchInput{
+  .searchInput {
     display: inline-block;
     float: right;
     width: 250px;
     height: 40px;
   }
-  .addBtn{
+  .addBtn {
     width: 128px;
     height: 36px;
     border-radius: 2px;
-    span{
+    span {
       font-family: MicrosoftYaHei;
       font-size: 14px;
-      color: #FFFFFF;
-
+      color: #ffffff;
     }
   }
 
-  .deleteBtn{
+  .deleteBtn {
     margin-left: 20px;
     font-size: 14px;
   }
@@ -51,14 +63,14 @@
   .deleteBtnDisabled:link,
   .deleteBtnDisabled:hover,
   .deleteBtnDisabled:visited,
-  .deleteBtnDisabled:active{
+  .deleteBtnDisabled:active {
     margin-left: 20px;
     font-size: 14px;
     text-decoration: none;
     color: #999;
   }
 
-  .deletePic{
+  .deletePic {
     margin-top: -2px;
     margin-right: 8px;
     width: 15px;
@@ -66,25 +78,28 @@
   }
 }
 
-.oprationWrapper{
-  img{
+.oprationWrapper {
+  img {
     margin-left: 8px;
     height: 30px;
     width: 30px;
   }
 }
 
-.paginationWrapper{
-  &>*{
+.paginationWrapper {
+  position: absolute;
+  width: calc(100% - 40px);
+  bottom: 10px;
+  & > * {
     display: inline-block;
   }
-  &>div{
+  & > div {
     margin-top: 10px;
     float: right;
     font-family: HelveticaNeue;
     font-size: 12px;
   }
-  &>span{
+  & > span {
     margin-top: 15px;
     font-family: PingFangSC-Regular;
     font-size: 12px;
@@ -93,45 +108,44 @@
     line-height: 18px;
   }
 }
-tr.ant-table-row{
+tr.ant-table-row {
   font-family: MicrosoftYaHei;
   font-size: 14px;
   color: #333333;
 }
 
-.ant-table-thead .ant-table-column-title{
+.ant-table-thead .ant-table-column-title {
   font-family: PingFangSC-Semibold;
   font-size: 14px;
   color: #666666;
 }
 
-.separator{
-  color: #E9E9E9;
+.separator {
+  color: #e9e9e9;
 }
 
-.deleteModal{
+.deleteModal {
   padding-left: 30px;
   width: 565px;
   height: 80px;
-  &>div{
+  & > div {
     margin-top: 43px;
   }
-  .deleteModalImg{
+  .deleteModalImg {
     display: inline-block;
     float: left;
     margin-left: 20px;
-    &>img{
+    & > img {
       margin-top: 0px;
       width: 32px;
       height: 27px;
     }
-
   }
-  .deleteModalInfo{
+  .deleteModalInfo {
     display: inline-block;
     // float: right;
     margin-left: 10px;
-    &>span{
+    & > span {
       display: block;
       font-family: MicrosoftYaHei;
       font-size: 14px;
@@ -139,7 +153,7 @@ tr.ant-table-row{
       text-align: left;
       font-weight: bold;
     }
-    &>p{
+    & > p {
       font-family: MicrosoftYaHei;
       font-size: 12px;
       color: #999999;
@@ -148,60 +162,60 @@ tr.ant-table-row{
   }
 }
 
-.LicenseImport{
-  .existMsg{
-      margin-left: 20px;
-      color:#FA8334;
-      font-size: 12px;
-      &-icon{
-          // color:#FA8334;
-          // font-size: 16px;
-          margin-right: 5px;
+.LicenseImport {
+  .existMsg {
+    margin-left: 20px;
+    color: #fa8334;
+    font-size: 12px;
+    &-icon {
+      // color:#FA8334;
+      // font-size: 16px;
+      margin-right: 5px;
     }
   }
-  &-formWrapper{
-      :global{
-          .ant-form{
-              .ant-form-item{
-                  margin-bottom: 12px;
-              }
-              & > .ant-form-item > .ant-form-item-label{
-                  width: 100px;
-                  vertical-align: top;
-              }
-              &>.ant-form-item>.ant-form-item-control-wrapper{
-                  width: calc(100% - 180px); 
-                  display: inline-block;
-              }
-          }
-      }
-      .licenseSplit{
+  &-formWrapper {
+    :global {
+      .ant-form {
+        .ant-form-item {
+          margin-bottom: 12px;
+        }
+        & > .ant-form-item > .ant-form-item-label {
+          width: 100px;
+          vertical-align: top;
+        }
+        & > .ant-form-item > .ant-form-item-control-wrapper {
+          width: calc(100% - 180px);
           display: inline-block;
-          width:8px;
+        }
       }
-      .licenseSel{
-          display: inline-block;
-          width: 80px;
-          :global{
-              .ant-form-explain{
-                  width: 230px;
-              }
-          }
+    }
+    .licenseSplit {
+      display: inline-block;
+      width: 8px;
+    }
+    .licenseSel {
+      display: inline-block;
+      width: 80px;
+      :global {
+        .ant-form-explain {
+          width: 150px;
+        }
       }
-      .licenseInput{
-          display: inline-block;
-          width: calc(100% - 88px);
+    }
+    .licenseInput {
+      display: inline-block;
+      width: calc(100% - 88px);
+    }
+    .addItemRequiredIcon {
+      label::before {
+        display: inline-block;
+        margin-right: 4px;
+        color: #f5222d; //#FF8836;
+        font-size: 14px;
+        font-family: SimSun, sans-serif;
+        line-height: 1;
+        content: "*";
       }
-      .addItemRequiredIcon{
-          label::before {
-              display: inline-block;
-              margin-right: 4px;
-              color: #f5222d; //#FF8836;
-              font-size: 14px;
-              font-family: SimSun, sans-serif;
-              line-height: 1;
-              content: '*';
-          }
-      }
+    }
   }
 }
