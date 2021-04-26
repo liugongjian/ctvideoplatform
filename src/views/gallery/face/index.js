@@ -217,7 +217,7 @@ class Face extends Component {
       const { editFace } = this.props;
       const { editId, editFaceId } = this.state;
       this.setState({
-        submitBtnDis: false,
+        submitBtnDis: true,
         modalVisible: false,
       });
       this.props.form.validateFields((errors, values) => {
@@ -273,29 +273,40 @@ class Face extends Component {
       });
     };
 
+    // 还原releaseV1.2中遗失代码
     handleDelCancel = () => {
+      const { faceData, selectedRowKeys } = this.state;
+      for (let i = 0; i < selectedRowKeys.length; i++) {
+        for (let j = 0; j < faceData.length; j++) {
+          if (faceData[j].id === selectedRowKeys[i]) {
+            faceData[j].isChecked = false;
+          }
+        }
+      }
       this.setState({
         delModalVisible: false,
+        selectedRowKeys: [],
+        faceData,
       });
     };
 
-    delFace = () => {
-      const { delFace } = this.props;
-      const data = {
-        userFaceIdList: this.state.delIds
-      };
-      this.setState({
-        delModalVisible: false,
-        loading: true,
-      });
-      delFace(data).then((res) => {
-        message.success('删除成功');
-        this.setState({
-          pageNum: 1,
-          selectedRowKeys: [],
-        }, () => this.getTableList());
-      });
+  delFace = () => {
+    const { delFace } = this.props;
+    const data = {
+      userFaceIdList: this.state.delIds
     };
+    this.setState({
+      delModalVisible: false,
+      loading: true,
+    });
+    delFace(data).then((res) => {
+      message.success('删除成功');
+      this.setState({
+        pageNum: 1,
+        selectedRowKeys: [],
+      }, () => this.getTableList());
+    });
+  };
 
     beforeUpload = (file) => {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';

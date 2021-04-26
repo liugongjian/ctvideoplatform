@@ -254,7 +254,7 @@ class Preview extends PureComponent {
       this.state.timer = window.setInterval(() => {
         this.getHistory();
         this.getCurrentDay();
-      }, 5000);
+      }, 3000);
     }
 
     clearTimer = () => {

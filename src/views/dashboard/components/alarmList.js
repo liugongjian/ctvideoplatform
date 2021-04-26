@@ -95,7 +95,7 @@ class AlarmList extends Component {
   setInter = () => {
     this.timer = window.setInterval(() => {
       this.getAlarmData();
-    }, 5000);
+    }, 3000);
   }
 
   clearInter = () => {
