@@ -13,7 +13,6 @@ class FlvPlayer extends Component {
     componentDidMount() {
       const { src } = this.props;
       this.initVideo(src);
-      this.keepVideo();
     }
 
     componentWillReceiveProps(props) {
@@ -54,6 +53,7 @@ class FlvPlayer extends Component {
         this.player.on(flvjs.Events.MEDIA_INFO, (info) => {
           console.log('MEDIA_INFO', info);
           self.drawLine();
+          self.keepVideo();
         });
         // this.player.on('play', (info) => { console.log('timeupdateInfo', info); });
         // this.player.on(flvjs.Events.SCRIPTDATA_ARRIVED, (info) => {
