@@ -10,7 +10,7 @@ import { push } from 'react-router-redux';
 
 import {
   getAreaList, getHistoryListTopTen, getVideoSrc,
-  getAreaInfo, getPeopleLIne, getCurrentTraffic
+  getAreaInfo, getPeopleLIne, getCurrentTraffic, getVideoSnap
 } from 'Redux/reducer/preview';
 
 import { getAlgorithmList } from 'Redux/reducer/monitor';
@@ -37,7 +37,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     getVideoSrc,
     getAreaInfo,
     getPeopleLIne,
-    getCurrentTraffic
+    getCurrentTraffic,
+    getVideoSnap
   },
   dispatch
 );
@@ -518,6 +519,18 @@ class Preview extends PureComponent {
         }, () => this.initChartsData());
       }
 
+      getSnapVideo = () => {
+        const { getVideoSnap } = this.props;
+        const { historyID, videoName } = this.state;
+        getVideoSnap(historyID).then((res) => {
+          const imgUrl = `data:image/png;base64,${res}`;
+          const a = document.createElement('a');
+          a.href = imgUrl;
+          a.setAttribute('download', videoName);
+          a.click();
+        });
+      }
+
       render() {
         const {
           treeDatas, selectAreaKeys, expandedKeys, algorithmList = [],
@@ -610,7 +623,10 @@ class Preview extends PureComponent {
                         {' '}
                         {videoName}
                       </div>
-                      <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={this.clearVideo} />
+                      <span>
+                        <span className={styles.snapVideoImg} onClick={this.getSnapVideo}>快照</span>
+                        <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={this.clearVideo} />
+                      </span>
                     </div>
                     {/* <VideoPlayer
                       src={videoSrc}
