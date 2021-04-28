@@ -16,6 +16,8 @@ import {
 import { getAlgorithmList } from 'Redux/reducer/monitor';
 import { urlPrefix } from 'Constants/Dictionary';
 
+import moment from 'moment';
+
 // import {
 //   ImageModal,
 // } from 'Views/alarms/Modals';
@@ -56,6 +58,7 @@ const LABEL_CAR = {
   WHITE: '白名单', BLACK: '黑名单', OTHER: '其他'
 };
 
+const dateFormat = 'YYYYMMDDhhmmss';
 
 class Preview extends PureComponent {
   constructor(props) {
@@ -525,8 +528,9 @@ class Preview extends PureComponent {
         getVideoSnap(historyID).then((res) => {
           const imgUrl = `data:image/png;base64,${res}`;
           const a = document.createElement('a');
+          const imgName = `${videoName}_${moment().format(dateFormat)}`;
           a.href = imgUrl;
-          a.setAttribute('download', videoName);
+          a.setAttribute('download', imgName);
           a.click();
         });
       }
@@ -624,7 +628,7 @@ class Preview extends PureComponent {
                         {videoName}
                       </div>
                       <span>
-                        <span className={styles.snapVideoImg} onClick={this.getSnapVideo}>快照</span>
+                        <EIcon type={`${styles.snapVideoImg} myicon-snapshot`} onClick={this.getSnapVideo} />
                         <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={this.clearVideo} />
                       </span>
                     </div>
