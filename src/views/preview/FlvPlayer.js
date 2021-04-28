@@ -28,11 +28,15 @@ class FlvPlayer extends Component {
     componentWillUnmount() {
       // 销毁播放器
       if (this.player) {
+        const {
+          visibilityChange
+        } = visibilitychange();
         this.player.pause();
         this.player.unload();
         this.player.detachMediaElement();
         this.player.destroy();
         this.player = null;
+        window.removeEventListener(visibilityChange);
       }
     }
 
