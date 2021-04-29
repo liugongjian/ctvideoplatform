@@ -238,7 +238,7 @@ class Preview extends PureComponent {
             tempTrafficExit: res.exitNo,
             tempTrafficEntry: res.entryNo
           });
-        } else if (res.exitNo > tempTrafficExit || res.exitNo > tempTrafficExit) {
+        } else if (res.exitNo > tempTrafficExit || res.entryNo > tempTrafficEntry) {
           this.setState({
             traffiInfoData: res,
             tempTrafficExit: res.exitNo,
