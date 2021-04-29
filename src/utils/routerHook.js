@@ -8,7 +8,7 @@ import { store } from '../redux/store';
 
 const getRoute = (text, routers, pathArr) => {
   let pathPoint = 0;
-  routers.forEach((route) => {
+  routers?.forEach((route) => {
     const restPath = pathArr.slice(pathPoint).join('');
     if (route.path === pathArr[pathPoint]) {
       text.push({
