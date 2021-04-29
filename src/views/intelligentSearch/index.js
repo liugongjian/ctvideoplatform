@@ -11,6 +11,7 @@ import {
   Icon,
   Spin,
   message,
+  Input,
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import math from 'Utils/math';
@@ -29,6 +30,7 @@ import styles from './index.less';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
+const { Search } = Input;
 
 const mapStateToProps = state => ({ alarms: state.alarms });
 const mapDispatchToProps = dispatch => bindActionCreators(
@@ -61,6 +63,7 @@ class Alarms extends Component {
       listLoading: false,
       total: 0,
       algorithmIdList: undefined,
+      keyword: '',
       ...initialVals(),
     };
   }
@@ -216,7 +219,8 @@ class Alarms extends Component {
       });
     }
 
-    onSearch = () => {
+    onSearch = (value) => {
+      console.log('value', value);
       this.getAlarms();
     }
 
@@ -239,54 +243,20 @@ class Alarms extends Component {
         algoList, algoListLoading,
         deviceTree, devicesLoading,
         total, current, pageSize,
-        startTime, endTime, algoVal, deviceVal
+        startTime, endTime, algoVal, deviceVal, keyword
       } = this.state;
       return (
         <div className={styles.alarms}>
           <div className={styles['alarms-filterWrapper']}>
-            <div className={styles['alarms-filterWrapper-inner']}>
-              <RangePicker
-                style={{ width: '310px' }}
-                showTime={{ format: 'HH:mm' }}
-                format="YYYY-MM-DD HH:mm"
-                onChange={this.onTimeChange}
-                value={[startTime, endTime]}
-                onOk={this.onTimeChange}
-                allowClear={false}
+            {/* <div className={styles['alarms-filterWrapper-inner']}> */}
+            <span className={styles['alarms-filterWrapper-btnWrapper']}>
+              <Search
+                onChange={this.onSearch}
+                placeholder="请输入姓名或车牌号"
+                value={keyword}
               />
-              <span className={styles.span10px} />
-              <Select
-                style={{ width: '180px' }}
-                mode="multiple"
-                placeholder="请选择告警类型"
-                value={algoVal}
-                onChange={this.onAlgoChange}
-                maxTagCount={1}
-                maxTagTextLength={2}
-              >
-                {
-                  algoList?.map(item => (<Option value={item.id}>{item.cnName}</Option>))
-                }
-              </Select>
-              <span className={styles.span10px} />
-              <Cascader
-                changeOnSelect
-                placeholder="请选择设备"
-                popupClassName={styles.cameraCascader}
-                options={deviceTree}
-                allowClear={false}
-                value={deviceVal}
-                onChange={this.onDeviceChange}
-              />
-              <span className={styles['alarms-filterWrapper-btnWrapper']}>
-                <Button type="primary" onClick={this.onSearch}>搜索</Button>
-                <span className={styles.span10px} />
-                <Button onClick={this.onReset}>
-                  <Icon type="redo" />
-                  重置
-                </Button>
-              </span>
-            </div>
+            </span>
+            {/* </div> */}
           </div>
           <Spin spinning={listLoading} className={styles['alarms-listSpin']}>
             <div className={styles['alarms-listWrapper']}>
