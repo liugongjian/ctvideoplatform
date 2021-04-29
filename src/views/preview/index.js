@@ -58,7 +58,7 @@ const LABEL_CAR = {
   WHITE: '白名单', BLACK: '黑名单', OTHER: '其他'
 };
 
-const dateFormat = 'YYYYMMDDhhmmss';
+const dateFormat = 'YYYYMMDD_HHmmss';
 
 class Preview extends PureComponent {
   constructor(props) {
