@@ -266,13 +266,11 @@
   width: 350px;
   height: 190px;
 }
-.Modal > div {
-  margin-top: 80px;
-}
 .Modal .ModalImg {
   display: inline-block;
   float: left;
   margin-left: 20px;
+  margin-top: 20%;
 }
 .Modal .ModalImg > img {
   margin-top: 10px;
@@ -282,6 +280,8 @@
 .Modal .ModalInfo {
   display: inline-block;
   margin-left: 30px;
+  width: 60%;
+  margin-top: 15%;
 }
 .Modal .ModalInfo > span {
   display: block;
