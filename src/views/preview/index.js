@@ -244,19 +244,20 @@ class Preview extends PureComponent {
             tempTrafficExit: res.exitNo,
             tempTrafficEntry: res.entryNo
           });
-        } else if (res.exitNo === null || res.entryNo === null) {
+        } else if (!res.exitNo || !res.entryNo) {
           this.setState({
             traffiInfoData: res,
             tempTrafficExit: res.exitNo || 0,
             tempTrafficEntry: res.entryNo || 0
           });
-        } else {
-          this.setState({
-            traffiInfoData: { exitNo: 0, entryNo: 0 },
-            tempTrafficExit: 0,
-            tempTrafficEntry: 0
-          });
         }
+        //  else {
+        //   this.setState({
+        //     traffiInfoData: { exitNo: 0, entryNo: 0 },
+        //     tempTrafficExit: 0,
+        //     tempTrafficEntry: 0
+        //   });
+        // }
       });
     }
 
