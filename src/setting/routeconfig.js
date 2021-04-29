@@ -60,6 +60,7 @@ import AddAccount from 'Views/system/user/addUser';
 import Face from 'Views/gallery/face';
 import ImportFace from 'Views/gallery/face/import';
 import Alarms from 'Views/alarms';
+import IntelligentSearch from 'Views/intelligentSearch';
 import Tenants from 'Views/tenants';
 import TenantsDetail from 'Views/tenants/detail';
 import { pathPrefix } from 'Constants/Dictionary';
@@ -183,6 +184,12 @@ const menuRoutes = [
     //     component: DefaultPage,
     //   },
     // ]
+  },
+  {
+    path: '/intelligentSearch',
+    exact: true,
+    pageTitle: '智能检索',
+    component: IntelligentSearch,
   },
   // 图库管理
   {
