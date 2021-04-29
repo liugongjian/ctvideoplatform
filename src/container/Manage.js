@@ -48,7 +48,7 @@ class Manage extends Component {
       // 开发环境暂时不隐藏算法任务菜单
       if (__DEVELOPMENT__) {
         menuList.forEach((item) => {
-          if (item.id === 23) {
+          if (item.id === 23 || item.id === 11) {
             item.hide = false;
           }
         });
@@ -135,7 +135,7 @@ class Manage extends Component {
               )}
             >
               {
-                item.children.map(val => (
+                item.children.filter(item => !item.hide).map(val => (
                   <Menu.Item key={`${pathPrefix}${item.path}${val.path}`} className={collapsed ? styles.menuCollapsedSubItem : ''}>
                     <Link to={`${pathPrefix}${item.path}${val.path}`}>
                       {/* <Icon type="anticon-service-Cloudhostconsole" /> */}
