@@ -36,7 +36,7 @@ class FlvPlayer extends Component {
         this.player.detachMediaElement();
         this.player.destroy();
         this.player = null;
-        window.removeEventListener(visibilityChange);
+        window.removeEventListener(visibilityChange, this.keepHandle);
       }
     }
 
@@ -74,16 +74,21 @@ class FlvPlayer extends Component {
       // flvjs 当切换chrome浏览器tab时，直播视频会暂停为当前时间，切换回当前tab，视频流继续播放，而不是更新为currentTime
       const self = this;
       const {
+        visibilityChange
+      } = visibilitychange();
+      document.addEventListener(visibilityChange, this.keepHandle, false);
+    }
+
+    keepHandle = () => {
+      const self = this;
+      const {
         hidden, visible, visibilityChange, state
       } = visibilitychange();
-      document.addEventListener(visibilityChange, () => {
-        if (document[state] === visible) {
-          self.player.currentTime = self.player.buffered.end(0) - 0.5;
-        } else if (document[state] === hidden) {
-          console.log('do nothing');
-        }
-        // self.player.currentTime = self.player.buffered.end(0) - 0.5;
-      }, false);
+      if (document[state] === visible) {
+        self.player.currentTime = self.player.buffered.end(0) - 0.5;
+      } else if (document[state] === hidden) {
+        console.log('do nothing');
+      }
     }
 
     drawLine = () => {
