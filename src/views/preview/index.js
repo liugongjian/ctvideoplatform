@@ -10,11 +10,13 @@ import { push } from 'react-router-redux';
 
 import {
   getAreaList, getHistoryListTopTen, getVideoSrc,
-  getAreaInfo, getPeopleLIne, getCurrentTraffic
+  getAreaInfo, getPeopleLIne, getCurrentTraffic, getVideoSnap
 } from 'Redux/reducer/preview';
 
 import { getAlgorithmList } from 'Redux/reducer/monitor';
 import { urlPrefix } from 'Constants/Dictionary';
+
+import moment from 'moment';
 
 // import {
 //   ImageModal,
@@ -37,7 +39,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     getVideoSrc,
     getAreaInfo,
     getPeopleLIne,
-    getCurrentTraffic
+    getCurrentTraffic,
+    getVideoSnap
   },
   dispatch
 );
@@ -55,6 +58,7 @@ const LABEL_CAR = {
   WHITE: '白名单', BLACK: '黑名单', OTHER: '其他'
 };
 
+const dateFormat = 'YYYYMMDD_HHmmss';
 
 class Preview extends PureComponent {
   constructor(props) {
@@ -234,19 +238,26 @@ class Preview extends PureComponent {
             tempTrafficExit: res.exitNo,
             tempTrafficEntry: res.entryNo
           });
-        } else if (res.exitNo > tempTrafficExit || res.exitNo > tempTrafficExit) {
+        } else if (res.exitNo > tempTrafficExit || res.entryNo > tempTrafficEntry) {
           this.setState({
             traffiInfoData: res,
             tempTrafficExit: res.exitNo,
             tempTrafficEntry: res.entryNo
           });
-        } else if (res.exitNo === null || res.entryNo === null) {
+        } else if (!res.exitNo || !res.entryNo) {
           this.setState({
             traffiInfoData: res,
             tempTrafficExit: res.exitNo || 0,
             tempTrafficEntry: res.entryNo || 0
           });
         }
+        //  else {
+        //   this.setState({
+        //     traffiInfoData: { exitNo: 0, entryNo: 0 },
+        //     tempTrafficExit: 0,
+        //     tempTrafficEntry: 0
+        //   });
+        // }
       });
     }
 
@@ -254,7 +265,7 @@ class Preview extends PureComponent {
       this.state.timer = window.setInterval(() => {
         this.getHistory();
         this.getCurrentDay();
-      }, 5000);
+      }, 3000);
     }
 
     clearTimer = () => {
@@ -518,6 +529,19 @@ class Preview extends PureComponent {
         }, () => this.initChartsData());
       }
 
+      getSnapVideo = () => {
+        const { getVideoSnap } = this.props;
+        const { historyID, videoName } = this.state;
+        getVideoSnap(historyID).then((res) => {
+          const imgUrl = `data:image/png;base64,${res}`;
+          const a = document.createElement('a');
+          const imgName = `${videoName}_${moment().format(dateFormat)}`;
+          a.href = imgUrl;
+          a.setAttribute('download', imgName);
+          a.click();
+        });
+      }
+
       render() {
         const {
           treeDatas, selectAreaKeys, expandedKeys, algorithmList = [],
@@ -610,7 +634,10 @@ class Preview extends PureComponent {
                         {' '}
                         {videoName}
                       </div>
-                      <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={this.clearVideo} />
+                      <span>
+                        <EIcon type={`${styles.snapVideoImg} myicon-snapshot`} onClick={this.getSnapVideo} />
+                        <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={this.clearVideo} />
+                      </span>
                     </div>
                     {/* <VideoPlayer
                       src={videoSrc}

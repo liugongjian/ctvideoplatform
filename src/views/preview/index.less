@@ -59,18 +59,18 @@
     padding: 10px;
     height: 100%;
     position: relative;
-    .videoHandle{
-        display: none;
-    }
-    &:hover{
+    // .videoHandle{
+    //     display: none;
+    // }
+    // &:hover{
         .videoHandle{
             position: absolute;
             width: calc(100% - 20px);
             top: 10px;
             height: 30px;
             line-height: 30px;
-            opacity: 0.5;
-            background: #000;
+            // opacity: 0.5;
+            background: rgba(0, 0, 0, 0.3);
             display: flex;
             z-index: 99;
             color: #fff;
@@ -84,6 +84,12 @@
                     margin-left: auto;
                     margin-right: 10px;
                 }
+                &.snapVideoImg{
+                    cursor: pointer;
+                    margin-right: 20px;
+                    font-size: 16px;
+                    color: #fff;
+                }
             }
             .videoCancelBtn{
                 cursor: pointer;
@@ -92,7 +98,7 @@
                 color: #53FF00;
             }
         }
-    }
+    // }
     
     .allStatusBox{
         width: 100%;

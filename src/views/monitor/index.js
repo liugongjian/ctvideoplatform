@@ -881,6 +881,29 @@ class Monitor extends Component {
         key: 'deviceId',
         // fixed: 'left',
       },
+      {
+        title: '状态',
+        dataIndex: 'online',
+        key: 'online',
+        // fixed: 'right',
+        width: '100px',
+        render: (text) => {
+          if (text) {
+            return (
+              <span className={styles.tableOnlineStatus}>
+                <span className={styles.tableOnline} />
+                <span className={styles.tableOnlineText}>在线</span>
+              </span>
+            );
+          }
+          return (
+            <span className={styles.tableOnlineStatus}>
+              <span className={styles.tableOffline} />
+              <span className={styles.tableOfflineText}>离线</span>
+            </span>
+          );
+        }
+      },
     ];
 
     const drawAlgorithmList = () => algorithmList.map(item => (

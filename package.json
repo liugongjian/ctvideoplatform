@@ -8,7 +8,8 @@
     "build": "webpack -p --config webpack.prod.js",
     "dev": "webpack-dev-server --open --public --config webpack.dev.js",
     "deploy": "sh command/publish.sh",
-    "deploy-dy": "sh command/publish-dy.sh"
+    "deploy-dy": "sh command/publish-dy.sh",
+    "deploy-test": "sh command/publish-test.sh"
   },
   "pre-commit": [
     "lint"
