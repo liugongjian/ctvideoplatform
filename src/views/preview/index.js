@@ -250,6 +250,12 @@ class Preview extends PureComponent {
             tempTrafficExit: res.exitNo || 0,
             tempTrafficEntry: res.entryNo || 0
           });
+        } else {
+          this.setState({
+            traffiInfoData: { exitNo: 0, entryNo: 0 },
+            tempTrafficExit: 0,
+            tempTrafficEntry: 0
+          });
         }
       });
     }
