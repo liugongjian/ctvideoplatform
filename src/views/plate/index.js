@@ -130,7 +130,7 @@ class Plate extends Component {
       if (data) {
         message.success('删除成功');
       }
-      this.onPageNumChange(this.state.plateListInfo.pageNo + 1);
+      this.onPageNumChange(1);
     }).catch((err) => {
       message.error('删除失败');
       this.setState({ deleteModalVisible: false, isDeleting: false });

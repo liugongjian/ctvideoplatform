@@ -206,6 +206,7 @@ class Role extends Component {
               showQuickJumper
               hideOnSinglePage={false}
               pageSize={this.state.roleListInfo.pageSize}
+              showTotal={false}
               onShowSizeChange={(current, size) => this.onPageSizeChange(current, size)}
             />
           </div>

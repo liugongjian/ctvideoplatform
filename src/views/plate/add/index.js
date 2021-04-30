@@ -229,7 +229,7 @@ class AddPlate extends Component {
               pageSize={importedPlateInfo.pageSize}
               onShowSizeChange={(current, size) => this.onPageSizeChange(current, size)}
               hideOnSinglePage={false}
-              showTotal={() => false}
+              showTotal={false}
             />
           </div>
         </div>
