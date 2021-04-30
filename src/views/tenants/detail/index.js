@@ -500,8 +500,11 @@ class TenantDetail extends Component {
                 validateTrigger: ['onBlur', 'onInput']
               })(
                 <Select
+                  mode="multiple"
                   className={styles.formItemInput}
                   onChange={this.handleSelectChange}
+                  maxTagCount={2}
+                  maxTagTextLength={13}
                 >
                   {deviceSupplier.map(sup => (
                     <Option key={sup.name}>{sup.cnName}</Option>
@@ -509,7 +512,7 @@ class TenantDetail extends Component {
                 </Select>
               )}
             </Form.Item>
-            {supplierParams.map((item) => {
+            {/* {supplierParams.map((item) => {
               if (currentKey === deviceSupplierInfo.supplier) {
                 console.log('deviceSupplierInfo', deviceSupplierInfo);
                 if (item.name === encodeFormat) {
@@ -554,7 +557,7 @@ class TenantDetail extends Component {
                   </Tooltip>
                 </Form.Item>
               );
-            })}
+            })} */}
             <Form.Item label="视频接入额度" name="deviceQuota">
               {getFieldDecorator('deviceQuota', {
                 initialValue: td.deviceQuota || '',
