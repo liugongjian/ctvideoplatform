@@ -301,52 +301,52 @@ class TenantDetail extends Component {
     }
   };
 
-  renderEncodeFormat = (item, currentKey, deviceSupplierInfo) => {
-    const { getFieldDecorator } = this.props.form;
-    return (
-      <Form.Item label={item.name}>
-        <Tooltip placement="right" title={item.desc}>
-          {getFieldDecorator(item.name + currentKey, {
-            initialValue: currentKey === deviceSupplierInfo.supplier ? deviceSupplierInfo[item.name] : '',
-            rules: [{ required: true, message: `请确认${item.name}！` }],
-            validateTrigger: ['onBlur', 'onInput']
-          })(
-            <Select
-              className={styles.formItemInput}
-            >
-              {encodeFormatOptions.map(option => (
-                <Option key={option}>{option}</Option>
-              ))}
-            </Select>
-          )}
-        </Tooltip>
-      </Form.Item>
-    );
-  }
+  // renderEncodeFormat = (item, currentKey, deviceSupplierInfo) => {
+  //   const { getFieldDecorator } = this.props.form;
+  //   return (
+  //     <Form.Item label={item.name}>
+  //       <Tooltip placement="right" title={item.desc}>
+  //         {getFieldDecorator(item.name + currentKey, {
+  //           initialValue: currentKey === deviceSupplierInfo.supplier ? deviceSupplierInfo[item.name] : '',
+  //           rules: [{ required: true, message: `请确认${item.name}！` }],
+  //           validateTrigger: ['onBlur', 'onInput']
+  //         })(
+  //           <Select
+  //             className={styles.formItemInput}
+  //           >
+  //             {encodeFormatOptions.map(option => (
+  //               <Option key={option}>{option}</Option>
+  //             ))}
+  //           </Select>
+  //         )}
+  //       </Tooltip>
+  //     </Form.Item>
+  //   );
+  // }
 
-  renderBaseUri = (item, currentKey, deviceSupplierInfo) => {
-    const { getFieldDecorator } = this.props.form;
-    return (
-      <Form.Item label={item.name}>
-        <Tooltip placement="right" title={`${item.desc}（以http(s)://开头的网络地址）`}>
-          {getFieldDecorator(item.name + currentKey, {
-            initialValue: currentKey === deviceSupplierInfo.supplier ? deviceSupplierInfo[item.name] : '',
-            rules: [
-              { required: true, message: `请确认${item.name}！` },
-              { max: 50, message: '不能超过50位' },
-              { validator: (rule, value, callback) => this.validatorUrl(rule, value, callback) }
-            ],
-            validateTrigger: ['onBlur', 'onInput'],
-            validateFirst: true,
-          })(
-            <Input
-              className={styles.formItemInput}
-            />
-          )}
-        </Tooltip>
-      </Form.Item>
-    );
-  }
+  // renderBaseUri = (item, currentKey, deviceSupplierInfo) => {
+  //   const { getFieldDecorator } = this.props.form;
+  //   return (
+  //     <Form.Item label={item.name}>
+  //       <Tooltip placement="right" title={`${item.desc}（以http(s)://开头的网络地址）`}>
+  //         {getFieldDecorator(item.name + currentKey, {
+  //           initialValue: currentKey === deviceSupplierInfo.supplier ? deviceSupplierInfo[item.name] : '',
+  //           rules: [
+  //             { required: true, message: `请确认${item.name}！` },
+  //             { max: 50, message: '不能超过50位' },
+  //             { validator: (rule, value, callback) => this.validatorUrl(rule, value, callback) }
+  //           ],
+  //           validateTrigger: ['onBlur', 'onInput'],
+  //           validateFirst: true,
+  //         })(
+  //           <Input
+  //             className={styles.formItemInput}
+  //           />
+  //         )}
+  //       </Tooltip>
+  //     </Form.Item>
+  //   );
+  // }
 
   render() {
     const emptyDetail = {
