@@ -40,6 +40,7 @@ class TenantDetail extends Component {
     this.state = {
       tenantDetail: null,
       deviceSupplier: [],
+      tenantSupllier: [],
       supplierParams: [],
       currentKey: '',
       algorithmConfig: [],
@@ -64,20 +65,18 @@ class TenantDetail extends Component {
             delete item.createTime;
             return item;
           });
-          this.setState({ tenantDetail: res, currentKey: ckey });
-          console.log('res.algorithmsInfoJson', res.algorithmsInfoJson);
+          console.log('JSON.parse(res.algorithmsInfoJson)', JSON.parse(res.algorithmsInfoJson));
           calgolist = JSON.parse(res.algorithmsInfoJson);
+          this.setState({ tenantDetail: res });
           getDeviceSupplier().then((supplier) => {
             console.log('supplier', supplier);
-            let mkey;
+            const tenantSupllier = [];
             if (supplier) {
-              supplier.forEach((item, index) => {
-                if (item.name === ckey) {
-                  mkey = index;
-                }
-              });
-              console.log('mkey', mkey);
-              console.log('supplier[mkey].supplierParams', supplier[mkey].supplierParam);
+              // supplier.forEach((item, index) => {
+              //   if (item.name === ckey) {
+              //     mkey = index;
+              //   }
+              // });
               this.setState({ deviceSupplier: supplier });
             }
           });
@@ -115,7 +114,8 @@ class TenantDetail extends Component {
         console.log(supplier, 'supplier');
         let mkey;
         if (supplier) {
-          this.setState({ deviceSupplier: supplier, currentKey: supplier[0].name, supplierParams: supplier[0].supplierParam });
+          // this.setState({ deviceSupplier: supplier, currentKey: supplier[0].name, supplierParams: supplier[0].supplierParam });
+          this.setState({ deviceSupplier: supplier });
         }
       });
       getAlgorithmList().then((list) => {
@@ -138,16 +138,6 @@ class TenantDetail extends Component {
     getDeviceQuota().then((quota) => {
       if (quota) {
         this.setState({ deviceQuota: quota });
-      }
-    });
-  }
-
-  handleSelectChange = (supkey) => {
-    //
-    console.log('supkey', supkey);
-    this.state.deviceSupplier.forEach((item) => {
-      if (item.name === supkey) {
-        this.setState({ supplierParams: item.supplierParam, currentKey: supkey });
       }
     });
   }
@@ -191,25 +181,20 @@ class TenantDetail extends Component {
     const postTenant = tenantId ? updateTenant : addTenant;
     validateFieldsAndScroll((errors, values) => {
       if (!errors) {
-        const sources = {};
-        sources.supplier = this.state.currentKey;
-        this.state.supplierParams.forEach((item) => {
-          sources[item.name] = getFieldValue(item.name + this.state.currentKey).trim();
-        });
         const data = tenantId
           ? {
             name: getFieldValue('name'),
             deviceQuota: getFieldValue('deviceQuota'),
             description: getFieldValue('description').trim(),
             algorithmConfig: this.state.algorithmConfig,
-            sourceList: [sources]
+            deviceSupplierIdList: getFieldValue('videotype')
           } : {
             name: getFieldValue('name'),
             password: getFieldValue('password'),
             deviceQuota: getFieldValue('deviceQuota'),
             description: getFieldValue('description'),
             algorithmConfig: this.state.algorithmConfig,
-            sourceList: [sources]
+            deviceSupplierIdList: getFieldValue('videotype')
           };
         console.log('data', data);
         console.log('supplierParams', this.state.supplierParams);
@@ -371,20 +356,18 @@ class TenantDetail extends Component {
       description: '',
       deviceQuota: 0,
       deviceSupplierInfo: '{"supplier":"ffcs2"}',
+      deviceSupplierIdList: null,
       name: '',
     };
     const { tenantId } = this.props.match.params;
     const {
-      deviceSupplier, supplierParams, currentKey, tenantDetail
+      deviceSupplier, supplierParams, currentKey, tenantDetail, tenantSupllier
     } = this.state;
     const td = tenantDetail || emptyDetail;
-    const deviceSupplierInfo = td.deviceSupplierInfo === ''
-      ? {
-        supplier: 'ffcs2', appkey: '', secretkey: '', acount_name: '', baseUri: '', encodeFormat: ''
-      }
-      : JSON.parse(td.deviceSupplierInfo);
-    // const deviceSupplierInfo = JSON.parse(td.deviceSupplierInfo);
-    console.log('deviceSupplierInfo111', deviceSupplierInfo);
+    const deviceSupplierIdList = td.deviceSupplierIdList
+      ? JSON.parse(td.deviceSupplierIdList)
+      : [];
+    console.log('deviceSupplierIdList', deviceSupplierIdList);
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
       labelCol: {
@@ -495,19 +478,18 @@ class TenantDetail extends Component {
             <span className={styles.subTitle}>规则配置</span>
             <Form.Item label="视频源类型" name="videotype">
               {getFieldDecorator('videotype', {
-                initialValue: deviceSupplierInfo.supplier,
+                initialValue: deviceSupplierIdList,
                 rules: [{ required: true, message: '请选择类型!' }],
                 validateTrigger: ['onBlur', 'onInput']
               })(
                 <Select
                   mode="multiple"
                   className={styles.formItemInput}
-                  onChange={this.handleSelectChange}
                   maxTagCount={2}
-                  maxTagTextLength={13}
+                  maxTagTextLength={10}
                 >
                   {deviceSupplier.map(sup => (
-                    <Option key={sup.name}>{sup.cnName}</Option>
+                    <Option key={sup.id}>{sup.displayName}</Option>
                   ))}
                 </Select>
               )}
