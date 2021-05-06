@@ -59,7 +59,7 @@ class TenantDetail extends Component {
       getTenantDetail(tenantId)
         .then((res) => {
           console.log('tenantDetail', res);
-          ckey = res.deviceSupplierInfo ? JSON.parse(res.deviceSupplierInfo).supplier : 'ffcs2';
+          ckey = res.deviceSupplierIdList ? JSON.parse(res.deviceSupplierIdList) : [];
           const algolist = JSON.parse(res.algorithmsInfoJson).map((item) => {
             delete item.createTime;
             return item;
@@ -68,7 +68,7 @@ class TenantDetail extends Component {
           console.log('res.algorithmsInfoJson', res.algorithmsInfoJson);
           calgolist = JSON.parse(res.algorithmsInfoJson);
           getDeviceSupplier().then((supplier) => {
-            console.log(supplier, 'supplier');
+            console.log('supplier', supplier);
             let mkey;
             if (supplier) {
               supplier.forEach((item, index) => {
@@ -78,7 +78,7 @@ class TenantDetail extends Component {
               });
               console.log('mkey', mkey);
               console.log('supplier[mkey].supplierParams', supplier[mkey].supplierParam);
-              this.setState({ deviceSupplier: supplier, supplierParams: supplier[mkey].supplierParam });
+              this.setState({ deviceSupplier: supplier });
             }
           });
           getAlgorithmList().then((list) => {
