@@ -22,6 +22,8 @@ const { Option } = Select;
 const { TreeNode } = Tree;
 const InputGroup = Input.Group;
 
+const rootArea = '1';
+
 const mapStateToProps = state => ({ monitor: state.monitor });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
@@ -46,13 +48,13 @@ class Monitor extends Component {
     super(props);
     this.state = {
       treeDatas: [],
-      expandedKeys: ['1'],
+      expandedKeys: [rootArea],
       editValue: '',
       hasSame: '',
       tempData: [],
       deptHover: {},
       areaId: 1,
-      selectAreaKeys: ['1'],
+      selectAreaKeys: [rootArea],
       pageNo: 0,
       modalPageNo: 0,
       recursive: false,
@@ -120,7 +122,7 @@ class Monitor extends Component {
           treeDatas,
           areaId,
           selectAreaKeys: [areaId.toString()],
-          expandedKeys: ['1']
+          expandedKeys: [rootArea]
         }, () => {
           this.getDeviceList();
         });
@@ -437,7 +439,7 @@ class Monitor extends Component {
       } else {
         // this.setState({
         //   areaId: 1,
-        //   selectAreaKeys: ['1'],
+        //   selectAreaKeys: [rootArea],
         //   pageNo: 0
         // }, () => this.getDeviceList());
       }
@@ -463,7 +465,7 @@ class Monitor extends Component {
       algorithmId
     } = this.state;
     const param = {
-      areaId,
+      areaId: areaId || rootArea, // fix VCP-281 无搜索结果时默认显示根区域数据
       pageNo,
       recursive,
       pageSize,
@@ -969,7 +971,7 @@ class Monitor extends Component {
                   showIcon
                   onExpand={this.onExpand}
                   onSelect={this.onSelect}
-                  defaultSelectedKeys={['1']}
+                  defaultSelectedKeys={[rootArea]}
                   className={styles.dataTree}
                   selectedKeys={selectAreaKeys}
                   ref={ref => this.treeNode = ref}

@@ -184,7 +184,8 @@ class Preview extends PureComponent {
           selectAreaKeys: [val.id],
           videoSrc: null,
           showText: '设备已离线',
-          historyListData: {}
+          historyListData: {},
+          appliedTraffic: false, // fix 切换到离线设备时仍有上个设备人流信息
         });
       }
     }
@@ -232,13 +233,19 @@ class Preview extends PureComponent {
       const { historyID } = this.state;
       getCurrentTraffic(historyID, 10).then((res) => {
         const { tempTrafficEntry, tempTrafficExit } = this.state;
+        // fix 切换设备时如果不比上个设备人流量数据大，就不会刷新数据显示。
+        // this.setState({
+        //   traffiInfoData: res,
+        //   tempTrafficExit: res.exitNo,
+        //   tempTrafficEntry: res.entryNo
+        // });
         if (tempTrafficEntry === -1 || tempTrafficExit === -1) {
           this.setState({
             traffiInfoData: res,
             tempTrafficExit: res.exitNo,
             tempTrafficEntry: res.entryNo
           });
-        } else if (res.exitNo > tempTrafficExit || res.entryNo > tempTrafficEntry) {
+        } else if (res.exitNo !== tempTrafficExit || res.entryNo !== tempTrafficEntry) {
           this.setState({
             traffiInfoData: res,
             tempTrafficExit: res.exitNo,
