@@ -13,6 +13,7 @@ import {
   message,
   Input,
 } from 'antd';
+import Map from 'Components/echarts/map';
 import { bindActionCreators } from 'redux';
 import math from 'Utils/math';
 import { connect } from 'react-redux';
@@ -247,8 +248,13 @@ class Alarms extends Component {
       } = this.state;
       return (
         <div className={styles.alarms}>
-          <div className={styles['alarms-filterWrapper']}>
-            {/* <div className={styles['alarms-filterWrapper-inner']}> */}
+          <Map
+            key="maptet"
+            id="maptest"
+            width="100%"
+            height="calc(100% - 22px)"
+          />
+          {/* <div className={styles['alarms-filterWrapper']}>
             <span className={styles['alarms-filterWrapper-btnWrapper']}>
               <Search
                 onChange={this.onSearch}
@@ -256,7 +262,6 @@ class Alarms extends Component {
                 value={keyword}
               />
             </span>
-            {/* </div> */}
           </div>
           <Spin spinning={listLoading} className={styles['alarms-listSpin']}>
             <div className={styles['alarms-listWrapper']}>
@@ -293,7 +298,7 @@ class Alarms extends Component {
               showQuickJumper
               showTotal={this.showTotal}
             />
-          </div>
+          </div> */}
         </div>
       );
     }
