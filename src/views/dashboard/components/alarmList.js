@@ -63,7 +63,7 @@ class AlarmList extends Component {
 
   componentDidMount() {
     this.getAlarmData();
-    // this.setInter();
+    this.setInter();
   }
 
   componentWillUnmount() {
