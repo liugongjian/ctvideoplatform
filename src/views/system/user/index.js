@@ -796,7 +796,7 @@ class Account extends Component {
 
   render() {
     return (
-      <div className={styles.content}>
+      <div className={styles.userContent}>
         {this.renderTableHeaders()}
         {this.renderTable()}
       </div>

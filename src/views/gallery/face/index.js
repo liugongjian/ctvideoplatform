@@ -228,7 +228,7 @@ class Face extends Component {
             (res) => {
               message.success('编辑人脸数据成功');
               this.setState({
-                submitBtnDis: true,
+                submitBtnDis: false,
               }, () => this.getTableList());
             }
           ).catch((err) => {
@@ -617,7 +617,7 @@ class Face extends Component {
 
     render() {
       return (
-        <div className={styles.content}>
+        <div className={styles.faceContent}>
           {this.renderTableHeaders()}
           {this.renderTable()}
         </div>
