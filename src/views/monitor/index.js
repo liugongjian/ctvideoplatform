@@ -716,7 +716,8 @@ class Monitor extends Component {
         {
           deviceId: item.deviceId,
           sourceId: item.sourceId,
-          deviceName: item.deviceName
+          deviceName: item.deviceName,
+          online: item.online
         }
       ));
       setDeviceList(temp, areaId).then((res) => {
