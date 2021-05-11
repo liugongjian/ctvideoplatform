@@ -17,18 +17,18 @@ import moment from 'moment';
 import {
   LicenseImportModal,
   ImageModal,
-} from './Modals';
+} from '../Modals';
 import {
   AlgoConfigs,
   ALARM_DETAIL_TYPE,
   LABEL,
-} from './constants';
+} from '../constants';
 // import { push } from 'react-router-redux';
 // import PropTypes from 'prop-types';
 // import {
 //   getSummary, getMonitorMetric,
 // } from 'Redux/reducer/dashboard';
-import styles from './index.less';
+import styles from '../index.less';
 
 // const { Option } = Select;
 const timeFormat = 'YYYY-MM-DD HH:mm:ss';

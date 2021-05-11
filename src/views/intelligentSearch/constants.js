@@ -4,6 +4,8 @@ const LicenseProvinces = [
   '川', '贵', '云', '藏', '陕', '甘', '青', '宁', '新'
 ];
 
+const AMAP_KEY = 'b431bc4a893c601a4a1da49f34cf39db';
+
 const ALARM_DETAIL_TYPE = {
   PERSON: '行人',
   CAR: '机动车',
@@ -47,4 +49,5 @@ export {
   AlgoConfigs,
   ALARM_DETAIL_TYPE,
   LABEL,
+  AMAP_KEY,
 };
