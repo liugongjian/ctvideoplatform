@@ -73,60 +73,8 @@
         padding:0;
         height:100%;
     }
-    &-listWrapper{
-        width: 100%;
-        height: calc(100vh - 250px);
-        overflow-y: auto;
-        .AlarmCard{
-            margin-bottom: 20px;
-            &:hover{
-                box-shadow: 0 2px 4px 0 rgba(0,0,0,.15);
-            }
-        }
-        &-nodata{
-            width: 100%;
-            height: calc(100vh - 250px);
-            line-height: calc(100vh - 250px);
-            text-align: center;
-            background-color: #f6f6f6;
-            img{
-                height: 150px;
-            }
-        }
-        @media screen and (min-width: 1701px) {
-            .AlarmCard{
-                height: 300px;
-                width: calc((100% - 15px * 5) / 6 );
-                &-imgWrapper{
-                    height: 170px;
-                    line-height: 170px;
-                }
-            }
-            .AlarmCard:not(:nth-of-type(6n+0)){
-                margin-right:15px;
-            }
-        }
-        @media screen and (max-width: 1700px) {
-            .AlarmCard{
-                height: 270px;
-                width: calc((100% - 15px * 3) / 4 );
-                &-imgWrapper{
-                    height: 140px;
-                    line-height: 140px;
-                }
-            }
-            .AlarmCard:not(:nth-of-type(4n+0)){
-                margin-right:15px;
-            }
-        }
-        // @media screen and (max-width: 1400px) {
-        //     .AlarmCard{
-        //         width: calc((100% - 15px * 2) / 3 );
-        //     }
-        //     .AlarmCard:not(:nth-of-type(3n+0)){
-        //         margin-right:15px;
-        //     }
-        // }
+    &-contentWrapper{
+        height: 100%;
     }
     &-paginationWrapper{
         position: absolute;

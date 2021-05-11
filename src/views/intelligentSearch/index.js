@@ -56,14 +56,9 @@ class CameraDetail extends Component {
             />
           </span>
         </div>
-        <Tabs className={styles['intelligentSearch-tabs']} activeKey={curTab} onChange={curTab => this.setState({ curTab })}>
-          <TabPane tab="告警信息" key="alarm">
-            <AlarmList cameraId={cameraId} />
-          </TabPane>
-          <TabPane tab="轨迹追踪" key="track">
-            <MapTrack cameraId={cameraId} />
-          </TabPane>
-        </Tabs>
+        <div className={styles['intelligentSearch-contentWrapper']}>
+          <MapTrack />
+        </div>
       </div>
     );
   }

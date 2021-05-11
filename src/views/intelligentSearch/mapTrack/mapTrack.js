@@ -34,12 +34,28 @@ class MapTrack extends Component {
     super();
     this.state = {
       markers: randomMarker(7),
-      center: randomPosition()
+      center: randomPosition(),
+      canvasDir: null,
     };
   }
 
   componentDidMount() {
     // ajax code
+    const canvasDir = document.createElement('canvas');
+    const width = 24;
+    canvasDir.width = width;
+    canvasDir.height = width;
+    const context = canvasDir.getContext('2d');
+    context.strokeStyle = 'red';
+    context.lineJoin = 'round';
+    context.lineWidth = 8;
+    context.moveTo(-4, width - 4);
+    context.lineTo(width / 2, 6);
+    context.lineTo(width + 4, width - 4);
+    context.stroke();
+    this.setState({
+      canvasDir,
+    });
   }
 
   render() {
@@ -55,7 +71,9 @@ class MapTrack extends Component {
             <Polyline
               path={markers.map(item => item.position)}
               visible
-              draggable
+              draggable={false}
+              showDir
+              style={{ strokeWeight: 10 }}
             />
           </Map>
         </div>
