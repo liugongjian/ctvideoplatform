@@ -445,24 +445,24 @@ class Preview extends PureComponent {
       getTypeContent = (val) => {
         if (val.face && val.face.label !== 'OTHER') {
           return (
-            <div className={styles.historyTextName}>
+            <p className={styles.historyTextName}>
               <span>姓名：</span>
               <span>
                 {val.face.username || '-'}
               </span>
               {this.getTag(LABEL_PERSON[val.face.label], val.face.label)}
-            </div>
+            </p>
           );
         }
         if (val.plate && val.plate.label !== 'OTHER') {
           return (
-            <div className={styles.historyTextName}>
+            <p className={styles.historyTextName}>
               <span>车牌：</span>
               <span>
                 {val.plate.licenseNo || '-'}
               </span>
               {this.getTag(LABEL_CAR[val.plate.label], val.plate.label)}
-            </div>
+            </p>
           );
         }
         return false;
