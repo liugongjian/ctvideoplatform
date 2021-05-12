@@ -172,7 +172,11 @@ class Face extends Component {
               });
             }
           ).catch((err) => {
-            // message.warning('添加账户失败')
+            this.setState({
+              submitBtnDis: false
+            }, () => {
+              this.getTableList();
+            });
           });
         }
       });
