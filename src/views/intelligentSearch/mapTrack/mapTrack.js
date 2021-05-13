@@ -25,7 +25,8 @@ const randomPosition = () => ({
 });
 const randomMarker = len => (
   Array(len).fill(true).map((e, idx) => ({
-    position: randomPosition()
+    position: randomPosition(),
+    title: '提示文字',
   }))
 );
 
@@ -33,43 +34,26 @@ class MapTrack extends Component {
   constructor() {
     super();
     this.state = {
-      markers: randomMarker(7),
-      center: randomPosition(),
-      canvasDir: null,
+      markers: [{ latitude: 31, longitude: 121 }, { latitude: 39, longitude: 101 }, { latitude: 45, longitude: 112 }, { latitude: 33, longitude: 90 }],
+      center: { latitude: 31, longitude: 121 },
     };
   }
 
   componentDidMount() {
-    // ajax code
-    const canvasDir = document.createElement('canvas');
-    const width = 24;
-    canvasDir.width = width;
-    canvasDir.height = width;
-    const context = canvasDir.getContext('2d');
-    context.strokeStyle = 'red';
-    context.lineJoin = 'round';
-    context.lineWidth = 8;
-    context.moveTo(-4, width - 4);
-    context.lineTo(width / 2, 6);
-    context.lineTo(width + 4, width - 4);
-    context.stroke();
-    this.setState({
-      canvasDir,
-    });
   }
 
   render() {
     const { markers } = this.state;
     return (
       <div className={styles.MapTrack}>
-        <div style={{ width: '700px', height: '500px' }}>
+        <div style={{ width: '900px', height: '600px' }}>
           {/* <AMap key="112" /> */}
           <Map amapkey={AMAP_KEY} plugins={['ToolBar']} center={this.state.center} zoom={6}>
             <Markers
-              markers={markers}
+              markers={markers.map(item => ({ position: item }))}
             />
             <Polyline
-              path={markers.map(item => item.position)}
+              path={markers}
               visible
               draggable={false}
               showDir

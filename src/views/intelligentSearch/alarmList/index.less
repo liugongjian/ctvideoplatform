@@ -1,0 +1,120 @@
+.alarmListBox{
+    position: relative;
+    padding: 0 17px;
+    height: calc(100% - 52px);
+    overflow-y: scroll;
+    .nodataBox{
+        width: 100px;
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform:translate(-50%,-60%);
+        img{
+            width: 100%;
+            height: 100%;
+        }
+    }
+    .alarmDetail{
+        // height: 58px;
+        display: flex;
+        border-bottom: 1px solid #E8E8E8;
+        padding: 17px 0;
+        // line-height: 58px;
+        p{
+            margin: 0;
+        }
+        .alramDetailIcon{
+            width: 30px;
+            height: 30px;
+            margin-top: 8px;
+            font-size: 30px;
+            line-height: 30px;
+            text-align: center;
+            .algorithmIcon{
+                color:#4095E3
+            }
+            img{
+                width: 100%;
+                height: 100%;
+            }
+        }
+        .alarmDetailInfo{
+            margin-left: 10px;
+        }
+        .alarmDetailName{
+            font-size: 14px;
+            color: #333;
+        }
+        .alarmDetailType{
+            font-size: 12px;
+            padding: 0 5px;
+            color: #8c8c8c;
+        }
+        .alarmDetailTime{
+            font-size: 12px;
+            padding: 0 5px;
+            color: #8c8c8c;
+        }
+        .alarmDetailDeviceName{
+            font-size: 12px;
+            color: #8c8c8c;
+            margin-top: 5px;
+        }
+        .lookDetail{
+            margin-left: auto;
+            font-size: 12px;
+            color: #1890FF;
+            line-height: 3;
+            cursor: pointer;
+        }
+    }
+    
+}
+.alarmDetailModal{
+    .alarmListImg{
+        width: 480px;
+        position: relative;
+        margin-bottom: 5px;
+        img{
+            width: 100%;
+        }
+    }
+    .historyTopnoImage{
+        width: 100%;
+        height: 100px;
+        object-fit: contain;
+    }
+    .alarmModalName{
+        background: #FA8334;
+        padding: 5px 8px;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        color: #fff;
+    }
+    .AlarmCardTag{
+        display: inline-block;
+        width: 52px;
+        line-height: 18px;
+        height: 20px;
+        text-align: center;
+        border-radius:4px;
+        margin-left: 5px;
+        border: 1px solid #FFA39E;
+        &-WHITE{
+            color: #52c41a;
+            background: #f6ffed;
+            border-color: #b7eb8f;
+        }
+        &-BLACK{
+            color:#F5222D; 
+            border-color: #FFA39E;
+            background:#FFF1F0;
+        }
+        &-OTHER{
+            color:#1890FF ; 
+            border-color: #91D5FF;
+            background:#E6F7FF;
+        }
+    }
+}

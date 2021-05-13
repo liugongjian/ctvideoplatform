@@ -1,227 +1,231 @@
-/* eslint-disable eqeqeq */
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
 import React, { Component } from 'react';
-import {
-  Select,
-  DatePicker,
-  Spin,
-  message,
-  Input,
-} from 'antd';
-// import Map from 'Components/echarts/map';
 import { bindActionCreators } from 'redux';
-import math from 'Utils/math';
 import { connect } from 'react-redux';
 import {
-  getAlgoList, getDeviceTree, getAlarmList, delAlarmInfo
-} from 'Redux/reducer/alarms';
-import moment from 'moment';
-import NODATA_IMG from 'Assets/nodata.png';
-import Pagination from 'Components/EPagination';
-import AlarmCard from './alarmCard';
-import styles from '../index.less';
+  Modal
+} from 'antd';
+import {
+  getHistoryListTopTen
+} from 'Redux/reducer/preview';
+import EIcon from 'Components/Icon';
+import { urlPrefix } from 'Constants/Dictionary';
+import noImage from 'Assets/defaultFace.png';
+import nodata from 'Assets/nodata.png';
+import styles from './index.less';
 
-const mapStateToProps = state => ({ alarms: state.alarms });
+const mapStateToProps = state => ({ preview: state.preview });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    getAlgoList, getDeviceTree, getAlarmList, delAlarmInfo
+    getHistoryListTopTen,
   },
   dispatch
 );
 
-const initialVals = () => ({
-  startTime: moment().subtract('days', 7),
-  endTime: moment(),
-  deviceVal: [],
-  algoVal: [],
-  pageSize: 12,
-  current: 1,
-});
+const getImgUrl = (name) => {
+  const arr = [
+    'carPersonCheck', 'faceRecognize', 'plateRecognize', 'areaAlarm', 'stepWallCheck', 'peopleTraffic', 'plateTraffic', 'safetyHat',
+    'workingClothes', 'carTypeDetect', 'peopleCrowd', 'fightDetect', 'fallDownDetect', 'roadsideStall', 'wanderTarry', 'maskDetect'
+  ];
+  if (arr.indexOf(name) > -1) {
+    return require(`Assets/algorithmIcons/${name}.png`);
+  }
+  return require('Assets/algorithmIcons/default.png');
+};
 
-const timeFormat = 'YYYY-MM-DD HH:mm:ss';
-class Alarms extends Component {
-  constructor() {
-    super();
+const typeToText = {
+  PERSON: '行人',
+  CAR: '机动车',
+  NONVEHICLE: '非机动车',
+  OTHER: '其他'
+};
+
+const LABEL_PERSON = {
+  WHITE: '白名单', BLACK: '黑名单', OTHER: '陌生人'
+};
+
+const LABEL_CAR = {
+  WHITE: '白名单', BLACK: '黑名单', OTHER: '其他'
+};
+
+class AlarmList extends Component {
+  constructor(props) {
+    super(props);
     this.state = {
-      algoList: [],
-      algoListLoading: false,
-      deviceList: [],
-      deviceTree: [],
-      devicesLoading: false,
-      listData: [],
-      listLoading: false,
-      total: 0,
-      algorithmIdList: undefined,
-      keyword: '',
-      ...initialVals(),
+      alarmData: {},
+      recordsTotal: 0,
+      modalShowInfo: '',
+      ifShowModal: false
     };
+    this.timer = null;
   }
 
   componentDidMount() {
-    this.setState({
-      algoListLoading: true,
-      devicesLoading: true,
-    });
-    this.props.getAlgoList().then((res) => {
-      this.setState({
-        algoListLoading: false,
-        algoList: res,
-      });
-    }).catch((err) => {
-      this.setState({
-        algoListLoading: false,
-      });
-    });
-    this.getAlarms();
+    this.getAlarmData();
+    // this.setInter();
   }
 
-  getAlarms = () => {
-    this.setState({
-      listLoading: true,
-    });
-    const {
-      current,
-      pageSize,
-      algorithmIdList,
-      startTime, endTime, algoVal, deviceVal, deviceList
-    } = this.state;
+  componentWillUnmount() {
+    this.clearInter();
+  }
 
-    const params = {
-      pageNo: current - 1,
-      pageSize,
-      algorithmIdList: algoVal,
-      startTime: startTime.startOf('minute').format(timeFormat),
-      endTime: endTime.startOf('minute').format(timeFormat),
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   // console.log('nextProps', nextProps);
+  //   return false;
+  // }
+
+  getAlarmData = () => {
+    const { getHistoryListTopTen } = this.props;
+    // console.log('getHistoryListTopTen', getHistoryListTopTen);
+    const param = {
+      pageSize: 10,
+      pageNo: 0,
     };
-    const deviceOrAreaId = deviceVal ? deviceVal[deviceVal.length - 1] : undefined;
-    const item = deviceOrAreaId ? deviceList.find(({ id }) => id == deviceOrAreaId) : {};
-    if (item && item.type == 0) {
-      params.areaId = deviceOrAreaId;
-    } else if (item && item.type == 1) {
-      params.deviceId = deviceOrAreaId;
-    }
-    this.props.getAlarmList(params).then((res) => {
-      console.log('getAlarmList', res);
-      const {
-        list, recordsTotal, pageNo, pageSize, pageTotal,
-      } = res;
-      let current = pageNo + 1;
-      const maxPage = recordsTotal === 0
-        ? 1 : math.ceil(math.divide(recordsTotal, pageSize));
-      if (!list?.length && current > maxPage) {
-        current = maxPage;
-        this.onPageChange(current, pageSize);
+    getHistoryListTopTen(param).then((res) => {
+      const { recordsTotal } = this.state;
+      if (recordsTotal !== res.recordsTotal) {
+        this.setState({
+          alarmData: res
+        });
       }
-      this.setState({
-        listData: list,
-        total: recordsTotal,
-        listLoading: false,
-      });
-    }).catch((err) => {
-      console.log('getAlarmList-Error', err);
-      this.setState({
-        listLoading: false,
-      });
     });
   }
 
-  handleDel = (id) => {
-    this.props.delAlarmInfo(id).then((res) => {
-      message.success('删除成功');
-      this.getAlarms();
-    }).catch((err) => {
-      console.log('err', err);
+  setInter = () => {
+    this.timer = window.setInterval(() => {
+      this.getAlarmData();
+    }, 5000);
+  }
+
+  clearInter = () => {
+    window.clearInterval(this.timer);
+    this.timer = null;
+  }
+
+  detailModal = (val) => {
+    this.setState({
+      modalShowInfo: val,
+      ifShowModal: true
     });
   }
 
-  onDeviceChange = (val) => {
-    console.log('deviceChange: ', val);
-    this.setState({ deviceVal: val });
+  closeModal = () => {
+    this.setState({
+      ifShowModal: false
+    });
   }
 
-  onAlgoChange = (val) => {
-    console.log('onAlgoChange: ', val);
-    this.setState({ algoVal: val });
-  }
+  handleImageError = (e) => {
+    const image = e.target;
+    image.src = noImage;
+    image.className = styles.historyTopnoImage;
+    image.onerror = null;
+  };
 
-    onTimeChange = (value) => {
-      console.log('timeChange: ', value);
-      this.setState({
-        startTime: value[0],
-        endTime: value[1]
-      });
-    }
+  getTag = (title, type) => (
+    <span
+      className={`${styles.AlarmCardTag} ${styles[`AlarmCardTag-${type}`]}`}
+    >
+      {title}
+    </span>
+  )
 
-    onSearch = (value) => {
-      console.log('value', value);
-      this.getAlarms();
-    }
-
-    onReset = () => {
-      this.setState(initialVals(), this.getAlarms);
-    }
-
-    showTotal = total => (<span className={styles.totalText}>{`总条数： ${total}`}</span>)
-
-    onPageChange = (current, pageSize) => {
-      this.setState({
-        current,
-        pageSize,
-      }, this.getAlarms);
-    }
-
-    render() {
-      const {
-        listData, listLoading,
-        algoList, algoListLoading,
-        deviceTree, devicesLoading,
-        total, current, pageSize,
-        startTime, endTime, algoVal, deviceVal, keyword
-      } = this.state;
+  getTypeContent = (val) => {
+    if (val.face && val.face.label !== 'OTHER') {
       return (
-        <div>
-          <Spin spinning={listLoading} className={styles['intelligentSearch-listSpin']}>
-            <div className={styles['intelligentSearch-listWrapper']}>
-              {
-                listData.length > 0 || listLoading
-                  ? listData.map(item => (
-                    <AlarmCard
-                      key={item.id}
-                      data={item}
-                      onDelete={this.handleDel}
-                    />
-                  ))
-                  : (
-                    <div className={styles['intelligentSearch-listWrapper-nodata']}>
-                      <img src={NODATA_IMG} alt="" />
-                    </div>
-                  )
-              }
-            </div>
-          </Spin>
-          <div className={styles['intelligentSearch-paginationWrapper']}>
-            <Pagination
-              // size="small"
-              total={total}
-              current={current}
-              // pageSize={pageSize}
-              defaultPageSize={initialVals().pageSize}
-              onChange={this.onPageChange}
-              onShowSizeChange={this.onPageChange}
-              pageSizeOptions={['12', '24', '36', '48']}
-              pageSize={pageSize}
-              hideOnSinglePage={false}
-              showSizeChanger
-              showQuickJumper
-              showTotal={this.showTotal}
-            />
-          </div>
+        <div className={styles.historyTextName}>
+          <span>姓名：</span>
+          <span>
+            {val.face.username || '-'}
+          </span>
+          {this.getTag(LABEL_PERSON[val.face.label], val.face.label)}
         </div>
       );
     }
+    if (val.plate && val.plate.label !== 'OTHER') {
+      return (
+        <div className={styles.historyTextName}>
+          <span>车牌：</span>
+          <span>
+            {val.plate.licenseNo || '-'}
+          </span>
+          {this.getTag(LABEL_CAR[val.plate.label], val.plate.label)}
+        </div>
+      );
+    }
+    return false;
+  }
+
+  render() {
+    const { alarmData, ifShowModal, modalShowInfo } = this.state;
+    const getAlarmDom = () => (alarmData.list ? alarmData.list.map(item => (
+      <div key={item.id} className={styles.alarmDetail}>
+        <div className={styles.alramDetailIcon}>
+          {/** <img src={getImgUrl(item.algorithmName)} alt="" /> */}
+          <EIcon type={`myicon-algo-${item?.algorithmName} ${styles.algorithmIcon}`} alt="icon" />
+        </div>
+        <div className={styles.alarmDetailInfo}>
+          <p>
+            <span className={styles.alarmDetailName}>
+              {item.algorithmCnName}
+            </span>
+            <span className={styles.alarmDetailType}>
+              {typeToText[item.type]}
+            </span>
+            <span className={styles.alarmDetailTime}>
+              {item.resTime}
+            </span>
+          </p>
+          <p className={styles.alarmDetailDeviceName}>{item.deviceName}</p>
+        </div>
+        <div className={styles.lookDetail} onClick={() => this.detailModal(item)}>查看</div>
+      </div>
+    )) : (
+      <div className={styles.nodataBox}>
+        <img src={nodata} alt="" />
+      </div>
+    ));
+    return (
+      <div className={styles.alarmListBox}>
+        {
+          getAlarmDom()
+        }
+        <Modal
+          title="告警记录"
+          visible={ifShowModal}
+          onCancel={this.closeModal}
+          className={styles.pswModal}
+          forceRender
+          destroyOnClose
+          width="560px"
+          footer={null}
+          wrapClassName={styles.alarmDetailModal}
+        >
+          <div className={styles.alarmListImg}>
+            <img src={`${urlPrefix}${modalShowInfo.image}`} onError={this.handleImageError} alt="" />
+            <div className={styles.alarmModalName}>{modalShowInfo.algorithmCnName}</div>
+          </div>
+          <p>
+            告警时间：
+            <span>{modalShowInfo.resTime}</span>
+          </p>
+          <p>
+            告警区域：
+            <span>{modalShowInfo.areaPath}</span>
+          </p>
+          <p>
+            告警位置：
+            <span>{modalShowInfo.deviceName}</span>
+          </p>
+          {this.getTypeContent(modalShowInfo)}
+          <p>
+            告警规则：
+            <span>{modalShowInfo.controlRule}</span>
+          </p>
+        </Modal>
+      </div>
+    );
+  }
 }
-
-// Alarms.propTypes = {
-//   dashboard: PropTypes.object.isRequired,
-// };
-
-export default connect(mapStateToProps, mapDispatchToProps)(Alarms);
+export default connect(mapStateToProps, mapDispatchToProps)(AlarmList);

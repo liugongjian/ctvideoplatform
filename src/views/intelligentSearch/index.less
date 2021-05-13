@@ -54,19 +54,11 @@
         display: inline-block;
     }
     &-filterWrapper{
-        // background: rgba(0,0,0,0.03);
-        // width: 100%;
-        // height: 72px;
-        // padding: 20px;
         overflow:hidden;
         &-btnWrapper{
-            // float: right;
-            width: 300px;
+            float: right;
             display:inline-block;
             vertical-align: middle;
-            input{
-                width: 300px;
-            }
         }
     }
     &-tabs{
@@ -75,6 +67,19 @@
     }
     &-contentWrapper{
         height: 100%;
+        display: flex;
+        .subTitle{
+            margin: 20px 0px;
+            font-family: MicrosoftYaHei;
+            font-size: 16px;
+            color: #333333;
+        }
+        &-leftPart{
+            width: 70%;
+        }
+        &-rightPart{
+            width: 30%;
+        }
     }
     &-paginationWrapper{
         position: absolute;

@@ -42,7 +42,7 @@ const proxyServer = {
     changeOrigin: true
   },
   '/zhoulingpeng': {
-    target: 'http://192.168.4.199:8670',
+    target: 'http://192.168.4.207:8670',
     pathRewrite: {
       '^/zhoulingpeng': ''
     },
