@@ -9,9 +9,8 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 // import { getSummary, getMonitorMetric } from 'Redux/reducer/monitor';
-import { getMarkers } from 'Redux/reducer/intelligentSearch';
-import AlarmList from './alarmList/alarmList';
-import MapTrack from './mapTrack/mapTrack';
+import Step3 from './step3';
+import Step1 from './step1';
 
 import styles from './index.less';
 
@@ -19,9 +18,7 @@ const { Search } = Input;
 const { Option } = Select;
 const mapStateToProps = state => ({ monitor: state.monitor });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  {
-    getMarkers
-  },
+  { },
   dispatch
 );
 
@@ -35,7 +32,7 @@ const searchTypes = [
     label: '车牌号'
   }
 ];
-class CameraDetail extends Component {
+class IntelligentSearch extends Component {
   constructor() {
     super();
     this.state = {
@@ -46,7 +43,6 @@ class CameraDetail extends Component {
 
   componentDidMount() {
     // ajax code
-    this.props.getMarkers();
   }
 
   onSearch = (e) => {
@@ -65,42 +61,15 @@ class CameraDetail extends Component {
   render() {
     const { keyword, searchType } = this.state;
     return (
-      <div className={styles.intelligentSearch}>
-        <div className={styles['intelligentSearch-filterWrapper']}>
-          <span className={styles['intelligentSearch-filterWrapper-btnWrapper']}>
-            <Select onChange={this.onSelectChange} value={searchType} style={{ width: '100px' }}>
-              {
-                searchTypes.map(
-                  item => <Option key={item.value} value={item.value}>{item.label}</Option>
-                )
-              }
-            </Select>
-            <span style={{ display: 'inline-block', width: '10px' }} />
-            <Search
-              style={{ width: '300px' }}
-              onChange={this.onSearch}
-              placeholder={`请输入${searchTypes.find(item => item.value === searchType)?.label}`}
-              value={keyword}
-            />
-          </span>
-        </div>
-        <div className={styles['intelligentSearch-contentWrapper']}>
-          <div className={styles['intelligentSearch-contentWrapper-leftPart']}>
-            <div className={styles.subTitle}>轨迹追踪</div>
-            <MapTrack />
-          </div>
-          <div className={styles['intelligentSearch-contentWrapper-rightPart']}>
-            <div className={styles.subTitle}>告警信息</div>
-            <AlarmList />
-          </div>
-        </div>
+      <div className={styles.intelligentSearchWrapper}>
+        <Step1 />
       </div>
     );
   }
 }
 
-CameraDetail.propTypes = {
+IntelligentSearch.propTypes = {
 //   monitor: PropTypes.object.isRequired
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CameraDetail);
+export default connect(mapStateToProps, mapDispatchToProps)(IntelligentSearch);
