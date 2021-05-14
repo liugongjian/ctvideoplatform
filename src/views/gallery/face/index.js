@@ -101,15 +101,15 @@ class Face extends Component {
       });
       getFaceList(data).then((res) => {
         let faceDataTemp = [];
-        faceDataTemp = res.list && res.list.map((item) => {
+        faceDataTemp = res?.list && res?.list.map((item) => {
           item.isChecked = false;
           return item;
         });
         this.setState({
           faceData: faceDataTemp,
-          total: res.recordsTotal,
-          pageNum: res.pageNo + 1,
-          pageSize: res.pageSize,
+          total: res?.recordsTotal,
+          pageNum: res?.pageNo + 1,
+          pageSize: res?.pageSize,
           loading: false
         });
       });
