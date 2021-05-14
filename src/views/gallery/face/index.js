@@ -548,7 +548,7 @@ class Face extends Component {
                     rules: [
                       { required: true, message: '姓名不能为空' },
                       { max: 30, message: '姓名不得超过30个字符' },
-                      { pattern: new RegExp(/\S/), message: '姓名不能为空' }
+                      { pattern: /^[A-Za-z0-9\u4e00-\u9fa5]+$/, message: '姓名只能是汉字和字母以及数字并且不能包含空字符' }
                     ],
                     validateTrigger: 'onBlur'
                   })(
