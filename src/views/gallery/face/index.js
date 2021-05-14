@@ -494,7 +494,7 @@ class Face extends Component {
                           {
                             item.syncStatusCode !== 1 ? (
                               <div className={styles.faceTip}>
-                                {item.syncStatusCode === 0 ? '人脸录入失败' : '人脸录入中'}
+                                {item.syncStatusCode === 2 ? '人脸录入中' : '人脸录入失败'}
                               </div>
                             ) : ''
                           }
