@@ -25,6 +25,7 @@ import nodata from 'Assets/nodata.png';
 import noImage from 'Assets/defaultFace.png';
 import VideoPlayer from './VideoPlayer';
 import FlvPlayer from './FlvPlayer';
+import PlayComponent from './PlayComponent';
 import styles from './index.less';
 
 const mapStateToProps = state => ({ preview: state.preview });
@@ -607,7 +608,10 @@ class Preview extends PureComponent {
                         {' '}
                         {videoName}
                       </div>
-                      <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={this.clearVideo} />
+                      <EIcon
+                        type={`${styles.videoCancelBtn} myicon-cancel`}
+                        onClick={this.clearVideo}
+                      />
                     </div>
                     {/* <VideoPlayer
                       src={videoSrc}
@@ -620,6 +624,11 @@ class Preview extends PureComponent {
                       appliedTraffic={appliedTraffic}
                     />
                   </Fragment>
+                  /**  <PlayComponent
+                    src={videoSrc}
+                    pointsInfo={pointsInfo}
+                    appliedTraffic={appliedTraffic}
+                  /> */
                 )
                 : getImg()}
 
