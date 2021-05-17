@@ -138,8 +138,11 @@ class Preview extends PureComponent {
           }
         }
       } = this.props;
+      const deviceInfo = JSON.parse(window.sessionStorage.getItem('deviceInfo'));
       if (curDevice) {
         this.doubleClickHandle(undefined, curDevice);
+      } else if (deviceInfo) {
+        this.doubleClickHandle(undefined, deviceInfo);
       }
     }
 
@@ -173,6 +176,7 @@ class Preview extends PureComponent {
           tempTotal: -1,
           historyID: val.id
         }, () => {
+          window.sessionStorage.setItem('deviceInfo', JSON.stringify(val));
           this.getHistory();
           this.getCurrentDay();
           this.getVideoSrc(val.id, val.name);
