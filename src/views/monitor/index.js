@@ -943,6 +943,7 @@ class Monitor extends Component {
       showSizeChanger: true,
       pageSizeOptions: ['10', '20', '30', '40'],
       onShowSizeChange: this.changePageSize,
+      hideOnSinglePage: false
     };
 
     const modalPagination = {
