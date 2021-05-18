@@ -98,6 +98,7 @@ class BasicSetting extends Component {
           latitude,
           longitude,
         }).then((res) => {
+          window.sessionStorage.removeItem('deviceInfo');
           message.success('修改成功');
           this.initData();
         }).catch((err) => {

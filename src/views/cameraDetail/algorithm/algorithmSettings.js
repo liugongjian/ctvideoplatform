@@ -165,6 +165,7 @@ class AlgorithmSetting extends Component {
     if (!checked) {
       delAlgoConf(cameraId, id, name).then((res) => {
         this.initData();
+        window.sessionStorage.removeItem('deviceInfo');
         message.success('删除成功');
       });
     }

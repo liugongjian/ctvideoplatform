@@ -263,6 +263,7 @@ class CameraDetail extends Component {
     postApi(cameraId, curAlgo, postData).then((res) => {
       console.log('res', res);
       message.success('提交成功');
+      window.sessionStorage.removeItem('deviceInfo');
       this.setState({ aiParams: [] });
       this.props.closeModal();
     }).catch((err) => {
