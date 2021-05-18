@@ -32,13 +32,13 @@ import {
   ALGO_CONFIG_TYPE,
   DIRECTION_OPTIONS, // 人流方向
   TIME_INTERVAL, // 判定周期
+  AlgoDisableTime,
 } from '../constants';
 
 import styles from '../index.less';
 
 const { Option } = Select;
 const timeFormat = 'HH:mm';
-
 const { TabPane } = Tabs;
 const mapStateToProps = state => ({ monitor: state.monitor });
 const mapDispatchToProps = dispatch => bindActionCreators(
@@ -187,6 +187,10 @@ class CameraDetail extends Component {
       areas, timeSetting, ruleConfig, timeType, timeInterval,
       streamDirection,
     } = this.state;
+    const {
+      setAlgoEditDisable, algoEditDisable
+    } = this.props;
+
     console.log('areas', areas);
     const {
       curAlgo,
@@ -195,6 +199,7 @@ class CameraDetail extends Component {
       updateAlgoConf,
       configTypes,
     } = this.props;
+    setAlgoEditDisable(curAlgo.algorithmId, true);
     const postData = {};
     const { isPick } = curAlgo;
     // 当前已选中则是更新，否则为新增
@@ -263,6 +268,8 @@ class CameraDetail extends Component {
     postApi(cameraId, curAlgo, postData).then((res) => {
       console.log('res', res);
       message.success('提交成功');
+      // 5s内对同一算法不能二次操作
+      setTimeout(() => setAlgoEditDisable(curAlgo.algorithmId, false), AlgoDisableTime);
       window.sessionStorage.removeItem('deviceInfo');
       this.setState({ aiParams: [] });
       this.props.closeModal();
@@ -401,7 +408,7 @@ class CameraDetail extends Component {
 
   render() {
     const {
-      visible, configTypes, curAlgo
+      visible, configTypes, curAlgo, algoEditDisable
     } = this.props;
     const {
       areas = [],
@@ -426,7 +433,7 @@ class CameraDetail extends Component {
     })();
     const footer = (
       <div className={styles.delModalFooter}>
-        <Button type="primary" onClick={this.handleOk}>确定</Button>
+        <Button type="primary" onClick={this.handleOk} disabled={algoEditDisable && algoEditDisable[curAlgo?.algorithmId]}>确定</Button>
         <span className={styles.span20px} />
         <Button onClick={this.handleCancel}>取消</Button>
       </div>
