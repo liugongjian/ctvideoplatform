@@ -44,11 +44,25 @@ class MapTrack extends Component {
 
   render() {
     const { markers } = this.state;
+    const mapEvents = {
+      created: (el) => {
+        this.mapEl = el;
+      },
+      complete: () => {
+        // 地图自适应显示到合适的范围内,点标记全部显示在视野中。
+        this.mapEl.setFitView();
+      }
+    };
     return (
       <div className={styles.MapTrack}>
-        <div style={{ width: '900px', height: '600px' }}>
+        <div style={{ width: '100%', height: '100%' }}>
           {/* <AMap key="112" /> */}
-          <Map amapkey={AMAP_KEY} plugins={['ToolBar']} center={this.state.center} zoom={6}>
+          <Map
+            amapkey={AMAP_KEY}
+            plugins={['ToolBar']}
+            center={this.state.center}
+            events={mapEvents}
+          >
             <Markers
               markers={markers.map(item => ({ position: item }))}
             />
