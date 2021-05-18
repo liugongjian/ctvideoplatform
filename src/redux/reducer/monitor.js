@@ -230,7 +230,7 @@ export function getList(pid, keyword) {
   if (keyword) {
     return {
       type: [GET_LIST, GET_LIST_SUCCESS, GET_LIST_FAIL],
-      promise: apiClient => apiClient.get(`${urlPrefix}/area/list/${pid}/?keyword=${keyword}`)
+      promise: apiClient => apiClient.get(`${urlPrefix}/area/list/${pid}/?keyword=${encodeURI(keyword)}`)
     };
   }
   return {
