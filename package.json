@@ -88,6 +88,7 @@
     "mathjs": "^9.1.0",
     "memoize-one": "^5.1.1",
     "moment": "^2.22.2",
+    "mux.js": "^5.11.0",
     "pre-commit": "^1.2.2",
     "prop-types": "^15.6.2",
     "raf": "^3.4.1",
