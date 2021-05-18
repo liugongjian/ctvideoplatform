@@ -66,7 +66,7 @@ class SearchStep3 extends Component {
     const { keyword, searchType } = this.state;
     return (
       <div className={styles.intelligentSearch}>
-        <div className={styles['intelligentSearch-filterWrapper']}>
+        {/* <div className={styles['intelligentSearch-filterWrapper']}>
           <span className={styles['intelligentSearch-filterWrapper-btnWrapper']}>
             <Select onChange={this.onSelectChange} value={searchType} style={{ width: '100px' }}>
               {
@@ -83,7 +83,7 @@ class SearchStep3 extends Component {
               value={keyword}
             />
           </span>
-        </div>
+        </div> */}
         <div className={styles['intelligentSearch-contentWrapper']}>
           <div className={styles['intelligentSearch-contentWrapper-leftPart']}>
             <div className={styles.subTitle}>轨迹追踪</div>
