@@ -80,7 +80,6 @@ class Contents extends Component {
 
   menuClick = (param) => {
     const { item, key } = param;
-    console.log('item', item, 'key', key === '1');
     if (key === '1') {
       this.setState({
         showChangeModal: true

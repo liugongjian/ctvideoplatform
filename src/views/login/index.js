@@ -49,6 +49,7 @@ class Login extends Component {
           validate,
         }).then((data) => {
           if (data && data.username) {
+            window.sessionStorage.removeItem('deviceInfo');
             push('/');
           } else {
             this.refreshImg();
