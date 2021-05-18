@@ -1,0 +1,326 @@
+.content {
+  display: flex;
+  background: #fff;
+  height: calc(100% - 20px);
+  margin: 10px;
+}
+.areaBox {
+  width: 240px;
+  height: calc(100% - 90px);
+  padding: 10px 10px 20px;
+  -moz-user-select: none;
+  /*火狐*/
+  -webkit-user-select: none;
+  /*webkit浏览器*/
+  -ms-user-select: none;
+  /*IE10*/
+  -khtml-user-select: none;
+  /*早期浏览器*/
+  user-select: none;
+  /*取消双击选中文字*/
+}
+.areaBox :global .ant-tree {
+  font-size: 12px;
+}
+.areaBox :global .ant-select {
+  margin-top: 10px;
+}
+.areaBox :global .ant-tree li .ant-tree-node-content-wrapper {
+  padding: 0;
+}
+.areaBox :global .ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected {
+  background-color: #bfe5ff;
+}
+.areaBox :global .ant-tree.ant-tree-block-node li .ant-tree-node-content-wrapper {
+  width: auto;
+  padding-right: 8px;
+}
+.areaBox h2 {
+  font-size: 16px;
+}
+.areaBox .areaList {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+.areaBox .areaList .treeNameById {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+.areaBox .monitorOnline {
+  color: #fa8334;
+}
+.areaBox .monitorOffline {
+  color: #8c8c8c;
+}
+.videoBox {
+  flex: 1;
+  padding: 10px;
+  height: 100%;
+  position: relative;
+}
+.videoBox .switchBox {
+  margin: 30px 0 30px 0;
+}
+.videoBox .switchBox > div {
+  float: right;
+}
+.videoBox .switchBox::after {
+  display: block;
+  clear: both;
+  content: "";
+  visibility: hidden;
+  height: 0;
+}
+.videoBox .videoHandle {
+  display: none;
+}
+.videoBox:hover .videoHandle {
+  position: absolute;
+  width: calc(100% - 20px);
+  top: 103px;
+  height: 30px;
+  line-height: 30px;
+  opacity: 0.5;
+  background: #000;
+  display: flex;
+  z-index: 99;
+  color: #fff;
+}
+.videoBox:hover .videoHandle span {
+  line-height: 30px;
+}
+.videoBox:hover .videoHandle span:first-child {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.videoBox:hover .videoHandle span:last-child {
+  margin-left: auto;
+  margin-right: 10px;
+}
+.videoBox:hover .videoHandle .videoCancelBtn {
+  cursor: pointer;
+}
+.videoBox:hover .videoHandle .videoMonitoring {
+  color: #53ff00;
+}
+.videoBox .allStatusBox {
+  width: 100%;
+  height: calc(100% - 80px);
+  background: #000;
+  position: relative;
+}
+.videoBox .allStatusBox p {
+  font-size: 16px;
+  color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.videoBox .nostatusBox {
+  width: 80%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+}
+.videoBox .nostatusBox img {
+  width: 100%;
+  height: 300px;
+  object-fit: contain;
+}
+.videoBox .nostatusBox p {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 12px;
+  color: #8c8c8c;
+}
+.videoBox .nodataBox {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+}
+.historyList {
+  position: relative;
+  width: 240px;
+  background: #fff;
+  height: 100%;
+  padding: 10px 0;
+  overflow: auto;
+}
+.historyList .historyTitle {
+  display: flex;
+}
+.historyList .historyTitle a {
+  margin-left: 100px;
+}
+.historyList .peopleAreaTotal a {
+  margin-left: 90px;
+}
+.historyList p {
+  margin: 0;
+  font-size: 12px;
+  color: #333;
+}
+.historyList .peopleAreaNum {
+  margin-bottom: 10px;
+}
+.historyList .peopleAreaNum div {
+  margin: 10px 10px 0 0;
+  font-size: 12px;
+  border: 1px solid #f9f9f9;
+  display: flex;
+}
+.historyList .peopleAreaNum span {
+  display: inline-block;
+}
+.historyList .peopleAreaNum .peopleAreaKind {
+  padding: 10px 20px;
+  background-color: #d9d9d9;
+}
+.historyList .peopleAreaNum .peopleAreaAll {
+  flex: 1;
+  text-align: center;
+  padding-top: 10px;
+}
+.historyList .historyCard :global .ant-card-body {
+  padding: 10px;
+  background-color: #ededed;
+}
+.historyList .historyCard .historyListCard {
+  text-align: center;
+}
+.historyList .historyCard .historyTopnoImage {
+  width: 100%;
+  height: 100px;
+  object-fit: contain;
+}
+.historyList .historyCard .historyTextBox {
+  display: flex;
+  font-size: 12px;
+  color: #333;
+}
+.historyList .historyCard .historyTextBox span {
+  display: inline-block;
+}
+.historyList .historyCard .historyTime {
+  margin-left: auto;
+  color: #8c8c8c;
+}
+.historyList .historyCard .historyTextName {
+  font-size: 12px;
+  display: flex;
+}
+.historyList .historyCard .historyTextName .AlarmCardTag {
+  display: inline-block;
+  width: 52px;
+  line-height: 18px;
+  height: 20px;
+  text-align: center;
+  border-radius: 4px;
+  margin-left: 5px;
+  border: 1px solid #ffa39e;
+}
+.historyList .historyCard .historyTextName .AlarmCardTag-WHITE {
+  color: #52c41a;
+  background: #f6ffed;
+  border-color: #b7eb8f;
+}
+.historyList .historyCard .historyTextName .AlarmCardTag-BLACK {
+  color: #f5222d;
+  border-color: #ffa39e;
+  background: #fff1f0;
+}
+.historyList .historyCard .historyTextName .AlarmCardTag-OTHER {
+  color: #1890ff;
+  border-color: #91d5ff;
+  background: #e6f7ff;
+}
+.historyList .historyCard .nodataBox {
+  width: 100px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+}
+.historyList .historyCard .nodataBox img {
+  width: 100%;
+  height: 100%;
+}
+.alarmDetailModal .alarmListImg {
+  width: 480px;
+  position: relative;
+  margin-bottom: 5px;
+}
+.alarmDetailModal .alarmListImg img {
+  width: 100%;
+}
+.alarmDetailModal .historyTopnoImage {
+  width: 100%;
+  height: 100px;
+  object-fit: contain;
+}
+.alarmDetailModal .alarmModalName {
+  background: #fa8334;
+  padding: 5px 8px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  color: #fff;
+}
+.alarmDetailModal .AlarmCardTag {
+  display: inline-block;
+  width: 52px;
+  line-height: 18px;
+  height: 20px;
+  text-align: center;
+  border-radius: 4px;
+  margin-left: 5px;
+  border: 1px solid #ffa39e;
+}
+.alarmDetailModal .AlarmCardTag-WHITE {
+  color: #52c41a;
+  background: #f6ffed;
+  border-color: #b7eb8f;
+}
+.alarmDetailModal .AlarmCardTag-BLACK {
+  color: #f5222d;
+  border-color: #ffa39e;
+  background: #fff1f0;
+}
+.alarmDetailModal .AlarmCardTag-OTHER {
+  color: #1890ff;
+  border-color: #91d5ff;
+  background: #e6f7ff;
+}
+.chartsDetailModal .chartsModalBox {
+  width: 700px;
+  height: 380px;
+}
+.chartsDetailModal .modalPeopleInfo span {
+  cursor: pointer;
+  display: inline-block;
+  width: 63px;
+  font-size: 14px;
+  text-align: center;
+  height: 32px;
+  line-height: 32px;
+  color: #8c8c8c;
+  border: 1px solid #d9d9d9;
+  -webkit-user-select: none;
+  /* Safari */
+  -ms-user-select: none;
+  /* IE 10 and IE 11 */
+  user-select: none;
+  /* Standard syntax */
+}
+.chartsDetailModal .modalPeopleInfo span.btnActive {
+  color: #1890ff;
+  border-color: #1890ff;
+}
+.chartsDetailModal .modalChartsInfo {
+  height: 340px;
+}

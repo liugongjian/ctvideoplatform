@@ -48,6 +48,7 @@ import Dashboard from 'Views/dashboard';
 import DefaultPage from 'Views/defaultPage';
 import Monitor from 'Views/monitor';
 import Preview from 'Views/preview';
+import Playback from 'Views/playback';
 
 import Role from 'Views/role';
 import RoleEdit from 'Views/role/roleedit';
@@ -151,7 +152,7 @@ const menuRoutes = [
         path: '/realtime',
         exact: true,
         pageTitle: '实时预览',
-        component: Preview,
+        component: Playback,
       },
       {
         path: '/replay',
