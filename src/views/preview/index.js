@@ -25,7 +25,6 @@ import nodata from 'Assets/nodata.png';
 import noImage from 'Assets/defaultFace.png';
 import VideoPlayer from './VideoPlayer';
 import FlvPlayer from './FlvPlayer';
-import PlayComponent from './PlayComponent';
 import styles from './index.less';
 
 const mapStateToProps = state => ({ preview: state.preview });
@@ -81,7 +80,9 @@ class Preview extends PureComponent {
       tempTrafficExit: -1,
       traffiInfoData: {},
       sourceType: 1,
-      appliedTraffic: false
+      appliedTraffic: false,
+      videoSquare: {},
+      showSquaredDom: 1
     };
     this.mychart = null;
   }
@@ -160,26 +161,55 @@ class Preview extends PureComponent {
 
     doubleClickHandle = (e, val) => {
       this.clearTimer();
-      if (val.online) {
-        this.setState({
-          selectAreaKeys: [val.id],
-          videoSrc: null,
-          tempTotal: -1,
-          historyID: val.id
-        }, () => {
-          this.getHistory();
-          this.getCurrentDay();
-          this.getVideoSrc(val.id, val.name);
-          this.getPeopleArea(val.id);
-          this.setIntervalTimer();
-        });
-      } else {
-        this.setState({
-          selectAreaKeys: [val.id],
-          videoSrc: null,
-          showText: '设备已离线',
-          historyListData: {}
-        });
+      const { videoSrcOrder, showSquaredDom } = this.state;
+      if (showSquaredDom === 1) {
+        if (val.online) {
+          this.setState({
+            selectAreaKeys: [val.id],
+            videoSrc: null,
+            tempTotal: -1,
+            historyID: val.id
+          }, () => {
+            this.getHistory();
+            this.getCurrentDay();
+            this.getVideoSrc(val.id, val.name);
+            this.getPeopleArea(val.id);
+            this.setIntervalTimer();
+          });
+        } else {
+          this.setState({
+            selectAreaKeys: [val.id],
+            videoSrc: null,
+            showText: '设备已离线',
+            historyListData: {}
+          });
+        }
+      } else if (showSquaredDom === 4) {
+        const { videoSquare } = this.state;
+        if (val.online && videoSrcOrder) {
+          // eslint-disable-next-line no-multi-assign
+          const temp = {
+            [`videoSrc${videoSrcOrder}`]: {
+              ...val,
+              src: ''
+            }
+          };
+          videoSquare[`videoSrc${videoSrcOrder}`] = temp[[`videoSrc${videoSrcOrder}`]];
+          console.log('tempObj--->', temp);
+          this.setState({
+            selectAreaKeys: [val.id],
+            [`videoSrc${videoSrcOrder}`]: null,
+            videoSquare: { ...videoSquare },
+            tempTotal: -1,
+            historyID: val.id
+          }, () => {
+            this.getHistory();
+            this.getCurrentDay();
+            this.getVideoSrc(val.id, val.name);
+            this.getPeopleArea(val.id);
+            this.setIntervalTimer();
+          });
+        }
       }
     }
 
@@ -263,34 +293,65 @@ class Preview extends PureComponent {
 
     getVideoSrc = (id, name) => {
       const { getVideoSrc } = this.props;
-      this.setState({
-        showText: '加载中...'
-      }, () => {
-        getVideoSrc(id).then((res) => {
-          if (res && res.flvuri) {
-            this.setState({
-              // videoSrc: res.m3u8uri,
-              videoSrc: res.flvuri,
-              noVideo: false,
-              videoName: name,
-              showText: '无信号'
-            }, () => {
-              window.clearTimeout(this.timer);
-              this.timer = null;
-            });
-          } else {
-            this.setState({
-              videoSrc: '',
-              noVideo: true,
-              videoName: '',
-              showText: '无信号'
-            }, () => {
-              window.clearTimeout(this.timer);
-              this.timer = null;
-            });
-          }
+      const { videoSrcOrder, showSquaredDom, videoSquare } = this.state;
+      if (showSquaredDom === 1) {
+        this.setState({
+          showText: '加载中...'
+        }, () => {
+          getVideoSrc(id).then((res) => {
+            if (res && res.flvuri) {
+              this.setState({
+                videoSrc: res.flvuri,
+                noVideo: false,
+                videoName: name,
+                showText: '无信号'
+              }, () => {
+                console.log(this.state);
+                window.clearTimeout(this.timer);
+                this.timer = null;
+              });
+            } else {
+              this.setState({
+                videoSrc: '',
+                noVideo: true,
+                videoName: '',
+                showText: '无信号'
+              }, () => {
+                window.clearTimeout(this.timer);
+                this.timer = null;
+              });
+            }
+          });
         });
-      });
+      } else if (showSquaredDom === 4) {
+        const temp = {
+          [`videoSrc${videoSrcOrder}`]: {
+            ...videoSquare,
+            showText: '加载中...'
+          }
+        };
+        videoSquare[`videoSrc${videoSrcOrder}`] = temp[`videoSrc${videoSrcOrder}`];
+        this.setState({
+          videoSquare: { ...videoSquare }
+        }, () => {
+          getVideoSrc(id).then((res) => {
+            if (res && res.flvuri) {
+              const tempObj = {
+                [`videoSrc${videoSrcOrder}`]: {
+                  ...videoSquare,
+                  showText: '',
+                  src: res.flvuri
+                }
+              };
+              videoSquare[`videoSrc${videoSrcOrder}`] = tempObj[`videoSrc${videoSrcOrder}`];
+              this.setState({
+                videoSquare: { ...videoSquare }
+              });
+            }
+          });
+        });
+        // console.log('videoSquare=====>', videoSquare);
+      }
     }
 
     clearVideo = () => {
@@ -516,12 +577,99 @@ class Preview extends PureComponent {
         }, () => this.initChartsData());
       }
 
+      changeDomSquared = (showSquaredDom) => {
+        this.setState({
+          showSquaredDom
+        });
+      }
+
+      getImg = () => {
+        const { showText } = this.state;
+        return (
+          <div className={styles.allStatusBox}>
+            <p>{showText}</p>
+          </div>
+        );
+      };
+
+      changeVideoOrder = (val) => {
+        // const videoSrc = `videoSrc${val}`
+        this.setState({
+          // [`videoSrc${val}`]
+          videoSrcOrder: val
+        });
+      }
+
+      getAddIconDom = (val) => {
+        const { videoSquare, videoSrcOrder } = this.state;
+        if (videoSquare[`videoSrc${val}`] && videoSquare[`videoSrc${val}`].src) {
+          return (
+            <div className={styles.allStatusBox}>
+              <FlvPlayer
+                src={videoSquare[`videoSrc${val}`].src}
+              // pointsInfo={pointsInfo}
+              // appliedTraffic={appliedTraffic}
+              />
+            </div>
+          );
+        }
+        return (
+          <div className={styles.allStatusBox}>
+            <Button icon="plus" className={styles.addVideoIconBtn} onClick={() => { this.changeVideoOrder(val); }} />
+          </div>
+        );
+      }
+
+      getDomSquared = () => {
+        const {
+          showSquaredDom, videoSrc, videoName, pointsInfo, appliedTraffic
+        } = this.state;
+        if (showSquaredDom === 1) {
+          return videoSrc
+            ? (
+              <Fragment>
+                <div className={styles.videoHandle}>
+                  <EIcon type={`${styles.videoMonitoring} myicon-monitoring`} />
+                  <div>
+                    监控点位
+                    {' '}
+                    {videoName}
+                  </div>
+                  <EIcon
+                    type={`${styles.videoCancelBtn} myicon-cancel`}
+                    onClick={this.clearVideo}
+                  />
+                </div>
+                {/* <VideoPlayer
+        src={videoSrc}
+        pointsInfo={pointsInfo}
+        appliedTraffic={appliedTraffic}
+      /> */}
+                <FlvPlayer
+                  src={videoSrc}
+                  pointsInfo={pointsInfo}
+                  appliedTraffic={appliedTraffic}
+                />
+              </Fragment>
+            )
+            : this.getImg();
+        } if (showSquaredDom === 4) {
+          const tempArr = [1, 2, 3, 4];
+          return (
+            <div className={styles.videoSquaredByFour}>
+              {tempArr.map(item => this.getAddIconDom(item))}
+            </div>
+          );
+        }
+      }
+
       render() {
         const {
           treeDatas, selectAreaKeys, expandedKeys, algorithmList = [],
           videoSrc, historyListData, imgDialogVisible, imgDialogSrc,
           noVideo, videoName, showText, modalShowInfo, pointsInfo,
-          ifShowMoreDialog, traffiInfoData, historyID, sourceType, appliedTraffic
+          ifShowMoreDialog, traffiInfoData, historyID, sourceType, appliedTraffic,
+          showSquaredDom
         } = this.state;
 
         const { preview: { loading }, push } = this.props;
@@ -598,39 +746,11 @@ class Preview extends PureComponent {
               </div>
             </div>
             <div className={styles.videoBox}>
-              {videoSrc
-                ? (
-                  <Fragment>
-                    <div className={styles.videoHandle}>
-                      <EIcon type={`${styles.videoMonitoring} myicon-monitoring`} />
-                      <div>
-                        监控点位
-                        {' '}
-                        {videoName}
-                      </div>
-                      <EIcon
-                        type={`${styles.videoCancelBtn} myicon-cancel`}
-                        onClick={this.clearVideo}
-                      />
-                    </div>
-                    {/* <VideoPlayer
-                      src={videoSrc}
-                      pointsInfo={pointsInfo}
-                      appliedTraffic={appliedTraffic}
-                    /> */}
-                    <FlvPlayer
-                      src={videoSrc}
-                      pointsInfo={pointsInfo}
-                      appliedTraffic={appliedTraffic}
-                    />
-                  </Fragment>
-                  /**  <PlayComponent
-                    src={videoSrc}
-                    pointsInfo={pointsInfo}
-                    appliedTraffic={appliedTraffic}
-                  /> */
-                )
-                : getImg()}
+              <div>
+                <Button onClick={() => this.changeDomSquared(1)}>一</Button>
+                <Button onClick={() => this.changeDomSquared(4)}>四</Button>
+              </div>
+              {this.getDomSquared()}
 
             </div>
             <div className={styles.historyList}>
