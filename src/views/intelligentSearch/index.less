@@ -40,99 +40,62 @@
         }
     }
 }
-.alarms{
+.intelligentSearchWrapper{
     min-width: 960px;
     height: calc(100vh - 72px);
     position:relative;
     background-color: white;
     min-height: calc(100% - 30px);
     margin: 10px 10px 20px 10px;
-    padding: 20px 20px 72px 20px;
+    padding: 20px 20px 45px 20px;
     border-radius: 2px;
+    .steps-action{
+        position: absolute;
+        bottom: 10px;
+        width:100%;
+        text-align: center;
+    }
+}
+.intelligentSearch{
+    width: 100%;
+    height: calc(100vh - 180px);
     .span10px{
         width: 10px;
         display: inline-block;
     }
     &-filterWrapper{
-        // background: rgba(0,0,0,0.03);
-        // width: 100%;
-        // height: 72px;
-        // padding: 20px;
         overflow:hidden;
-        margin-bottom: 20px;
         &-btnWrapper{
             float: right;
+            display:inline-block;
             vertical-align: middle;
-            input{
-                width: 200px;
-            }
-        }
-        &-inner{
-            width: 100%;
-            height: 32px;
-            &>div, &>span{
-                vertical-align: top;
-            }
         }
     }
-    &-listWrapper{
-        width: 100%;
-        height: calc(100vh - 250px);
-        overflow-y: auto;
-        .AlarmCard{
-            margin-bottom: 20px;
-            &:hover{
-                box-shadow: 0 2px 4px 0 rgba(0,0,0,.15);
-            }
+    &-tabs{
+        padding:0;
+        height:100%;
+    }
+    &-contentWrapper{
+        height: 100%;
+        display: flex;
+        .subTitle{
+            margin: 20px 0px;
+            font-family: MicrosoftYaHei;
+            font-size: 16px;
+            color: #333333;
         }
-        &-nodata{
-            width: 100%;
-            height: calc(100vh - 250px);
-            line-height: calc(100vh - 250px);
-            text-align: center;
-            background-color: #f6f6f6;
-            img{
-                height: 150px;
-            }
+        &-leftPart{
+            width: 70%;
+            height: 100%;
         }
-        @media screen and (min-width: 1701px) {
-            .AlarmCard{
-                height: 300px;
-                width: calc((100% - 15px * 5) / 6 );
-                &-imgWrapper{
-                    height: 170px;
-                    line-height: 170px;
-                }
-            }
-            .AlarmCard:not(:nth-of-type(6n+0)){
-                margin-right:15px;
-            }
+        &-rightPart{
+            width: 30%;
+            height: 100%;
         }
-        @media screen and (max-width: 1700px) {
-            .AlarmCard{
-                height: 270px;
-                width: calc((100% - 15px * 3) / 4 );
-                &-imgWrapper{
-                    height: 140px;
-                    line-height: 140px;
-                }
-            }
-            .AlarmCard:not(:nth-of-type(4n+0)){
-                margin-right:15px;
-            }
-        }
-        // @media screen and (max-width: 1400px) {
-        //     .AlarmCard{
-        //         width: calc((100% - 15px * 2) / 3 );
-        //     }
-        //     .AlarmCard:not(:nth-of-type(3n+0)){
-        //         margin-right:15px;
-        //     }
-        // }
     }
     &-paginationWrapper{
         position: absolute;
-        width: calc(100% - 40px);
+        width: 100%;
         bottom: 10px;
         // text-align: right;
         // :global{
@@ -172,6 +135,10 @@
             height: 32px;
             line-height: 32px;
         }
+    }
+    .MapTrack{
+        width: 100%;
+        height: calc(100% - 64px);
     }
 }
 .AlarmCard{

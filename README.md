@@ -23,6 +23,27 @@ open [http://localhost:8123](http://localhost:8123)
 本仓库代码包含：
   公共部分，包含重写antd组件的src/components，资源src/assets，样式字体src/style
 
+
+# Build By Dockerfile
+
+已创建Dockerfile文件
+1、terminal进入项目文件夹 运行：
+```
+docker build --build-arg ENV=prod -t video_frontend .
+```
+创建任务
+2、成功后运行
+```
+docker images
+```
+查看任务是否创建成功
+3、任务创建成功后运行
+```
+docker run -itd -p 8123:8123 --name=video_frontend video_frontend
+```
+将代码在docker中运行
+`8123:8123`是docker中端口，和本地(服务)端口的映射
+
 # Other
 webpack+eslint+react+redux+antd+less
 commit有钩子，推荐安装eslint插件

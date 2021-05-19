@@ -94,7 +94,7 @@ class Preview extends PureComponent {
       historyListData: {},
       imgDialogVisible: false,
       algorithmIds: [],
-      showText: '无信号',
+      showText: '请选择摄像头',
       tempTotal: -1,
       historyID: '',
       timer: null,
@@ -107,7 +107,7 @@ class Preview extends PureComponent {
       sourceType: 1,
       appliedTraffic: false,
       checked: true,
-      isListView: false,
+      isListView: true,
       modalVisible: false,
       playBackAddress: null,
     };
@@ -134,6 +134,7 @@ class Preview extends PureComponent {
       };
       getAreaList(param).then((res) => {
         if (res) {
+          console.log('res', res);
           const treeDatas = this.dataToTree(res);
           let expendsIds = ['1'];
           if (keyword || algorithmIds.length) {

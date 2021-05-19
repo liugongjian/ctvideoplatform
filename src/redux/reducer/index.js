@@ -13,6 +13,7 @@ import cameraDetail from './cameraDetail';
 import face from './face';
 import alarms from './alarms';
 import preview from './preview';
+import intelligentSearch from './intelligentSearch';
 
 export default {
   routing: routerReducer, // 其中之一reducer   用来管理路由
@@ -26,5 +27,6 @@ export default {
   cameraDetail,
   face,
   alarms,
-  preview
+  preview,
+  intelligentSearch,
 };
