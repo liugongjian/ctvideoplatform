@@ -348,7 +348,13 @@ class RoleEdit extends Component {
   }
 
   onSearchChange = (e) => {
-    this.setState({ searchValue: e.target.value });
+    const { value } = e.target;
+    const expandedKeys = this.state.tempData.map((item) => {
+      if (item.name.indexOf(value) > -1) {
+        return item.pid;
+      }
+    }).filter(item => item);
+    this.setState({ searchValue: e.target.value, expandedKeys });
   }
 
 
