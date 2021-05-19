@@ -194,7 +194,7 @@ class Preview extends PureComponent {
               src: ''
             }
           };
-          videoSquare[`videoSrc${videoSrcOrder}`] = temp[[`videoSrc${videoSrcOrder}`]];
+          videoSquare[`videoSrc${videoSrcOrder}`] = temp[`videoSrc${videoSrcOrder}`];
           console.log('tempObj--->', temp);
           this.setState({
             selectAreaKeys: [val.id],
@@ -326,7 +326,7 @@ class Preview extends PureComponent {
       } else if (showSquaredDom === 4) {
         const temp = {
           [`videoSrc${videoSrcOrder}`]: {
-            ...videoSquare,
+            ...videoSquare[`videoSrc${videoSrcOrder}`],
             showText: '加载中...'
           }
         };
@@ -338,7 +338,7 @@ class Preview extends PureComponent {
             if (res && res.flvuri) {
               const tempObj = {
                 [`videoSrc${videoSrcOrder}`]: {
-                  ...videoSquare,
+                  ...videoSquare[`videoSrc${videoSrcOrder}`],
                   showText: '',
                   src: res.flvuri
                 }
@@ -605,6 +605,18 @@ class Preview extends PureComponent {
         if (videoSquare[`videoSrc${val}`] && videoSquare[`videoSrc${val}`].src) {
           return (
             <div className={styles.allStatusBox}>
+              <div className={styles.videoHandle}>
+                <EIcon type={`${styles.videoMonitoring} myicon-monitoring`} />
+                <div>
+                  监控点位
+                  {' '}
+                  {videoSquare[`videoSrc${val}`].name}
+                </div>
+                <EIcon
+                  type={`${styles.videoCancelBtn} myicon-cancel`}
+                  onClick={this.clearVideo}
+                />
+              </div>
               <FlvPlayer
                 src={videoSquare[`videoSrc${val}`].src}
               // pointsInfo={pointsInfo}
