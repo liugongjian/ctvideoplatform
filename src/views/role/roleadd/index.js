@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable react/sort-comp */
 import React, { Component } from 'react';
 
 import { push } from 'react-router-redux';
@@ -41,7 +43,8 @@ class RoleAdd extends Component {
     selectedKeys: [],
     autoExpandParent: true,
     name: '',
-    description: ''
+    description: '',
+    searchValue: '',
   };
 
   dataToTree = (data) => {
@@ -96,38 +99,39 @@ class RoleAdd extends Component {
     });
   }
 
-  onSearchInput(value) {
-    this.setState({ serachInputValue: value }, () => {
-      if (this.state.activeMenuKey.key === '1') {
-        this.props.getMenuList(this.state.serachInputValue).then(
-          (res) => {
-            res = res.map((item) => {
-              if (item.configurable) {
-                return item;
-              }
-            });
-            const expandKeys = res.map(item => item.id);
-            const treeDatas = this.dataToTree(res);
-            this.setState({
-              tempData: res,
-              treeDatas,
-              expandedKeys: expandKeys,
-            });
-          }
-        );
-      } else {
-        this.props.getAreaList(0, this.state.serachInputValue).then((res) => {
-          const expandKeys = res.map(item => item.id);
-          const treeDatas = this.dataToTree(res);
-          this.setState({
-            tempData: res,
-            treeDatas,
-            expandedKeys: expandKeys
-          });
-        });
-      }
-    });
-  }
+  // onSearchInput(value) {
+  //   this.setState({ serachInputValue: value }, () => {
+  //     if (this.state.activeMenuKey.key === '1') {
+  //       this.props.getMenuList(this.state.serachInputValue).then(
+  //         (res) => {
+  //           res = res.map((item) => {
+  //             if (item.configurable) {
+  //               return item;
+  //             }
+  //           });
+  //           console.log('onSearchInput', res);
+  //           const expandKeys = res.map(item => item.id);
+  //           const treeDatas = this.dataToTree(res);
+  //           this.setState({
+  //             tempData: res,
+  //             treeDatas,
+  //             expandedKeys: expandKeys,
+  //           });
+  //         }
+  //       );
+  //     } else {
+  //       this.props.getAreaList(0, this.state.serachInputValue).then((res) => {
+  //         const expandKeys = res.map(item => item.id);
+  //         const treeDatas = this.dataToTree(res);
+  //         this.setState({
+  //           tempData: res,
+  //           treeDatas,
+  //           expandedKeys: expandKeys
+  //         });
+  //       });
+  //     }
+  //   });
+  // }
 
   getKeysParents(keys) {
     if (keys.length == 0) {
@@ -158,11 +162,12 @@ class RoleAdd extends Component {
   }
 
   onCheck(keys) {
-    console.log('onCheck--', keys);
-
     if (this.state.activeMenuKey.key === '1') {
       const menukeys = this.filterArray(this.getKeysParents(keys));
-      this.setState({ checkedKeys: { ...this.state.checkedKeys, menuIds: keys }, withParentCheckedKeys: { ...this.state.withParentCheckedKeys, menuIds: menukeys } });
+      this.setState({
+        checkedKeys: { ...this.state.checkedKeys, menuIds: keys },
+        withParentCheckedKeys: { ...this.state.withParentCheckedKeys, menuIds: menukeys }
+      });
     } else {
       const areakeys = this.filterArray(this.getKeysParents(keys));
       this.setState({ checkedKeys: { ...this.state.checkedKeys, areaIds: keys }, withParentCheckedKeys: { ...this.state.withParentCheckedKeys, areaIds: areakeys } });
@@ -256,6 +261,10 @@ class RoleAdd extends Component {
     });
   }
 
+  onSearchChange = (e) => {
+    this.setState({ searchValue: e.target.value });
+  }
+
   componentDidMount() {
     this.props.getMenuList().then((res) => {
       const treeDatas = this.dataToTree(res);
@@ -292,9 +301,11 @@ class RoleAdd extends Component {
         onDescriptionChange={description => this.onDescriptionChange(description)}
         onSave={() => this.onSave()}
         onCancel={() => this.onCancel()}
-        onSearchInput={keyword => this.onSearchInput(keyword)}
+        // onSearchInput={keyword => this.onSearchInput(keyword)}
         name={this.state.name}
         description={this.state.description}
+        onSearchChange={this.onSearchChange}
+        searchValue={this.state.searchValue}
       />
     );
   }
