@@ -1,12 +1,17 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable jsx-a11y/media-has-caption */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import flvjs from 'flv.js';
 import styles from './videoPlayer.less';
 
-class FlvPlayer extends Component {
+class FlvPlayer extends PureComponent {
     state={
-      videoId: `custom-video${+new Date()}`
+      videoId: `custom-video${+new Date()}`,
+      maskStyle: { },
+      canvasLineStyle: {
+        display: 'none'
+      },
+      chooseThis: null
     }
 
     componentDidMount() {
@@ -35,6 +40,19 @@ class FlvPlayer extends Component {
       }
     }
 
+    drawMask = () => {
+      const tempWidth = this.player._mediaElement.offsetWidth;
+      const tempHeight = parseInt(this.player._mediaElement.offsetWidth / 16 * 9, 10);
+      this.setState({
+        maskStyle: {
+          width: `${tempWidth}px`,
+          height: `${tempHeight}px`,
+          top: `${(this.player._mediaElement.offsetHeight - tempHeight) / 2}px`
+        },
+      });
+    }
+
+
     initVideo = (src) => {
       const self = this;
       if (flvjs.isSupported() && src) {
@@ -52,6 +70,7 @@ class FlvPlayer extends Component {
         this.player.on(flvjs.Events.MEDIA_INFO, (info) => {
           console.log('MEDIA_INFO', info);
           self.drawLine();
+          self.drawMask();
         });
         // this.player.on('play', (info) => { console.log('timeupdateInfo', info); });
         // this.player.on(flvjs.Events.SCRIPTDATA_ARRIVED, (info) => {
@@ -84,7 +103,7 @@ class FlvPlayer extends Component {
             top: `${(this.player._mediaElement.offsetHeight - tempHeight) / 2}px`
           },
           canvasWidth: tempWidth,
-          canvasHeight: tempHeight
+          canvasHeight: tempHeight,
         }, () => {
           // 将接口返回的坐标换算成当前视频尺寸格式的点坐标
           const startPX = tempWidth * a.x / imageWidth;
@@ -108,16 +127,35 @@ class FlvPlayer extends Component {
       }
     }
 
+    maskClick = (val) => {
+      const { maskClick, info } = this.props;
+      this.setState({
+        chooseThis: val
+      }, () => { maskClick(info, val); });
+    }
+
     render() {
       const {
-        videoId, canvasLineStyle, canvasWidth, canvasHeight
+        videoId, canvasLineStyle, canvasWidth, canvasHeight, maskStyle, chooseThis
       } = this.state;
+      const { ifMask, val, cls } = this.props;
+      const getCls = () => (cls === 'hasline' ? styles.hasLine : '');
       return (
-        <div className={styles.videoWrap}>
+        <div className={`${styles.videoWrap} ${getCls()}`}>
           <video className={`${styles.videojs} video-js`} id={videoId} ref={node => this.videoNode = node} controls />
           <div className={styles.canvasLine} style={canvasLineStyle}>
             <canvas width={canvasWidth} height={canvasHeight} id="pointToPoint" />
           </div>
+          {
+            ifMask
+              ? (
+                <div
+                  className={` ${styles.maskLine} `}
+                  style={maskStyle}
+                  onClick={() => this.maskClick(val)}
+                />
+              ) : null
+          }
         </div>
       );
     }

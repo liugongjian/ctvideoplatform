@@ -63,6 +63,10 @@
     //     display: none;
     // }
     // &:hover{
+        .videoChooseSquare{
+            text-align: right;
+            margin-bottom: 5px;
+        }
         .videoHandle{
             position: absolute;
             width: calc(100% - 20px);
@@ -105,6 +109,13 @@
             position: relative;
             font-size: 12px;
             padding: 10px;
+            &:hover{
+                .videojs::-webkit-media-controls{
+                    display:block !important;
+                    z-index: 99999;
+                }
+            }
+           
         }
     }
     .allStatusBox{
@@ -130,7 +141,7 @@
         color: #fff;
         cursor: pointer;
         border-radius: none;
-        &:hover{
+        &:hover,&:focus{
             background: #000;
             border-color:#fff;
             border-radius: none;
