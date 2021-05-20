@@ -75,7 +75,7 @@ class RoleUI extends Component {
             <Form.Item label="角色名称" name="name">
               {getFieldDecorator('input', {
                 initialValue: this.props.name || '',
-                rules: [{ required: true, message: '请输入用户名' }],
+                rules: [{ required: true, message: '请输入角色名' }],
               })(
                 <Input className={styles.formItemInput} onChange={e => this.props.onNameChange(e.target.value)} />
               )}
