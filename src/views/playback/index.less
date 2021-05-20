@@ -1,0 +1,343 @@
+.content {
+  display: flex;
+  background: #fff;
+  // width: 70%;
+  height: calc(100% - 20px);
+  margin: 10px;
+}
+
+.areaBox {
+  width: 240px;
+  height: calc(100% - 90px);
+  padding: 10px 10px 20px;
+  -moz-user-select: none; /*火狐*/
+  -webkit-user-select: none; /*webkit浏览器*/
+  -ms-user-select: none; /*IE10*/
+  -khtml-user-select: none; /*早期浏览器*/
+  user-select: none; /*取消双击选中文字*/
+  :global {
+    .ant-tree {
+      font-size: 12px;
+    }
+    .ant-select {
+      margin-top: 10px;
+    }
+    .ant-tree li .ant-tree-node-content-wrapper {
+      padding: 0;
+    }
+    .ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected {
+      background-color: #bfe5ff;
+    }
+    .ant-tree.ant-tree-block-node li .ant-tree-node-content-wrapper {
+      width: auto;
+      padding-right: 8px;
+    }
+  }
+  h2 {
+    font-size: 16px;
+  }
+  .areaList {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    .treeNameById {
+      display: inline-block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .monitorOnline {
+    color: #fa8334;
+  }
+  .monitorOffline {
+    color: #8c8c8c;
+  }
+}
+
+.videoBox {
+  flex: 1;
+  padding: 10px;
+  height: 100%;
+  position: relative;
+  .switchBox {
+    margin: 30px 0 30px 0;
+
+    & > div {
+      //   padding-left: calc(100% - 380px);
+      float: right;
+    }
+  }
+  .switchBox::after {
+    display: block;
+    clear: both;
+    content: "";
+    visibility: hidden;
+    height: 0;
+  }
+  .videoHandle {
+    display: none;
+  }
+  &:hover {
+    .videoHandle {
+      position: absolute;
+      width: calc(100% - 20px);
+      top: 103px;
+      height: 30px;
+      line-height: 30px;
+      opacity: 0.5;
+      background: #000;
+      display: flex;
+      z-index: 99;
+      color: #fff;
+      span {
+        line-height: 30px;
+        &:first-child {
+          margin-left: 10px;
+          margin-right: 10px;
+        }
+        &:last-child {
+          margin-left: auto;
+          margin-right: 10px;
+        }
+      }
+      .videoCancelBtn {
+        cursor: pointer;
+      }
+      .videoMonitoring {
+        color: #53ff00;
+      }
+    }
+  }
+
+  .allStatusBox {
+    width: 100%;
+    height: calc(100% - 80px);
+    background: #000;
+    position: relative;
+    p {
+      font-size: 16px;
+      color: #fff;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .nostatusBox {
+    width: 80%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    img {
+      width: 100%;
+      height: 300px;
+      object-fit: contain;
+    }
+    p {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 12px;
+      color: #8c8c8c;
+    }
+  }
+  .nodataBox {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+  }
+}
+.historyList {
+  position: relative;
+  width: 240px;
+  background: #fff;
+  height: 100%;
+  padding: 10px 0;
+  overflow: auto;
+  .historyTitle {
+    display: flex;
+    a {
+      // display: inline-block;
+      margin-left: 100px;
+    }
+  }
+  .peopleAreaTotal {
+    a {
+      margin-left: 90px;
+    }
+  }
+  p {
+    margin: 0;
+    font-size: 12px;
+    color: #333;
+    // padding-left: 5px;
+  }
+  .peopleAreaNum {
+    margin-bottom: 10px;
+    div {
+      margin: 10px 10px 0 0;
+      font-size: 12px;
+      border: 1px solid #f9f9f9;
+      display: flex;
+    }
+    span {
+      display: inline-block;
+    }
+    .peopleAreaKind {
+      padding: 10px 20px;
+      background-color: #d9d9d9;
+    }
+    .peopleAreaAll {
+      flex: 1;
+      text-align: center;
+      padding-top: 10px;
+    }
+  }
+  .historyCard {
+    :global {
+      .ant-card-body {
+        padding: 10px;
+        background-color: #ededed;
+      }
+    }
+    .historyListCard {
+      text-align: center;
+    }
+    .historyTopnoImage {
+      width: 100%;
+      height: 100px;
+      object-fit: contain;
+    }
+    .historyTextBox {
+      display: flex;
+      font-size: 12px;
+      color: #333;
+      span {
+        display: inline-block;
+      }
+    }
+    .historyTime {
+      margin-left: auto;
+      color: #8c8c8c;
+    }
+    .historyTextName {
+      font-size: 12px;
+      display: flex;
+      .AlarmCardTag {
+        display: inline-block;
+        width: 52px;
+        line-height: 18px;
+        height: 20px;
+        text-align: center;
+        border-radius: 4px;
+        margin-left: 5px;
+        border: 1px solid #ffa39e;
+        &-WHITE {
+          color: #52c41a;
+          background: #f6ffed;
+          border-color: #b7eb8f;
+        }
+        &-BLACK {
+          color: #f5222d;
+          border-color: #ffa39e;
+          background: #fff1f0;
+        }
+        &-OTHER {
+          color: #1890ff;
+          border-color: #91d5ff;
+          background: #e6f7ff;
+        }
+      }
+    }
+    .nodataBox {
+      width: 100px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -60%);
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
+.alarmDetailModal {
+  .alarmListImg {
+    width: 480px;
+    position: relative;
+    margin-bottom: 5px;
+    img {
+      width: 100%;
+    }
+  }
+  .historyTopnoImage {
+    width: 100%;
+    height: 100px;
+    object-fit: contain;
+  }
+  .alarmModalName {
+    background: #fa8334;
+    padding: 5px 8px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    color: #fff;
+  }
+  .AlarmCardTag {
+    display: inline-block;
+    width: 52px;
+    line-height: 18px;
+    height: 20px;
+    text-align: center;
+    border-radius: 4px;
+    margin-left: 5px;
+    border: 1px solid #ffa39e;
+    &-WHITE {
+      color: #52c41a;
+      background: #f6ffed;
+      border-color: #b7eb8f;
+    }
+    &-BLACK {
+      color: #f5222d;
+      border-color: #ffa39e;
+      background: #fff1f0;
+    }
+    &-OTHER {
+      color: #1890ff;
+      border-color: #91d5ff;
+      background: #e6f7ff;
+    }
+  }
+}
+.chartsDetailModal {
+  .chartsModalBox {
+    width: 700px;
+    height: 380px;
+  }
+  .modalPeopleInfo {
+    span {
+      cursor: pointer;
+      display: inline-block;
+      width: 63px;
+      font-size: 14px;
+      text-align: center;
+      height: 32px;
+      line-height: 32px;
+      color: #8c8c8c;
+      border: 1px solid #d9d9d9;
+      -webkit-user-select: none; /* Safari */
+      -ms-user-select: none; /* IE 10 and IE 11 */
+      user-select: none; /* Standard syntax */
+      &.btnActive {
+        color: #1890ff;
+        border-color: #1890ff;
+      }
+    }
+  }
+  .modalChartsInfo {
+    height: 340px;
+  }
+}
