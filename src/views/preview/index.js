@@ -82,7 +82,8 @@ class Preview extends PureComponent {
       sourceType: 1,
       appliedTraffic: false,
       videoSquare: {},
-      showSquaredDom: 1
+      showSquaredDom: 1,
+      chooseSquare: {},
     };
     this.mychart = null;
   }
@@ -194,14 +195,15 @@ class Preview extends PureComponent {
               src: ''
             }
           };
-          videoSquare[`videoSrc${videoSrcOrder}`] = temp[[`videoSrc${videoSrcOrder}`]];
+          videoSquare[`videoSrc${videoSrcOrder}`] = temp[`videoSrc${videoSrcOrder}`];
           console.log('tempObj--->', temp);
           this.setState({
             selectAreaKeys: [val.id],
             [`videoSrc${videoSrcOrder}`]: null,
             videoSquare: { ...videoSquare },
             tempTotal: -1,
-            historyID: val.id
+            historyID: val.id,
+            chooseSquare: temp[`videoSrc${videoSrcOrder}`]
           }, () => {
             this.getHistory();
             this.getCurrentDay();
@@ -226,56 +228,82 @@ class Preview extends PureComponent {
     }
 
     getHistory=() => {
-      const { historyID } = this.state;
+      const { historyID, showSquaredDom } = this.state;
       const { getHistoryListTopTen } = this.props;
-      const param = {
-        pageSize: 10,
-        pageNo: 0,
-        deviceId: historyID
-      };
-      getHistoryListTopTen(param).then((res) => {
-        const { tempTotal } = this.state;
-        if (tempTotal === -1) {
+
+      if (showSquaredDom === 1) {
+        const param = {
+          pageSize: 10,
+          pageNo: 0,
+          deviceId: historyID
+        };
+        getHistoryListTopTen(param).then((res) => {
+          const { tempTotal } = this.state;
+          if (tempTotal === -1) {
+            this.setState({
+              historyListData: res,
+              tempTotal: res.recordsTotal
+            });
+          } else if (res.recordsTotal > tempTotal) {
+            this.setState({
+              historyListData: res,
+              tempTotal: res.recordsTotal
+            });
+          } else {
+            // this.timer = window.setInterval(getTopTenList, 5000);
+          }
+        });
+      } else if (showSquaredDom === 4) {
+        const { chooseSquare } = this.state;
+        const param = {
+          pageSize: 10,
+          pageNo: 0,
+          deviceId: chooseSquare.id
+        };
+        getHistoryListTopTen(param).then((res) => {
           this.setState({
             historyListData: res,
             tempTotal: res.recordsTotal
           });
-        } else if (res.recordsTotal > tempTotal) {
-          this.setState({
-            historyListData: res,
-            tempTotal: res.recordsTotal
-          });
-        } else {
-          // this.timer = window.setInterval(getTopTenList, 5000);
-        }
-      });
+        });
+      }
     }
 
     getCurrentDay = () => {
       const { getCurrentTraffic } = this.props;
-      const { historyID } = this.state;
-      getCurrentTraffic(historyID, 10).then((res) => {
-        const { tempTrafficEntry, tempTrafficExit } = this.state;
-        if (tempTrafficEntry === -1 || tempTrafficExit === -1) {
+      const { historyID, showSquaredDom, chooseSquare } = this.state;
+      if (showSquaredDom === 1) {
+        getCurrentTraffic(historyID, 10).then((res) => {
+          const { tempTrafficEntry, tempTrafficExit } = this.state;
+          if (tempTrafficEntry === -1 || tempTrafficExit === -1) {
+            this.setState({
+              traffiInfoData: res,
+              tempTrafficExit: res.exitNo,
+              tempTrafficEntry: res.entryNo
+            });
+          } else if (res.exitNo > tempTrafficExit || res.exitNo > tempTrafficExit) {
+            this.setState({
+              traffiInfoData: res,
+              tempTrafficExit: res.exitNo,
+              tempTrafficEntry: res.entryNo
+            });
+          } else if (res.exitNo === null || res.entryNo === null) {
+            this.setState({
+              traffiInfoData: res,
+              tempTrafficExit: res.exitNo || 0,
+              tempTrafficEntry: res.entryNo || 0
+            });
+          }
+        });
+      } else if (showSquaredDom === 4) {
+        getCurrentTraffic(chooseSquare.id, 10).then((res) => {
           this.setState({
             traffiInfoData: res,
             tempTrafficExit: res.exitNo,
             tempTrafficEntry: res.entryNo
           });
-        } else if (res.exitNo > tempTrafficExit || res.exitNo > tempTrafficExit) {
-          this.setState({
-            traffiInfoData: res,
-            tempTrafficExit: res.exitNo,
-            tempTrafficEntry: res.entryNo
-          });
-        } else if (res.exitNo === null || res.entryNo === null) {
-          this.setState({
-            traffiInfoData: res,
-            tempTrafficExit: res.exitNo || 0,
-            tempTrafficEntry: res.entryNo || 0
-          });
-        }
-      });
+        });
+      }
     }
 
     setIntervalTimer = () => {
@@ -293,7 +321,7 @@ class Preview extends PureComponent {
 
     getVideoSrc = (id, name) => {
       const { getVideoSrc } = this.props;
-      const { videoSrcOrder, showSquaredDom, videoSquare } = this.state;
+      const { showSquaredDom } = this.state;
       if (showSquaredDom === 1) {
         this.setState({
           showText: '加载中...'
@@ -324,9 +352,10 @@ class Preview extends PureComponent {
           });
         });
       } else if (showSquaredDom === 4) {
+        const { videoSrcOrder, videoSquare } = this.state;
         const temp = {
           [`videoSrc${videoSrcOrder}`]: {
-            ...videoSquare,
+            ...videoSquare[`videoSrc${videoSrcOrder}`],
             showText: '加载中...'
           }
         };
@@ -338,7 +367,7 @@ class Preview extends PureComponent {
             if (res && res.flvuri) {
               const tempObj = {
                 [`videoSrc${videoSrcOrder}`]: {
-                  ...videoSquare,
+                  ...videoSquare[`videoSrc${videoSrcOrder}`],
                   showText: '',
                   src: res.flvuri
                 }
@@ -347,6 +376,18 @@ class Preview extends PureComponent {
               this.setState({
                 videoSquare: { ...videoSquare }
               });
+            } else {
+              // const tempObj = {
+              //   [`videoSrc${videoSrcOrder}`]: {
+              //     ...videoSquare[`videoSrc${videoSrcOrder}`],
+              //     showText: '无信号',
+              //     src: ''
+              //   }
+              // };
+              // videoSquare[`videoSrc${videoSrcOrder}`] = tempObj[`videoSrc${videoSrcOrder}`];
+              // this.setState({
+              //   videoSquare: { ...videoSquare }
+              // });
             }
           });
         });
@@ -354,12 +395,21 @@ class Preview extends PureComponent {
       }
     }
 
-    clearVideo = () => {
-      this.setState({
-        videoSrc: '',
-        historyListData: {},
-        showText: '无信号'
-      });
+    clearVideo = (val) => {
+      if (val) {
+        const { videoSquare, videoSrcOrder } = this.state;
+        videoSquare[`videoSrc${val}`] = {};
+        videoSquare[`videoSrc${val}`].showText = '无信号';
+        this.setState({
+          videoSquare
+        });
+      } else {
+        this.setState({
+          videoSrc: '',
+          historyListData: {},
+          showText: '无信号'
+        });
+      }
     }
 
     renderTreeNodes = data => data.map((item, index) => {
@@ -601,12 +651,31 @@ class Preview extends PureComponent {
       }
 
       getAddIconDom = (val) => {
-        const { videoSquare, videoSrcOrder } = this.state;
+        const { videoSquare, videoSrcOrder, chooseSquare } = this.state;
         if (videoSquare[`videoSrc${val}`] && videoSquare[`videoSrc${val}`].src) {
+          const getCls = () => (chooseSquare.chooseNum === val ? 'hasline' : '');
           return (
             <div className={styles.allStatusBox}>
+              <div className={styles.videoHandle}>
+                <EIcon type={`${styles.videoMonitoring} myicon-monitoring`} />
+                <div>
+                  监控点位
+                  {' '}
+                  {videoSquare[`videoSrc${val}`].name}
+                </div>
+                <EIcon
+                  type={`${styles.videoCancelBtn} myicon-cancel`}
+                  onClick={() => this.clearVideo(val)}
+                />
+              </div>
               <FlvPlayer
                 src={videoSquare[`videoSrc${val}`].src}
+                ifMask
+                maskClick={this.squareClick}
+                info={videoSquare[`videoSrc${val}`]}
+                key={val}
+                val={val}
+                cls={getCls()}
               // pointsInfo={pointsInfo}
               // appliedTraffic={appliedTraffic}
               />
@@ -614,10 +683,27 @@ class Preview extends PureComponent {
           );
         }
         return (
-          <div className={styles.allStatusBox}>
+          <div className={styles.allStatusBox} key={val}>
+            {
+              // videoSquare[`videoSrc${val}`] && videoSquare[`videoSrc${val}`].showText
+              //   ? <p>{videoSquare[`videoSrc${val}`].showText}</p>
+              // :<Button icon="plus" className={styles.addVideoIconBtn} onClick={() => { this.changeVideoOrder(val); }} />
+            }
             <Button icon="plus" className={styles.addVideoIconBtn} onClick={() => { this.changeVideoOrder(val); }} />
           </div>
         );
+      }
+
+      squareClick = (info, val) => {
+        this.setState({
+          chooseSquare: { ...info, chooseNum: val }
+        }, () => {
+          console.log('{ ...info, chooseNum: val }===>', { ...info, chooseNum: val });
+          this.clearTimer();
+          this.getHistory();
+          this.getCurrentDay();
+          this.setIntervalTimer();
+        });
       }
 
       getDomSquared = () => {
@@ -649,6 +735,7 @@ class Preview extends PureComponent {
                   src={videoSrc}
                   pointsInfo={pointsInfo}
                   appliedTraffic={appliedTraffic}
+                  ifMask={false}
                 />
               </Fragment>
             )
@@ -746,7 +833,7 @@ class Preview extends PureComponent {
               </div>
             </div>
             <div className={styles.videoBox}>
-              <div>
+              <div className={styles.videoChooseSquare}>
                 <Button onClick={() => this.changeDomSquared(1)}>一</Button>
                 <Button onClick={() => this.changeDomSquared(4)}>四</Button>
               </div>
