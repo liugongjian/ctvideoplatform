@@ -698,7 +698,6 @@ class Preview extends PureComponent {
         this.setState({
           chooseSquare: { ...info, chooseNum: val }
         }, () => {
-          console.log('{ ...info, chooseNum: val }===>', { ...info, chooseNum: val });
           this.clearTimer();
           this.getHistory();
           this.getCurrentDay();
