@@ -181,7 +181,6 @@ class Preview extends PureComponent {
           this.getCurrentDay();
           this.getVideoSrc(val.id, val.name);
           this.getPeopleArea(val.id);
-          this.setIntervalTimer();
         });
       } else {
         this.setState({
@@ -202,6 +201,8 @@ class Preview extends PureComponent {
         this.setState({
           appliedTraffic: applied,
           pointsInfo: res
+        }, () => {
+          this.setIntervalTimer();
         });
       });
     }
@@ -273,9 +274,12 @@ class Preview extends PureComponent {
     }
 
     setIntervalTimer = () => {
+      const { appliedTraffic } = this.state;
       this.state.timer = window.setInterval(() => {
         this.getHistory();
-        this.getCurrentDay();
+        if (appliedTraffic) {
+          this.getCurrentDay();
+        }
       }, 3000);
     }
 
@@ -322,6 +326,8 @@ class Preview extends PureComponent {
         videoSrc: '',
         historyListData: {},
         showText: '无信号'
+      }, () => {
+        window.sessionStorage.removeItem('deviceInfo');
       });
     }
 
