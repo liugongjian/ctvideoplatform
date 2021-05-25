@@ -324,3 +324,21 @@
 .chartsDetailModal .modalChartsInfo {
   height: 340px;
 }
+.miniPlayerModal {
+  display: block;
+}
+.miniPlayerModal :global .ant-modal-header {
+  display: none;
+}
+.miniPlayerModal :global .ant-modal-body {
+  padding: 20px !important;
+}
+.miniPlayerModal :global .ant-modal-body .video-js {
+  width: 100%;
+  height: 26vh;
+}
+.miniPlayerModal :global .ant-modal-close {
+  top: -20px !important;
+  right: -45px !important;
+  color: white;
+}

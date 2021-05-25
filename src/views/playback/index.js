@@ -587,6 +587,7 @@ class Preview extends PureComponent {
 
       renderPlayModal = () => (
         <Modal
+          className={styles.miniPlayerModal}
           visible={this.state.modalVisible}
           // title="Title"
           onCancel={this.closePlayModal}
