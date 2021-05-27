@@ -1,5 +1,4 @@
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable guard-for-in */
+
 import React, { Component } from 'react';
 import {
   Select,
@@ -11,7 +10,9 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 // import AMap from 'Components/Amap/Amap';
-import L from 'leaflet';
+import {
+  Map, Markers, Polyline, InfoWindow
+} from 'react-amap';
 import { AMAP_KEY } from '../constants';
 import styles from '../index.less';
 
@@ -21,10 +22,23 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   dispatch
 );
 
+const randomPosition = () => ({
+  longitude: 100 + Math.random() * 20,
+  latitude: 30 + Math.random() * 20
+});
+const randomMarker = len => (
+  Array(len).fill(true).map((e, idx) => ({
+    position: randomPosition(),
+    title: '提示文字',
+    info: {
+      visible: false,
+    }
+  }))
+);
+
 class MapTrack extends Component {
   constructor() {
     super();
-    this.map = null;
     this.state = {
       markers: [
         { position: { latitude: 31, longitude: 121 }, content: '第一个' },
@@ -47,39 +61,59 @@ class MapTrack extends Component {
   }
 
   componentDidMount() {
-    this.map = L.map('mymap').setView([39.9788, 116.30226], 14);
-    const osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    const osm = new L.TileLayer(osmUrl, {
-      minZoom: 2,
-      // maxZoom: 16,
-      attribution: '&copy; OpenStreetMap'
+  }
+
+  markerClick(data) {
+    this.setState({
+      info: {
+        pos: data.position,
+        visible: true,
+        content: data.content,
+      }
     });
-    this.map.addLayer(osm);
-    const latlngs = [
-      [31, 121],
-      [39, 120],
-      [45, 112],
-      [33, 90],
-    ];
-    // 添加轨迹
-    const polyline = L.polyline(latlngs, {
-      color: '#1890ff',
-      weight: 3,
-    }).addTo(this.map);
-    for (const i in latlngs) {
-      const popupContent = `<p>这是第${i}个Marker<br />相关信息相关信息.</p>`;
-      L.marker(latlngs[i]).addTo(this.map)
-        .bindPopup(popupContent);
-    }
-    // 自适应地图视图比例
-    this.map.fitBounds(polyline.getBounds());
   }
 
   render() {
     const { markers, info } = this.state;
+    const mapEvents = {
+      created: (el) => {
+        this.mapEl = el;
+      },
+      complete: () => {
+        // 地图自适应显示到合适的范围内,点标记全部显示在视野中。
+        this.mapEl.setFitView();
+      }
+    };
+    console.log('info', info);
     return (
       <div className={styles.MapTrack}>
-        <div id="mymap" style={{ width: '100%', height: '100%' }} />
+        <div style={{ width: '100%', height: '100%' }}>
+          {/* <AMap key="112" /> */}
+          <Map
+            amapkey={AMAP_KEY}
+            plugins={['ToolBar']}
+            center={this.state.center}
+            events={mapEvents}
+          >
+            <Markers
+              markers={markers}
+              events={this.markersEvents}
+            />
+            <Polyline
+              path={markers.map(item => (item.position))}
+              visible
+              draggable={false}
+              showDir
+              style={{ strokeWeight: 10 }}
+            />
+            <InfoWindow
+              position={info?.pos}
+              visible={info?.visible}
+              content={info?.content}
+              offset={[0, -30]}
+            />
+          </Map>
+        </div>
       </div>
     );
   }
