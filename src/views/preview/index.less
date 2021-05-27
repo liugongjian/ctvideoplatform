@@ -108,7 +108,8 @@
             height: 50%;
             position: relative;
             font-size: 12px;
-            padding: 10px;
+            padding: 3px;
+            z-index: 9;
             &:hover{
                 .videojs::-webkit-media-controls{
                     display:block !important;
@@ -116,6 +117,10 @@
                 }
             }
            
+        }
+        .videoHandle{
+            // width: calc(100% - 5px);
+            left: 5px;
         }
     }
     .allStatusBox{
@@ -141,10 +146,18 @@
         color: #fff;
         cursor: pointer;
         border-radius: none;
-        &:hover,&:focus{
+        text-align: center;
+        line-height: 100%;
+        &:hover{
             background: #000;
-            border-color:#fff;
+            border-color:#108EE9;
             border-radius: none;
+        }
+        &.iconBtnWithFocus{
+            background: #000;
+            border:1px solid #108EE9;
+            border-radius: none;
+            color: #fff;
         }
     }
 

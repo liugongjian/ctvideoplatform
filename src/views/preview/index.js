@@ -646,7 +646,8 @@ class Preview extends PureComponent {
         // const videoSrc = `videoSrc${val}`
         this.setState({
           // [`videoSrc${val}`]
-          videoSrcOrder: val
+          videoSrcOrder: val,
+          chooseSquare: {}
         });
       }
 
@@ -682,6 +683,7 @@ class Preview extends PureComponent {
             </div>
           );
         }
+        const getFocusCls = () => (videoSrcOrder === val ? `${styles.iconBtnWithFocus} ${styles.addVideoIconBtn}` : `${styles.addVideoIconBtn}`);
         return (
           <div className={styles.allStatusBox} key={val}>
             {
@@ -689,14 +691,15 @@ class Preview extends PureComponent {
               //   ? <p>{videoSquare[`videoSrc${val}`].showText}</p>
               // :<Button icon="plus" className={styles.addVideoIconBtn} onClick={() => { this.changeVideoOrder(val); }} />
             }
-            <Button icon="plus" className={styles.addVideoIconBtn} onClick={() => { this.changeVideoOrder(val); }} />
+            <Button icon="plus" className={getFocusCls()} onClick={() => { this.changeVideoOrder(val); }} />
           </div>
         );
       }
 
       squareClick = (info, val) => {
         this.setState({
-          chooseSquare: { ...info, chooseNum: val }
+          chooseSquare: { ...info, chooseNum: val },
+          videoSrcOrder: ''
         }, () => {
           this.clearTimer();
           this.getHistory();
