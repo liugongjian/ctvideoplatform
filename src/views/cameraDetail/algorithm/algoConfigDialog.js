@@ -199,7 +199,7 @@ class CameraDetail extends Component {
       updateAlgoConf,
       configTypes,
     } = this.props;
-    setAlgoEditDisable(curAlgo.algorithmId, true);
+
     const postData = {};
     const { isPick } = curAlgo;
     // 当前已选中则是更新，否则为新增
@@ -212,6 +212,7 @@ class CameraDetail extends Component {
       message.warn('请设置视频区域！');
       return;
     }
+    setAlgoEditDisable(curAlgo.algorithmId, true);
     if (configEnable[ALGO_CONFIG_TYPE.PERIOD]) {
       postData.timeInterval = timeInterval;
     }
