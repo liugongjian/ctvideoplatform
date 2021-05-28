@@ -205,8 +205,6 @@ class Preview extends PureComponent {
             historyID: val.id,
             chooseSquare: temp[`videoSrc${videoSrcOrder}`]
           }, () => {
-            this.getHistory();
-            this.getCurrentDay();
             this.getVideoSrc(val.id, val.name);
             this.getPeopleArea(val.id);
             this.setIntervalTimer();
@@ -374,7 +372,12 @@ class Preview extends PureComponent {
               };
               videoSquare[`videoSrc${videoSrcOrder}`] = tempObj[`videoSrc${videoSrcOrder}`];
               this.setState({
-                videoSquare: { ...videoSquare }
+                videoSquare: { ...videoSquare },
+                videoSrcOrder: '',
+                chooseSquare: {}
+              }, () => {
+                this.getHistory();
+                this.getCurrentDay();
               });
             } else {
               // const tempObj = {
