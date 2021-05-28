@@ -1,57 +1,63 @@
+/* eslint-disable max-len */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable jsx-a11y/media-has-caption */
 import React, { Component } from 'react';
 import flvjs from 'flv.js';
 import {
-  format, set, addMinutes, addHours, addSeconds
+  format, set, addMinutes, addHours, addSeconds, isWithinInterval, differenceInSeconds
 } from 'date-fns';
+import { e } from 'mathjs';
+import { message } from 'antd';
 import TimeRange from './slider';
 
 import styles from './videoPlayer.less';
 
 const step = 1000 * 60 * 1;
 const now = new Date();
-const getTodayAtSpecificHour = (hour = 12) => set(now, {
-  hours: hour, minutes: 0, seconds: 0, milliseconds: 0
+const getTodayAtSpecificTime = (hour = 12, minute = 0, second = 0) => set(now, {
+  hours: hour, minutes: minute, seconds: second, milliseconds: 0
 });
 
-const selectedInterval = [
-  getTodayAtSpecificHour(0),
-  // getTodayAtSpecificHour(14)
-];
+// const selectedInterval = [
+//   getTodayAtSpecificTime(0),
+// ];
 
-const timelineInterval = [
-  getTodayAtSpecificHour(0),
-  getTodayAtSpecificHour(1)
-];
+// const timelineInterval = [
+//   getTodayAtSpecificTime(0),
+//   getTodayAtSpecificTime(24)
+// ];
 
-const disabledIntervals = [
-  // { start: getTodayAtSpecificHour(16), end: getTodayAtSpecificHour(17) },
-  // { start: getTodayAtSpecificHour(7), end: getTodayAtSpecificHour(12) },
-  // { start: getTodayAtSpecificHour(20), end: getTodayAtSpecificHour(24) }
-];
+// const disabledIntervals = [
+//   { start: getTodayAtSpecificTime(16), end: getTodayAtSpecificTime(17) },
+//   { start: getTodayAtSpecificTime(7), end: getTodayAtSpecificTime(12) },
+//   { start: getTodayAtSpecificTime(20), end: getTodayAtSpecificTime(24) }
+// ];
 
 class FlvPlayer extends Component {
     state={
       videoId: `custom-video${+new Date()}`,
       error: false,
-      selectedInterval
+      selectedInterval: [],
+      timelineInterval: [],
+      playableIntervals: [],
+      onPlayingIndex: 0,
     }
 
     componentDidMount() {
-      const { src } = this.props;
-      const tsrc = 'http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4';
+      const { lsrc } = this.props;
+      // const tsrc = '../../../video/5.mp4';
       // this.initVideo(src);
-      this.initVideo(tsrc);
+      this.initVideo(lsrc[0].src);
+      this.initVideoSlider(lsrc);
     }
 
     componentWillReceiveProps(props) {
       try {
-        const { src } = props;
-        if (!src || src === this.props.src) return;
-        const tsrc = 'http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4';
+        const { lsrc } = props;
+        if (!lsrc || lsrc === this.props.lsrc) return;
         // this.initVideo(src);
-        this.initVideo(tsrc);
+        this.initVideo(lsrc[0].src);
+        this.initVideoSlider(lsrc);
       } catch (error) {
         console.log(error);
       }
@@ -79,7 +85,16 @@ class FlvPlayer extends Component {
         });
         this.player.attachMediaElement(this.videoNode);
         this.videoNode.ontimeupdate = (e) => {
-          self.setState({ selectedInterval: [addSeconds(getTodayAtSpecificHour(0), Math.floor(e.target.currentTime))] });
+          const ct = Math.floor(e.target.currentTime);
+          self.setState({ selectedInterval: [addSeconds(this.state.playableIntervals[this.state.onPlayingIndex].start, ct)] });
+        };
+        // 结束后自动播放下一个视频
+        this.videoNode.onended = (e) => {
+          self.swithVideo(this.props.lsrc[this.state.onPlayingIndex + 1], 0);
+          this.setState({
+            onPlayingIndex: this.state.onPlayingIndex + 1,
+            selectedInterval: [this.state.playableIntervals[this.state.onPlayingIndex + 1].start]
+          });
         };
         this.player.load();
         this.player.pause();
@@ -98,6 +113,56 @@ class FlvPlayer extends Component {
         // console.log('getConfig----------------->', flvjs.LoggingControl.getConfig());
         // flvjs.LoggingControl.addLogListener((log) => { console.log('addLog-------->', log); });
       }
+    }
+
+    swithVideo = (lsrc, deviateSeconds, playingIndex) => {
+      const self = this;
+      this.player.detachMediaElement();
+      if (flvjs.isSupported() && lsrc.src) {
+        this.player = flvjs.createPlayer({
+          type: 'mp4',
+          isLive: true,
+          url: lsrc.src,
+          hasAudio: false // 视频中的音频格式不是AAC，flvjs会报错，所以暂时把声音关掉
+        });
+        this.player.attachMediaElement(this.videoNode);
+        this.player.currentTime = deviateSeconds;
+        this.videoNode.ontimeupdate = (e) => {
+          const ct = Math.floor(e.target.currentTime);
+          self.setState({ selectedInterval: [addSeconds(this.state.playableIntervals[playingIndex].start, ct)] });
+        };
+        this.videoNode.onended = (e) => {
+          self.swithVideo(this.props.lsrc[this.state.onPlayingIndex + 1], 0);
+          this.setState({
+            onPlayingIndex: this.state.onPlayingIndex + 1,
+            selectedInterval: [this.state.playableIntervals[this.state.onPlayingIndex + 1].start]
+          });
+        };
+        this.player.load();
+        this.player.play();
+      }
+    }
+
+    initVideoSlider = () => {
+      const { lsrc } = this.props;
+      const selectedInterval = [
+        getTodayAtSpecificTime(lsrc[0].sttime.hours, lsrc[0].sttime.minutes, lsrc[0].sttime.seconds),
+      ];
+
+      const timelineInterval = [
+        getTodayAtSpecificTime(0),
+        getTodayAtSpecificTime(24)
+      ];
+
+      const playableIntervals = lsrc.map((item) => {
+        const { sttime, duration } = item;
+        const start = getTodayAtSpecificTime(sttime.hours, sttime.minutes, sttime.seconds);
+        return {
+          start,
+          end: addSeconds(addMinutes(addHours(start, duration.hours), duration.minutes), duration.seconds)
+        };
+      });
+      this.setState({ selectedInterval, timelineInterval, playableIntervals });
     }
 
     drawLine = () => {
@@ -144,28 +209,31 @@ class FlvPlayer extends Component {
       }
     }
 
-    onChangeCallback = (selectedInterval) => {
-      // this.player.currentTime = selectedInterval[0];
-      // this.player.load();
-      // this.player.play();
-      // selectedInterval
-      // this.video = addHours();
-      console.log('se', selectedInterval);
-      console.log('this.state.selectedInterval', this.state.selectedInterval);
-      // this.setState({ selectedInterval });
-    }
-
     onSlideStart = (param) => {
       this.player.pause();
     };
 
     onSlideEnd = (param) => {
-      // console.log(this.state.selectedInterval);
-      this.player.play();
-      console.log('onSlideEnd', new Date(parseInt(param, 10)));
-      // 这里需要设置视频到相应的位置
-      // this.setState({ selectedInterval: [new Date(parseInt(param, 10))] });
+      const { lsrc } = this.props;
+      // 查找对应视频的index
+      const index = this.state.playableIntervals.findIndex(item => isWithinInterval(new Date(param[0]), item));
+      console.log('param', param);
+      console.log('new Date(param[0])', new Date(param[0]));
+      if (index > -1) {
+        const deviateSeconds = differenceInSeconds(new Date(param[0]), this.state.playableIntervals[index].start);
+        console.log('deviateSeconds', deviateSeconds);
+        this.setState({ selectedInterval: [new Date(param[0])], onPlayingIndex: index },
+          () => {
+            this.swithVideo(lsrc[index], deviateSeconds, index);
+          });
+      } else {
+        message.error('当前时间点无视频');
+      }
     };
+
+    onSlideChange = (param) => {
+      // console.log('onSlideChange', param);
+    }
 
     errorHandler = (param) => {
       // console.log('param', param);
@@ -174,7 +242,7 @@ class FlvPlayer extends Component {
 
     render() {
       const {
-        videoId, canvasLineStyle, canvasWidth, canvasHeight, selectedInterval, error
+        videoId, canvasLineStyle, canvasWidth, canvasHeight, error, selectedInterval, timelineInterval, playableIntervals
       } = this.state;
       return (
         <div className={styles.videoWrap}>
@@ -185,16 +253,17 @@ class FlvPlayer extends Component {
           <div className={styles.videoSlider}>
             {/* <Slider marks={marks} included={false} defaultValue={37} /> */}
             <TimeRange
+              mode={1}
               error={error}
               step={step}
-              ticksNumber={60}
+              ticksNumber={24}
               selectedInterval={selectedInterval}
               timelineInterval={timelineInterval}
               // onUpdateCallback={this.errorHandler}
-              // onChangeCallback={this.onChangeCallback}
+              onChangeCallback={this.onSlideChange}
               onSlideStart={this.onSlideStart}
               onSlideEnd={this.onSlideEnd}
-              disabledIntervals={disabledIntervals}
+              disabledIntervals={playableIntervals}
             />
           </div>
         </div>

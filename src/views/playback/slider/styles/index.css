@@ -16,33 +16,32 @@
 :global .react_time_range__track,
 :global .react_time_range__track__disabled {
   position: absolute;
-  transform: translate(0%, -50%);
-  height: 50px;
+  transform: translate(0%, -58%);
+  height: 10.5px;
   cursor: pointer;
   transition: background-color 0.15s ease-in-out, border-color 0.15s ease;
   z-index: 3;
 }
 :global .react_time_range__track__disabled {
   z-index: 1;
-  border-left: 1px solid #c8cacc;
-  border-right: 1px solid #c8cacc;
-  background: repeating-linear-gradient(-45deg, transparent, transparent 3px, #d0d3d7 4px, #d0d3d7 2px);
+  background: #4095e3;
 }
 :global .react_time_range__rail__outer {
   position: absolute;
   width: 100%;
-  height: 50px;
-  transform: translate(0%, -50%);
+  height: 42px;
+  transform: translate(0%, -92%);
   cursor: pointer;
+  background: #333;
 }
 :global .react_time_range__rail__inner {
   position: absolute;
   width: 100%;
-  height: 50px;
+  height: 12px;
   transform: translate(0%, -50%);
   pointer-events: none;
-  background-color: #f5f7fa;
-  border-bottom: 1px solid #c8cacc;
+  background-color: #9b9b9b;
+  border-bottom: 1px solid #fff;
 }
 :global .react_time_range__handle_wrapper {
   position: absolute;
@@ -67,7 +66,7 @@
   background-color: #ffffff;
 }
 :global .react_time_range__handle_container__disabled {
-  background-color: #666666;
+  background-color: #666;
 }
 :global .react_time_range__handle_marker,
 :global .react_time_range__handle_marker__error {
@@ -87,19 +86,19 @@
   margin-top: 20px;
   width: 1px;
   height: 5px;
-  background-color: #c8cacc;
+  background-color: #fff;
   z-index: 2;
 }
 :global .react_time_range__tick_marker__large {
-  margin-top: 15px;
+  margin-top: -38px;
   height: 10px;
 }
 :global .react_time_range__tick_label {
   position: absolute;
-  margin-top: 28px;
+  margin-top: -25px;
   font-size: 10px;
   text-align: center;
   z-index: 2;
-  color: #77828c;
+  color: #fff;
   font-family: sans-serif;
 }

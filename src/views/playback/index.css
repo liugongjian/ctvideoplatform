@@ -66,6 +66,9 @@
 .videoBox .switchBox > div {
   float: right;
 }
+.videoBox .switchBox > div > span {
+  margin-right: 12px;
+}
 .videoBox .switchBox::after {
   display: block;
   clear: both;

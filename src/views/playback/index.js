@@ -45,6 +45,36 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   dispatch
 );
 
+const localvideosrcs = [
+  {
+    src: '../../../video/5.mp4',
+    sttime: {
+      hours: 1, minutes: 0, seconds: 0, milliseconds: 0
+    },
+    duration: {
+      hours: 0, minutes: 13, seconds: 59, milliseconds: 0
+    }
+  },
+  {
+    src: '../../../video/6.mp4',
+    sttime: {
+      hours: 12, minutes: 0, seconds: 0, milliseconds: 0
+    },
+    duration: {
+      hours: 0, minutes: 13, seconds: 17, milliseconds: 0
+    }
+  },
+  {
+    src: '../../../video/8.mp4',
+    sttime: {
+      hours: 20, minutes: 0, seconds: 0, milliseconds: 0
+    },
+    duration: {
+      hours: 0, minutes: 9, seconds: 15, milliseconds: 0
+    }
+  },
+];
+
 const list = [
   {
     key: '1',
@@ -52,7 +82,7 @@ const list = [
     startTime: '2021年1月3日 19:20',
     duration: '54分钟',
     tag: '紧急',
-    address: '192:168.1.1',
+    address: '../../../video/5.mp4',
   },
   {
     key: '2',
@@ -60,7 +90,7 @@ const list = [
     startTime: '2021年1月3日 19:20',
     duration: '23分钟',
     tag: '紧急',
-    address: '192:168.1.2',
+    address: '../../../video/5.mp4',
   },
 ];
 
@@ -196,11 +226,11 @@ class Preview extends PureComponent {
           tempTotal: -1,
           historyID: val.id
         }, () => {
-          this.getHistory();
-          this.getCurrentDay();
+          // this.getHistory();
+          // this.getCurrentDay();
           this.getVideoSrc(val.id, val.name);
-          this.getPeopleArea(val.id);
-          this.setIntervalTimer();
+          // this.getPeopleArea(val.id);
+          // this.setIntervalTimer();
         });
       } else {
         this.setState({
@@ -594,7 +624,7 @@ class Preview extends PureComponent {
           footer={null}
           destroyOnClose
         >
-          <MiniPlayer />
+          <MiniPlayer src={this.state.playBackAddress} />
         </Modal>
       )
 
@@ -710,6 +740,7 @@ class Preview extends PureComponent {
                     /> */}
                       <FlvPlayer
                         src={videoSrc}
+                        lsrc={localvideosrcs}
                         pointsInfo={pointsInfo}
                         appliedTraffic={appliedTraffic}
                       />

@@ -71,6 +71,7 @@ class TimeRange extends React.Component {
   }
 
   onChange = (newTime) => {
+    // console.log('onchange:', newTime);
     const formattedNewTime = newTime.map(t => new Date(t));
     this.props.onChangeCallback(formattedNewTime);
   }
@@ -140,7 +141,7 @@ class TimeRange extends React.Component {
           step={step}
           domain={domain}
           // onUpdate={this.onUpdate}
-          // onChange={this.onChange}
+          onChange={this.onChange}
           onSlideStart={this.onSlideStart}
           onSlideEnd={this.onSlideEnd}
           values={selectedInterval.map(t => +t)}

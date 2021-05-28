@@ -1,18 +1,12 @@
-@react-time-range--gray: #c8cacc;
+@react-time-range--gray: #fff;
 @react-time-range--highlight-tap: #000000;
-@react-time-range--rail-bg: #f5f7fa;
+@react-time-range--rail-bg: #9b9b9b;
 @react-time-range--handle-bg: #ffffff;
 @react-time-range--handle-bg--disabled: #666;
 @react-time-range--track--valid: rgb(98, 203, 102);
 @react-time-range--track--not-valid: rgb(214, 0, 11);
-@react-time-range--tick-label: #77828c;
-@react-time-range--track--disabled: repeating-linear-gradient(
-  -45deg,
-  transparent,
-  transparent 3px,
-  #d0d3d7 4px,
-  #d0d3d7 2px
-);
+@react-time-range--tick-label: #fff;
+@react-time-range--track--disabled: #4095e3;
 :global {
   .react_time_range__time_range_container {
     padding: 30px 10% 0;
@@ -34,30 +28,31 @@
   .react_time_range__track,
   .react_time_range__track__disabled {
     position: absolute;
-    transform: translate(0%, -50%);
-    height: 50px;
+    transform: translate(0%, -58%);
+    height: 10.5px;
     cursor: pointer;
     transition: background-color 0.15s ease-in-out, border-color 0.15s ease;
     z-index: 3;
   }
   .react_time_range__track__disabled {
     z-index: 1;
-    border-left: 1px solid @react-time-range--gray;
-    border-right: 1px solid @react-time-range--gray;
+    // border-left: 1px solid @react-time-range--gray;
+    // border-right: 1px solid @react-time-range--gray;
     background: @react-time-range--track--disabled;
   }
 
   .react_time_range__rail__outer {
     position: absolute;
     width: 100%;
-    height: 50px;
-    transform: translate(0%, -50%);
+    height: 42px;
+    transform: translate(0%, -92%);
     cursor: pointer;
+    background: #333;
   }
   .react_time_range__rail__inner {
     position: absolute;
     width: 100%;
-    height: 50px;
+    height: 12px;
     transform: translate(0%, -50%);
     pointer-events: none;
     background-color: @react-time-range--rail-bg;
@@ -112,12 +107,12 @@
     z-index: 2;
   }
   .react_time_range__tick_marker__large {
-    margin-top: 15px;
+    margin-top: -38px;
     height: 10px;
   }
   .react_time_range__tick_label {
     position: absolute;
-    margin-top: 28px;
+    margin-top: -25px;
     font-size: 10px;
     text-align: center;
     z-index: 2;

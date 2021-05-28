@@ -12,18 +12,18 @@ class MiniPlayer extends Component {
 
     componentDidMount() {
       const { src } = this.props;
-      const tsrc = 'http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4';
+      // const tsrc = 'http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4';
       // this.initVideo(src);
-      this.initVideo(tsrc);
+      this.initVideo(src);
     }
 
     componentWillReceiveProps(props) {
       try {
         const { src } = props;
         if (!src || src === this.props.src) return;
-        const tsrc = 'http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4';
+        // const tsrc = 'http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4';
         // this.initVideo(src);
-        this.initVideo(tsrc);
+        this.initVideo(src);
       } catch (error) {
         console.log(error);
       }

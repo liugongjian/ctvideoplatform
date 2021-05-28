@@ -14,8 +14,11 @@
 .videoWrap .videoSlider {
   width: 100%;
   padding-top: 20px;
+  position: relative;
 }
 .videoWrap :global .react_time_range__time_range_container {
   width: 100%;
   padding: 30px 0 0;
+  position: absolute;
+  top: 8px;
 }
