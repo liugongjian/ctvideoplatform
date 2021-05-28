@@ -152,12 +152,13 @@ const menuRoutes = [
         path: '/realtime',
         exact: true,
         pageTitle: '实时预览',
-        component: Playback,
+        component: Preview,
       },
       {
         path: '/replay',
         exact: true,
-        component: DefaultPage,
+        pageTitle: '视频回放',
+        component: Playback,
       },
     ]
   },

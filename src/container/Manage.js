@@ -45,10 +45,10 @@ class Manage extends Component {
 
   componentDidMount() {
     this.props.getMenuList().then((menuList) => {
-      // 开发环境暂时不隐藏算法任务菜单
+      // 开发环境暂时不隐藏智能检索菜单
       if (__DEVELOPMENT__) {
         menuList.forEach((item) => {
-          if (item.id === 23 || item.id === 11) {
+          if (item.id === 11) {
             item.hide = false;
           }
         });
