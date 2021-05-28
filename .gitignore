@@ -13,3 +13,4 @@ src/*/.DS_Store
 dist.tar.gz
 *.zip
 *.tar.gz
+video/
