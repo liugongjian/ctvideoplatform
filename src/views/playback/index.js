@@ -47,7 +47,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 
 const localvideosrcs = [
   {
-    src: '../../../video/5.mp4',
+    src: '/baseLineVideo/5.mp4',
     sttime: {
       hours: 1, minutes: 0, seconds: 0, milliseconds: 0
     },
@@ -56,7 +56,7 @@ const localvideosrcs = [
     }
   },
   {
-    src: '../../../video/6.mp4',
+    src: '/baseLineVideo/6.mp4',
     sttime: {
       hours: 12, minutes: 0, seconds: 0, milliseconds: 0
     },
@@ -65,7 +65,7 @@ const localvideosrcs = [
     }
   },
   {
-    src: '../../../video/8.mp4',
+    src: '/baseLineVideo/8.mp4',
     sttime: {
       hours: 20, minutes: 0, seconds: 0, milliseconds: 0
     },
