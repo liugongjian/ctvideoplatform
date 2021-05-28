@@ -157,7 +157,8 @@ const menuRoutes = [
       {
         path: '/replay',
         exact: true,
-        component: DefaultPage,
+        pageTitle: '视频回放',
+        component: Playback,
       },
     ]
   },
