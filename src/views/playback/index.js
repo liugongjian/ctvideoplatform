@@ -45,6 +45,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   dispatch
 );
 
+// 测试数据
 const localvideosrcs = [
   {
     src: '/baseLineVideo/5.mp4',
