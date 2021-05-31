@@ -83,7 +83,7 @@ const list = [
     startTime: '2021年1月3日 19:20',
     duration: '54分钟',
     tag: '紧急',
-    address: '../../../video/5.mp4',
+    address: '/baseLineVideo/5.mp4',
   },
   {
     key: '2',
@@ -91,7 +91,7 @@ const list = [
     startTime: '2021年1月3日 19:20',
     duration: '23分钟',
     tag: '紧急',
-    address: '../../../video/5.mp4',
+    address: '/baseLineVideo/6.mp4',
   },
 ];
 
