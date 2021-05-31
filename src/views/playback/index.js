@@ -10,6 +10,7 @@ import EIcon from 'Components/Icon';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
+
 import {
   getAreaList, getHistoryListTopTen, getVideoSrc,
   getAreaInfo, getPeopleLIne, getCurrentTraffic
@@ -26,9 +27,12 @@ import { urlPrefix } from 'Constants/Dictionary';
 import nostatus from 'Assets/nostatus.png';
 import nodata from 'Assets/nodata.png';
 import noImage from 'Assets/defaultFace.png';
+import { set } from 'date-fns';
+import TimeRange from './slider';
 import MiniPlayer from './miniPlayer';
 import FlvPlayer from './FlvPlayer';
 import styles from './index.less';
+
 
 const mapStateToProps = state => ({ preview: state.preview });
 const mapDispatchToProps = dispatch => bindActionCreators(
@@ -44,6 +48,27 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   },
   dispatch
 );
+
+const step = 1000 * 60 * 1;
+const now = new Date();
+const getTodayAtSpecificTime = (hour = 12, minute = 0, second = 0) => set(now, {
+  hours: hour, minutes: minute, seconds: second, milliseconds: 0
+});
+
+const selectedInterval = [
+  getTodayAtSpecificTime(0),
+];
+
+const timelineInterval = [
+  getTodayAtSpecificTime(0),
+  getTodayAtSpecificTime(24)
+];
+
+const disabledIntervals = [
+  { start: getTodayAtSpecificTime(16), end: getTodayAtSpecificTime(17) },
+  { start: getTodayAtSpecificTime(7), end: getTodayAtSpecificTime(12) },
+  { start: getTodayAtSpecificTime(20), end: getTodayAtSpecificTime(24) }
+];
 
 // 测试数据
 const localvideosrcs = [
@@ -651,10 +676,28 @@ class Preview extends PureComponent {
           </Option>
         ));
 
+        const emptyCallback = () => {};
         const getImg = () => (
-          <div className={styles.allStatusBox}>
-            <p>{showText}</p>
-          </div>
+          <Fragment>
+            <div className={styles.allStatusBox}>
+              <p>{showText}</p>
+            </div>
+            <div className={styles.emptySlider}>
+              {/* <Slider marks={marks} included={false} defaultValue={37} /> */}
+              <TimeRange
+                mode={1}
+                ticksNumber={24}
+                selectedInterval={selectedInterval}
+                timelineInterval={timelineInterval}
+                onUpdateCallback={emptyCallback}
+                onChangeCallback={emptyCallback}
+                onSlideStart={emptyCallback}
+                onSlideEnd={emptyCallback}
+                // disabledIntervals={playableIntervals}
+                disabled
+              />
+            </div>
+          </Fragment>
         );
         // if (noVideo) {
         //   return (
@@ -712,6 +755,7 @@ class Preview extends PureComponent {
             </div>
 
             <div className={styles.videoBox}>
+              <div style={{ fontSize: '16px', fontWeight: 500, color: 'rgba(0, 0, 0, 0.85)' }}>视频回放</div>
               <div className={styles.switchBox}>
                 <div>
                   <DatePicker />

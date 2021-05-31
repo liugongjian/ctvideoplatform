@@ -128,6 +128,7 @@ class TimeRange extends React.Component {
       showNow,
       formatTick,
       mode,
+      disabled
     } = this.props;
 
     const domain = timelineInterval.map(t => Number(t));
@@ -146,6 +147,7 @@ class TimeRange extends React.Component {
           onSlideEnd={this.onSlideEnd}
           values={selectedInterval.map(t => +t)}
           rootStyle={{ position: 'relative', width: '100%' }}
+          disabled={disabled}
         >
           <Rail>
             {({ getRailProps }) => <SliderRail className={sliderRailClassName} getRailProps={getRailProps} />}
