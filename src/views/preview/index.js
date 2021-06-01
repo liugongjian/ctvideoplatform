@@ -120,15 +120,12 @@ class Preview extends PureComponent {
   changeNowStatus = () => {
     const squareInfo = JSON.parse(window.sessionStorage.getItem('squareInfo')) || {};
     const { showSquaredDom, videoSquare, squareHistoryID } = squareInfo;
-    console.log('showSquaredDom', squareInfo);
-
     if (showSquaredDom && showSquaredDom === 4) {
-      console.log('芜湖~~~~~~', videoSquare);
       this.setState({
         showSquaredDom, videoSquare, squareHistoryID
       }, () => {
         // this.getVideoSrc();
-        Object.keys(videoSquare).map(item => this.getVideoSrc(videoSquare[item].id, videoSquare[item].name), 'no');
+        Object.keys(videoSquare).map(item => this.getVideoSrc(videoSquare[item].id, videoSquare[item].name, 'no', item));
         this.getHistory();
         this.getCurrentDay();
         this.setIntervalTimer();
@@ -382,7 +379,7 @@ class Preview extends PureComponent {
     }
 
 
-    getVideoSrc = (id, name, condition) => {
+    getVideoSrc = (id, name, condition, order) => {
       const { getVideoSrc } = this.props;
       const { showSquaredDom } = this.state;
       if (showSquaredDom === 1) {
@@ -397,7 +394,6 @@ class Preview extends PureComponent {
                 videoName: name,
                 showText: '无信号'
               }, () => {
-                console.log(this.state);
                 window.clearTimeout(this.timer);
                 this.timer = null;
               });
@@ -418,14 +414,15 @@ class Preview extends PureComponent {
         if (condition && condition === 'no') {
           getVideoSrc(id).then((res) => {
             if (res && res.flvuri) {
+              const { videoSrcOrder, videoSquare } = this.state;
               const tempObj = {
-                [`videoSrc${videoSrcOrder}`]: {
-                  ...videoSquare[`videoSrc${videoSrcOrder}`],
+                [order]: {
+                  ...videoSquare[order],
                   showText: '',
                   src: res.flvuri
                 }
               };
-              videoSquare[`videoSrc${videoSrcOrder}`] = tempObj[`videoSrc${videoSrcOrder}`];
+              videoSquare[order] = tempObj[order];
               this.setState({
                 videoSquare: { ...videoSquare },
                 videoSrcOrder: '',
@@ -434,17 +431,7 @@ class Preview extends PureComponent {
 
               });
             } else {
-              // const tempObj = {
-              //   [`videoSrc${videoSrcOrder}`]: {
-              //     ...videoSquare[`videoSrc${videoSrcOrder}`],
-              //     showText: '无信号',
-              //     src: ''
-              //   }
-              // };
-              // videoSquare[`videoSrc${videoSrcOrder}`] = tempObj[`videoSrc${videoSrcOrder}`];
-              // this.setState({
-              //   videoSquare: { ...videoSquare }
-              // });
+              //
             }
           });
         } else {
