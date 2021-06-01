@@ -15,7 +15,8 @@ const common = require('./webpack.common.js');
 
 const proxyServer = {
   '/devApi': {
-    target: 'http://192.168.10.146:8670',
+    // target: 'http://192.168.10.49:8670',
+    target: 'http://192.168.10.146:8670', // 开发环境
     // target: 'http://192.168.4.152:8670',
     // target: 'http://192.168.1.199:8670',
     // target: 'http://192.168.1.152:8670',
@@ -35,7 +36,7 @@ const proxyServer = {
     changeOrigin: true
   },
   '/zhujianxia': {
-    target: 'http://192.168.4.251:8670', //
+    target: 'http://192.168.10.49:8670', //
     pathRewrite: {
       '^/zhujianxia': ''
     },

@@ -10,11 +10,13 @@ import { push } from 'react-router-redux';
 
 import {
   getAreaList, getHistoryListTopTen, getVideoSrc,
-  getAreaInfo, getPeopleLIne, getCurrentTraffic
+  getAreaInfo, getPeopleLIne, getCurrentTraffic, getVideoSnap
 } from 'Redux/reducer/preview';
 
 import { getAlgorithmList } from 'Redux/reducer/monitor';
 import { urlPrefix } from 'Constants/Dictionary';
+
+import moment from 'moment';
 
 // import {
 //   ImageModal,
@@ -37,7 +39,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     getVideoSrc,
     getAreaInfo,
     getPeopleLIne,
-    getCurrentTraffic
+    getCurrentTraffic,
+    getVideoSnap
   },
   dispatch
 );
@@ -55,6 +58,7 @@ const LABEL_CAR = {
   WHITE: '白名单', BLACK: '黑名单', OTHER: '其他'
 };
 
+const dateFormat = 'YYYYMMDD_HHmmss';
 
 class Preview extends PureComponent {
   constructor(props) {
@@ -96,6 +100,9 @@ class Preview extends PureComponent {
 
   componentWillUnmount() {
     this.clearTimer();
+    // this.setState({
+    //   videoSrc: null
+    // });
   }
 
 
@@ -134,8 +141,11 @@ class Preview extends PureComponent {
           }
         }
       } = this.props;
+      const deviceInfo = JSON.parse(window.sessionStorage.getItem('deviceInfo'));
       if (curDevice) {
         this.doubleClickHandle(undefined, curDevice);
+      } else if (deviceInfo) {
+        this.doubleClickHandle(undefined, deviceInfo);
       }
     }
 
@@ -161,7 +171,6 @@ class Preview extends PureComponent {
     }
 
     doubleClickHandle = (e, val) => {
-      this.clearTimer();
       const { videoSrcOrder, showSquaredDom } = this.state;
       if (showSquaredDom === 1) {
         if (val.online) {
@@ -182,7 +191,8 @@ class Preview extends PureComponent {
             selectAreaKeys: [val.id],
             videoSrc: null,
             showText: '设备已离线',
-            historyListData: {}
+            historyListData: {},
+            appliedTraffic: false, // fix 切换到离线设备时仍有上个设备人流信息
           });
         }
       } else if (showSquaredDom === 4) {
@@ -196,7 +206,6 @@ class Preview extends PureComponent {
             }
           };
           videoSquare[`videoSrc${videoSrcOrder}`] = temp[`videoSrc${videoSrcOrder}`];
-          console.log('tempObj--->', temp);
           this.setState({
             selectAreaKeys: [val.id],
             [`videoSrc${videoSrcOrder}`]: null,
@@ -205,6 +214,8 @@ class Preview extends PureComponent {
             historyID: val.id,
             chooseSquare: temp[`videoSrc${videoSrcOrder}`]
           }, () => {
+            this.getHistory();
+            this.getCurrentDay();
             this.getVideoSrc(val.id, val.name);
             this.getPeopleArea(val.id);
             this.setIntervalTimer();
@@ -221,6 +232,8 @@ class Preview extends PureComponent {
         this.setState({
           appliedTraffic: applied,
           pointsInfo: res
+        }, () => {
+          this.setIntervalTimer();
         });
       });
     }
@@ -279,13 +292,13 @@ class Preview extends PureComponent {
               tempTrafficExit: res.exitNo,
               tempTrafficEntry: res.entryNo
             });
-          } else if (res.exitNo > tempTrafficExit || res.exitNo > tempTrafficExit) {
+          } else if (res.exitNo !== tempTrafficExit || res.entryNo !== tempTrafficEntry) {
             this.setState({
               traffiInfoData: res,
               tempTrafficExit: res.exitNo,
               tempTrafficEntry: res.entryNo
             });
-          } else if (res.exitNo === null || res.entryNo === null) {
+          } else if (!res.exitNo || !res.entryNo) {
             this.setState({
               traffiInfoData: res,
               tempTrafficExit: res.exitNo || 0,
@@ -305,10 +318,14 @@ class Preview extends PureComponent {
     }
 
     setIntervalTimer = () => {
+      this.clearTimer();
+      const { appliedTraffic } = this.state;
       this.state.timer = window.setInterval(() => {
         this.getHistory();
-        this.getCurrentDay();
-      }, 5000);
+        if (appliedTraffic) {
+          this.getCurrentDay();
+        }
+      }, 3000);
     }
 
     clearTimer = () => {
@@ -376,8 +393,7 @@ class Preview extends PureComponent {
                 videoSrcOrder: '',
                 chooseSquare: {}
               }, () => {
-                this.getHistory();
-                this.getCurrentDay();
+
               });
             } else {
               // const tempObj = {
@@ -411,6 +427,8 @@ class Preview extends PureComponent {
           videoSrc: '',
           historyListData: {},
           showText: '无信号'
+        }, () => {
+          window.sessionStorage.removeItem('deviceInfo');
         });
       }
     }
@@ -539,24 +557,24 @@ class Preview extends PureComponent {
       getTypeContent = (val) => {
         if (val.face && val.face.label !== 'OTHER') {
           return (
-            <div className={styles.historyTextName}>
+            <p className={styles.historyTextName}>
               <span>姓名：</span>
               <span>
                 {val.face.username || '-'}
               </span>
               {this.getTag(LABEL_PERSON[val.face.label], val.face.label)}
-            </div>
+            </p>
           );
         }
         if (val.plate && val.plate.label !== 'OTHER') {
           return (
-            <div className={styles.historyTextName}>
+            <p className={styles.historyTextName}>
               <span>车牌：</span>
               <span>
                 {val.plate.licenseNo || '-'}
               </span>
               {this.getTag(LABEL_CAR[val.plate.label], val.plate.label)}
-            </div>
+            </p>
           );
         }
         return false;
@@ -753,6 +771,19 @@ class Preview extends PureComponent {
             </div>
           );
         }
+      }
+
+      getSnapVideo = () => {
+        const { getVideoSnap } = this.props;
+        const { historyID, videoName } = this.state;
+        getVideoSnap(historyID).then((res) => {
+          const imgUrl = `data:image/png;base64,${res}`;
+          const a = document.createElement('a');
+          const imgName = `${videoName}_${moment().format(dateFormat)}`;
+          a.href = imgUrl;
+          a.setAttribute('download', imgName);
+          a.click();
+        });
       }
 
       render() {

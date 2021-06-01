@@ -43,16 +43,51 @@ class AddPlate extends Component {
   }
 
   onUploadChange = (info) => {
-    const fileTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/vnd.ms-excel'];
-    if (!fileTypes.includes(info.file.type)) {
-      message.error('格式错误，请重新上传');
-      return;
+    // const fileTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    //   'application/vnd.ms-excel'];
+    // if (!fileTypes.includes(info.file.type)) {
+    //   message.error('格式错误，请重新上传');
+    //   return;
+    // }
+    const { status } = info.file;
+    this.setState({
+      fileList: info.fileList
+    });
+    if (status === 'done') {
+      if (info.file.response.code === 0) {
+        let fileList = [...info.fileList];
+        fileList = fileList.slice(-1);
+        this.setState({
+          fileList
+        });
+      } else {
+        message.error(`${info.file.response.msg}`);
+      }
+    } else if (status === 'error') {
+      const fileList = [...info.fileList];
+      fileList.pop();
+      this.setState({
+        fileList
+      });
+      if (info.file.response.message) {
+        message.error(`${info.file.response.message}`);
+      } else {
+        message.error(`${info.file.name}上传失败！`);
+      }
     }
-    let fileList = [...info.fileList];
-    fileList = fileList.slice(-1);
-    this.setState({ fileList });
   }
+
+  onBeforeUpload = file => new Promise((resolve, reject) => {
+    const isExcel = file.name.split('.').length === 2 && (file.name.split('.')[1] === 'xlsx' || file.name.split('.')[1] === 'xls');
+    if (!isExcel) {
+      message.error('格式错误，请重新上传');
+    }
+    if (isExcel) {
+      return resolve(true);
+    }
+    // eslint-disable-next-line prefer-promise-reject-errors
+    return reject(false);
+  })
 
   onNextStep = () => {
     this.props.getImportedPlate({ pageNo: 0, pageSize: 10 }).then((data) => {
@@ -116,6 +151,7 @@ class AddPlate extends Component {
     const uploadprops = {
       action: `${urlPrefix}/license/import`,
       onChange: this.onUploadChange,
+      beforeUpload: this.onBeforeUpload,
     };
     const uploader = () => (
       <div className={styles.uploadWrapper}>
@@ -192,14 +228,17 @@ class AddPlate extends Component {
               showQuickJumper
               pageSize={importedPlateInfo.pageSize}
               onShowSizeChange={(current, size) => this.onPageSizeChange(current, size)}
+              hideOnSinglePage={false}
+              showTotal={false}
             />
           </div>
         </div>
         <div>
           <div className={styles.buttonWrapper2}>
             {/* <Button key="cancel"className={styles.btnBack2} onClick={()=>this.setState({step : 1})}>上一步</Button> */}
+
             <Button key="cancel" className={styles.btnBack2} onClick={() => this.onBackToMain()}>
-              返回
+              取消
             </Button>
             <Button type="primary" onClick={() => this.onCheckAndSubmit()}>提交</Button>
           </div>
@@ -239,7 +278,7 @@ class AddPlate extends Component {
           visible={this.state.submitModalVisible}
           handleOk={this.onSubmitDuplicatedPlates}
           closeModal={() => { this.setState({ submitModalVisible: false }); }}
-          content={`你添加的车牌数据有${this.state.duplicatedPlates}条已存在是否要覆盖`}
+          content={`您添加的车牌数据有${this.state.duplicatedPlates}条已存在是否要覆盖？`}
         />
 
 

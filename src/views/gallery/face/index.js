@@ -101,15 +101,15 @@ class Face extends Component {
       });
       getFaceList(data).then((res) => {
         let faceDataTemp = [];
-        faceDataTemp = res.list && res.list.map((item) => {
+        faceDataTemp = res?.list && res?.list.map((item) => {
           item.isChecked = false;
           return item;
         });
         this.setState({
           faceData: faceDataTemp,
-          total: res.recordsTotal,
-          pageNum: res.pageNo + 1,
-          pageSize: res.pageSize,
+          total: res?.recordsTotal,
+          pageNum: res?.pageNo + 1,
+          pageSize: res?.pageSize,
           loading: false
         });
       });
@@ -172,7 +172,11 @@ class Face extends Component {
               });
             }
           ).catch((err) => {
-            // message.warning('添加账户失败')
+            this.setState({
+              submitBtnDis: false
+            }, () => {
+              this.getTableList();
+            });
           });
         }
       });
@@ -217,7 +221,7 @@ class Face extends Component {
       const { editFace } = this.props;
       const { editId, editFaceId } = this.state;
       this.setState({
-        submitBtnDis: false,
+        submitBtnDis: true,
         modalVisible: false,
       });
       this.props.form.validateFields((errors, values) => {
@@ -228,7 +232,7 @@ class Face extends Component {
             (res) => {
               message.success('编辑人脸数据成功');
               this.setState({
-                submitBtnDis: true,
+                submitBtnDis: false,
               }, () => this.getTableList());
             }
           ).catch((err) => {
@@ -273,29 +277,40 @@ class Face extends Component {
       });
     };
 
+    // 还原releaseV1.2中遗失代码
     handleDelCancel = () => {
+      const { faceData, selectedRowKeys } = this.state;
+      for (let i = 0; i < selectedRowKeys.length; i++) {
+        for (let j = 0; j < faceData.length; j++) {
+          if (faceData[j].id === selectedRowKeys[i]) {
+            faceData[j].isChecked = false;
+          }
+        }
+      }
       this.setState({
         delModalVisible: false,
+        selectedRowKeys: [],
+        faceData,
       });
     };
 
-    delFace = () => {
-      const { delFace } = this.props;
-      const data = {
-        userFaceIdList: this.state.delIds
-      };
-      this.setState({
-        delModalVisible: false,
-        loading: true,
-      });
-      delFace(data).then((res) => {
-        message.success('删除成功');
-        this.setState({
-          pageNum: 1,
-          selectedRowKeys: [],
-        }, () => this.getTableList());
-      });
+  delFace = () => {
+    const { delFace } = this.props;
+    const data = {
+      userFaceIdList: this.state.delIds
     };
+    this.setState({
+      delModalVisible: false,
+      loading: true,
+    });
+    delFace(data).then((res) => {
+      message.success('删除成功');
+      this.setState({
+        pageNum: 1,
+        selectedRowKeys: [],
+      }, () => this.getTableList());
+    });
+  };
 
     beforeUpload = (file) => {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -479,7 +494,7 @@ class Face extends Component {
                           {
                             item.syncStatusCode !== 1 ? (
                               <div className={styles.faceTip}>
-                                {item.syncStatusCode === 0 ? '人脸录入失败' : '人脸录入中'}
+                                {item.syncStatusCode === 2 ? '人脸录入中' : '人脸录入失败'}
                               </div>
                             ) : ''
                           }
@@ -533,7 +548,7 @@ class Face extends Component {
                     rules: [
                       { required: true, message: '姓名不能为空' },
                       { max: 30, message: '姓名不得超过30个字符' },
-                      { pattern: new RegExp(/\S/), message: '姓名不能为空' }
+                      { pattern: /^[A-Za-z0-9\u4e00-\u9fa5]+$/, message: '姓名只能是汉字和字母以及数字并且不能包含空字符' }
                     ],
                     validateTrigger: 'onBlur'
                   })(
@@ -606,7 +621,7 @@ class Face extends Component {
 
     render() {
       return (
-        <div className={styles.content}>
+        <div className={styles.faceContent}>
           {this.renderTableHeaders()}
           {this.renderTable()}
         </div>

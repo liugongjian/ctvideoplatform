@@ -40,6 +40,7 @@ class TenantDetail extends Component {
     this.state = {
       tenantDetail: null,
       deviceSupplier: [],
+      tenantSupllier: [],
       supplierParams: [],
       currentKey: '',
       algorithmConfig: [],
@@ -59,26 +60,24 @@ class TenantDetail extends Component {
       getTenantDetail(tenantId)
         .then((res) => {
           console.log('tenantDetail', res);
-          ckey = res.deviceSupplierInfo ? JSON.parse(res.deviceSupplierInfo).supplier : 'ffcs2';
+          ckey = res.deviceSupplierIdList ? JSON.parse(res.deviceSupplierIdList) : [];
           const algolist = JSON.parse(res.algorithmsInfoJson).map((item) => {
             delete item.createTime;
             return item;
           });
-          this.setState({ tenantDetail: res, currentKey: ckey });
-          console.log('res.algorithmsInfoJson', res.algorithmsInfoJson);
+          console.log('JSON.parse(res.algorithmsInfoJson)', JSON.parse(res.algorithmsInfoJson));
           calgolist = JSON.parse(res.algorithmsInfoJson);
+          this.setState({ tenantDetail: res });
           getDeviceSupplier().then((supplier) => {
-            console.log(supplier, 'supplier');
-            let mkey;
+            console.log('supplier', supplier);
+            const tenantSupllier = [];
             if (supplier) {
-              supplier.forEach((item, index) => {
-                if (item.name === ckey) {
-                  mkey = index;
-                }
-              });
-              console.log('mkey', mkey);
-              console.log('supplier[mkey].supplierParams', supplier[mkey].supplierParam);
-              this.setState({ deviceSupplier: supplier, supplierParams: supplier[mkey].supplierParam });
+              // supplier.forEach((item, index) => {
+              //   if (item.name === ckey) {
+              //     mkey = index;
+              //   }
+              // });
+              this.setState({ deviceSupplier: supplier });
             }
           });
           getAlgorithmList().then((list) => {
@@ -115,7 +114,8 @@ class TenantDetail extends Component {
         console.log(supplier, 'supplier');
         let mkey;
         if (supplier) {
-          this.setState({ deviceSupplier: supplier, currentKey: supplier[0].name, supplierParams: supplier[0].supplierParam });
+          // this.setState({ deviceSupplier: supplier, currentKey: supplier[0].name, supplierParams: supplier[0].supplierParam });
+          this.setState({ deviceSupplier: supplier });
         }
       });
       getAlgorithmList().then((list) => {
@@ -138,16 +138,6 @@ class TenantDetail extends Component {
     getDeviceQuota().then((quota) => {
       if (quota) {
         this.setState({ deviceQuota: quota });
-      }
-    });
-  }
-
-  handleSelectChange = (supkey) => {
-    //
-    console.log('supkey', supkey);
-    this.state.deviceSupplier.forEach((item) => {
-      if (item.name === supkey) {
-        this.setState({ supplierParams: item.supplierParam, currentKey: supkey });
       }
     });
   }
@@ -191,25 +181,20 @@ class TenantDetail extends Component {
     const postTenant = tenantId ? updateTenant : addTenant;
     validateFieldsAndScroll((errors, values) => {
       if (!errors) {
-        const sources = {};
-        sources.supplier = this.state.currentKey;
-        this.state.supplierParams.forEach((item) => {
-          sources[item.name] = getFieldValue(item.name + this.state.currentKey);
-        });
         const data = tenantId
           ? {
             name: getFieldValue('name'),
             deviceQuota: getFieldValue('deviceQuota'),
-            description: getFieldValue('description'),
+            description: getFieldValue('description').trim(),
             algorithmConfig: this.state.algorithmConfig,
-            sourceList: [sources]
+            deviceSupplierIdList: getFieldValue('videotype')
           } : {
             name: getFieldValue('name'),
             password: getFieldValue('password'),
             deviceQuota: getFieldValue('deviceQuota'),
             description: getFieldValue('description'),
             algorithmConfig: this.state.algorithmConfig,
-            sourceList: [sources]
+            deviceSupplierIdList: getFieldValue('videotype')
           };
         console.log('data', data);
         console.log('supplierParams', this.state.supplierParams);
@@ -278,6 +263,28 @@ class TenantDetail extends Component {
     } catch (err) {
       callback(err);
     }
+    // try {
+    //  const strReg = '^((https|http)?://)'
+    //  + "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?" // ftp的user@
+    //   + '(([0-9]{1,3}\.){3}[0-9]{1,3}' // IP形式的URL- 199.194.52.184
+    //   + '|' // 允许IP和DOMAIN（域名）
+    //   + "([0-9a-z_!~*'()-]+\.)*" // 域名- www.
+    //   + '([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\.' // 二级域名
+    //   + '[a-z]{2,6})' // first level domain- .com or .museum
+    //   + '(:[0-9]{1,10})?' // 端口- :80
+    //   + '((/?)|' // a slash isn't required if there is no file name
+    //   + "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$";
+    // const re = new RegExp(strReg);
+    //   const re = /^((https|http)?:\/\/)(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5]):([0-9]|[1-9]\d|[1-9]\d{2}|[1-9]\d{3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/;
+    //   if (!(re.test(value)) && value) {
+    //     callback(new Error('不是有效的URL地址，请更正！'));
+    //   } else {
+    //     callback();
+    //   }
+    // } catch (err) {
+    //   callback(err);
+    // }
+    callback();
   };
 
   validatorDeviceQuota = (rule, value, callback) => {
@@ -315,51 +322,52 @@ class TenantDetail extends Component {
     }
   };
 
-  renderEncodeFormat = (item, currentKey, deviceSupplierInfo) => {
-    const { getFieldDecorator } = this.props.form;
-    return (
-      <Form.Item label={item.name}>
-        <Tooltip placement="right" title={item.desc}>
-          {getFieldDecorator(item.name + currentKey, {
-            initialValue: currentKey === deviceSupplierInfo.supplier ? deviceSupplierInfo[item.name] : '',
-            rules: [{ required: true, message: `请确认${item.name}！` }],
-            validateTrigger: ['onBlur', 'onInput']
-          })(
-            <Select
-              className={styles.formItemInput}
-            >
-              {encodeFormatOptions.map(option => (
-                <Option key={option}>{option}</Option>
-              ))}
-            </Select>
-          )}
-        </Tooltip>
-      </Form.Item>
-    );
-  }
+  // renderEncodeFormat = (item, currentKey, deviceSupplierInfo) => {
+  //   const { getFieldDecorator } = this.props.form;
+  //   return (
+  //     <Form.Item label={item.name}>
+  //       <Tooltip placement="right" title={item.desc}>
+  //         {getFieldDecorator(item.name + currentKey, {
+  //           initialValue: currentKey === deviceSupplierInfo.supplier ? deviceSupplierInfo[item.name] : '',
+  //           rules: [{ required: true, message: `请确认${item.name}！` }],
+  //           validateTrigger: ['onBlur', 'onInput']
+  //         })(
+  //           <Select
+  //             className={styles.formItemInput}
+  //           >
+  //             {encodeFormatOptions.map(option => (
+  //               <Option key={option}>{option}</Option>
+  //             ))}
+  //           </Select>
+  //         )}
+  //       </Tooltip>
+  //     </Form.Item>
+  //   );
+  // }
 
-  renderBaseUri = (item, currentKey, deviceSupplierInfo) => {
-    const { getFieldDecorator } = this.props.form;
-    return (
-      <Form.Item label={item.name}>
-        <Tooltip placement="right" title={item.desc}>
-          {getFieldDecorator(item.name + currentKey, {
-            initialValue: currentKey === deviceSupplierInfo.supplier ? deviceSupplierInfo[item.name] : '',
-            rules: [
-              { required: true, message: `请确认${item.name}！` },
-              { validator: (rule, value, callback) => this.validatorUrl(rule, value, callback) }
-            ],
-            validateTrigger: ['onBlur', 'onInput'],
-            validateFirst: true,
-          })(
-            <Input
-              className={styles.formItemInput}
-            />
-          )}
-        </Tooltip>
-      </Form.Item>
-    );
-  }
+  // renderBaseUri = (item, currentKey, deviceSupplierInfo) => {
+  //   const { getFieldDecorator } = this.props.form;
+  //   return (
+  //     <Form.Item label={item.name}>
+  //       <Tooltip placement="right" title={`${item.desc}（以http(s)://开头的网络地址）`}>
+  //         {getFieldDecorator(item.name + currentKey, {
+  //           initialValue: currentKey === deviceSupplierInfo.supplier ? deviceSupplierInfo[item.name] : '',
+  //           rules: [
+  //             { required: true, message: `请确认${item.name}！` },
+  //             { max: 50, message: '不能超过50位' },
+  //             { validator: (rule, value, callback) => this.validatorUrl(rule, value, callback) }
+  //           ],
+  //           validateTrigger: ['onBlur', 'onInput'],
+  //           validateFirst: true,
+  //         })(
+  //           <Input
+  //             className={styles.formItemInput}
+  //           />
+  //         )}
+  //       </Tooltip>
+  //     </Form.Item>
+  //   );
+  // }
 
   render() {
     const emptyDetail = {
@@ -369,20 +377,18 @@ class TenantDetail extends Component {
       description: '',
       deviceQuota: 0,
       deviceSupplierInfo: '{"supplier":"ffcs2"}',
+      deviceSupplierIdList: null,
       name: '',
     };
     const { tenantId } = this.props.match.params;
     const {
-      deviceSupplier, supplierParams, currentKey, tenantDetail
+      deviceSupplier, supplierParams, currentKey, tenantDetail, tenantSupllier
     } = this.state;
     const td = tenantDetail || emptyDetail;
-    const deviceSupplierInfo = td.deviceSupplierInfo === ''
-      ? {
-        supplier: 'ffcs2', appkey: '', secretkey: '', acount_name: '', baseUri: '', encodeFormat: ''
-      }
-      : JSON.parse(td.deviceSupplierInfo);
-    // const deviceSupplierInfo = JSON.parse(td.deviceSupplierInfo);
-    console.log('deviceSupplierInfo111', deviceSupplierInfo);
+    const deviceSupplierIdList = td.deviceSupplierIdList
+      ? JSON.parse(td.deviceSupplierIdList)
+      : [];
+    console.log('deviceSupplierIdList', deviceSupplierIdList);
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
       labelCol: {
@@ -461,7 +467,8 @@ class TenantDetail extends Component {
                       rules: [
                         { required: true, message: '请输入密码！' },
                         { validator: (rule, value, callback) => this.validatorPsw(rule, value, callback) },
-                        { max: 26, message: '密码不能超过26位！' }
+                        { max: 26, message: '密码不能超过26位' },
+                        { min: 12, message: '密码不能少于12位' }
                       ],
                       validateTrigger: ['onBlur', 'onInput'],
                       validateFirst: true
@@ -485,27 +492,30 @@ class TenantDetail extends Component {
               {getFieldDecorator('description', {
                 initialValue: td.description,
                 rules: [{ required: true, message: '请确认备注！' }, { max: 100, message: '不能超过100个字符' }],
+                validateFirst: true,
                 validateTrigger: ['onBlur', 'onInput']
               })(<TextArea className={styles.formItemInput} rows={4} autoSize={false} />)}
             </Form.Item>
             <span className={styles.subTitle}>规则配置</span>
             <Form.Item label="视频源类型" name="videotype">
               {getFieldDecorator('videotype', {
-                initialValue: deviceSupplierInfo.supplier,
+                initialValue: deviceSupplierIdList,
                 rules: [{ required: true, message: '请选择类型!' }],
                 validateTrigger: ['onBlur', 'onInput']
               })(
                 <Select
+                  mode="multiple"
                   className={styles.formItemInput}
-                  onChange={this.handleSelectChange}
+                  maxTagCount={2}
+                  maxTagTextLength={10}
                 >
                   {deviceSupplier.map(sup => (
-                    <Option key={sup.name}>{sup.cnName}</Option>
+                    <Option key={sup.id}>{sup.displayName}</Option>
                   ))}
                 </Select>
               )}
             </Form.Item>
-            {supplierParams.map((item) => {
+            {/* {supplierParams.map((item) => {
               if (currentKey === deviceSupplierInfo.supplier) {
                 console.log('deviceSupplierInfo', deviceSupplierInfo);
                 if (item.name === encodeFormat) {
@@ -519,7 +529,7 @@ class TenantDetail extends Component {
                     <Tooltip placement="right" title={item.desc}>
                       {getFieldDecorator(item.name + currentKey, {
                         initialValue: deviceSupplierInfo[item.name],
-                        rules: [{ required: true, message: `请确认${item.name}！` }],
+                        rules: [{ required: true, message: `请确认${item.name}！` }, { max: 50, message: '不能超过50位' }],
                         validateTrigger: ['onBlur', 'onInput']
                       })(
                         <Input
@@ -540,7 +550,7 @@ class TenantDetail extends Component {
                 <Form.Item label={item.name}>
                   <Tooltip placement="right" title={item.desc}>
                     {getFieldDecorator(item.name + currentKey, {
-                      rules: [{ required: true, message: `请确认${item.name}！` }],
+                      rules: [{ required: true, message: `请确认${item.name}！` }, { max: 50, message: '不能超过50位' }],
                       validateTrigger: ['onBlur', 'onInput']
                     })(
                       <Input
@@ -550,12 +560,13 @@ class TenantDetail extends Component {
                   </Tooltip>
                 </Form.Item>
               );
-            })}
+            })} */}
             <Form.Item label="视频接入额度" name="deviceQuota">
               {getFieldDecorator('deviceQuota', {
                 initialValue: td.deviceQuota || '',
                 rules: [
                   { required: true, message: '请输入额度' },
+                  { pattern: /^([0]|[1-9][0-9]*)$/, message: '必须大于等于0的整数' },
                   { validator: (rule, value, callback) => this.validatorDeviceQuota(rule, value, callback) }
                 ],
                 validateTrigger: ['onBlur', 'onInput'],

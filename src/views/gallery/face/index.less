@@ -1,12 +1,17 @@
-.content{
-    min-width: 1000px;
+.faceContent{
+    min-width: 960px;
+    height: calc(100vh - 72px);
     position: relative;
     background-color: white;
     margin: 10px 10px 20px 10px;
     padding: 20px 20px 16px 20px;
+    min-height: calc(100% - 30px);
     border-radius: 2px;
     .listHeader{
         display: flex;
+        height: 56px;
+        padding-bottom: 20px;
+        align-items: center;
         .operationAssets{
             display: flex;
             align-items: center;
@@ -75,10 +80,14 @@
 
     }
     .mainContanier{
-        margin-top: 20px;
+        height: calc(100vh - 200px);
+        overflow-y: auto;
         :global{
             .ant-card-body{
                 padding: 0px;
+            }
+            .ant-spin-container{
+                overflow-x: hidden;
             }
         }
         .cardContanierChecked{
@@ -264,10 +273,10 @@
         //     }
         // }
     }
-    .paginationWrapper{
-        position: absolute;
-        width: calc(100% - 40px);
-        bottom: 10px;
+    :global{
+        .ant-pagination{
+            margin-top: 16px;
+        }
     }
 
     

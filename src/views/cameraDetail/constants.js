@@ -79,11 +79,15 @@ const TIME_INTERVAL = [
   }
 ];
 
+// 同一算法该时间内不可重复操作编辑或取消
+const AlgoDisableTime = 5000; // 5s
+
 export {
   TRIGGER_ORIGIN,
   ALGO_CONFIG_TRIGGER_RULE,
   ALGO_CONFIG_TRIGGER_TIME_TYPE,
   ALGO_CONFIG_TYPE,
   DIRECTION_OPTIONS,
-  TIME_INTERVAL
+  TIME_INTERVAL,
+  AlgoDisableTime,
 };

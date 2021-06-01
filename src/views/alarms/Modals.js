@@ -13,6 +13,7 @@ import warnPic from 'Assets/role/warn.png';
 import { LicenseProvinces } from './constants';
 import styles from './index.less';
 
+const licenseNoReg = /^[0-9a-zA-Z]+$/;
 class LicenseImportModalComp extends Component {
   constructor(props) {
     super(props);
@@ -48,6 +49,9 @@ class LicenseImportModalComp extends Component {
     //   default:
     //     break;
     // }
+    this.setState({
+      exist: false,
+    });
     form.setFieldsValue({
       licenseProvince, licenseNo, color, label
     }, this.validateExist);
@@ -79,18 +83,16 @@ class LicenseImportModalComp extends Component {
       isLicenseExist, form
     } = this.props;
     const licenseNo = val?.licenseNo || form.getFieldValue('licenseNo');
-    const licenseProvince = form.getFieldValue('licenseProvince');
-    if (licenseNo && licenseProvince) {
-      form.validateFields(['licenseNo', 'licenseProvince'], (err) => {
-        if (!err) {
-          const license = `${licenseProvince}${licenseNo}`;
-          isLicenseExist(license).then((res) => {
-            this.setState({ exist: res });
-          });
-        }
+    const licenseProvince = val?.licenseProvince || form.getFieldValue('licenseProvince');
+    if (licenseNo && licenseProvince && licenseNoReg.test(licenseNo)) {
+      const license = `${licenseProvince}${licenseNo}`;
+      isLicenseExist(license).then((res) => {
+        this.setState({ exist: res });
       });
     }
   }
+
+  changeFilter = (inputValue, option) => option.props.children === inputValue.toLowerCase()
 
   render() {
     const {
@@ -130,13 +132,27 @@ class LicenseImportModalComp extends Component {
                         if (!val || !form.getFieldValue('licenseNo')) {
                           callback('请补充车牌号！');
                         }
+                        const licenseNo = form.getFieldValue('licenseNo');
+                        if (licenseNo.length > 7) {
+                          callback('车牌号不能超过8位！');
+                        }
+                        if (!licenseNoReg.test(licenseNo)) {
+                          callback('车牌号除省份外仅允许输入数字或字母！');
+                        }
+                        if (form.getFieldError('licenseNo')) {
+                          form.validateFields(['licenseNo']);
+                        }
                         callback();
-                        this.validateExist();
                       }
                     }
                   ],
                 })(
-                  <Select>
+                  <Select
+                    showSearch
+                    optionFilterProp="children"
+                    filterOption={this.changeFilter}
+                    onChange={val => this.validateExist({ licenseProvince: val })}
+                  >
                     {
                       LicenseProvinces.map(item => (
                         <Select.Option value={item}>{item}</Select.Option>
@@ -150,30 +166,19 @@ class LicenseImportModalComp extends Component {
                 {getFieldDecorator('licenseNo', {
                   rules: [
                     {
-                      required: true,
-                      whitespace: true,
-                      message: ' ',
-                    },
-                    {
                       validator: (rule, val, callback) => {
-                        const reg = /^[0-9a-zA-Z]+$/;
-                        form.validateFields(['licenseProvince']);
-                        if (!val || !form.getFieldValue('licenseProvince')) {
-                          callback(' ');
-                        }
-                        if (val.length > 7) {
-                          callback('车牌号不能超过8位');
-                        }
-                        if (!reg.test(val)) {
-                          callback('车牌号只能包含数字和字母');
-                        }
-                        callback();
-                        this.validateExist({ licenseNo: val });
+                        form.validateFields(['licenseProvince'], (err) => {
+                          if (err) {
+                            callback(' ');
+                          } else {
+                            callback();
+                          }
+                        });
                       }
                     }
                   ],
                 })(<Input
-                  // onChange={e => this.validateExist({ licenseNo: e.target.value })}
+                  onChange={e => this.validateExist({ licenseNo: e.target.value })}
                   placeholder="请输入车牌号"
                 />)}
               </Form.Item>

@@ -73,8 +73,8 @@
             top: 42px;
             height: 30px;
             line-height: 30px;
-            opacity: 0.5;
-            background: #000;
+            // opacity: 0.5;
+            background: rgba(0, 0, 0, 0.3);
             display: flex;
             z-index: 99;
             color: #fff;
@@ -87,6 +87,12 @@
                 &:last-child{
                     margin-left: auto;
                     margin-right: 10px;
+                }
+                &.snapVideoImg{
+                    cursor: pointer;
+                    margin-right: 20px;
+                    font-size: 16px;
+                    color: #fff;
                 }
             }
             .videoCancelBtn{
@@ -123,6 +129,7 @@
             left: 5px;
         }
     }
+    
     .allStatusBox{
         width: 100%;
         height: 100%;
@@ -262,6 +269,9 @@
         .historyTextName{
             font-size: 12px;
             display: flex;
+            span{
+                line-height: 20px;
+            }
             .AlarmCardTag{
                 display: inline-block;
                 width: 52px;

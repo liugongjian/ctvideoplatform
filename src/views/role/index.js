@@ -89,7 +89,7 @@ class Role extends Component {
       pageNo: pageNo - 1,
       pageSize: this.state.roleListInfo.pageSize
     }).then((data) => {
-      this.setState({ roleListInfo: data });
+      this.setState({ roleListInfo: data, deleteItems: [], selectedRowKeys: [] });
     });
   }
 
@@ -99,7 +99,7 @@ class Role extends Component {
       pageSize: size
     }).then((data) => {
       // console.log(data);
-      this.setState({ roleListInfo: data });
+      this.setState({ roleListInfo: data, deleteItems: [], selectedRowKeys: [] });
     });
   }
 
@@ -206,6 +206,7 @@ class Role extends Component {
               showQuickJumper
               hideOnSinglePage={false}
               pageSize={this.state.roleListInfo.pageSize}
+              showTotal={false}
               onShowSizeChange={(current, size) => this.onPageSizeChange(current, size)}
             />
           </div>
@@ -220,7 +221,7 @@ class Role extends Component {
             <Button key="submit" type="primary" disabled={this.state.isDeleting} onClick={() => this.onDeleteItems()} style={{ margin: '0 0 0 5px' }}>
               确定
             </Button>,
-            <Button key="back" style={{ margin: '0 0 0 30px' }} disabled={this.state.isDeleting} onClick={() => { this.setState({ deleteModalVisible: false, deleteItems: [] }); }}>
+            <Button key="back" style={{ margin: '0 0 0 30px' }} disabled={this.state.isDeleting} onClick={() => { this.setState({ deleteModalVisible: false, deleteItems: [], selectedRowKeys: [] }); }}>
               取消
             </Button>,
           ]}

@@ -2,6 +2,7 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import React, { PureComponent } from 'react';
 import flvjs from 'flv.js';
+import { visibilitychange } from './getBrowserState';
 import styles from './videoPlayer.less';
 
 class FlvPlayer extends PureComponent {
@@ -32,11 +33,15 @@ class FlvPlayer extends PureComponent {
     componentWillUnmount() {
       // 销毁播放器
       if (this.player) {
+        const {
+          visibilityChange
+        } = visibilitychange();
         this.player.pause();
         this.player.unload();
         this.player.detachMediaElement();
         this.player.destroy();
         this.player = null;
+        window.removeEventListener(visibilityChange, this.keepHandle);
       }
     }
 
@@ -71,6 +76,7 @@ class FlvPlayer extends PureComponent {
           console.log('MEDIA_INFO', info);
           self.drawLine();
           self.drawMask();
+          self.keepVideo();
         });
         // this.player.on('play', (info) => { console.log('timeupdateInfo', info); });
         // this.player.on(flvjs.Events.SCRIPTDATA_ARRIVED, (info) => {
@@ -80,6 +86,27 @@ class FlvPlayer extends PureComponent {
         // console.log('mediaInfo', flvjs.Events.MEDIA_INFO);
         // console.log('getConfig----------------->', flvjs.LoggingControl.getConfig());
         // flvjs.LoggingControl.addLogListener((log) => { console.log('addLog-------->', log); });
+      }
+    }
+
+    keepVideo = () => {
+      // flvjs 当切换chrome浏览器tab时，直播视频会暂停为当前时间，切换回当前tab，视频流继续播放，而不是更新为currentTime
+      const self = this;
+      const {
+        visibilityChange
+      } = visibilitychange();
+      document.addEventListener(visibilityChange, this.keepHandle, false);
+    }
+
+    keepHandle = () => {
+      const self = this;
+      const {
+        hidden, visible, visibilityChange, state
+      } = visibilitychange();
+      if (document[state] === visible) {
+        self.player.currentTime = self.player.buffered.end(0) - 0.5;
+      } else if (document[state] === hidden) {
+        console.log('do nothing');
       }
     }
 

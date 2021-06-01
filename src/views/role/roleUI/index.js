@@ -7,27 +7,25 @@ import infoPic from '@/assets/role/info.png';
 import styles from './index.less';
 
 const { Search } = Input;
+const { TreeNode } = Tree;
 
 
 class RoleUI extends Component {
-  state={
-    searchValue: '',
-  }
-
-  constructor(props) {
-    super(props);
-  }
+  // state={
+  //   searchValue: '',
+  // }
 
   componentWillReceiveProps(nextProps) {
     // console.log('nextProps', nextProps.checkedKeys)
   }
 
-  onSearchInput() {
-    // console.log('ui--',this.state.searchValue)
-    this.props.onSearchInput(this.state.searchValue);
-  }
+  // onSearchInput() {
+  //   // console.log('ui--',this.state.searchValue)
+  //   this.props.onSearchInput(this.state.searchValue);
+  // }
 
   render() {
+    const { treeData, searchValue } = this.props;
     const formItemLayout = {
       labelCol: {
         span: 2,
@@ -37,6 +35,30 @@ class RoleUI extends Component {
       },
     };
     const { getFieldDecorator } = this.props.form;
+
+    const loop = data => data.map((item) => {
+      const index = item.title.indexOf(searchValue);
+      const beforeStr = item.title.substr(0, index);
+      const afterStr = item.title.substr(index + searchValue.length);
+      const title = index > -1 ? (
+        <span>
+          {beforeStr}
+          <span style={{ color: '#f50' }}>{searchValue}</span>
+          {afterStr}
+        </span>
+      ) : (
+        <span>{item.title}</span>
+      );
+      if (item.children) {
+        return (
+          <TreeNode key={item.key} title={title}>
+            {loop(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode key={item.key} title={title} />;
+    });
+
     return (
       <div className={styles.contentWrapper}>
         <span className={styles.subTitle}>基本配置</span>
@@ -53,7 +75,7 @@ class RoleUI extends Component {
             <Form.Item label="角色名称" name="name">
               {getFieldDecorator('input', {
                 initialValue: this.props.name || '',
-                rules: [{ required: true, message: '请输入用户名' }],
+                rules: [{ required: true, message: '请输入角色名' }],
               })(
                 <Input className={styles.formItemInput} onChange={e => this.props.onNameChange(e.target.value)} />
               )}
@@ -87,7 +109,7 @@ class RoleUI extends Component {
               <div className={styles.treefr}>
                 <div style={{ padding: '0 20px 0 0' }}>
                   <div style={{ display: 'inline-block', margin: '5px 0 0 5px' }}>
-                    <img style={{ width: '20px', height: '20px', display: 'inline-block' }} src={infoPic} />
+                    <img style={{ width: '20px', height: '20px', display: 'inline-block' }} src={infoPic} alt="" />
                     <span>
                       请配置当前角色能够访问的
                       {this.props.activeMenuKey.key === '1' ? '系统管理菜单' : '摄像头点位权限'}
@@ -98,8 +120,9 @@ class RoleUI extends Component {
                     style={{
                       display: 'inline-block', float: 'right', width: '25%', margin: '10px 20px 0 0'
                     }}
-                    onChange={e => this.setState({ searchValue: e.target.value })}
-                    onSearch={() => this.onSearchInput()}
+                    // onChange={e => this.setState({ searchValue: e.target.value })}
+                    onChange={e => this.props.onSearchChange(e)}
+                    // onSearch={() => this.onSearchInput()}
                   />
                 </div>
                 <div className={styles.treeRegion}>
@@ -111,9 +134,12 @@ class RoleUI extends Component {
                     autoExpandParent={this.props.autoExpandParent}
                     onCheck={keys => this.props.onCheck(keys)}
                     checkedKeys={this.props.activeMenuKey.key === '1' ? this.props.checkedKeys.menuIds : this.props.checkedKeys.areaIds}
+
                     // checkedKeys={this.state.checkedKeys}
-                    treeData={this.props.treeData}
-                  />
+                    // treeData={this.props.treeData}
+                  >
+                    {loop(treeData)}
+                  </Tree>
                 </div>
               </div>
             </div>

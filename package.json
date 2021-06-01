@@ -8,7 +8,8 @@
     "build": "webpack -p --config webpack.prod.js",
     "dev": "node --max-old-space-size=8192 ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --open --public --config webpack.dev.js",
     "deploy": "sh command/publish.sh",
-    "deploy-dy": "sh command/publish-dy.sh"
+    "deploy-dy": "sh command/publish-dy.sh",
+    "deploy-test": "sh command/publish-test.sh"
   },
   "pre-commit": [
     "lint"

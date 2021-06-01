@@ -184,7 +184,12 @@ class Tenants extends Component {
           <span>
             {this.state.resetPwdTenant
               ? (this.state.newPwd
-                ? `重置成功！新密码为：${this.state.newPwd}`
+                ? (
+                  <Fragment>
+                    重置成功！新密码为：
+                    <div className={styles.modalPasswordInfo}>{this.state.newPwd}</div>
+                  </Fragment>
+                )
                 : '您确定要重置当前租户的密码？')
               : '您确定要删除当前用户吗？'}
           </span>

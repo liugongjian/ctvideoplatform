@@ -1,3 +1,7 @@
+/* eslint-disable max-len */
+/* eslint-disable class-methods-use-this */
+/* eslint-disable eqeqeq */
+/* eslint-disable react/sort-comp */
 import React, { Component } from 'react';
 
 import { push } from 'react-router-redux';
@@ -48,6 +52,7 @@ class RoleEdit extends Component {
     description: '',
     roleid: 0,
     serachInputValue: '',
+    searchValue: '',
   };
 
 
@@ -203,54 +208,54 @@ class RoleEdit extends Component {
     });
   }
 
-  onSearchInput(value) {
-    this.setState({ serachInputValue: value }, () => {
-      if (this.state.activeMenuKey.key === '1') {
-        this.props.getMenuList(this.state.serachInputValue).then(
-          (res) => {
-            if (res) {
-              res = res.map((item) => {
-                if (item.configurable) {
-                  return item;
-                }
-              });
-              const expandKeys = res.map(item => item.id);
-              const treeDatas = this.dataToTree(res);
-              this.setState({
-                tempData: res,
-                treeDatas,
-                expandedKeys: expandKeys,
-              });
-            } else {
-              this.setState({
-                tempData: [],
-                treeDatas: [],
-                expandedKeys: [],
-              });
-            }
-          }
-        );
-      } else {
-        this.props.getAreaList(0, this.state.serachInputValue).then((res) => {
-          if (res) {
-            const expandKeys = res.map(item => item.id);
-            const treeDatas = this.dataToTree(res);
-            this.setState({
-              tempData: res,
-              treeDatas,
-              expandedKeys: expandKeys
-            });
-          } else {
-            this.setState({
-              tempData: [],
-              treeDatas: [],
-              expandedKeys: []
-            });
-          }
-        });
-      }
-    });
-  }
+  // onSearchInput(value) {
+  //   this.setState({ serachInputValue: value }, () => {
+  //     if (this.state.activeMenuKey.key === '1') {
+  //       this.props.getMenuList(this.state.serachInputValue).then(
+  //         (res) => {
+  //           if (res) {
+  //             res = res.map((item) => {
+  //               if (item.configurable) {
+  //                 return item;
+  //               }
+  //             });
+  //             const expandKeys = res.map(item => item.id);
+  //             const treeDatas = this.dataToTree(res);
+  //             this.setState({
+  //               tempData: res,
+  //               treeDatas,
+  //               expandedKeys: expandKeys,
+  //             });
+  //           } else {
+  //             this.setState({
+  //               tempData: [],
+  //               treeDatas: [],
+  //               expandedKeys: [],
+  //             });
+  //           }
+  //         }
+  //       );
+  //     } else {
+  //       this.props.getAreaList(0, this.state.serachInputValue).then((res) => {
+  //         if (res) {
+  //           const expandKeys = res.map(item => item.id);
+  //           const treeDatas = this.dataToTree(res);
+  //           this.setState({
+  //             tempData: res,
+  //             treeDatas,
+  //             expandedKeys: expandKeys
+  //           });
+  //         } else {
+  //           this.setState({
+  //             tempData: [],
+  //             treeDatas: [],
+  //             expandedKeys: []
+  //           });
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
 
   checkIfParentChecked(rawtree, checkedKeys) {
     let parentCheckedKeys = [];
@@ -342,6 +347,16 @@ class RoleEdit extends Component {
     return keys;
   }
 
+  onSearchChange = (e) => {
+    const { value } = e.target;
+    const expandedKeys = this.state.tempData.map((item) => {
+      if (item.name.indexOf(value) > -1) {
+        return item.pid;
+      }
+    }).filter(item => item);
+    this.setState({ searchValue: e.target.value, expandedKeys });
+  }
+
 
   componentDidMount() {
     const { roleid } = this.props.match.params;
@@ -408,7 +423,9 @@ class RoleEdit extends Component {
         onCancel={() => this.onCancel()}
         name={this.state.name}
         description={this.state.description}
-        onSearchInput={keyword => this.onSearchInput(keyword)}
+        // onSearchInput={keyword => this.onSearchInput(keyword)}
+        onSearchChange={this.onSearchChange}
+        searchValue={this.state.searchValue}
       />
     );
   }

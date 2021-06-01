@@ -24,6 +24,8 @@ const GET_CURRENTTRAFFIC = 'GET_CURRENTTRAFFIC';
 const GET_CURRENTTRAFFIC_SUCCESS = 'GET_CURRENTTRAFFIC_SUCCESS';
 const GET_CURRENTTRAFFIC_FAIL = 'GET_CURRENTTRAFFIC_FAIL';
 
+const DO_NOTHING = 'GET_NOTHING/DO_NOTHING';
+
 const initialState = {
   areatList: [],
   loading: false,
@@ -188,5 +190,12 @@ export function getCurrentTraffic(id, type) {
   return {
     type: [GET_CURRENTTRAFFIC, GET_CURRENTTRAFFIC_SUCCESS, GET_CURRENTTRAFFIC_FAIL],
     promise: apiClient => apiClient.get(`${urlPrefix}/task/result/currday/traffic/${id}/${type}`)
+  };
+}
+
+export function getVideoSnap(id) {
+  return {
+    type: DO_NOTHING,
+    promise: apiClient => apiClient.get(`${urlPrefix}/device/snapshot/${id}`)
   };
 }

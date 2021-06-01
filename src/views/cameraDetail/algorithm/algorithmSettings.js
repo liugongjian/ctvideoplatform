@@ -20,6 +20,7 @@ import PropTypes from 'prop-types';
 import { getAlgoList, postAlgoConf } from 'Redux/reducer/cameraDetail';
 import defaultIcon from 'Assets/algorithmIcons/default.png';
 import AlgoConfigDialog from './algoConfigDialog';
+import { AlgoDisableTime } from '../constants';
 
 import styles from '../index.less';
 
@@ -51,12 +52,13 @@ const getImgUrl = (name) => {
   }
   return require('Assets/algorithmIcons/default.png');
 };
-
 class AlgorithmItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      imgSrc: ''
+      imgSrc: '',
+      // 5s内对同一算法不能二次操作
+      disableEdit: {},
     };
   }
 
@@ -154,22 +156,38 @@ class AlgorithmSetting extends Component {
     this.props.push('/monitor');
   }
 
+  setAlgoEditDisable = (id, disable) => {
+    this.setState(({ disableEdit }) => ({
+      disableEdit: { ...disableEdit, [id]: disable }
+    }));
+  }
+
   onAlgoCheckedChange = (algo, checked) => {
-    const { algoChecked } = this.state;
+    const { algoChecked, disableEdit = {} } = this.state;
     const { delAlgoConf, cameraId } = this.props;
-    const { id, name } = algo;
-    algoChecked[id] = checked;
-    this.setState({
-      algoChecked
-    }, () => { console.log('algoChecked', algoChecked); });
-    if (!checked) {
-      delAlgoConf(cameraId, id, name).then((res) => {
-        this.initData();
-        message.success('删除成功');
-      });
+    const { id, name, algorithmId } = algo;
+    if (!disableEdit[algorithmId] || checked) {
+      algoChecked[id] = checked;
+      this.setState({
+        algoChecked
+      }, () => { console.log('algoChecked', algoChecked); });
     }
     if (checked) {
       this.openAlgoConfigDialog(algo);
+    }
+    if (disableEdit[algorithmId]) {
+      message.warn('请勿对同一算法频繁操作，请5秒后尝试。');
+      return;
+    }
+    if (!checked) {
+      this.setAlgoEditDisable(algorithmId, true);
+      delAlgoConf(cameraId, id, name).then((res) => {
+        this.initData();
+        window.sessionStorage.removeItem('deviceInfo');
+        // 5s后disable置为false
+        setTimeout(() => this.setAlgoEditDisable(algorithmId, false), AlgoDisableTime);
+        message.success('删除成功');
+      });
     }
   }
 
@@ -178,7 +196,8 @@ class AlgorithmSetting extends Component {
     const {
       algoChecked,
       curAlgo,
-      configVisible
+      configVisible,
+      disableEdit,
     } = this.state;
     const {
       cameraDetail: { algoList, algoListLoading },
@@ -194,6 +213,8 @@ class AlgorithmSetting extends Component {
             configTypes={curAlgo?.configTypes?.split(',') || []}
             visible={configVisible}
             closeModal={this.closeConfigModal}
+            setAlgoEditDisable={this.setAlgoEditDisable}
+            algoEditDisable={disableEdit}
           />
           <div className={styles.algorithmList}>
             {
