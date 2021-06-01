@@ -110,6 +110,8 @@ class Preview extends PureComponent {
     };
     if (showSquaredDom === 4) {
       window.sessionStorage.setItem('squareInfo', JSON.stringify(squareInfo));
+    } else {
+      window.sessionStorage.removeItem('squareInfo');
     }
     this.clearTimer();
     // this.setState({
