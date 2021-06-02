@@ -54,8 +54,9 @@ class FlvPlayer extends Component {
     componentWillReceiveProps(props) {
       try {
         const { lsrc } = props;
-        if (!lsrc || lsrc === this.props.lsrc) return;
+        if (!lsrc) return;
         // this.initVideo(src);
+        console.log('componentWillReceiveProps', lsrc);
         this.initVideo(lsrc[0].src);
         this.initVideoSlider(lsrc);
       } catch (error) {
@@ -217,11 +218,8 @@ class FlvPlayer extends Component {
       const { lsrc } = this.props;
       // 查找对应视频的index
       const index = this.state.playableIntervals.findIndex(item => isWithinInterval(new Date(param[0]), item));
-      console.log('param', param);
-      console.log('new Date(param[0])', new Date(param[0]));
       if (index > -1) {
         const deviateSeconds = differenceInSeconds(new Date(param[0]), this.state.playableIntervals[index].start);
-        console.log('deviateSeconds', deviateSeconds);
         this.setState({ selectedInterval: [new Date(param[0])], onPlayingIndex: index },
           () => {
             this.swithVideo(lsrc[index], deviateSeconds, index);

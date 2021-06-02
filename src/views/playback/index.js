@@ -101,22 +101,32 @@ const localvideosrcs = [
   },
 ];
 
-const list = [
+const list1 = [
   {
     key: '1',
     name: '点位1',
-    startTime: '2021年1月3日 19:20',
+    startTime: '2021年1月3日 12:20',
     duration: '54分钟',
     tag: '紧急',
     address: '/baseLineVideo/5.mp4',
   },
   {
     key: '2',
-    name: '点位2',
-    startTime: '2021年1月3日 19:20',
-    duration: '23分钟',
+    name: '点位1',
+    startTime: '2021年1月3日 16:40',
+    duration: '3分钟',
     tag: '紧急',
     address: '/baseLineVideo/6.mp4',
+  }
+];
+const list2 = [
+  {
+    key: '3',
+    name: '点位3',
+    startTime: '2021年1月3日 19:25',
+    duration: '26分钟',
+    tag: '紧急',
+    address: '/baseLineVideo/8.mp4',
   },
 ];
 
@@ -166,6 +176,8 @@ class Preview extends PureComponent {
       isListView: true,
       modalVisible: false,
       playBackAddress: null,
+      whichTableList: true,
+      videoSrcs: null,
     };
     this.mychart = null;
   }
@@ -245,27 +257,29 @@ class Preview extends PureComponent {
 
     doubleClickHandle = (e, val) => {
       this.clearTimer();
-      if (val.online) {
-        this.setState({
-          selectAreaKeys: [val.id],
-          videoSrc: null,
-          tempTotal: -1,
-          historyID: val.id
-        }, () => {
-          // this.getHistory();
-          // this.getCurrentDay();
-          this.getVideoSrc(val.id, val.name);
-          // this.getPeopleArea(val.id);
-          // this.setIntervalTimer();
-        });
-      } else {
-        this.setState({
-          selectAreaKeys: [val.id],
-          videoSrc: null,
-          showText: '设备已离线',
-          historyListData: {}
-        });
-      }
+      // 切换列表视图数据——演示用
+      this.setState({ whichTableList: !this.state.whichTableList, videoSrcs: localvideosrcs });
+      // if (val.online) {
+      //   this.setState({
+      //     selectAreaKeys: [val.id],
+      //     videoSrc: null,
+      //     tempTotal: -1,
+      //     historyID: val.id
+      //   }, () => {
+      //     // this.getHistory();
+      //     // this.getCurrentDay();
+      //     // this.getVideoSrc(val.id, val.name);
+      //     // this.getPeopleArea(val.id);
+      //     // this.setIntervalTimer();
+      //   });
+      // } else {
+      //   this.setState({
+      //     selectAreaKeys: [val.id],
+      //     videoSrc: null,
+      //     showText: '设备已离线',
+      //     historyListData: {}
+      //   });
+      // }
     }
 
     getPeopleArea = (id) => {
@@ -619,7 +633,7 @@ class Preview extends PureComponent {
         if (true) {
           return (
             <Fragment>
-              <Table dataSource={list} pagination={false} rowKey={record => record.key}>
+              <Table dataSource={this.state.whichTableList ? list1 : list2} pagination={false} rowKey={record => record.key}>
                 <Column title="名称" dataIndex="name" />
                 <Column title="开始时间" dataIndex="startTime" />
                 <Column title="紧急标记" dataIndex="tag" />
@@ -659,7 +673,7 @@ class Preview extends PureComponent {
           treeDatas, selectAreaKeys, expandedKeys, algorithmList = [],
           videoSrc, historyListData, imgDialogVisible, imgDialogSrc,
           noVideo, videoName, showText, modalShowInfo, pointsInfo,
-          ifShowMoreDialog, traffiInfoData, historyID, sourceType, appliedTraffic
+          ifShowMoreDialog, traffiInfoData, historyID, sourceType, appliedTraffic, videoSrcs
         } = this.state;
 
         const { preview: { loading }, push } = this.props;
@@ -755,7 +769,10 @@ class Preview extends PureComponent {
             </div>
 
             <div className={styles.videoBox}>
-              <div style={{ fontSize: '16px', fontWeight: 500, color: 'rgba(0, 0, 0, 0.85)' }}>视频回放</div>
+              <div style={{ fontSize: '16px', fontWeight: 500, color: 'rgba(0, 0, 0, 0.85)' }}>
+                视频回放-
+                {this.state.isListView ? '时间轴模式' : '列表模式' }
+              </div>
               <div className={styles.switchBox}>
                 <div>
                   <DatePicker />
@@ -767,7 +784,7 @@ class Preview extends PureComponent {
               </div>
               {this.state.isListView
                 ? (
-                  videoSrc ? (
+                  videoSrcs ? (
                     <Fragment>
                       <div className={styles.videoHandle}>
                         <EIcon type={`${styles.videoMonitoring} myicon-monitoring`} />
@@ -785,7 +802,7 @@ class Preview extends PureComponent {
                     /> */}
                       <FlvPlayer
                         src={videoSrc}
-                        lsrc={localvideosrcs}
+                        lsrc={videoSrcs}
                         pointsInfo={pointsInfo}
                         appliedTraffic={appliedTraffic}
                       />
