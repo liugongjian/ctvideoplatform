@@ -95,7 +95,8 @@ class Preview extends PureComponent {
 
 
   componentDidMount() {
-    this.changeNowStatus();
+    // 缓存四宫格，离开的时候是四宫格，进来的时候也是四宫格
+    // this.changeNowStatus();
     this.getTreeData();
     this.getAlgorithmList();
   }
@@ -125,6 +126,24 @@ class Preview extends PureComponent {
     if (showSquaredDom && showSquaredDom === 4) {
       this.setState({
         showSquaredDom, videoSquare, squareHistoryID
+      }, () => {
+        // this.getVideoSrc();
+        Object.keys(videoSquare).map(item => this.getVideoSrc(videoSquare[item].id, videoSquare[item].name, 'no', item));
+        this.getHistory();
+        this.getCurrentDay();
+        this.setIntervalTimer();
+      });
+    }
+  }
+
+  changeToFourSquare = () => {
+    const squareInfo = JSON.parse(window.sessionStorage.getItem('squareInfo')) || {};
+    const { videoSquare, squareHistoryID } = squareInfo;
+    const { showSquaredDom } = this.state;
+    if (showSquaredDom === 4 && Object.keys(videoSquare).length !== 0) {
+      console.log(videoSquare);
+      this.setState({
+        videoSquare, squareHistoryID
       }, () => {
         // this.getVideoSrc();
         Object.keys(videoSquare).map(item => this.getVideoSrc(videoSquare[item].id, videoSquare[item].name, 'no', item));
@@ -723,6 +742,8 @@ class Preview extends PureComponent {
       changeDomSquared = (showSquaredDom) => {
         this.setState({
           showSquaredDom
+        }, () => {
+          this.changeToFourSquare();
         });
       }
 
@@ -817,13 +838,10 @@ class Preview extends PureComponent {
                     {' '}
                     {videoName}
                   </div>
-                  <EIcon
-                    type={`${styles.videoCancelBtn} myicon-cancel`}
-                    onClick={this.clearVideo}
-                  />
+
                   <span>
-                    <EIcon type={`${styles.snapVideoImg} myicon-snapshot`} onClick={this.getSnapVideo} />
-                    <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={this.clearVideo} />
+                    <EIcon type={`${styles.snapVideoImg} myicon-snapshot`} onClick={() => this.getSnapVideo(0)} />
+                    <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={() => this.clearVideo(0)} />
                   </span>
 
                 </div>

@@ -50,6 +50,7 @@ class Login extends Component {
         }).then((data) => {
           if (data && data.username) {
             window.sessionStorage.removeItem('deviceInfo');
+            window.sessionStorage.removeItem('squareInfo');
             push('/');
           } else {
             this.refreshImg();
