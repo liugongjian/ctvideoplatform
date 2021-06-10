@@ -45,14 +45,6 @@ class Manage extends Component {
 
   componentDidMount() {
     this.props.getMenuList().then((menuList) => {
-      // 开发环境暂时不隐藏智能检索菜单
-      if (__DEVELOPMENT__) {
-        menuList.forEach((item) => {
-          if (item.id === 11) {
-            item.hide = false;
-          }
-        });
-      }
       this.setState({
         menuRouter: createRouterByApiData(menuRoutes, menuList, true, pathPrefix),
       });

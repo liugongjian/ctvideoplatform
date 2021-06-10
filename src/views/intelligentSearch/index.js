@@ -1,115 +1,233 @@
 import React, { Component } from 'react';
 import {
-  Tabs,
-  Input,
-  Select,
-  Steps,
-  Button,
-  message
+  Input, Select, Upload, Icon, message, Button, Radio, Dropdown, Menu, Spin
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
-import PropTypes from 'prop-types';
-// import { getSummary, getMonitorMetric } from 'Redux/reducer/monitor';
-import Step3 from './step3';
-import Step1 from './step1';
-
+import Cropper from 'react-cropper';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import 'cropperjs/dist/cropper.css';
+import { searchPlate, searchFace } from 'Redux/reducer/intelligentSearch';
+import NODATA_IMG from 'Assets/nodata.png';
+import { trueDependencies } from 'mathjs';
+import PeopleRes from './results/peopleRes';
+import CarRes from './results/carRes';
 import styles from './index.less';
+import {
+  SEARCH_TYPES,
+  SEARCH_TYPES_FACE,
+  SEARCH_TYPES_PLATE,
+} from './constants';
+import {
+  dataURLtoFile
+} from './utils';
 
 const { Search } = Input;
 const { Option } = Select;
-const { Step } = Steps;
-
-const steps = [
-  {
-    title: '搜索条件',
-    content: <Step1 />,
-  },
-  {
-    title: '搜索结果',
-    content: <Step3 />,
-  },
-];
-
 const mapStateToProps = state => ({ monitor: state.monitor });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  { },
+  { searchPlate, searchFace },
   dispatch
 );
 
-const searchTypes = [
-  {
-    value: 1,
-    label: '姓名'
-  },
-  {
-    value: 2,
-    label: '车牌号'
-  }
-];
 class IntelligentSearch extends Component {
   constructor() {
     super();
     this.state = {
-      // keyword: '',
-      // searchType: 1,
-      current: 0,
+      loading: false,
+      imageUrl: undefined,
+      afterCrop: undefined,
+      resData: undefined,
+      resLoading: false,
+      searchType: SEARCH_TYPES_PLATE,
     };
   }
 
   componentDidMount() {
-    // ajax code
   }
 
-  next = () => {
-    const current = this.state.current + 1;
-    this.setState({ current });
+  onCrop = () => {
+    const imageElement = this.cropperRef?.current;
+    const cropper = imageElement?.cropper;
+    // const imgBase64 = cropper?.getCroppedCanvas()?.toDataURL('image/png');
+    // if (imgBase64) {
+    //   this.setState({
+    //     afterCrop: imgBase64
+    //   });
+    // }
+    cropper?.getCroppedCanvas()?.toBlob((blobObj) => {
+      this.setState({
+        afterCrop: blobObj,
+      });
+    }, 'image/jpeg', 0.95);
+  };
+
+  getBase64 = (img, callback) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
   }
 
-  prev = () => {
-    const current = this.state.current - 1;
-    this.setState({ current });
-  }
+ beforeUpload = (file) => {
+   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+   if (!isJpgOrPng) {
+     message.error('请上传JPG/PNG类型的图片!');
+   }
+   //  const isLt2M = file.size / 1024 / 1024 < 2;
+   //  if (!isLt2M) {
+   //    message.error('请上传小于2MB的图片!');
+   //  }
+   this.getBase64(file, imageUrl => this.setState({
+     imageUrl,
+     loading: false,
+   }),);
+   return false;
+ }
 
-  onSearch = (e) => {
-    console.log('value', e.target.value);
-    this.setState({
-      keyword: e.target.value,
-    });
-  }
+ handleMenuClick = (item) => {
+   console.log('menuClick', item);
+   const {
+     afterCrop
+   } = this.state;
+   this.setState({ searchType: item.key, resLoading: true });
+   const formData = new FormData();
+   //  const file = dataURLtoFile(afterCrop, 'test.jpeg');
+   formData.append('file', afterCrop, 'cropped.jpeg');
+   let searchFunc = () => {};
+   switch (item.key) {
+     case SEARCH_TYPES_PLATE:
+       searchFunc = this.props.searchPlate;
+       break;
+     case SEARCH_TYPES_FACE:
+       searchFunc = this.props.searchFace;
+       break;
+     default:
+       break;
+   }
+   searchFunc(formData).then((res) => {
+     this.setState({
+       resData: res,
+       resLoading: false,
+     });
+     console.log('res', res);
+   }).catch((err) => {
+     this.setState({
+       resData: undefined,
+       resLoading: false,
+     });
+     console.log(err);
+   });
+ }
 
-  onSelectChange = (val) => {
-    this.setState({
-      searchType: val,
-    });
-  }
 
-  render() {
-    const { current } = this.state;
-    return (
-      <div className={styles.intelligentSearchWrapper}>
-        <Steps current={current}>
-          {steps.map(item => (
-            <Step key={item.title} title={item.title} />
-          ))}
-        </Steps>
-        <div className={styles['steps-content']}>{steps[current].content}</div>
-        <div className={styles['steps-action']}>
-          {current < steps.length - 1 && (
-            <Button type="primary" onClick={() => this.next()}>
-              下一步
-            </Button>
-          )}
-          {current > 0 && (
-            <Button style={{ marginLeft: 8 }} onClick={() => this.prev()}>
-              上一步
-            </Button>
-          )}
-        </div>
-      </div>
-    );
-  }
+ render() {
+   this.cropperRef = React.createRef();
+   const uploadButton = (
+     <div>
+       <Icon type={this.state.loading ? 'loading' : 'plus'} />
+       <div className="ant-upload-text">请上传图片</div>
+     </div>
+   );
+   const {
+     imageUrl, searchType, resData, resLoading
+   } = this.state;
+
+   const searchOptions = (
+     <Menu onClick={this.handleMenuClick}>
+       {
+         SEARCH_TYPES.map(item => (
+           <Menu.Item key={item.value}>{item.label}</Menu.Item>
+         ))
+       }
+     </Menu>
+   );
+   const renderRes = (resData) => {
+     switch (searchType) {
+       case SEARCH_TYPES_PLATE:
+         return <CarRes data={resData} />;
+       case SEARCH_TYPES_FACE:
+         return <PeopleRes data={resData} />;
+       default:
+         return null;
+     }
+   };
+   return (
+     <div className={styles.intelligentSearch}>
+       <div className={styles['intelligentSearch-contentWrapper']}>
+         <div className={styles['intelligentSearch-contentWrapper-leftPart']}>
+           {/* <div className={styles.subTitle}>检索条件</div> */}
+           <div className={styles.searchWrapper}>
+             <div className={styles.imgWrapper}>
+               {imageUrl
+                 ? (
+                   <Cropper
+                     src={imageUrl}
+                     style={{ height: 250, width: '100%' }}
+                     //  initialAspectRatio={16 / 9}
+                     autoCrop
+                     full
+                     guides={false}
+                     crop={this.onCrop}
+                     ref={this.cropperRef}
+                   />
+                 )
+                 : (
+                   <Upload
+                     listType="picture-card"
+                     //  className="avatar-uploader"
+                     beforeUpload={this.beforeUpload}
+                     showUploadList={false}
+                   >
+                     { uploadButton}
+                   </Upload>
+                 )
+               }
+             </div>
+             {/* <div className={styles.filterWrapper}>
+               <Radio.Group
+                 options={SEARCH_TYPES}
+                 onChange={e => this.setState({ searchType: e.target.value })}
+                 value={searchType}
+               />
+             </div> */}
+             <div className={styles.btnWrapper}>
+               <Dropdown overlay={searchOptions}>
+                 <Button type="primary" className={styles.searchBtn}>
+                   <span className={styles.searchBtnText}>开始检索</span>
+                   <Icon type="down" className={styles.searchBtnIcon} />
+                 </Button>
+               </Dropdown>
+               {
+                 imageUrl ? (
+                   <div style={{ marginTop: '10px', lineHeight: '22px' }}>
+                     <a href="javascript:void(0);" onClick={() => { this.setState({ imageUrl: undefined }); }}>
+                       重新上传
+                       {' '}
+                       <Icon type="undo" />
+                     </a>
+                   </div>
+                 ) : null
+               }
+             </div>
+           </div>
+         </div>
+         <div className={styles['intelligentSearch-contentWrapper-rightPart']}>
+           <div className={styles.subTitle}>检索结果</div>
+           <Spin spinning={resLoading}>
+             {
+               resData ? renderRes(resData) : (
+                 <div className={styles.nodataWrapper}>
+                   <img src={NODATA_IMG} alt="" />
+                 </div>
+               )
+             }
+           </Spin>
+
+         </div>
+       </div>
+     </div>
+   );
+ }
 }
 
 IntelligentSearch.propTypes = {

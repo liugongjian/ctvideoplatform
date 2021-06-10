@@ -191,7 +191,14 @@ const menuRoutes = [
     path: '/intelligentSearch',
     exact: true,
     pageTitle: '智能检索',
-    component: IntelligentSearch,
+    children: [
+      {
+        path: '/image',
+        exact: true,
+        pageTitle: '图片检索',
+        component: IntelligentSearch,
+      }
+    ]
   },
   // 图库管理
   {

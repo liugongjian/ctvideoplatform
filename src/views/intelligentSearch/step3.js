@@ -10,7 +10,6 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 // import { getSummary, getMonitorMetric } from 'Redux/reducer/monitor';
 import { getMarkers } from 'Redux/reducer/intelligentSearch';
-import AlarmList from './alarmList/alarmList';
 import MapTrack from './mapTrack/mapTrack';
 
 import styles from './index.less';
@@ -91,7 +90,7 @@ class SearchStep3 extends Component {
           </div>
           <div className={styles['intelligentSearch-contentWrapper-rightPart']}>
             <div className={styles.subTitle}>告警信息</div>
-            <AlarmList />
+            暂无
           </div>
         </div>
       </div>

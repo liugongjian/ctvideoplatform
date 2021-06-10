@@ -25,9 +25,23 @@ export default function alarms(state = initialState, action = {}) {
 }
 
 
-export function getMarkers() {
+// export function getMarkers() {
+//   return {
+//     type: DO_NOTHING,
+//     promise: apiClient => apiClient.get(`${urlPrefix}/smartsearch/face/周帅通`)
+//   };
+// }
+
+export function searchPlate(formData) {
   return {
     type: DO_NOTHING,
-    promise: apiClient => apiClient.get(`${urlPrefix}/smartsearch/face/周帅通`)
+    promise: apiClient => apiClient.post(`${urlPrefix}/detect/plate`, { data: formData })
+  };
+}
+
+export function searchFace(formData) {
+  return {
+    type: DO_NOTHING,
+    promise: apiClient => apiClient.post(`${urlPrefix}/detect/face`, { data: formData })
   };
 }
