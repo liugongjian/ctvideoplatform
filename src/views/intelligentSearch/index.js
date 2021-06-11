@@ -89,6 +89,10 @@ class IntelligentSearch extends Component {
    const {
      afterCrop
    } = this.state;
+   if (!afterCrop) {
+     message.warn('请上传图片!');
+     return;
+   }
    this.setState({ searchType: item.key, resLoading: true });
    const formData = new FormData();
    //  const file = dataURLtoFile(afterCrop, 'test.jpeg');
@@ -119,6 +123,7 @@ class IntelligentSearch extends Component {
    });
  }
 
+ onReUpload = () => { this.setState({ imageUrl: undefined, resData: undefined }); }
 
  render() {
    this.cropperRef = React.createRef();
@@ -199,11 +204,10 @@ class IntelligentSearch extends Component {
                </Dropdown>
                {
                  imageUrl ? (
-                   <div style={{ marginTop: '10px', lineHeight: '22px' }}>
-                     <a href="javascript:void(0);" onClick={() => { this.setState({ imageUrl: undefined }); }}>
-                       重新上传
-                       {' '}
-                       <Icon type="undo" />
+                   <div className={styles.reUpload}>
+                     <a href="javascript:void(0);" onClick={this.onReUpload}>
+                       <span className={styles['reUpload-text']}>重新上传</span>
+                       <Icon type="undo" className={styles['reUpload-icon']} />
                      </a>
                    </div>
                  ) : null

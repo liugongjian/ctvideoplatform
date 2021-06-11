@@ -32,28 +32,28 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 class Face extends Component {
     state = {
       loading: false,
-      faceData: [
-      ],
+      // faceData: [
+      // ],
     };
 
     componentDidMount() {
-      console.log('this.props', this.props);
-      this.initData(this.props?.data);
+      // console.log('this.props', this.props);
+      // this.initData(this.props?.data);
     }
 
     componentWillReceiveProps(nextProps) {
-      console.log('nextProps', nextProps);
-      if (nextProps && nextProps.data !== this.props.data) {
-        this.initData(nextProps.data);
-      }
+      // console.log('nextProps', nextProps);
+      // if (nextProps && nextProps.data !== this.props.data) {
+      //   this.initData(nextProps.data);
+      // }
     }
 
-    initData = (data) => {
-      const faceData = data.map(item => ({
-        distance: item.distance, ...item.picInfo
-      }));
-      this.setState({ faceData });
-    }
+    // initData = (data) => {
+    //   const faceData = data.map(item => ({
+    //     distance: item.distance, ...item.picInfo
+    //   }));
+    //   this.setState({ faceData });
+    // }
 
     handleImageError = (e) => {
       const image = e.target;
@@ -66,8 +66,15 @@ class Face extends Component {
 
     render() {
       const {
-        loading, faceData,
+        loading,
       } = this.state;
+      const { data } = this.props;
+      let faceData = [];
+      if (data && data.map) {
+        faceData = data.map(item => ({
+          distance: item.distance, ...item.picInfo
+        }));
+      }
       return (
         <div className={styles.faceContent}>
           <Spin spinning={loading}>
