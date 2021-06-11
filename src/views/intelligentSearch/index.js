@@ -19,7 +19,7 @@ import {
   SEARCH_TYPES_PLATE,
 } from './constants';
 import {
-  dataURLtoFile
+  getTypeFromUrl
 } from './utils';
 
 const { Search } = Input;
@@ -34,16 +34,22 @@ class IntelligentSearch extends Component {
   constructor() {
     super();
     this.state = {
-      loading: false,
+      cropImgLoading: false,
       imageUrl: undefined,
       afterCrop: undefined,
       resData: undefined,
       resLoading: false,
-      searchType: SEARCH_TYPES_PLATE,
+      // searchType: SEARCH_TYPES_PLATE,
     };
   }
 
   componentDidMount() {
+  }
+
+  onCropReady = () => {
+    this.setState({
+      cropImgLoading: false,
+    });
   }
 
   onCrop = () => {
@@ -72,20 +78,24 @@ class IntelligentSearch extends Component {
    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
    if (!isJpgOrPng) {
      message.error('请上传JPG/PNG类型的图片!');
+     return true;
    }
    //  const isLt2M = file.size / 1024 / 1024 < 2;
    //  if (!isLt2M) {
    //    message.error('请上传小于2MB的图片!');
    //  }
+   this.setState({
+     cropImgLoading: true,
+   });
    this.getBase64(file, imageUrl => this.setState({
      imageUrl,
-     loading: false,
    }),);
    return false;
  }
 
- handleMenuClick = (item) => {
-   console.log('menuClick', item);
+ handleMenuClick = () => {
+   const searchType = getTypeFromUrl(this.props);
+   console.log('menuClick-searchType', searchType);
    const {
      afterCrop
    } = this.state;
@@ -93,12 +103,12 @@ class IntelligentSearch extends Component {
      message.warn('请上传图片!');
      return;
    }
-   this.setState({ searchType: item.key, resLoading: true });
+   this.setState({ resLoading: true });
    const formData = new FormData();
    //  const file = dataURLtoFile(afterCrop, 'test.jpeg');
    formData.append('file', afterCrop, 'cropped.jpeg');
    let searchFunc = () => {};
-   switch (item.key) {
+   switch (searchType) {
      case SEARCH_TYPES_PLATE:
        searchFunc = this.props.searchPlate;
        break;
@@ -129,23 +139,25 @@ class IntelligentSearch extends Component {
    this.cropperRef = React.createRef();
    const uploadButton = (
      <div>
-       <Icon type={this.state.loading ? 'loading' : 'plus'} />
+       <Icon type="plus" />
+       {/* type={this.state.uploadLoading ? 'loading' : 'plus'} */}
        <div className="ant-upload-text">请上传图片</div>
      </div>
    );
    const {
-     imageUrl, searchType, resData, resLoading
+     imageUrl, resData, resLoading, cropImgLoading
    } = this.state;
 
-   const searchOptions = (
-     <Menu onClick={this.handleMenuClick}>
-       {
-         SEARCH_TYPES.map(item => (
-           <Menu.Item key={item.value}>{item.label}</Menu.Item>
-         ))
-       }
-     </Menu>
-   );
+   const searchType = getTypeFromUrl(this.props);
+   //  const searchOptions = (
+   //    <Menu onClick={this.handleMenuClick}>
+   //      {
+   //        SEARCH_TYPES.map(item => (
+   //          <Menu.Item key={item.value}>{item.label}</Menu.Item>
+   //        ))
+   //      }
+   //    </Menu>
+   //  );
    const renderRes = (resData) => {
      switch (searchType) {
        case SEARCH_TYPES_PLATE:
@@ -165,16 +177,20 @@ class IntelligentSearch extends Component {
              <div className={styles.imgWrapper}>
                {imageUrl
                  ? (
-                   <Cropper
-                     src={imageUrl}
-                     style={{ height: 250, width: '100%' }}
-                     //  initialAspectRatio={16 / 9}
-                     autoCrop
-                     full
-                     guides={false}
-                     crop={this.onCrop}
-                     ref={this.cropperRef}
-                   />
+                   <Spin spinning={cropImgLoading}>
+                     <Cropper
+                       src={imageUrl}
+                       style={{ height: 250, width: '100%' }}
+                       //  initialAspectRatio={16 / 9}
+                       autoCrop
+                       autoCropArea={1}
+                       ready={this.onCropReady}
+                       full
+                       guides={false}
+                       crop={this.onCrop}
+                       ref={this.cropperRef}
+                     />
+                   </Spin>
                  )
                  : (
                    <Upload
@@ -196,12 +212,15 @@ class IntelligentSearch extends Component {
                />
              </div> */}
              <div className={styles.btnWrapper}>
-               <Dropdown overlay={searchOptions}>
+               {/* <Dropdown overlay={searchOptions}>
                  <Button type="primary" className={styles.searchBtn}>
                    <span className={styles.searchBtnText}>开始检索</span>
                    <Icon type="down" className={styles.searchBtnIcon} />
                  </Button>
-               </Dropdown>
+               </Dropdown> */}
+               <Button type="primary" className={styles.searchBtn} onClick={this.handleMenuClick}>
+                 <span className={styles.searchBtnText}>开始检索</span>
+               </Button>
                {
                  imageUrl ? (
                    <div className={styles.reUpload}>

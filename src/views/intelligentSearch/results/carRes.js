@@ -57,7 +57,7 @@ class CarRes extends Component {
             {plate_type}
           </div>
           <div>
-            相似度：
+            置信度：
             {parseFloat(confidence * 100).toFixed(2)}
           </div>
         </div>

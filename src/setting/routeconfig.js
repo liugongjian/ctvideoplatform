@@ -190,12 +190,17 @@ const menuRoutes = [
   {
     path: '/intelligentSearch',
     exact: true,
-    pageTitle: '智能检索',
     children: [
       {
-        path: '/image',
+        path: '/face',
         exact: true,
-        pageTitle: '图片检索',
+        pageTitle: '人脸检索',
+        component: IntelligentSearch,
+      },
+      {
+        path: '/plate',
+        exact: true,
+        pageTitle: '车牌检索',
         component: IntelligentSearch,
       }
     ]
