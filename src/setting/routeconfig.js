@@ -200,7 +200,7 @@ const menuRoutes = [
       {
         path: '/plate',
         exact: true,
-        pageTitle: '车牌检索',
+        pageTitle: '车牌识别',
         component: IntelligentSearch,
       }
     ]

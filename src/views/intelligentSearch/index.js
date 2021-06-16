@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
-  Input, Select, Upload, Icon, message, Button, Radio, Dropdown, Menu, Spin
+  Input, Select, Upload, Icon, message, Button, Radio, Dropdown, Menu,
+  Spin, Form, Slider
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -136,6 +137,26 @@ class IntelligentSearch extends Component {
  onReUpload = () => { this.setState({ imageUrl: undefined, resData: undefined }); }
 
  render() {
+   const {
+     imageUrl, resData, resLoading, cropImgLoading
+   } = this.state;
+   const { getFieldDecorator } = this.props.form;
+   const formItemLayout = {
+     labelCol: {
+       xs: { span: 24 },
+       sm: { span: 8 },
+     },
+     wrapperCol: {
+       xs: { span: 24 },
+       sm: { span: 16 },
+     },
+   };
+
+   const marks = {
+     0: '100%',
+     100: '0',
+   };
+
    this.cropperRef = React.createRef();
    const uploadButton = (
      <div>
@@ -144,9 +165,7 @@ class IntelligentSearch extends Component {
        <div className="ant-upload-text">请上传图片</div>
      </div>
    );
-   const {
-     imageUrl, resData, resLoading, cropImgLoading
-   } = this.state;
+
 
    const searchType = getTypeFromUrl(this.props);
    //  const searchOptions = (
@@ -168,11 +187,48 @@ class IntelligentSearch extends Component {
          return null;
      }
    };
+
+   const renderForm = () => {
+     switch (searchType) {
+       case SEARCH_TYPES_FACE:
+         return (
+           <Form {...formItemLayout}>
+             <Form.Item label="姓名">
+               {getFieldDecorator('name', {
+                 rules: [
+                 ],
+               })(<Input />)}
+             </Form.Item>
+             <Form.Item label="所属名单">
+               {getFieldDecorator('label', {
+                 rules: [
+                 ],
+               })(
+                 <Select>
+                   <Select.Option value="white">白名单</Select.Option>
+                   <Select.Option value="black">黑名单</Select.Option>
+                   <Select.Option value="other">其他</Select.Option>
+                 </Select>
+               )}
+             </Form.Item>
+             <Form.Item label="置信度">
+               {getFieldDecorator('confirm', {
+                 rules: [
+                 ],
+               })(<Slider marks={marks} step={1} defaultValue={10} reverse />)}
+             </Form.Item>
+           </Form>
+         );
+       case SEARCH_TYPES_PLATE:
+       default:
+         return null;
+     }
+   };
    return (
      <div className={styles.intelligentSearch}>
        <div className={styles['intelligentSearch-contentWrapper']}>
          <div className={styles['intelligentSearch-contentWrapper-leftPart']}>
-           {/* <div className={styles.subTitle}>检索条件</div> */}
+           <div className={styles.subTitle}>{SEARCH_TYPES[searchType]}</div>
            <div className={styles.searchWrapper}>
              <div className={styles.imgWrapper}>
                {imageUrl
@@ -204,13 +260,11 @@ class IntelligentSearch extends Component {
                  )
                }
              </div>
-             {/* <div className={styles.filterWrapper}>
-               <Radio.Group
-                 options={SEARCH_TYPES}
-                 onChange={e => this.setState({ searchType: e.target.value })}
-                 value={searchType}
-               />
-             </div> */}
+             <div className={styles.filterWrapper}>
+               {
+                 renderForm()
+               }
+             </div>
              <div className={styles.btnWrapper}>
                {/* <Dropdown overlay={searchOptions}>
                  <Button type="primary" className={styles.searchBtn}>
@@ -257,4 +311,4 @@ IntelligentSearch.propTypes = {
 //   monitor: PropTypes.object.isRequired
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(IntelligentSearch);
+export default Form.create()(connect(mapStateToProps, mapDispatchToProps)(IntelligentSearch));

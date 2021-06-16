@@ -1,7 +1,7 @@
-const SEARCH_TYPES = [
-  { label: '人脸库检索', value: 'face' },
-  { label: '车牌检索', value: 'plate' },
-];
+const SEARCH_TYPES = {
+  face: '人脸检索',
+  plate: '车牌识别',
+};
 
 const SEARCH_TYPES_FACE = 'face';
 const SEARCH_TYPES_PLATE = 'plate';

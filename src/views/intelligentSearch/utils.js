@@ -24,7 +24,7 @@ const dataURLtoFile = (base64Data, imgName) => {
 
 const getTypeFromUrl = (props) => {
   const { location: { pathname } } = props;
-  const reg = /^\/intelligentSearch\/([^\/]*).*$/;
+  const reg = /^\/intelligentSearch\/([^/]*).*$/;
   const matchRes = reg.exec(pathname);
   if (matchRes && matchRes[1]) {
     return matchRes[1];
