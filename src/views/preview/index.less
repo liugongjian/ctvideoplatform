@@ -57,18 +57,26 @@
 .videoBox{
     flex: 1;
     padding: 10px;
-    height: calc(100% - 32px );
+    // height: calc(100% - 32px );
     position: relative;
     // .videoHandle{
     //     display: none;
     // }
     // &:hover{
+        .videoWrapBox{
+            width: 100%;
+            height: calc(100% - 25px);
+        }
         .videoChooseSquare{
+            width: calc(100% - 22px);
             text-align: right;
-            background-color: #333;
+            background-color: #4095E3;
             height: 36px;
             line-height: 36px;
             padding-right: 7px;
+            position: absolute;
+            bottom: 0;
+            left: 11px;
             .videoChooseBtn{
                 color: #fff;
                 display: inline-block;
@@ -85,12 +93,12 @@
                 float: left;
             }
             .activeChoice{
-                color: #4095E3;
+                color: #FF9832;
             }
         }
         .videoHandle{
             position: absolute;
-            width: calc(100% - 20px);
+            width: calc(100% - 22px);
             top: 42px;
             height: 30px;
             line-height: 30px;
@@ -126,7 +134,7 @@
     // }
     .videoSquaredByFour{
         width: 100%;
-        height: 100%;
+        height: calc(100% - 25px);
         font-size: 0;
         .allStatusBox{
             display: inline-block;
@@ -135,7 +143,7 @@
             height: 50%;
             position: relative;
             font-size: 12px;
-            padding: 3px;
+            padding: 1px;
             z-index: 9;
             &:hover{
                 .videojs::-webkit-media-controls{
@@ -216,6 +224,7 @@
         transform:translate(-50%,-60%);
     }
 }
+
 .historyList{
     position: relative;
     width: 240px;
@@ -330,6 +339,43 @@
             img{
                 width: 100%;
                 height: 100%;
+            }
+        }
+    }
+    .historyListCard{
+        .noHistoryList{
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+        }
+        .historyItem{
+            width: 215px;
+            height: 130px;
+            position: relative;
+            margin-top: 5px;
+            cursor: pointer;
+            img{
+                width: 100%;
+                height: 100%;
+            }
+            .historyTextBox{
+                font-size: 12px;
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                color: #fff;
+                user-select: none;
+            }
+            .historyTextName{
+                display: inline-block;
+                width: 76px;
+                height: 20px;
+                text-align: center;
+                line-height: 20px;
+                background-color: #FA8334;
+            }
+            .historyTime{
+                margin-left: 20px;
             }
         }
     }
