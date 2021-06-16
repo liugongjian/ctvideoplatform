@@ -138,7 +138,7 @@ class Preview extends PureComponent {
 
   changeToFourSquare = () => {
     const squareInfo = JSON.parse(window.sessionStorage.getItem('squareInfo')) || {};
-    const { videoSquare, squareHistoryID } = squareInfo;
+    const { videoSquare = {}, squareHistoryID } = squareInfo;
     const { showSquaredDom } = this.state;
     if (showSquaredDom === 4 && Object.keys(videoSquare).length !== 0) {
       console.log(videoSquare);
@@ -783,17 +783,19 @@ class Preview extends PureComponent {
                   <EIcon type={`${styles.videoCancelBtn} myicon-cancel`} onClick={() => this.clearVideo(val)} />
                 </span>
               </div>
-              <FlvPlayer
-                src={videoSquare[`videoSrc${val}`].src}
-                ifMask
-                maskClick={this.squareClick}
-                info={videoSquare[`videoSrc${val}`]}
-                key={val}
-                val={val}
-                cls={getCls()}
-              // pointsInfo={pointsInfo}
-              // appliedTraffic={appliedTraffic}
-              />
+              <div className={styles.videoWrapBox}>
+                <FlvPlayer
+                  src={videoSquare[`videoSrc${val}`].src}
+                  ifMask
+                  maskClick={this.squareClick}
+                  info={videoSquare[`videoSrc${val}`]}
+                  key={val}
+                  val={val}
+                  cls={getCls()}
+                  // pointsInfo={pointsInfo}
+                  // appliedTraffic={appliedTraffic}
+                />
+              </div>
             </div>
           );
         }
@@ -850,12 +852,14 @@ class Preview extends PureComponent {
         pointsInfo={pointsInfo}
         appliedTraffic={appliedTraffic}
       /> */}
-                <FlvPlayer
-                  src={videoSrc}
-                  pointsInfo={pointsInfo}
-                  appliedTraffic={appliedTraffic}
-                  ifMask={false}
-                />
+                <div className={styles.videoWrapBox}>
+                  <FlvPlayer
+                    src={videoSrc}
+                    pointsInfo={pointsInfo}
+                    appliedTraffic={appliedTraffic}
+                    ifMask={false}
+                  />
+                </div>
               </Fragment>
             )
             : this.getImg();
@@ -898,6 +902,25 @@ class Preview extends PureComponent {
       chooseSquareCls = (num) => {
         const { showSquaredDom } = this.state;
         return showSquaredDom === num ? `${styles.activeChoice}` : '';
+      }
+
+      getHistoryDom = (data) => {
+        if (!data || !data.length) {
+          return <div className={styles.noHistoryList}>暂无告警</div>;
+        }
+        return data.map(item => (
+          <div
+            className={styles.historyItem}
+            onClick={() => this.showImgDialog(item)}
+            key={item.id}
+          >
+            <img src={`${urlPrefix}${item.imageCompress}`} alt="" />
+            <div className={styles.historyTextBox}>
+              <span className={styles.historyTextName}>{item.algorithmCnName}</span>
+              <span className={styles.historyTime}>{item.resTime}</span>
+            </div>
+          </div>
+        ));
       }
 
       render() {
@@ -1018,30 +1041,31 @@ class Preview extends PureComponent {
                   <a onClick={() => push('/alarms')}>历史记录</a>
                 </p>
               </div>
-              <div className={styles.historyCard}>
+              <div className={styles.historyListCard}>
                 {
-                  list && list.length ? list.map(item => (
-                    <Card
-                      hoverable
-                      style={{ width: 220, margin: '4px 0' }}
-                      cover={<img alt="" src={`${urlPrefix}${item.imageCompress}`} onError={this.handleImageError} />}
-                      onClick={() => this.showImgDialog(item)}
-                      key={item.id}
-                      className={styles.historyListCard}
-                    >
-                      <div className={styles.historyTextBox}>
-                        <span>{item.algorithmCnName}</span>
-                        <span className={styles.historyTime}>{item.resTime}</span>
-                      </div>
-                      {this.getTypeContent(item)}
+                  // list && list.length ? list.map(item => (
+                  //   <Card
+                  //     hoverable
+                  //     style={{ width: 220, margin: '4px 0' }}
+                  //     cover={<img alt="" src={`${urlPrefix}${item.imageCompress}`} onError={this.handleImageError} />}
+                  //     onClick={() => this.showImgDialog(item)}
+                  //     key={item.id}
+                  //     className={styles.historyListCard}
+                  //   >
+                  //     <div className={styles.historyTextBox}>
+                  //       <span>{item.algorithmCnName}</span>
+                  //       <span className={styles.historyTime}>{item.resTime}</span>
+                  //     </div>
+                  //     {this.getTypeContent(item)}
 
-                    </Card>
-                  ))
-                    : (
-                      <div className={styles.nodataBox}>
-                        <img src={nodata} alt="" />
-                      </div>
-                    )
+                  //   </Card>
+                  // ))
+                  //   : (
+                  //     <div className={styles.nodataBox}>
+                  //       <img src={nodata} alt="" />
+                  //     </div>
+                  //   )
+                  this.getHistoryDom(list)
                 }
               </div>
             </div>

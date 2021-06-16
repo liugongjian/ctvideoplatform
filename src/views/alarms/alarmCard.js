@@ -10,7 +10,7 @@ import { random } from 'lodash';
 import {
   importLicense, isLicenseExist
 } from 'Redux/reducer/alarms';
-import { urlPrefix } from 'Constants/Dictionary';
+import { urlPrefix, imageURI } from 'Constants/Dictionary';
 import noImage from 'Assets/defaultFace.png';
 import DeleteModal from 'Components/modals/warnModal';
 import moment from 'moment';
@@ -185,7 +185,7 @@ class AlarmCard extends Component {
         <ImageModal
           visible={imgDialogVisible}
           closeModal={this.closeImgDialog}
-          src={`${urlPrefix}${image}`}
+          src={`${imageURI}${image}`}
           handleImageError={e => this.handleImageError(e)}
         />
         <div className={styles['AlarmCard-title']}>
@@ -206,7 +206,7 @@ class AlarmCard extends Component {
             {deviceName}
           </div>
           <img
-            src={`${urlPrefix}${imageCompress}`}
+            src={`${imageURI}${imageCompress}`}
             alt="图片"
             onError={e => this.handleImageError(e)}
           />
