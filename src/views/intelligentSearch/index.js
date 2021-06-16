@@ -152,10 +152,10 @@ class IntelligentSearch extends Component {
      },
    };
 
-   const marks = {
-     0: '100%',
-     100: '0',
-   };
+   //  const marks = {
+   //    0: '100%',
+   //    100: '0',
+   //  };
 
    this.cropperRef = React.createRef();
    const uploadButton = (
@@ -199,7 +199,7 @@ class IntelligentSearch extends Component {
                  ],
                })(<Input />)}
              </Form.Item>
-             <Form.Item label="所属名单">
+             <Form.Item label="布控标签">
                {getFieldDecorator('label', {
                  rules: [
                  ],
@@ -215,7 +215,15 @@ class IntelligentSearch extends Component {
                {getFieldDecorator('confirm', {
                  rules: [
                  ],
-               })(<Slider marks={marks} step={1} defaultValue={10} reverse />)}
+               })(
+                 <Slider
+                   step={1}
+                   defaultValue={10}
+                   tipFormatter={value => (`${100 - value}%`)}
+                   reverse
+                   //  tooltipVisible
+                 />
+               )}
              </Form.Item>
            </Form>
          );
