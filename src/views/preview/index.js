@@ -219,6 +219,7 @@ class Preview extends PureComponent {
     }
 
     doubleClickHandle = (e, val) => {
+      this.clearTimer();
       const { videoSrcOrder, showSquaredDom } = this.state;
       if (showSquaredDom === 1) {
         if (val.online) {
@@ -240,8 +241,16 @@ class Preview extends PureComponent {
             selectAreaKeys: [val.id],
             videoSrc: null,
             showText: '设备已离线',
-            historyListData: {},
+            historyID: val.id,
+            tempTotal: -1,
             appliedTraffic: false, // fix 切换到离线设备时仍有上个设备人流信息
+          }, () => {
+            window.sessionStorage.setItem('deviceInfo', JSON.stringify(val));
+            this.getHistory();
+            this.getCurrentDay();
+            // this.getVideoSrc(val.id, val.name);
+            // this.getPeopleArea(val.id);
+            this.setIntervalTimer();
           });
         }
       } else if (showSquaredDom === 4) {

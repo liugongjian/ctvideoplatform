@@ -10,7 +10,7 @@ import {
   getHistoryListTopTen
 } from 'Redux/reducer/preview';
 import EIcon from 'Components/Icon';
-import { urlPrefix } from 'Constants/Dictionary';
+import { urlPrefix, imageURI } from 'Constants/Dictionary';
 import noImage from 'Assets/defaultFace.png';
 import nodata from 'Assets/nodata.png';
 import styles from './index.less';
@@ -203,7 +203,7 @@ class AlarmList extends Component {
           wrapClassName={styles.alarmDetailModal}
         >
           <div className={styles.alarmListImg}>
-            <img src={`${urlPrefix}${modalShowInfo.image}`} onError={this.handleImageError} alt="" />
+            <img src={`${imageURI}${modalShowInfo.image}`} onError={this.handleImageError} alt="" />
             <div className={styles.alarmModalName}>{modalShowInfo.algorithmCnName}</div>
           </div>
           <p>
