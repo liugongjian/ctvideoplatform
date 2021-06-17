@@ -248,7 +248,7 @@ class Preview extends PureComponent {
             window.sessionStorage.setItem('deviceInfo', JSON.stringify(val));
             this.getHistory();
             this.getCurrentDay();
-            // this.getVideoSrc(val.id, val.name);
+            this.getVideoSrc(val.id, val.name);
             // this.getPeopleArea(val.id);
             this.setIntervalTimer();
           });
@@ -431,7 +431,7 @@ class Preview extends PureComponent {
               this.setState({
                 videoSrc: '',
                 noVideo: true,
-                videoName: '',
+                videoName: name,
                 showText: '无信号'
               }, () => {
                 window.clearTimeout(this.timer);
@@ -836,10 +836,10 @@ class Preview extends PureComponent {
 
       getDomSquared = () => {
         const {
-          showSquaredDom, videoSrc, videoName, pointsInfo, appliedTraffic
+          showSquaredDom, videoSrc, videoName, pointsInfo, appliedTraffic, historyID
         } = this.state;
         if (showSquaredDom === 1) {
-          return videoSrc
+          return historyID
             ? (
               <Fragment>
                 <div className={styles.videoHandle}>
