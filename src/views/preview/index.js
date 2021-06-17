@@ -14,7 +14,7 @@ import {
 } from 'Redux/reducer/preview';
 
 import { getAlgorithmList } from 'Redux/reducer/monitor';
-import { urlPrefix } from 'Constants/Dictionary';
+import { urlPrefix, imageURI } from 'Constants/Dictionary';
 
 import moment from 'moment';
 
@@ -914,7 +914,7 @@ class Preview extends PureComponent {
             onClick={() => this.showImgDialog(item)}
             key={item.id}
           >
-            <img src={`${urlPrefix}${item.imageCompress}`} alt="" />
+            <img src={`${imageURI}${item.imageCompress}`} alt="" />
             <div className={styles.historyTextBox}>
               <span className={styles.historyTextName}>{item.algorithmCnName}</span>
               <span className={styles.historyTime}>{item.resTime}</span>
@@ -1087,7 +1087,7 @@ class Preview extends PureComponent {
               wrapClassName={styles.alarmDetailModal}
             >
               <div className={styles.alarmListImg}>
-                <img src={`${urlPrefix}${imgDialogSrc}`} onError={this.handleImageError} alt="" />
+                <img src={`${imageURI}${imgDialogSrc}`} onError={this.handleImageError} alt="" />
                 <div className={styles.alarmModalName}>{modalShowInfo.algorithmCnName}</div>
               </div>
               <p>
