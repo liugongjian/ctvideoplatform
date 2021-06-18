@@ -2,8 +2,8 @@
     display: flex;
     background: #fff;
     // width: 70%;
-    height: calc(100% - 20px);
-    margin: 10px;
+    height: calc(100% - 10px);
+    // margin: 10px;
 }
 
 .areaBox{
@@ -56,7 +56,7 @@
 
 .videoBox{
     flex: 1;
-    padding: 10px;
+    // padding: 10px;
     // height: calc(100% - 32px );
     position: relative;
     // .videoHandle{
@@ -65,10 +65,10 @@
     // &:hover{
         .videoWrapBox{
             width: 100%;
-            height: calc(100% - 25px);
+            height: calc(100% - 36px);
         }
         .videoChooseSquare{
-            width: calc(100% - 20px);
+            width: 100%;
             text-align: right;
             background-color: #4095E3;
             height: 36px;
@@ -76,7 +76,7 @@
             padding-right: 7px;
             position: absolute;
             bottom: 0;
-            left: 10px;
+            left: 0;
             .videoChooseBtn{
                 color: #fff;
                 display: inline-block;
@@ -98,7 +98,7 @@
         }
         .videoHandle{
             position: absolute;
-            width: calc(100% - 22px);
+            width: 100%;
             // top: 42px;
             height: 30px;
             line-height: 30px;
@@ -134,7 +134,7 @@
     // }
     .videoSquaredByFour{
         width: 100%;
-        height: calc(100% - 25px);
+        height: calc(100% - 36px);
         font-size: 0;
         .allStatusBox{
             display: inline-block;
@@ -143,7 +143,7 @@
             height: 50%;
             position: relative;
             font-size: 12px;
-            padding: 1px;
+            // padding: 1px;
             z-index: 9;
             &:hover{
                 .videojs::-webkit-media-controls{
@@ -163,7 +163,7 @@
     
     .allStatusBox{
         width: 100%;
-        height: calc(100% - 26px);
+        height: calc(100% - 36px);
         background: #000;
         position: relative;
         p{
@@ -186,6 +186,7 @@
         border-radius: none;
         text-align: center;
         line-height: 100%;
+        border-radius: 0;
         &:hover{
             background: #000;
             border-color:#108EE9;
@@ -230,13 +231,12 @@
     width: 240px;
     background: #fff;
     height: 100%;
-    padding: 10px 0;
+    padding: 10px;
     overflow:auto;
     .historyTitle{
         display: flex;
         a{
-            // display: inline-block;
-            margin-left: 100px;
+            margin-left: 85px;
         }
     }
     .peopleAreaTotal{
