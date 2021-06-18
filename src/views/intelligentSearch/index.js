@@ -18,6 +18,7 @@ import {
   SEARCH_TYPES,
   SEARCH_TYPES_FACE,
   SEARCH_TYPES_PLATE,
+  SEARCH_FACE_ORIGIN_TYPE,
 } from './constants';
 import {
   getTypeFromUrl
@@ -25,6 +26,7 @@ import {
 
 const { Search } = Input;
 const { Option } = Select;
+const ButtonGroup = Button.Group;
 const mapStateToProps = state => ({ monitor: state.monitor });
 const mapDispatchToProps = dispatch => bindActionCreators(
   { searchPlate, searchFace },
@@ -40,6 +42,7 @@ class IntelligentSearch extends Component {
       afterCrop: undefined,
       resData: undefined,
       resLoading: false,
+      filterType: 0,
       // searchType: SEARCH_TYPES_PLATE,
     };
   }
@@ -94,7 +97,7 @@ class IntelligentSearch extends Component {
    return false;
  }
 
- handleMenuClick = () => {
+ handleSearch = () => {
    const searchType = getTypeFromUrl(this.props);
    console.log('menuClick-searchType', searchType);
    const {
@@ -134,6 +137,11 @@ class IntelligentSearch extends Component {
    });
  }
 
+ switchFaceOrigin = (e) => {
+   e.preventDefault();
+   console.log('click', e.target.value);
+ }
+
  onReUpload = () => { this.setState({ imageUrl: undefined, resData: undefined }); }
 
  render() {
@@ -144,11 +152,11 @@ class IntelligentSearch extends Component {
    const formItemLayout = {
      labelCol: {
        xs: { span: 24 },
-       sm: { span: 8 },
+       sm: { span: 6 },
      },
      wrapperCol: {
        xs: { span: 24 },
-       sm: { span: 16 },
+       sm: { span: 18 },
      },
    };
 
@@ -168,15 +176,6 @@ class IntelligentSearch extends Component {
 
 
    const searchType = getTypeFromUrl(this.props);
-   //  const searchOptions = (
-   //    <Menu onClick={this.handleMenuClick}>
-   //      {
-   //        SEARCH_TYPES.map(item => (
-   //          <Menu.Item key={item.value}>{item.label}</Menu.Item>
-   //        ))
-   //      }
-   //    </Menu>
-   //  );
    const renderRes = (resData) => {
      switch (searchType) {
        case SEARCH_TYPES_PLATE:
@@ -192,40 +191,51 @@ class IntelligentSearch extends Component {
      switch (searchType) {
        case SEARCH_TYPES_FACE:
          return (
-           <Form {...formItemLayout}>
-             <Form.Item label="姓名">
-               {getFieldDecorator('name', {
-                 rules: [
-                 ],
-               })(<Input />)}
-             </Form.Item>
-             <Form.Item label="布控标签">
-               {getFieldDecorator('label', {
-                 rules: [
-                 ],
-               })(
-                 <Select>
-                   <Select.Option value="white">白名单</Select.Option>
-                   <Select.Option value="black">黑名单</Select.Option>
-                   <Select.Option value="other">其他</Select.Option>
-                 </Select>
-               )}
-             </Form.Item>
-             <Form.Item label="置信度">
-               {getFieldDecorator('confirm', {
-                 rules: [
-                 ],
-               })(
-                 <Slider
-                   step={1}
-                   defaultValue={10}
-                   tipFormatter={value => (`${100 - value}%`)}
-                   reverse
+           <React.Fragment>
+             <div className={styles.filterType}>
+               <ButtonGroup size="large" className={styles.btnGroup} onClick={this.switchFaceOrigin}>
+                 {
+                   SEARCH_FACE_ORIGIN_TYPE.map((item, idx) => (
+                     <Button key={idx} value={idx} className={styles['btnGroup-btn']} disabled={idx > 0}>{item}</Button>
+                   ))
+                 }
+               </ButtonGroup>
+             </div>
+             <Form {...formItemLayout}>
+               <Form.Item label="姓名">
+                 {getFieldDecorator('name', {
+                   rules: [
+                   ],
+                 })(<Input />)}
+               </Form.Item>
+               <Form.Item label="布控标签">
+                 {getFieldDecorator('label', {
+                   rules: [
+                   ],
+                 })(
+                   <Select>
+                     <Option value="white">白名单</Option>
+                     <Option value="black">黑名单</Option>
+                     <Option value="other">其他</Option>
+                   </Select>
+                 )}
+               </Form.Item>
+               <Form.Item label="置信度">
+                 {getFieldDecorator('confirm', {
+                   rules: [
+                   ],
+                 })(
+                   <Slider
+                     step={1}
+                     defaultValue={10}
+                     tipFormatter={value => (`${100 - value}%`)}
+                     reverse
                    //  tooltipVisible
-                 />
-               )}
-             </Form.Item>
-           </Form>
+                   />
+                 )}
+               </Form.Item>
+             </Form>
+           </React.Fragment>
          );
        case SEARCH_TYPES_PLATE:
        default:
@@ -236,7 +246,7 @@ class IntelligentSearch extends Component {
      <div className={styles.intelligentSearch}>
        <div className={styles['intelligentSearch-contentWrapper']}>
          <div className={styles['intelligentSearch-contentWrapper-leftPart']}>
-           <div className={styles.subTitle}>{SEARCH_TYPES[searchType]}</div>
+           {/* <div className={styles.subTitle}>{SEARCH_TYPES[searchType]}</div> */}
            <div className={styles.searchWrapper}>
              <div className={styles.imgWrapper}>
                {imageUrl
@@ -244,7 +254,7 @@ class IntelligentSearch extends Component {
                    <Spin spinning={cropImgLoading}>
                      <Cropper
                        src={imageUrl}
-                       style={{ height: 250, width: '100%' }}
+                       style={{ height: 330, width: '100%' }}
                        //  initialAspectRatio={16 / 9}
                        autoCrop
                        autoCropArea={1}
@@ -280,8 +290,8 @@ class IntelligentSearch extends Component {
                    <Icon type="down" className={styles.searchBtnIcon} />
                  </Button>
                </Dropdown> */}
-               <Button type="primary" className={styles.searchBtn} onClick={this.handleMenuClick}>
-                 <span className={styles.searchBtnText}>开始检索</span>
+               <Button type="primary" className={styles.searchBtn} onClick={this.handleSearch}>
+                 <span className={styles.searchBtnText}>检索</span>
                </Button>
                {
                  imageUrl ? (

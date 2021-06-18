@@ -42,35 +42,31 @@
 }
 .intelligentSearch{
     min-width: 960px;
-    height: calc(100vh - 72px);
+    height: calc(100% - 10px);
     position:relative;
-    background-color: white;
-    min-height: calc(100% - 10px);
-    // margin: 10px 10px 20px 10px;
-    padding: 20px;
-    border-radius: 2px;
-    .steps-action{
-        position: absolute;
-        bottom: 10px;
-        width:100%;
-        text-align: center;
-    }
+    // .steps-action{
+    //     position: absolute;
+    //     bottom: 10px;
+    //     width:100%;
+    //     text-align: center;
+    // }
     .span10px{
         width: 10px;
         display: inline-block;
     }
-    &-filterWrapper{
-        overflow:hidden;
-        &-btnWrapper{
-            float: right;
-            display:inline-block;
-            vertical-align: middle;
-        }
-    }
-    &-tabs{
-        padding:0;
-        height:100%;
-    }
+    // &-filterWrapper{
+    //     overflow:hidden;
+    //     &-btnWrapper{
+    //         float: right;
+    //         display:inline-block;
+    //         vertical-align: middle;
+    //     }
+        
+    // }
+    // &-tabs{
+    //     padding:0;
+    //     height:100%;
+    // }
     &-contentWrapper{
         height: 100%;
         display: flex;
@@ -81,21 +77,22 @@
             color: #333333;
         }
         &-leftPart{
-            width: 360px;
+            width: 370px;
             height: 100%;
-            padding-right: 20px;
+            background-color: white;
+            padding: 15px;
             border-right: 1px solid #eee;
         }
         &-rightPart{
-            width: calc(100% - 360px);
+            width: calc(100% - 370px);
             height: 100%;
-            margin-left: 20px;
+            padding: 15px;
             .nodataWrapper{
                 width: 100%;
                 height: calc(100vh - 150px);
                 line-height: calc(100vh - 150px);
                 text-align: center;
-                background-color: #f6f6f6;
+                // background-color: #f6f6f6;
                 img{
                     height: 150px;
                 }
@@ -133,11 +130,7 @@
 }
 .searchWrapper{
     height: 540px;
-    width: calc(290px - 20px);
-    // 居中不居中呀。。
-    position: absolute;
-    top: 50%;
-    margin: -270px 0 0 0; 
+    // width: calc(370px - 30px);
     .imgWrapper{
         width: 330px;
         height: 330px;
@@ -153,12 +146,25 @@
         text-align: center;
         margin-bottom: 15px;
         width: 330px;
+        .filterType{
+            margin-bottom: 15px;
+            .btnGroup{
+                width: 330px;
+                &-btn{
+                    width:110px;
+                    &:focus,&:hover{
+                        color:#4095E3;
+                        border-color:#4095E3;
+                    }
+                }
+            }
+        }
     }
     .btnWrapper{
         text-align: center;
         margin-top: 30px;
         .searchBtn{
-            width: 330px;
+            width: 124px;
             height: 36px;
             &Text{
                 line-height: 36px;

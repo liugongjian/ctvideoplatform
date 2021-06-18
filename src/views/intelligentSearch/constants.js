@@ -6,8 +6,11 @@ const SEARCH_TYPES = {
 const SEARCH_TYPES_FACE = 'face';
 const SEARCH_TYPES_PLATE = 'plate';
 
+const SEARCH_FACE_ORIGIN_TYPE = ['注册库', '抓拍库', '离线视频'];
+
 export {
   SEARCH_TYPES,
   SEARCH_TYPES_FACE,
   SEARCH_TYPES_PLATE,
+  SEARCH_FACE_ORIGIN_TYPE,
 };
