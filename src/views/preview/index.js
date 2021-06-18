@@ -285,7 +285,7 @@ class Preview extends PureComponent {
     getPeopleArea = (id) => {
       const { getAreaInfo } = this.props;
       // 人流量检测算法id为 10
-      getAreaInfo(id, 10).then((res) => {
+      getAreaInfo(id, 105).then((res) => {
         const { applied } = res;
         this.setState({
           appliedTraffic: applied,
@@ -344,7 +344,7 @@ class Preview extends PureComponent {
         historyID, showSquaredDom, chooseSquare, squareHistoryID
       } = this.state;
       if (showSquaredDom === 1) {
-        getCurrentTraffic(historyID, 10).then((res) => {
+        getCurrentTraffic(historyID, 105).then((res) => {
           const { tempTrafficEntry, tempTrafficExit } = this.state;
           if (tempTrafficEntry === -1 || tempTrafficExit === -1) {
             this.setState({
@@ -367,7 +367,7 @@ class Preview extends PureComponent {
           }
         });
       } else if (showSquaredDom === 4) {
-        getCurrentTraffic(squareHistoryID, 10).then((res) => {
+        getCurrentTraffic(squareHistoryID, 105).then((res) => {
           const { tempTrafficEntry, tempTrafficExit } = this.state;
           if (tempTrafficEntry === -1 || tempTrafficExit === -1) {
             this.setState({
@@ -704,7 +704,7 @@ class Preview extends PureComponent {
       initChartsData = () => {
         const { getPeopleLIne } = this.props;
         const { historyID, sourceType } = this.state;
-        getPeopleLIne(historyID, 10, sourceType).then((res) => {
+        getPeopleLIne(historyID, 105, sourceType).then((res) => {
           const chartNode = document.getElementById('modalChartsInfo');
           this.mychart = echarts.init(chartNode);
           const { serisDataEntry, serisDateExit, xaxisData } = res;
