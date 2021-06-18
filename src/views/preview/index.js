@@ -750,8 +750,11 @@ class Preview extends PureComponent {
 
       changeDomSquared = (showSquaredDom) => {
         this.setState({
-          showSquaredDom
+          showSquaredDom,
+          appliedTraffic: false,
+          historyListData: {}
         }, () => {
+          this.clearTimer();
           this.changeToFourSquare();
         });
       }
