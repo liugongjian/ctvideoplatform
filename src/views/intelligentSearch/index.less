@@ -152,9 +152,10 @@
                 width: 330px;
                 &-btn{
                     width:110px;
-                    &:focus,&:hover{
+                    &:focus:not(:disabled),&:hover:not(:disabled),&-selected{
                         color:#4095E3;
                         border-color:#4095E3;
+                        z-index:10;
                     }
                 }
             }
