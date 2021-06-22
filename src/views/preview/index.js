@@ -990,6 +990,7 @@ class Preview extends PureComponent {
                   style={{ width: '100%' }}
                   placeholder="请选择已配置算法"
                   mode="multiple"
+                  size="small"
                   onChange={this.algorithmChangeHandle}
                   optionLabelProp="label"
                 >
@@ -1018,9 +1019,10 @@ class Preview extends PureComponent {
             </div>
             <div className={styles.videoBox}>
               <div className={styles.videoChooseSquare}>
-                <span className={styles.videoChooseSquareText}>实时预览</span>
+                <span className={styles.videoChooseSquareText}>分屏：</span>
                 <EIcon type={`${styles.videoChooseBtn} ${this.chooseSquareCls(1)} myicon-oneSquare`} onClick={() => this.changeDomSquared(1)} />
                 <EIcon type={`${styles.videoChooseBtn} ${this.chooseSquareCls(4)} myicon-fourSquare`} onClick={() => this.changeDomSquared(4)} />
+                <EIcon type={`${styles.videoChooseBtn} myicon-intofullscreen ${styles.intoFullScreen}`} />
               </div>
               {this.getDomSquared()}
             </div>
