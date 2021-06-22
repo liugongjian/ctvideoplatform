@@ -5,14 +5,14 @@ import {
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Cropper from 'react-cropper';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import 'cropperjs/dist/cropper.css';
-import { searchPlate, searchFace } from 'Redux/reducer/intelligentSearch';
+import {
+  searchPlate, searchFace, saveImages, addImage, delImage
+} from 'Redux/reducer/intelligentSearch';
 import NODATA_IMG from 'Assets/nodata.png';
 import { trueDependencies } from 'mathjs';
 import PeopleRes from './results/peopleRes';
 import CarRes from './results/carRes';
+import ImagePicker from './imagePicker';
 import styles from './index.less';
 import {
   SEARCH_TYPES,
@@ -37,9 +37,7 @@ class IntelligentSearch extends Component {
   constructor() {
     super();
     this.state = {
-      cropImgLoading: false,
-      imageUrl: undefined,
-      afterCrop: undefined,
+      curImage: null,
       resData: undefined,
       resLoading: false,
       filterType: 0,
@@ -49,53 +47,6 @@ class IntelligentSearch extends Component {
 
   componentDidMount() {
   }
-
-  onCropReady = () => {
-    this.setState({
-      cropImgLoading: false,
-    });
-  }
-
-  onCrop = () => {
-    const imageElement = this.cropperRef?.current;
-    const cropper = imageElement?.cropper;
-    // const imgBase64 = cropper?.getCroppedCanvas()?.toDataURL('image/png');
-    // if (imgBase64) {
-    //   this.setState({
-    //     afterCrop: imgBase64
-    //   });
-    // }
-    cropper?.getCroppedCanvas()?.toBlob((blobObj) => {
-      this.setState({
-        afterCrop: blobObj,
-      });
-    }, 'image/jpeg', 0.95);
-  };
-
-  getBase64 = (img, callback) => {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
-  }
-
- beforeUpload = (file) => {
-   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-   if (!isJpgOrPng) {
-     message.error('请上传JPG/PNG类型的图片!');
-     return true;
-   }
-   //  const isLt2M = file.size / 1024 / 1024 < 2;
-   //  if (!isLt2M) {
-   //    message.error('请上传小于2MB的图片!');
-   //  }
-   this.setState({
-     cropImgLoading: true,
-   });
-   this.getBase64(file, imageUrl => this.setState({
-     imageUrl,
-   }),);
-   return false;
- }
 
  handleSearch = () => {
    const searchType = getTypeFromUrl(this.props);
@@ -140,13 +91,16 @@ class IntelligentSearch extends Component {
  switchFaceOrigin = (e) => {
    e.preventDefault();
    console.log('click', e.target.value);
+   this.setState({
+     filterType: e.target.value,
+   });
  }
 
  onReUpload = () => { this.setState({ imageUrl: undefined, resData: undefined }); }
 
  render() {
    const {
-     imageUrl, resData, resLoading, cropImgLoading
+     imageUrl, resData, resLoading, curImage, filterType
    } = this.state;
    const { getFieldDecorator } = this.props.form;
    const formItemLayout = {
@@ -164,16 +118,6 @@ class IntelligentSearch extends Component {
    //    0: '100%',
    //    100: '0',
    //  };
-
-   this.cropperRef = React.createRef();
-   const uploadButton = (
-     <div>
-       <Icon type="plus" />
-       {/* type={this.state.uploadLoading ? 'loading' : 'plus'} */}
-       <div className="ant-upload-text">请上传图片</div>
-     </div>
-   );
-
 
    const searchType = getTypeFromUrl(this.props);
    const renderRes = (resData) => {
@@ -196,7 +140,14 @@ class IntelligentSearch extends Component {
                <ButtonGroup size="large" className={styles.btnGroup} onClick={this.switchFaceOrigin}>
                  {
                    SEARCH_FACE_ORIGIN_TYPE.map((item, idx) => (
-                     <Button key={idx} value={idx} className={styles['btnGroup-btn']} disabled={idx > 0}>{item}</Button>
+                     <Button
+                       key={idx}
+                       value={idx}
+                       className={`${styles['btnGroup-btn']} ${idx == filterType ? styles['btnGroup-btn-selected'] : ''}`}
+                       disabled={idx > 0}
+                     >
+                       {item}
+                     </Button>
                    ))
                  }
                </ButtonGroup>
@@ -242,42 +193,14 @@ class IntelligentSearch extends Component {
          return null;
      }
    };
+
    return (
      <div className={styles.intelligentSearch}>
        <div className={styles['intelligentSearch-contentWrapper']}>
          <div className={styles['intelligentSearch-contentWrapper-leftPart']}>
            {/* <div className={styles.subTitle}>{SEARCH_TYPES[searchType]}</div> */}
            <div className={styles.searchWrapper}>
-             <div className={styles.imgWrapper}>
-               {imageUrl
-                 ? (
-                   <Spin spinning={cropImgLoading}>
-                     <Cropper
-                       src={imageUrl}
-                       style={{ height: 330, width: '100%' }}
-                       //  initialAspectRatio={16 / 9}
-                       autoCrop
-                       autoCropArea={1}
-                       ready={this.onCropReady}
-                       full
-                       guides={false}
-                       crop={this.onCrop}
-                       ref={this.cropperRef}
-                     />
-                   </Spin>
-                 )
-                 : (
-                   <Upload
-                     listType="picture-card"
-                     //  className="avatar-uploader"
-                     beforeUpload={this.beforeUpload}
-                     showUploadList={false}
-                   >
-                     { uploadButton}
-                   </Upload>
-                 )
-               }
-             </div>
+             <ImagePicker curImage={curImage} />
              <div className={styles.filterWrapper}>
                {
                  renderForm()
