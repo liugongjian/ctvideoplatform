@@ -21,13 +21,16 @@ import {
   SEARCH_FACE_ORIGIN_TYPE,
 } from './constants';
 import {
-  getTypeFromUrl
+  getTypeFromUrl, dataURLtoFile
 } from './utils';
 
 const { Search } = Input;
 const { Option } = Select;
 const ButtonGroup = Button.Group;
-const mapStateToProps = state => ({ monitor: state.monitor });
+const mapStateToProps = state => ({
+  images: state.intelligentSearch.images,
+  nextImageId: state.intelligentSearch.nextImageId,
+});
 const mapDispatchToProps = dispatch => bindActionCreators(
   { searchPlate, searchFace },
   dispatch
@@ -52,16 +55,20 @@ class IntelligentSearch extends Component {
    const searchType = getTypeFromUrl(this.props);
    console.log('menuClick-searchType', searchType);
    const {
-     afterCrop
+     curImage
    } = this.state;
-   if (!afterCrop) {
+   const { images } = this.props;
+   if (!curImage) {
      message.warn('请上传图片!');
      return;
    }
    this.setState({ resLoading: true });
    const formData = new FormData();
    //  const file = dataURLtoFile(afterCrop, 'test.jpeg');
-   formData.append('file', afterCrop, 'cropped.jpeg');
+   // curImage的数据可能没更新，去images里查找对应id
+   const chosenImage = images.find(item => item.id === curImage.id);
+   const file = chosenImage.file || dataURLtoFile(chosenImage.base64, 'cropped.jpeg');
+   formData.append('file', file, 'cropped.jpeg');
    let searchFunc = () => {};
    switch (searchType) {
      case SEARCH_TYPES_PLATE:
@@ -97,6 +104,13 @@ class IntelligentSearch extends Component {
  }
 
  onReUpload = () => { this.setState({ imageUrl: undefined, resData: undefined }); }
+
+ onImageChange = (curImage) => {
+   // 选择图片
+   this.setState({
+     curImage,
+   });
+ }
 
  render() {
    const {
@@ -143,7 +157,7 @@ class IntelligentSearch extends Component {
                      <Button
                        key={idx}
                        value={idx}
-                       className={`${styles['btnGroup-btn']} ${idx == filterType ? styles['btnGroup-btn-selected'] : ''}`}
+                       className={`${styles['btnGroup-btn']} ${idx === filterType - 0 ? styles['btnGroup-btn-selected'] : ''}`}
                        disabled={idx > 0}
                      >
                        {item}
@@ -200,7 +214,7 @@ class IntelligentSearch extends Component {
          <div className={styles['intelligentSearch-contentWrapper-leftPart']}>
            {/* <div className={styles.subTitle}>{SEARCH_TYPES[searchType]}</div> */}
            <div className={styles.searchWrapper}>
-             <ImagePicker curImage={curImage} />
+             <ImagePicker curImage={curImage} onImageChange={this.onImageChange} />
              <div className={styles.filterWrapper}>
                {
                  renderForm()
