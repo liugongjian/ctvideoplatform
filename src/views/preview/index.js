@@ -25,8 +25,11 @@ import moment from 'moment';
 import nostatus from 'Assets/nostatus.png';
 import nodata from 'Assets/nodata.png';
 import noImage from 'Assets/defaultFace.png';
+import clickandchoose from 'Assets/clickandchoose.png';
 import VideoPlayer from './VideoPlayer';
 import FlvPlayer from './FlvPlayer';
+
+
 import styles from './index.less';
 
 const mapStateToProps = state => ({ preview: state.preview });
@@ -813,13 +816,8 @@ class Preview extends PureComponent {
         }
         const getFocusCls = () => (videoSrcOrder === val ? `${styles.iconBtnWithFocus} ${styles.addVideoIconBtn}` : `${styles.addVideoIconBtn}`);
         return (
-          <div className={styles.allStatusBox} key={val}>
-            {
-              // videoSquare[`videoSrc${val}`] && videoSquare[`videoSrc${val}`].showText
-              //   ? <p>{videoSquare[`videoSrc${val}`].showText}</p>
-              // :<Button icon="plus" className={styles.addVideoIconBtn} onClick={() => { this.changeVideoOrder(val); }} />
-            }
-            <Button icon="plus" className={getFocusCls()} onClick={() => { this.changeVideoOrder(val); }} />
+          <div className={`${styles.allStatusBox} ${getFocusCls()}`} key={val} onClick={() => { this.changeVideoOrder(val); }}>
+            <img src={clickandchoose} alt="双击左侧点位添加摄像头" />
           </div>
         );
       }
