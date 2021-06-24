@@ -44,6 +44,9 @@ class IntelligentSearch extends Component {
       resData: undefined,
       resLoading: false,
       filterType: 0,
+      pageSize: 10,
+      total: 0,
+      current: 1,
       // searchType: SEARCH_TYPES_PLATE,
     };
   }
@@ -69,18 +72,40 @@ class IntelligentSearch extends Component {
    const chosenImage = images.find(item => item.id === curImage.id);
    const file = chosenImage.file || dataURLtoFile(chosenImage.base64, 'cropped.jpeg');
    formData.append('file', file, 'cropped.jpeg');
-   let searchFunc = () => {};
    switch (searchType) {
      case SEARCH_TYPES_PLATE:
-       searchFunc = this.props.searchPlate;
+       this.handleSearchApi(formData, this.props.searchPlate);
        break;
      case SEARCH_TYPES_FACE:
-       searchFunc = this.props.searchFace;
+     {
+       const {
+         form: { validateFields }
+       } = this.props;
+       validateFields((err, values) => {
+         if (!err) {
+           console.log('Received values of form: ', values);
+           const { name, label, confirm } = values;
+           const { current, pageSize } = this.state;
+           if (name) formData.append('name', name);
+           if (label || label === 0) formData.append('label', label);
+           if (typeof confirm === 'number') {
+             const threshold = (100 - confirm) / 100;
+             formData.append('threshold', threshold);
+           }
+           formData.append('pageNo', current - 1);
+           formData.append('pageSize', pageSize);
+           this.handleSearchApi(formData, this.props.searchFace);
+         }
+       });
        break;
+     }
      default:
        break;
    }
-   searchFunc(formData).then((res) => {
+ }
+
+ handleSearchApi = (data, searchFunc) => {
+   searchFunc(data).then((res) => {
      this.setState({
        resData: res,
        resLoading: false,
@@ -103,6 +128,13 @@ class IntelligentSearch extends Component {
    });
  }
 
+ onPageChange = (current, pageSize) => {
+   this.setState({
+     current,
+     pageSize,
+   }, this.handleSearch);
+ }
+
  onReUpload = () => { this.setState({ imageUrl: undefined, resData: undefined }); }
 
  onImageChange = (curImage) => {
@@ -114,7 +146,7 @@ class IntelligentSearch extends Component {
 
  render() {
    const {
-     imageUrl, resData, resLoading, curImage, filterType
+     imageUrl, resData, resLoading, curImage, filterType, total, current, pageSize
    } = this.state;
    const { getFieldDecorator } = this.props.form;
    const formItemLayout = {
@@ -139,7 +171,15 @@ class IntelligentSearch extends Component {
        case SEARCH_TYPES_PLATE:
          return <CarRes data={resData} />;
        case SEARCH_TYPES_FACE:
-         return <PeopleRes data={resData} />;
+         return (
+           <PeopleRes
+             data={resData}
+             pageSize={pageSize}
+             total={total}
+             current={current}
+             handlePageChange={this.onPageChange}
+           />
+         );
        default:
          return null;
      }
@@ -179,9 +219,9 @@ class IntelligentSearch extends Component {
                    ],
                  })(
                    <Select>
-                     <Option value="white">白名单</Option>
-                     <Option value="black">黑名单</Option>
-                     <Option value="other">其他</Option>
+                     <Option value={0}>白名单</Option>
+                     <Option value={1}>黑名单</Option>
+                     <Option value={2}>其他</Option>
                    </Select>
                  )}
                </Form.Item>

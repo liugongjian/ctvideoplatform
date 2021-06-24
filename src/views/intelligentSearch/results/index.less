@@ -11,6 +11,11 @@
         margin-top: 15px;
     }
 }
+.paginationWrapper{
+    position: fixed;
+    width: calc(100% - 460px);
+    bottom: 10px;
+}
 .faceList{
     width: 100%;
 }
@@ -24,28 +29,44 @@
     &:not(:nth-of-type(5n+0)){
         margin-right:15px;
     }
+    @media screen and (min-width: 1801px) { 
+        .imgContainer{
+            height: 350px;
+            img{
+                height: 350px;
+            }
+        }
+    }
+    @media screen and (max-width: 1800px) { 
+        .imgContainer{
+            height: 225px;
+            img{
+                height: 225px;
+            }
+        }
+    }
     .imgContainer{
-        height: 225px;
         text-align: center;
         position: relative;
         img{
-            height: 225px;
             width: 100%;
             // object-fit: cover;
         }
         .faceTip{
             position: absolute;
-            bottom:0;
-            left:0;
+            top:0;
+            right:0;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            height: 28px;
+            height: 30px;
             font-size: 12px;
-            line-height: 28px;
-            width:120px;
-            color: white;
-            background-image: linear-gradient(90deg, rgba(51,51,51,0.48) 57%, rgba(98,98,98,0.00) 100%);
+            line-height: 30px;
+            width: 100px;
+            opacity: 0.85;
+            background: #FA8334;
+            color:white;
+            // background-image: linear-gradient(90deg, rgba(51,51,51,0.48) 57%, rgba(98,98,98,0.00) 100%);
 
         }
     }
