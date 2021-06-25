@@ -529,7 +529,8 @@ class Preview extends PureComponent {
         this.setState({
           videoSrc: '',
           historyListData: {},
-          showText: '无信号'
+          showText: '无信号',
+          historyID: ''
         }, () => {
           window.sessionStorage.removeItem('deviceInfo');
         });
