@@ -10,8 +10,9 @@ import {
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import {
-  searchPlate, searchFace, saveImages, addImage, delImage
+  saveImages, addImage, delImage, updateImage
 } from 'Redux/reducer/intelligentSearch';
+import EIcon from 'Components/Icon';
 import Cropper from 'react-cropper';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import 'cropperjs/dist/cropper.css';
@@ -19,13 +20,16 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
-import styles from '../index.less';
+import styles from './imagePicker.less';
 
 
-const mapStateToProps = state => ({ intelligentSearch: state.intelligentSearch });
+const mapStateToProps = state => ({
+  images: state.intelligentSearch.images,
+  nextImageId: state.intelligentSearch.nextImageId,
+});
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    saveImages, addImage, delImage
+    // saveImages, addImage, delImage
   },
   dispatch
 );
@@ -35,15 +39,32 @@ class ImagePicker extends Component {
     super();
     this.state = {
       cropImgLoading: false,
-      imageUrl: undefined,
+      //   imageUrl: undefined,
       afterCrop: undefined,
       afterCropSrc: undefined,
     };
   }
 
   componentDidMount() {
-    // ajax code
-    // this.props.getMarkers();
+    this.initData(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.initData(nextProps);
+  }
+
+  initData = (props) => {
+    const {
+      curImage, onImageChange, images
+    } = props;
+    if (images.length > 0) {
+      // 如果当前没有选中图片，或选中图片已经被删
+      if (!curImage || !images.find(item => item.id === curImage.id)) {
+        onImageChange(images[0]);
+      }
+    } else {
+      onImageChange(null);
+    }
   }
 
   onCropReady = () => {
@@ -53,19 +74,26 @@ class ImagePicker extends Component {
   }
 
   onCrop = () => {
+    const {
+      cropImgLoading
+    } = this.state;
+    console.log('cropImgLoading', cropImgLoading);
+    // 初始化中的crop结果扔掉
+    if (cropImgLoading) {
+      return;
+    }
+    const {
+      nextImageId, images, curImage, onImageChange
+    } = this.props;
     const imageElement = this.cropperRef?.current;
     const cropper = imageElement?.cropper;
-    const imgBase64 = cropper?.getCroppedCanvas()?.toDataURL('image/png');
-    if (imgBase64) {
-      this.setState({
-        afterCropSrc: imgBase64
-      });
+    const cropperCanvas = cropper?.getCroppedCanvas();
+    if (cropperCanvas) {
+      cropperCanvas.toBlob((blobObj) => {
+        const imgBase64 = cropperCanvas.toDataURL('image/png');
+        updateImage({ base64: imgBase64, file: blobObj, id: curImage.id });
+      }, 'image/jpeg', 0.95);
     }
-    cropper?.getCroppedCanvas()?.toBlob((blobObj) => {
-      this.setState({
-        afterCrop: blobObj,
-      });
-    }, 'image/jpeg', 0.95);
   };
 
   getBase64 = (img, callback) => {
@@ -87,14 +115,44 @@ class ImagePicker extends Component {
    this.setState({
      cropImgLoading: true,
    });
-   this.getBase64(file, imageUrl => this.setState({
-     imageUrl,
-   }),);
+   this.getBase64(file, (imageUrl) => {
+     addImage({ base64: imageUrl });
+     const {
+       nextImageId, images, curImage, onImageChange
+     } = this.props;
+     onImageChange(images[nextImageId - 1]);
+     //  this.setState({
+     //    imageUrl,
+     //  });
+   });
    return false;
  }
 
+ onImageSelect = (curImage) => {
+   const {
+     onImageChange
+   } = this.props;
+   onImageChange(curImage);
+   this.setState({
+     cropImgLoading: true,
+   });
+ }
+
+ handleDelete = (e, id) => {
+   if (e && e.stopPropagation) {
+     e.stopPropagation(); // ie678 不适用
+   } else {
+     window.event.cancelBubble = true; // 适用于 ie 678
+   }
+   delImage(id);
+   const {
+     images, curImage, onImageChange
+   } = this.props;
+ }
+
  render() {
-   const { imageUrl, cropImgLoading, } = this.state;
+   const { cropImgLoading, } = this.state;
+   const { images, curImage } = this.props;
    this.cropperRef = React.createRef();
    const uploadButton = (
      <div>
@@ -105,10 +163,44 @@ class ImagePicker extends Component {
    );
 
    const renderImgList = () => {
-     const { afterCropSrc } = this.state;
+     if (!images.length) {
+       return null;
+     }
      return (
-       <div>
-         {/* <img src={afterCropSrc} width={50} height={50} alt="图片" /> */}
+       <div className={styles.imgList}>
+         {
+           images.map(item => (
+             <span
+               onClick={() => this.onImageSelect(item)}
+               className={`${styles['imgList-item']} ${item.id === curImage?.id ? styles['imgList-item-selected'] : ''}`}
+               key={item.id}
+             >
+               <img src={item.base64} value={item} alt="图片" />
+               <div className={styles['imgList-item-operatorWrapper']} onClick={e => this.handleDelete(e, item.id)}>
+                 <a>
+                   {/* <Icon type="anticon-delete" /> */}
+                   <EIcon type="myicon-delete" />
+                 </a>
+               </div>
+             </span>
+           ))
+         }
+         {
+           images.length < 10
+             ? (
+               <span key="imgList-plus" className={`${styles['imgList-item']} ${styles['imgList-item-plus']}`}>
+                 <Upload
+                   listType="picture-card"
+                   //  className="avatar-uploader"
+                   beforeUpload={this.beforeUpload}
+                   showUploadList={false}
+                 >
+                   <Icon type="plus" />
+                 </Upload>
+               </span>
+             ) : ''
+         }
+
        </div>
      );
    };
@@ -116,12 +208,12 @@ class ImagePicker extends Component {
    return (
      <React.Fragment>
        <div className={styles.imgWrapper}>
-         {imageUrl
+         {curImage
            ? (
              <Spin spinning={cropImgLoading}>
                <Cropper
-                 src={imageUrl}
-                 style={{ height: 330, width: '100%' }}
+                 src={curImage.base64}
+                 style={{ height: 340, width: '100%' }}
                  //  initialAspectRatio={16 / 9}
                  autoCrop
                  autoCropArea={1}
@@ -145,11 +237,9 @@ class ImagePicker extends Component {
            )
          }
        </div>
-       <div className={styles.imgList}>
-         {
-           renderImgList()
-         }
-       </div>
+       {
+         renderImgList()
+       }
      </React.Fragment>
    );
  }
