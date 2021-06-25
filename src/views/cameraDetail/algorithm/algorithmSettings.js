@@ -75,6 +75,25 @@ class AlgorithmItem extends React.Component {
     });
   }
 
+  getIconType = (curAlgo) => {
+    const iconarr = ['carMonitor', 'helmetDetect'];
+    const iconmap = {
+      carMonitor: 'plateRecognize',
+      helmetDetect: 'safetyHat',
+    };
+    if (curAlgo) {
+      if (curAlgo.name.indexOf('DS') > -1) {
+        const newType = curAlgo.name.substring(0, curAlgo.name.length - 2);
+        if (iconarr.indexOf(newType) > -1) {
+          return `myicon-algo-${iconmap[newType]}`;
+        }
+        return `myicon-algo-${newType} `;
+      }
+      return `myicon-algo-${curAlgo.name}`;
+    }
+    return '';
+  }
+
   render() {
     const {
       curAlgo,
@@ -91,7 +110,7 @@ class AlgorithmItem extends React.Component {
         </span>
         <span className={styles['algoItem-title']}>
           {/* <img src={imgSrc} alt="icon" className={styles['algoItem-title-icon']} /> */}
-          <span className={styles['algoItem-title-icon']}><EIcon type={`myicon-algo-${curAlgo?.name}`} alt="icon" /></span>
+          <span className={styles['algoItem-title-icon']}><EIcon type={this.getIconType(curAlgo)} alt="icon" /></span>
           {curAlgo?.cnName}
         </span>
         <span className={styles['algoItem-desp']}>{curAlgo?.description}</span>
