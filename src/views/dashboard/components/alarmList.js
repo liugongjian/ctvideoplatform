@@ -157,13 +157,32 @@ class AlarmList extends Component {
     return false;
   }
 
+  getIconType = (item) => {
+    const iconarr = ['carMonitor', 'helmetDetect'];
+    const iconmap = {
+      carMonitor: 'plateRecognize',
+      helmetDetect: 'safetyHat',
+    };
+    if (item) {
+      if (item.algorithmName.indexOf('DS') > -1) {
+        const newType = item.algorithmName.substring(0, item.algorithmName.length - 2);
+        if (iconarr.indexOf(newType) > -1) {
+          return `myicon-algo-${iconmap[newType]}`;
+        }
+        return `myicon-algo-${newType} ${styles.algorithmIcon}`;
+      }
+      return `myicon-algo-${item.algorithmName} ${styles.algorithmIcon}`;
+    }
+    return `${styles.algorithmIcon}`;
+  }
+
   render() {
     const { alarmData, ifShowModal, modalShowInfo } = this.state;
     const getAlarmDom = () => (alarmData.list ? alarmData.list.map(item => (
       <div key={item.id} className={styles.alarmDetail}>
         <div className={styles.alramDetailIcon}>
           {/** <img src={getImgUrl(item.algorithmName)} alt="" /> */}
-          <EIcon type={`myicon-algo-${item?.algorithmName} ${styles.algorithmIcon}`} alt="icon" />
+          <EIcon type={this.getIconType(item)} alt="icon" />
         </div>
         <div className={styles.alarmDetailInfo}>
           <p>
