@@ -10,7 +10,7 @@ import {
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import {
-  saveImages, addFaceImage, delFaceImage, updateFaceImage
+  saveImages, addImage, delImage, updateImage
 } from 'Redux/reducer/intelligentSearch';
 import EIcon from 'Components/Icon';
 import Cropper from 'react-cropper';
@@ -19,13 +19,19 @@ import 'cropperjs/dist/cropper.css';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
+import {
+  SEARCH_TYPES_FACE,
+  SEARCH_TYPES_PLATE,
+} from '../constants';
 
 import styles from './imagePicker.less';
 
 
 const mapStateToProps = state => ({
   faceImages: state.intelligentSearch.faceImages,
+  plateImages: state.intelligentSearch.plateImages,
   nextImageId: state.intelligentSearch.nextImageId,
+  nextPlateImageId: state.intelligentSearch.nextPlateImageId,
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
@@ -35,8 +41,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 );
 
 class ImagePicker extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       cropImgLoading: false,
       //   imageUrl: undefined,
@@ -55,12 +61,13 @@ class ImagePicker extends Component {
 
   initData = (props) => {
     const {
-      curImage, onImageChange, faceImages
+      curImage, onImageChange, faceImages, plateImages, imageType
     } = props;
-    if (faceImages.length > 0) {
+    const images = imageType === SEARCH_TYPES_PLATE ? plateImages : faceImages;
+    if (images.length > 0) {
       // 如果当前没有选中图片，或选中图片已经被删
-      if (!curImage || !faceImages.find(item => item.id === curImage.id)) {
-        onImageChange(faceImages[0]);
+      if (!curImage || !images.find(item => item.id === curImage.id)) {
+        onImageChange(images[0]);
       }
     } else {
       onImageChange(null);
@@ -68,6 +75,7 @@ class ImagePicker extends Component {
   }
 
   onCropReady = () => {
+    // 重复的base64不会重新加载。。。
     this.setState({
       cropImgLoading: false,
     });
@@ -83,7 +91,7 @@ class ImagePicker extends Component {
       return;
     }
     const {
-      nextImageId, faceImages, curImage, onImageChange
+      nextImageId, faceImages, curImage, onImageChange, imageType
     } = this.props;
     const imageElement = this.cropperRef?.current;
     const cropper = imageElement?.cropper;
@@ -91,7 +99,7 @@ class ImagePicker extends Component {
     if (cropperCanvas) {
       cropperCanvas.toBlob((blobObj) => {
         const imgBase64 = cropperCanvas.toDataURL('image/png');
-        updateFaceImage({ base64: imgBase64, file: blobObj, id: curImage.id });
+        updateImage({ base64: imgBase64, file: blobObj, id: curImage.id }, imageType);
       }, 'image/jpeg', 0.95);
     }
   };
@@ -116,14 +124,20 @@ class ImagePicker extends Component {
      cropImgLoading: true,
    });
    this.getBase64(file, (imageUrl) => {
-     addFaceImage({ base64: imageUrl });
      const {
-       nextImageId, faceImages, curImage, onImageChange
+       nextImageId, nextPlateImageId, faceImages, plateImages, curImage, onImageChange, imageType
      } = this.props;
-     onImageChange(faceImages[nextImageId - 1]);
-     //  this.setState({
-     //    imageUrl,
-     //  });
+     addImage({ base64: imageUrl }, imageType);
+     switch (imageType) {
+       case SEARCH_TYPES_PLATE:
+         onImageChange(plateImages[nextPlateImageId - 1]);
+         break;
+       case SEARCH_TYPES_FACE:
+         onImageChange(faceImages[nextImageId - 1]);
+         break;
+       default:
+         break;
+     }
    });
    return false;
  }
@@ -144,7 +158,7 @@ class ImagePicker extends Component {
    } else {
      window.event.cancelBubble = true; // 适用于 ie 678
    }
-   delFaceImage(id);
+   delImage(id, this.props.imageType);
    const {
      faceImages, curImage, onImageChange
    } = this.props;
@@ -152,7 +166,9 @@ class ImagePicker extends Component {
 
  render() {
    const { cropImgLoading, } = this.state;
-   const { faceImages, curImage } = this.props;
+   const {
+     faceImages, plateImages, curImage, imageType
+   } = this.props;
    this.cropperRef = React.createRef();
    const uploadButton = (
      <div>
@@ -161,15 +177,16 @@ class ImagePicker extends Component {
        <div className="ant-upload-text">请上传图片</div>
      </div>
    );
+   const images = imageType === SEARCH_TYPES_PLATE ? plateImages : faceImages;
 
    const renderImgList = () => {
-     if (!faceImages.length) {
+     if (!images.length) {
        return null;
      }
      return (
        <div className={styles.imgList}>
          {
-           faceImages.map(item => (
+           images.map(item => (
              <span
                onClick={() => this.onImageSelect(item)}
                className={`${styles['imgList-item']} ${item.id === curImage?.id ? styles['imgList-item-selected'] : ''}`}
@@ -186,7 +203,7 @@ class ImagePicker extends Component {
            ))
          }
          {
-           faceImages.length < 10
+           images.length < 10
              ? (
                <span key="imgList-plus" className={`${styles['imgList-item']} ${styles['imgList-item-plus']}`}>
                  <Upload

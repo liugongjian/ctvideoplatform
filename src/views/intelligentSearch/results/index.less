@@ -2,6 +2,7 @@
     .plateWrapper{
         display: flex;
         height: 300px;
+        align-items: center;
         .imageWrapper{
             width: 50%;
             text-align: right;
@@ -13,7 +14,33 @@
         }
         .textWrapper{
             width: 50%;
-            margin-left: 15px;
+            margin-left: 30px;
+            .plateShow{
+                width: 160px;
+                height: 38px;
+                line-height: 38px;
+                font-size: 20px;
+                text-align: center;
+                color:white;
+                margin-bottom: 15px;
+                &-blue{
+                    background: #4095E3;
+                }
+                &-green{
+                    background:#52C41A;
+                }
+                &-yellow{
+                    background: #F5A623;
+                }
+                &-black{
+                    background-color: black;
+                }
+                &-white{
+                    color:black;
+                    background-color: white;
+                    border: 1px solid #CCCCCC;
+                }
+            }
         }
     }
 }

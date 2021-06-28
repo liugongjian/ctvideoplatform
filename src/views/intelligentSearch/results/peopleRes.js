@@ -4,9 +4,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import {
-  addFaceImage, editFace, delFace
-} from 'Redux/reducer/face';
-import {
   message, Button, Modal, Form, Input, Icon, Radio, Upload, List, Spin, Card, Tag, Checkbox,
 } from 'antd';
 import Pagination from 'Components/EPagination';
@@ -24,7 +21,7 @@ const FormItem = Form.Item;
 const mapStateToProps = state => ({ face: state.face });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    push, addFace, editFace, delFace
+    push,
   },
   dispatch
 );

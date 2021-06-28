@@ -44,6 +44,26 @@ class CarRes extends Component {
     const {
       platelicense, plate_type, confidence
     } = curPlate || {};
+    let color = 'blue';
+    switch (plate_type) {
+      case '蓝牌':
+        color = 'blue';
+        break;
+      case '黄牌':
+        color = 'yellow';
+        break;
+      case '绿牌':
+        color = 'green';
+        break;
+      case '黑牌':
+        color = 'black';
+        break;
+      case '白牌':
+        color = 'white';
+        break;
+      default:
+        break;
+    }
     return (
       <div className={styles.carRes}>
         <div className={styles.plateWrapper}>
@@ -51,6 +71,9 @@ class CarRes extends Component {
             <img src={picture} alt="图片" />
           </div>
           <div className={styles.textWrapper}>
+            <div className={`${styles.plateShow} ${styles[`plateShow-${color}`]}`}>
+              {platelicense}
+            </div>
             <div>
               车牌号：
               {platelicense}
@@ -66,7 +89,7 @@ class CarRes extends Component {
           </div>
         </div>
         <div className={styles.alarmsWrapper}>
-          list
+          相关告警信息
         </div>
       </div>
     );

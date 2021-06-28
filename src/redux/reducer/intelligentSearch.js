@@ -120,48 +120,28 @@ export function searchFace(formData) {
   };
 }
 
-export function saveFaceImages(data) {
+export function saveImages(data, type) {
   store.dispatch({
     type: SAVE_FACE_IMAGES,
     payload: data,
   });
 }
-export function addFaceImage(data) {
+export function addImage(data, type) {
   store.dispatch({
-    type: ADD_FACE_IMAGE,
+    type: type === 'plate' ? ADD_PLATE_IMAGE : ADD_FACE_IMAGE,
     payload: data,
   });
 }
-export function delFaceImage(id) {
+export function delImage(id, type) {
   store.dispatch({
-    type: DEL_FACE_IMAGE,
+    type: type === 'plate' ? DEL_PLATE_IMAGE : DEL_FACE_IMAGE,
     payload: id,
   });
 }
 
-export function updateFaceImage(data) {
+export function updateImage(data, type) {
   store.dispatch({
-    type: UPDATE_FACE_IMAGE,
-    payload: data,
-  });
-}
-
-export function addPlateImage(data) {
-  store.dispatch({
-    type: ADD_PLATE_IMAGE,
-    payload: data,
-  });
-}
-export function delPlateImage(id) {
-  store.dispatch({
-    type: DEL_PLATE_IMAGE,
-    payload: id,
-  });
-}
-
-export function updatePlateImage(data) {
-  store.dispatch({
-    type: UPDATE_PLATE_IMAGE,
+    type: type === 'plate' ? UPDATE_PLATE_IMAGE : UPDATE_FACE_IMAGE,
     payload: data,
   });
 }

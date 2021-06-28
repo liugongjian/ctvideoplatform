@@ -72,18 +72,16 @@ class IntelligentSearch extends Component {
    const formData = new FormData();
    //  const file = dataURLtoFile(afterCrop, 'test.jpeg');
    // curImage的数据可能没更新，去images里查找对应id
+   const images = searchType === SEARCH_TYPES_PLATE ? plateImages : faceImages;
+   const chosenImage = images.find(item => item.id === curImage.id);
+   const file = chosenImage.file || dataURLtoFile(chosenImage.base64, 'cropped.jpeg');
+   formData.append('file', file, 'cropped.jpeg');
    switch (searchType) {
      case SEARCH_TYPES_PLATE:
-       const chosenImage = plateImages.find(item => item.id === curImage.id);
-       const file = chosenImage.file || dataURLtoFile(chosenImage.base64, 'cropped.jpeg');
-       formData.append('file', file, 'cropped.jpeg');
        this.handleSearchApi(formData, this.props.searchPlate);
        break;
      case SEARCH_TYPES_FACE:
      {
-       const chosenImage = faceImages.find(item => item.id === curImage.id);
-       const file = chosenImage.file || dataURLtoFile(chosenImage.base64, 'cropped.jpeg');
-       formData.append('file', file, 'cropped.jpeg');
        const {
          form: { validateFields }
        } = this.props;
@@ -262,7 +260,7 @@ class IntelligentSearch extends Component {
                </Form.Item>
                <Form.Item label="置信度">
                  {getFieldDecorator('confirm', {
-                   initialValue: 30,
+                   initialValue: 70,
                    rules: [
                    ],
                  })(
@@ -290,7 +288,11 @@ class IntelligentSearch extends Component {
            {/* <div className={styles.subTitle}>{SEARCH_TYPES[searchType]}</div> */}
            <div className={styles.searchWrapper}>
              <div className={styles.searchContent}>
-               <ImagePicker curImage={curImage} onImageChange={this.onImageChange} />
+               <ImagePicker
+                 imageType={searchType}
+                 curImage={curImage}
+                 onImageChange={this.onImageChange}
+               />
                <div className={styles.filterWrapper}>
                  {
                    renderForm()
