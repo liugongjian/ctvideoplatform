@@ -5,6 +5,7 @@ import {
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import math from 'Utils/math';
 import {
   searchPlate, searchFace, saveImages, addImage, delImage
 } from 'Redux/reducer/intelligentSearch';
@@ -105,11 +106,33 @@ class IntelligentSearch extends Component {
  }
 
  handleSearchApi = (data, searchFunc) => {
+   const searchType = getTypeFromUrl(this.props);
    searchFunc(data).then((res) => {
-     this.setState({
+     const nextState = {
        resData: res,
        resLoading: false,
-     });
+     };
+     if (searchType === SEARCH_TYPES_FACE) {
+       const {
+         pageNo,
+         pageSize,
+         pageTotal,
+         recordsTotal,
+         list,
+       } = res;
+       let current = pageNo + 1;
+       const maxPage = recordsTotal === 0
+         ? 1 : math.ceil(math.divide(recordsTotal, pageSize));
+       if (!list?.length && current > maxPage) {
+         current = maxPage;
+         this.onPageChange(current, pageSize);
+         return;
+       }
+       nextState.pageSize = pageSize;
+       nextState.total = recordsTotal;
+       nextState.current = pageNo + 1;
+     }
+     this.setState(nextState);
      console.log('res', res);
    }).catch((err) => {
      this.setState({
@@ -254,11 +277,13 @@ class IntelligentSearch extends Component {
          <div className={styles['intelligentSearch-contentWrapper-leftPart']}>
            {/* <div className={styles.subTitle}>{SEARCH_TYPES[searchType]}</div> */}
            <div className={styles.searchWrapper}>
-             <ImagePicker curImage={curImage} onImageChange={this.onImageChange} />
-             <div className={styles.filterWrapper}>
-               {
-                 renderForm()
-               }
+             <div className={styles.searchContent}>
+               <ImagePicker curImage={curImage} onImageChange={this.onImageChange} />
+               <div className={styles.filterWrapper}>
+                 {
+                   renderForm()
+                 }
+               </div>
              </div>
              <div className={styles.btnWrapper}>
                {/* <Dropdown overlay={searchOptions}>

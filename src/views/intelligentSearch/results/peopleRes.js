@@ -83,8 +83,6 @@ class Face extends Component {
                   <div className={styles.imgContainer}>
                     <img src={`${urlPrefix}/face/displayexist/${item.photoId}?${new Date().getTime()}`} onError={e => this.handleImageError(e)} alt="" />
                     <div className={styles.faceTip}>
-                      {' '}
-                      相似度：
                       {parseFloat(item.score * 100).toFixed(2)}
                       %
                     </div>
