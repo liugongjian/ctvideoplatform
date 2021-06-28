@@ -10,7 +10,7 @@ import {
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import {
-  saveImages, addImage, delImage, updateImage
+  saveImages, addFaceImage, delFaceImage, updateFaceImage
 } from 'Redux/reducer/intelligentSearch';
 import EIcon from 'Components/Icon';
 import Cropper from 'react-cropper';
@@ -24,7 +24,7 @@ import styles from './imagePicker.less';
 
 
 const mapStateToProps = state => ({
-  images: state.intelligentSearch.images,
+  faceImages: state.intelligentSearch.faceImages,
   nextImageId: state.intelligentSearch.nextImageId,
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
@@ -55,12 +55,12 @@ class ImagePicker extends Component {
 
   initData = (props) => {
     const {
-      curImage, onImageChange, images
+      curImage, onImageChange, faceImages
     } = props;
-    if (images.length > 0) {
+    if (faceImages.length > 0) {
       // 如果当前没有选中图片，或选中图片已经被删
-      if (!curImage || !images.find(item => item.id === curImage.id)) {
-        onImageChange(images[0]);
+      if (!curImage || !faceImages.find(item => item.id === curImage.id)) {
+        onImageChange(faceImages[0]);
       }
     } else {
       onImageChange(null);
@@ -83,7 +83,7 @@ class ImagePicker extends Component {
       return;
     }
     const {
-      nextImageId, images, curImage, onImageChange
+      nextImageId, faceImages, curImage, onImageChange
     } = this.props;
     const imageElement = this.cropperRef?.current;
     const cropper = imageElement?.cropper;
@@ -91,7 +91,7 @@ class ImagePicker extends Component {
     if (cropperCanvas) {
       cropperCanvas.toBlob((blobObj) => {
         const imgBase64 = cropperCanvas.toDataURL('image/png');
-        updateImage({ base64: imgBase64, file: blobObj, id: curImage.id });
+        updateFaceImage({ base64: imgBase64, file: blobObj, id: curImage.id });
       }, 'image/jpeg', 0.95);
     }
   };
@@ -116,11 +116,11 @@ class ImagePicker extends Component {
      cropImgLoading: true,
    });
    this.getBase64(file, (imageUrl) => {
-     addImage({ base64: imageUrl });
+     addFaceImage({ base64: imageUrl });
      const {
-       nextImageId, images, curImage, onImageChange
+       nextImageId, faceImages, curImage, onImageChange
      } = this.props;
-     onImageChange(images[nextImageId - 1]);
+     onImageChange(faceImages[nextImageId - 1]);
      //  this.setState({
      //    imageUrl,
      //  });
@@ -144,15 +144,15 @@ class ImagePicker extends Component {
    } else {
      window.event.cancelBubble = true; // 适用于 ie 678
    }
-   delImage(id);
+   delFaceImage(id);
    const {
-     images, curImage, onImageChange
+     faceImages, curImage, onImageChange
    } = this.props;
  }
 
  render() {
    const { cropImgLoading, } = this.state;
-   const { images, curImage } = this.props;
+   const { faceImages, curImage } = this.props;
    this.cropperRef = React.createRef();
    const uploadButton = (
      <div>
@@ -163,13 +163,13 @@ class ImagePicker extends Component {
    );
 
    const renderImgList = () => {
-     if (!images.length) {
+     if (!faceImages.length) {
        return null;
      }
      return (
        <div className={styles.imgList}>
          {
-           images.map(item => (
+           faceImages.map(item => (
              <span
                onClick={() => this.onImageSelect(item)}
                className={`${styles['imgList-item']} ${item.id === curImage?.id ? styles['imgList-item-selected'] : ''}`}
@@ -186,7 +186,7 @@ class ImagePicker extends Component {
            ))
          }
          {
-           images.length < 10
+           faceImages.length < 10
              ? (
                <span key="imgList-plus" className={`${styles['imgList-item']} ${styles['imgList-item-plus']}`}>
                  <Upload

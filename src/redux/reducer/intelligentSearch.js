@@ -10,47 +10,76 @@ const GET_LIST_SUCCESS = 'INTELLIGENT/GET_LIST_SUCCESS';
 const GET_LIST_FAIL = 'INTELLIGENT/GET_LIST_FAIL';
 
 
-const SAVE_IMAGES = 'INTELLIGENT/SAVE_IMAGES';
-const ADD_IMAGE = 'INTELLIGENT/ADD_IMAGE';
-const DEL_IMAGE = 'INTELLIGENT/DEL_IMAGE';
-const UPDATE_IMAGE = 'INTELLIGENT/UPDATE_IMAGE';
+const SAVE_FACE_IMAGES = 'INTELLIGENT/SAVE_FACE_IMAGES';
+const ADD_FACE_IMAGE = 'INTELLIGENT/ADD_FACE_IMAGE';
+const DEL_FACE_IMAGE = 'INTELLIGENT/DEL_FACE_IMAGE';
+const UPDATE_FACE_IMAGE = 'INTELLIGENT/UPDATE_FACE_IMAGE';
+const ADD_PLATE_IMAGE = 'INTELLIGENT/ADD_PLATE_IMAGE';
+const DEL_PLATE_IMAGE = 'INTELLIGENT/DEL_PLATE_IMAGE';
+const UPDATE_PLATE_IMAGE = 'INTELLIGENT/UPDATE_PLATE_IMAGE';
+
 const DO_NOTHING = '/DO_NOTHING';
 
 const initialState = {
-  images: [],
+  faceImages: [],
   nextImageId: 0,
+  plateImages: [],
+  nextPlateImageId: 0,
 };
 
 export default function alarms(state = initialState, action = {}) {
   const { type, payload } = action;
   switch (type) {
-    case SAVE_IMAGES: {
+    case SAVE_FACE_IMAGES: {
       return {
         ...state,
-        images: payload,
+        faceImages: payload,
       };
     }
-    case ADD_IMAGE: {
+    case ADD_FACE_IMAGE: {
       return {
         ...state,
-        images: [...state.images, { ...payload, id: state.nextImageId }],
+        faceImages: [...state.faceImages, { ...payload, id: state.nextImageId }],
         nextImageId: ++state.nextImageId,
       };
     }
-    case DEL_IMAGE: {
+    case DEL_FACE_IMAGE: {
       // 删除特定id的image
       const id = payload;
       return {
         ...state,
-        images: state.images.filter(item => item.id !== id),
+        faceImages: state.faceImages.filter(item => item.id !== id),
       };
     }
-    case UPDATE_IMAGE: {
+    case UPDATE_FACE_IMAGE: {
       // 更新特定id的image
-      const images = state.images.map(item => (item.id === payload.id ? payload : item));
+      const faceImages = state.faceImages.map(item => (item.id === payload.id ? payload : item));
       return {
         ...state,
-        images,
+        faceImages,
+      };
+    }
+    case ADD_PLATE_IMAGE: {
+      return {
+        ...state,
+        plateImages: [...state.plateImages, { ...payload, id: state.nextPlateImageId }],
+        nextPlateImageId: ++state.nextPlateImageId,
+      };
+    }
+    case DEL_PLATE_IMAGE: {
+      // 删除特定id的image
+      const id = payload;
+      return {
+        ...state,
+        plateImages: state.plateImages.filter(item => item.id !== id),
+      };
+    }
+    case UPDATE_PLATE_IMAGE: {
+      // 更新特定id的image
+      const plateImages = state.plateImages.map(item => (item.id === payload.id ? payload : item));
+      return {
+        ...state,
+        plateImages,
       };
     }
     case DO_NOTHING:
@@ -77,6 +106,13 @@ export function searchPlate(formData) {
   };
 }
 
+export function searchPlateAlarms(data) {
+  return {
+    type: DO_NOTHING,
+    promise: apiClient => apiClient.post(`${urlPrefix}/detect/plate/result`, { data })
+  };
+}
+
 export function searchFace(formData) {
   return {
     type: DO_NOTHING,
@@ -84,28 +120,48 @@ export function searchFace(formData) {
   };
 }
 
-export function saveImages(data) {
+export function saveFaceImages(data) {
   store.dispatch({
-    type: SAVE_IMAGES,
+    type: SAVE_FACE_IMAGES,
     payload: data,
   });
 }
-export function addImage(data) {
+export function addFaceImage(data) {
   store.dispatch({
-    type: ADD_IMAGE,
+    type: ADD_FACE_IMAGE,
     payload: data,
   });
 }
-export function delImage(id) {
+export function delFaceImage(id) {
   store.dispatch({
-    type: DEL_IMAGE,
+    type: DEL_FACE_IMAGE,
     payload: id,
   });
 }
 
-export function updateImage(data) {
+export function updateFaceImage(data) {
   store.dispatch({
-    type: UPDATE_IMAGE,
+    type: UPDATE_FACE_IMAGE,
+    payload: data,
+  });
+}
+
+export function addPlateImage(data) {
+  store.dispatch({
+    type: ADD_PLATE_IMAGE,
+    payload: data,
+  });
+}
+export function delPlateImage(id) {
+  store.dispatch({
+    type: DEL_PLATE_IMAGE,
+    payload: id,
+  });
+}
+
+export function updatePlateImage(data) {
+  store.dispatch({
+    type: UPDATE_PLATE_IMAGE,
     payload: data,
   });
 }

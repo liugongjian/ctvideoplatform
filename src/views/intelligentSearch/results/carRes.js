@@ -9,7 +9,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
-
+import {
+  searchPlateAlarms
+} from 'Redux/reducer/intelligentSearch';
 import styles from './index.less';
 
 const { Search } = Input;
@@ -17,7 +19,7 @@ const { Option } = Select;
 const mapStateToProps = state => ({ monitor: state.monitor });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-
+    searchPlateAlarms,
   },
   dispatch
 );
@@ -44,22 +46,27 @@ class CarRes extends Component {
     } = curPlate || {};
     return (
       <div className={styles.carRes}>
-        <div className={styles.imageWrapper}>
-          <img src={picture} alt="图片" />
+        <div className={styles.plateWrapper}>
+          <div className={styles.imageWrapper}>
+            <img src={picture} alt="图片" />
+          </div>
+          <div className={styles.textWrapper}>
+            <div>
+              车牌号：
+              {platelicense}
+            </div>
+            <div>
+              车牌颜色：
+              {plate_type}
+            </div>
+            <div>
+              置信度：
+              {parseFloat(confidence * 100).toFixed(2)}
+            </div>
+          </div>
         </div>
-        <div className={styles.textWrapper}>
-          <div>
-            车牌号：
-            {platelicense}
-          </div>
-          <div>
-            车牌颜色：
-            {plate_type}
-          </div>
-          <div>
-            置信度：
-            {parseFloat(confidence * 100).toFixed(2)}
-          </div>
+        <div className={styles.alarmsWrapper}>
+          list
         </div>
       </div>
     );

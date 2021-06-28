@@ -29,8 +29,10 @@ const { Search } = Input;
 const { Option } = Select;
 const ButtonGroup = Button.Group;
 const mapStateToProps = state => ({
-  images: state.intelligentSearch.images,
+  faceImages: state.intelligentSearch.faceImages,
+  plateImages: state.intelligentSearch.plateImages,
   nextImageId: state.intelligentSearch.nextImageId,
+  nextPlateImageId: state.intelligentSearch.nextPlateImageId,
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
   { searchPlate, searchFace },
@@ -61,7 +63,7 @@ class IntelligentSearch extends Component {
    const {
      curImage
    } = this.state;
-   const { images } = this.props;
+   const { faceImages, plateImages } = this.props;
    if (!curImage) {
      message.warn('请上传图片!');
      return;
@@ -70,15 +72,18 @@ class IntelligentSearch extends Component {
    const formData = new FormData();
    //  const file = dataURLtoFile(afterCrop, 'test.jpeg');
    // curImage的数据可能没更新，去images里查找对应id
-   const chosenImage = images.find(item => item.id === curImage.id);
-   const file = chosenImage.file || dataURLtoFile(chosenImage.base64, 'cropped.jpeg');
-   formData.append('file', file, 'cropped.jpeg');
    switch (searchType) {
      case SEARCH_TYPES_PLATE:
+       const chosenImage = plateImages.find(item => item.id === curImage.id);
+       const file = chosenImage.file || dataURLtoFile(chosenImage.base64, 'cropped.jpeg');
+       formData.append('file', file, 'cropped.jpeg');
        this.handleSearchApi(formData, this.props.searchPlate);
        break;
      case SEARCH_TYPES_FACE:
      {
+       const chosenImage = faceImages.find(item => item.id === curImage.id);
+       const file = chosenImage.file || dataURLtoFile(chosenImage.base64, 'cropped.jpeg');
+       formData.append('file', file, 'cropped.jpeg');
        const {
          form: { validateFields }
        } = this.props;
@@ -194,14 +199,21 @@ class IntelligentSearch extends Component {
        case SEARCH_TYPES_PLATE:
          return <CarRes data={resData} />;
        case SEARCH_TYPES_FACE:
+         if (resData?.list?.length > 0) {
+           return (
+             <PeopleRes
+               data={resData}
+               pageSize={pageSize}
+               total={total}
+               current={current}
+               handlePageChange={this.onPageChange}
+             />
+           );
+         }
          return (
-           <PeopleRes
-             data={resData}
-             pageSize={pageSize}
-             total={total}
-             current={current}
-             handlePageChange={this.onPageChange}
-           />
+           <div className={styles.nodataWrapper}>
+             <img src={NODATA_IMG} alt="" />
+           </div>
          );
        default:
          return null;
@@ -242,20 +254,20 @@ class IntelligentSearch extends Component {
                    ],
                  })(
                    <Select>
-                     <Option value={0}>白名单</Option>
-                     <Option value={1}>黑名单</Option>
-                     <Option value={2}>其他</Option>
+                     <Option value="WHITE">白名单</Option>
+                     <Option value="BLACK">黑名单</Option>
+                     <Option value="OTHER">其他</Option>
                    </Select>
                  )}
                </Form.Item>
                <Form.Item label="置信度">
                  {getFieldDecorator('confirm', {
+                   initialValue: 30,
                    rules: [
                    ],
                  })(
                    <Slider
                      step={1}
-                     defaultValue={10}
                      tipFormatter={value => (`${100 - value}%`)}
                      reverse
                    //  tooltipVisible

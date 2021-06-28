@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import {
-  addFace, editFace, delFace
+  addFaceImage, editFace, delFace
 } from 'Redux/reducer/face';
 import {
   message, Button, Modal, Form, Input, Icon, Radio, Upload, List, Spin, Card, Tag, Checkbox,
