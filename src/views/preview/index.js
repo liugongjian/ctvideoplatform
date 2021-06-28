@@ -659,7 +659,8 @@ class Preview extends PureComponent {
 
 
       getTypeContent = (val) => {
-        if (val.face && val.face.label !== 'OTHER') {
+        // if (val.face && val.face.label !== 'OTHER') {
+        if (val.face) {
           return (
             <p className={styles.historyTextName}>
               <span>姓名：</span>
@@ -670,7 +671,8 @@ class Preview extends PureComponent {
             </p>
           );
         }
-        if (val.plate && val.plate.label !== 'OTHER') {
+        // if (val.plate && val.plate.label !== 'OTHER') {
+        if (val.plate) {
           return (
             <p className={styles.historyTextName}>
               <span>车牌：</span>
