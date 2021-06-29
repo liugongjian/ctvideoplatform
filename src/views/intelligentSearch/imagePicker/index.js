@@ -129,11 +129,11 @@ class ImagePicker extends Component {
      } = this.props;
      addImage({ base64: imageUrl }, imageType);
      // 如果重复上传同一图片，cropper不会重复加载，onready不执行，导致一直loading
-     if (imageUrl === curImage.base64) {
-       this.setState({
-         cropImgLoading: false,
-       });
-     }
+     //  if (imageUrl === curImage.base64) {
+     //    this.setState({
+     //      cropImgLoading: false,
+     //    });
+     //  }
      const {
        nextImageId, nextPlateImageId, faceImages, plateImages, onImageChange,
      } = this.props;
@@ -153,12 +153,15 @@ class ImagePicker extends Component {
 
  onImageSelect = (curImage) => {
    const {
-     onImageChange
+     onImageChange, curImage: preImage
    } = this.props;
    onImageChange(curImage);
+   // 同一图片cropper不会重复加载，onready不执行
+   //  if (preImage.base64 !== curImage.base64) {
    this.setState({
      cropImgLoading: true,
    });
+   //  }
  }
 
  handleDelete = (e, id) => {
@@ -238,6 +241,7 @@ class ImagePicker extends Component {
            ? (
              <Spin spinning={cropImgLoading}>
                <Cropper
+                 key={curImage.id}
                  src={curImage.base64}
                  style={{ height: 340, width: '100%' }}
                  //  initialAspectRatio={16 / 9}
