@@ -307,7 +307,11 @@ class IntelligentSearch extends Component {
                  </Button>
                </Dropdown> */}
                <Button type="primary" className={styles.searchBtn} onClick={this.handleSearch}>
-                 <span className={styles.searchBtnText}>检索</span>
+                 <span className={styles.searchBtnText}>
+                   {
+                     searchType === SEARCH_TYPES_PLATE ? '识别' : '检索'
+                   }
+                 </span>
                </Button>
                {
                  imageUrl ? (

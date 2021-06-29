@@ -80,12 +80,7 @@
         width: 100%;
         height: calc(100vh - 250px);
         overflow-y: auto;
-        .AlarmCard{
-            margin-bottom: 20px;
-            &:hover{
-                box-shadow: 0 2px 4px 0 rgba(0,0,0,.15);
-            }
-        }
+       
         &-nodata{
             width: 100%;
             height: calc(100vh - 250px);
@@ -96,30 +91,38 @@
                 height: 150px;
             }
         }
-        @media screen and (min-width: 1701px) {
+        :global{
             .AlarmCard{
-                height: 300px;
-                width: calc((100% - 15px * 5) / 6 );
-                &-imgWrapper{
-                    height: 170px;
-                    line-height: 170px;
+                margin-bottom: 20px;
+                &:hover{
+                    box-shadow: 0 2px 4px 0 rgba(0,0,0,.15);
                 }
             }
-            .AlarmCard:not(:nth-of-type(6n+0)){
-                margin-right:15px;
-            }
-        }
-        @media screen and (max-width: 1700px) {
-            .AlarmCard{
-                height: 270px;
-                width: calc((100% - 15px * 3) / 4 );
-                &-imgWrapper{
-                    height: 140px;
-                    line-height: 140px;
+            @media screen and (min-width: 1701px) {
+                .AlarmCard{
+                    height: 300px;
+                    width: calc((100% - 15px * 5) / 6 );
+                    &-imgWrapper{
+                        height: 170px;
+                        line-height: 170px;
+                    }
+                }
+                .AlarmCard:not(:nth-of-type(6n+0)){
+                    margin-right:15px;
                 }
             }
-            .AlarmCard:not(:nth-of-type(4n+0)){
-                margin-right:15px;
+            @media screen and (max-width: 1700px) {
+                .AlarmCard{
+                    height: 270px;
+                    width: calc((100% - 15px * 3) / 4 );
+                    &-imgWrapper{
+                        height: 140px;
+                        line-height: 140px;
+                    }
+                }
+                .AlarmCard:not(:nth-of-type(4n+0)){
+                    margin-right:15px;
+                }
             }
         }
         // @media screen and (max-width: 1400px) {
@@ -175,7 +178,7 @@
         }
     }
 }
-.AlarmCard{
+:global(.AlarmCard) {
     display: inline-block;
     vertical-align: middle;
     position: relative;
@@ -258,9 +261,9 @@
             white-space: nowrap;
         }
     }
-    &:hover{
+    &:not(:global(.AlarmCard-DisableOperators)):hover{
         border: 1px solid #FA8334;
-        .AlarmCard-operatorWrapper{
+        :global(.AlarmCard-operatorWrapper){
             display: block;
             position: absolute;
             z-index:100;
@@ -288,7 +291,7 @@
         }
     }
 }
-.AlarmCardTag{
+:global(.AlarmCardTag){
     display: inline-block;
     width: 52px;
     line-height: 18px;

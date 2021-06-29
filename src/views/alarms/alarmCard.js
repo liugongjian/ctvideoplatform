@@ -52,7 +52,7 @@ const Tag = ({
   type
 }) => (
   <span
-    className={`${styles.AlarmCardTag} ${styles[`AlarmCardTag-${type}`]}`}
+    className={`AlarmCardTag ${`AlarmCardTag-${type}`}`}
     // style={{
     //   color,
     //   border: `1px solid ${borderColor}`,
@@ -140,13 +140,15 @@ class AlarmCard extends Component {
   handleImageError = (e) => {
     const image = e.target;
     image.src = noImage;
-    image.className = styles['AlarmCard-noImage'];
+    image.className = 'AlarmCard-noImage';
     image.onerror = null;
     this.setState({ imageErr: true });
   };
 
   render() {
-    const { data, onDelete, isLicenseExist } = this.props;
+    const {
+      data, onDelete, isLicenseExist, disableOperators
+    } = this.props;
     const {
       importDialogVisible, imgDialogVisible, delVisible,
       imageErr,
@@ -168,7 +170,7 @@ class AlarmCard extends Component {
       detail = detailExp.replace(reg, (match, matchStr, index, stringObj) => ALARM_DETAIL_TYPE[type] || '未知目标');
     }
     return (
-      <div className={styles.AlarmCard}>
+      <div className={`AlarmCard ${disableOperators ? 'AlarmCard-DisableOperators' : ''}`}>
         <LicenseImportModal
           visible={importDialogVisible}
           handleImport={this.handleImport}
@@ -188,7 +190,7 @@ class AlarmCard extends Component {
           src={`${imageURI}${image}`}
           handleImageError={e => this.handleImageError(e)}
         />
-        <div className={styles['AlarmCard-title']}>
+        <div className="AlarmCard-title">
           {/* // 头部空间不足 先删除icon */}
           {/* <img
             src={getImgUrl(algorithmName)}
@@ -196,13 +198,13 @@ class AlarmCard extends Component {
             className={styles['AlarmCard-title-icon']}
           /> */}
         &nbsp;
-          <span className={styles['AlarmCard-title-name']}>{algorithmCnName || ''}</span>
-          <span className={styles['AlarmCard-title-time']} title={resTime || ''}>
+          <span className="AlarmCard-title-name">{algorithmCnName || ''}</span>
+          <span className="AlarmCard-title-time" title={resTime || ''}>
             {resTime || ''}
           </span>
         </div>
-        <div className={`${styles['AlarmCard-imgWrapper']} ${imageErr ? '' : styles['AlarmCard-imgWrapper-cursor']}`} onClick={imageErr ? () => {} : this.showImgDialog}>
-          <div className={styles['AlarmCard-imgWrapper-title']} title={deviceName}>
+        <div className={`AlarmCard-imgWrapper ${imageErr ? '' : 'AlarmCard-imgWrapper-cursor'}`} onClick={imageErr ? () => {} : this.showImgDialog}>
+          <div className="AlarmCard-imgWrapper-title" title={deviceName}>
             {deviceName}
           </div>
           <img
@@ -211,7 +213,7 @@ class AlarmCard extends Component {
             onError={e => this.handleImageError(e)}
           />
         </div>
-        <div className={styles['AlarmCard-contentWrapper']}>
+        <div className="AlarmCard-contentWrapper">
           <div>
             布控规则：
             <span title={controlRule}>{controlRule}</span>
@@ -263,12 +265,14 @@ class AlarmCard extends Component {
             <span title={areaPath}>{areaPath}</span>
           </div>
         </div>
-        <div className={styles['AlarmCard-operatorWrapper']}>
+
+
+        <div className="AlarmCard-operatorWrapper">
           {
             hasImport ? (
               <React.Fragment>
                 <a onClick={this.showImportDialog}><EIcon type="myicon-import" /></a>
-                <span className={styles['AlarmCard-operatorWrapper-split']} />
+                <span className="AlarmCard-operatorWrapper-split" />
               </React.Fragment>
             ) : null
           }
@@ -277,6 +281,7 @@ class AlarmCard extends Component {
             <EIcon type="myicon-delete" />
           </a>
         </div>
+
       </div>
     );
   }
