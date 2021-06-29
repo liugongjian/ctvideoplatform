@@ -125,9 +125,18 @@ class ImagePicker extends Component {
    });
    this.getBase64(file, (imageUrl) => {
      const {
-       nextImageId, nextPlateImageId, faceImages, plateImages, curImage, onImageChange, imageType
+       imageType, curImage
      } = this.props;
      addImage({ base64: imageUrl }, imageType);
+     // 如果重复上传同一图片，cropper不会重复加载，onready不执行，导致一直loading
+     if (imageUrl === curImage.base64) {
+       this.setState({
+         cropImgLoading: false,
+       });
+     }
+     const {
+       nextImageId, nextPlateImageId, faceImages, plateImages, onImageChange,
+     } = this.props;
      switch (imageType) {
        case SEARCH_TYPES_PLATE:
          onImageChange(plateImages[nextPlateImageId - 1]);
