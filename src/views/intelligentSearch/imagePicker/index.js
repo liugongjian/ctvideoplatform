@@ -157,11 +157,11 @@ class ImagePicker extends Component {
    } = this.props;
    onImageChange(curImage);
    // 同一图片cropper不会重复加载，onready不执行
-   //  if (preImage.base64 !== curImage.base64) {
-   this.setState({
-     cropImgLoading: true,
-   });
-   //  }
+   if (preImage !== curImage) {
+     this.setState({
+       cropImgLoading: true,
+     });
+   }
  }
 
  handleDelete = (e, id) => {
