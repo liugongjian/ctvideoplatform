@@ -110,19 +110,22 @@ class ImagePicker extends Component {
     reader.readAsDataURL(img);
   }
 
+  onUpload = ({ file }) => {
+    this.setState({
+      cropImgLoading: true,
+    });
+  }
+
  beforeUpload = (file) => {
    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
    if (!isJpgOrPng) {
      message.error('请上传JPG/PNG类型的图片!');
-     return true;
+     return false;
    }
    //  const isLt2M = file.size / 1024 / 1024 < 2;
    //  if (!isLt2M) {
    //    message.error('请上传小于2MB的图片!');
    //  }
-   this.setState({
-     cropImgLoading: true,
-   });
    this.getBase64(file, (imageUrl) => {
      const {
        imageType, curImage
@@ -222,6 +225,7 @@ class ImagePicker extends Component {
                    listType="picture-card"
                    //  className="avatar-uploader"
                    beforeUpload={this.beforeUpload}
+                   onChange={this.onUpload}
                    showUploadList={false}
                  >
                    <Icon type="plus" />
@@ -237,9 +241,10 @@ class ImagePicker extends Component {
    return (
      <React.Fragment>
        <div className={styles.imgWrapper}>
-         {curImage
-           ? (
-             <Spin spinning={cropImgLoading}>
+         <Spin spinning={cropImgLoading}>
+           {curImage
+             ? (
+
                <Cropper
                  key={curImage.id}
                  src={curImage.base64}
@@ -253,19 +258,21 @@ class ImagePicker extends Component {
                  crop={this.onCrop}
                  ref={this.cropperRef}
                />
-             </Spin>
-           )
-           : (
-             <Upload
-               listType="picture-card"
-               //  className="avatar-uploader"
-               beforeUpload={this.beforeUpload}
-               showUploadList={false}
-             >
-               { uploadButton}
-             </Upload>
-           )
-         }
+
+             )
+             : (
+               <Upload
+                 listType="picture-card"
+                 //  className="avatar-uploader"
+                 beforeUpload={this.beforeUpload}
+                 onChange={this.onUpload}
+                 showUploadList={false}
+               >
+                 { uploadButton}
+               </Upload>
+             )
+           }
+         </Spin>
        </div>
        {
          renderImgList()
