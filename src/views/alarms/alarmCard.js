@@ -215,13 +215,17 @@ class AlarmCard extends Component {
         </div>
         <div className="AlarmCard-contentWrapper">
           <div>
-            布控规则：
+            {/* 布控规则 */}
+            <EIcon type="myicon-alarmDetailIcon" />
+            <span className={styles.span5px} />
             <span title={controlRule}>{controlRule}</span>
           </div>
           {
             detail ? (
               <div>
-                告警详情：
+                {/* 告警详情： */}
+                <EIcon type="myicon-alarmDetailIcon" />
+                <span className={styles.span5px} />
                 <span title={detail}>{detail}</span>
               </div>
             ) : null
@@ -233,7 +237,9 @@ class AlarmCard extends Component {
                   {recognizeType === 'car' ? (
                     plate?.licenseNo ? (
                       <div>
-                        车牌：
+                        {/* 车牌： */}
+                        <EIcon type="myicon-vehicleIcon" />
+                        <span className={styles.span5px} />
                         {plate?.licenseNo || '-'}
                         <React.Fragment>
                           {
@@ -246,7 +252,9 @@ class AlarmCard extends Component {
                   ) : (
                       face?.username ? (
                         <div>
-                          姓名：
+                          {/* 姓名： */}
+                          <EIcon type="myicon-personNameIcon" />
+                          <span className={styles.span5px} />
                           {face?.username || '-'}
                           <React.Fragment>
                             {
@@ -261,7 +269,9 @@ class AlarmCard extends Component {
               )
           }
           <div>
-            设备区域：
+            {/* 设备区域： */}
+            <EIcon type="myicon-alarmAreaIcon" />
+            <span className={styles.span5px} />
             <span title={areaPath}>{areaPath}</span>
           </div>
         </div>

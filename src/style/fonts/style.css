@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'cloudFont';
   src:
-    url('fonts/cloudFont.ttf?5l4xla') format('truetype'),
-    url('fonts/cloudFont.woff?5l4xla') format('woff'),
-    url('fonts/cloudFont.svg?5l4xla#cloudFont') format('svg');
+    url('fonts/cloudFont.ttf?nvo3z6') format('truetype'),
+    url('fonts/cloudFont.woff?nvo3z6') format('woff'),
+    url('fonts/cloudFont.svg?nvo3z6#cloudFont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -24,6 +24,24 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.myicon-vehicleIcon:before {
+  content: "\eb72";
+}
+.myicon-alarmAreaIcon:before {
+  content: "\eb73";
+}
+.myicon-alarmTimeIcon:before {
+  content: "\eb74";
+}
+.myicon-alarmDetailIcon:before {
+  content: "\eb75";
+}
+.myicon-personNameIcon:before {
+  content: "\eb76";
+}
+.myicon-locationIcon:before {
+  content: "\eb77";
+}
 .myicon-snapshot:before {
   content: "\eb6a";
 }
