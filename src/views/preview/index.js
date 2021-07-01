@@ -144,7 +144,6 @@ class Preview extends PureComponent {
     const { videoSquare = {}, squareHistoryID } = squareInfo;
     const { showSquaredDom } = this.state;
     if (showSquaredDom === 4 && Object.keys(videoSquare).length !== 0) {
-      console.log(videoSquare);
       this.setState({
         videoSquare, squareHistoryID
       }, () => {
@@ -760,6 +759,31 @@ class Preview extends PureComponent {
           appliedTraffic: false,
           historyListData: {}
         }, () => {
+          // 四宫格切换到一宫格
+          if (showSquaredDom === 1) {
+            const { videoSquare } = this.state;
+            console.log('videoSquare.videoSrc1', videoSquare.videoSrc1);
+            if (Object.keys(videoSquare.videoSrc1).length !== 0) {
+              this.doubleClickHandle(undefined, videoSquare.videoSrc1);
+            }
+          } else {
+            const deviceInfo = JSON.parse(window.sessionStorage.getItem('deviceInfo')) || {};
+            if (Object.keys(deviceInfo).length !== 0) {
+              const { videoSquare } = this.state;
+              videoSquare.videoSrc1 = deviceInfo;
+              this.setState({
+                videoSquare,
+                squareHistoryID: deviceInfo.id
+              }, () => {
+                // this.getVideoSrc();
+                Object.keys(videoSquare).map(item => this.getVideoSrc(videoSquare[item].id, videoSquare[item].name, 'no', item));
+                this.getHistory();
+                this.getCurrentDay();
+                this.setIntervalTimer();
+              });
+            }
+          }
+
           this.clearTimer();
           this.changeToFourSquare();
         });
