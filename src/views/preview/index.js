@@ -661,25 +661,25 @@ class Preview extends PureComponent {
         // if (val.face && val.face.label !== 'OTHER') {
         if (val.face) {
           return (
-            <p className={styles.historyTextName}>
-              <span>姓名：</span>
+            <div className={`${styles.historyTextName} ${styles.alarmDetailInfo}}`}>
+              <EIcon type={`${styles.alarmDetailInfoIcon} myicon-personNameIcon`} />
               <span>
                 {val.face.username || '-'}
               </span>
               {this.getTag(LABEL_PERSON[val.face.label], val.face.label)}
-            </p>
+            </div>
           );
         }
         // if (val.plate && val.plate.label !== 'OTHER') {
         if (val.plate) {
           return (
-            <p className={styles.historyTextName}>
-              <span>车牌：</span>
+            <div className={`${styles.historyTextName} ${styles.alarmDetailInfo}}`}>
+              <EIcon type={`${styles.alarmDetailInfoIcon} myicon-vehicleIcon`} />
               <span>
                 {val.plate.licenseNo || '-'}
               </span>
               {this.getTag(LABEL_CAR[val.plate.label], val.plate.label)}
-            </p>
+            </div>
           );
         }
         return false;
@@ -1082,28 +1082,6 @@ class Preview extends PureComponent {
               </div>
               <div className={styles.historyListCard}>
                 {
-                  // list && list.length ? list.map(item => (
-                  //   <Card
-                  //     hoverable
-                  //     style={{ width: 220, margin: '4px 0' }}
-                  //     cover={<img alt="" src={`${urlPrefix}${item.imageCompress}`} onError={this.handleImageError} />}
-                  //     onClick={() => this.showImgDialog(item)}
-                  //     key={item.id}
-                  //     className={styles.historyListCard}
-                  //   >
-                  //     <div className={styles.historyTextBox}>
-                  //       <span>{item.algorithmCnName}</span>
-                  //       <span className={styles.historyTime}>{item.resTime}</span>
-                  //     </div>
-                  //     {this.getTypeContent(item)}
-
-                  //   </Card>
-                  // ))
-                  //   : (
-                  //     <div className={styles.nodataBox}>
-                  //       <img src={nodata} alt="" />
-                  //     </div>
-                  //   )
                   this.getHistoryDom(list)
                 }
               </div>
@@ -1129,23 +1107,26 @@ class Preview extends PureComponent {
                 <img src={`${imageURI}${imgDialogSrc}`} onError={this.handleImageError} alt="" />
                 <div className={styles.alarmModalName}>{modalShowInfo.algorithmCnName}</div>
               </div>
-              <p>
-                告警时间：
-                <span>{modalShowInfo.resTime}</span>
-              </p>
-              <p>
-                告警区域：
-                <span>{modalShowInfo.areaPath}</span>
-              </p>
-              <p>
-                告警位置：
-                <span>{modalShowInfo.deviceName}</span>
-              </p>
-              {this.getTypeContent(modalShowInfo)}
-              <p>
-                告警规则：
+              <div className={styles.alarmDetailInfoBox}>
+                <div className={styles.alarmDetailInfo}>
+                  <EIcon type={`${styles.alarmDetailInfoIcon} myicon-alarmAreaIcon`} />
+                  <span>{modalShowInfo.areaPath}</span>
+                </div>
+                <div className={styles.alarmDetailInfo}>
+                  <EIcon type={`${styles.alarmDetailInfoIcon} myicon-alarmTimeIcon`} />
+                  <span>{modalShowInfo.resTime}</span>
+                </div>
+                <div className={styles.alarmDetailInfo}>
+                  <EIcon type={`${styles.alarmDetailInfoIcon} myicon-locationIcon`} />
+                  <span>{modalShowInfo.deviceName}</span>
+                </div>
+
+                {this.getTypeContent(modalShowInfo)}
+                {/** <div  className={styles.alarmDetailInfo}>
+                <EIcon type="myicon-alarmDetailIcon" />
                 <span>{modalShowInfo.controlRule}</span>
-              </p>
+          </div> * */}
+              </div>
             </Modal>
             <Modal
               title="人流量统计"

@@ -415,11 +415,24 @@
 }
 .alarmDetailModal{
     .alarmListImg{
-        width: 480px;
+        width: 520px;
         position: relative;
         margin-bottom: 5px;
         img{
             width: 100%;
+        }
+    }
+    :global{
+        .ant-modal-header{
+            display: none;
+        }
+        .ant-modal-body{
+            padding:20px !important;
+        }
+        .ant-modal-close {
+            top: -20px !important;
+            right: -45px !important;
+            color: white;
         }
     }
     .historyTopnoImage{
@@ -458,6 +471,17 @@
             color:#1890FF ; 
             border-color: #91D5FF;
             background:#E6F7FF;
+        }
+    }
+    .alarmDetailInfoBox{
+        width: 100%;
+        .alarmDetailInfo{
+            display: inline-block;
+            width: 50%;
+            padding: 0 5px 5px;
+        }
+        .alarmDetailInfoIcon{
+            margin-right: 5px;
         }
     }
 }
