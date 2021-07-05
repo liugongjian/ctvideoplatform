@@ -311,6 +311,7 @@ const ImageModal = ({
       visible={visible}
       onCancel={closeModal}
       // className={styles.pswModal}
+      width="50vw"
       forceRender
       destroyOnClose
       style={{
