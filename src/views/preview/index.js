@@ -661,7 +661,7 @@ class Preview extends PureComponent {
         // if (val.face && val.face.label !== 'OTHER') {
         if (val.face) {
           return (
-            <div className={`${styles.historyTextName} ${styles.alarmDetailInfo}}`}>
+            <div className={`${styles.alarmDetailInfo} ${styles.historyTextName}`}>
               <EIcon type={`${styles.alarmDetailInfoIcon} myicon-personNameIcon`} />
               <span>
                 {val.face.username || '-'}
@@ -673,7 +673,7 @@ class Preview extends PureComponent {
         // if (val.plate && val.plate.label !== 'OTHER') {
         if (val.plate) {
           return (
-            <div className={`${styles.historyTextName} ${styles.alarmDetailInfo}}`}>
+            <div className={`${styles.historyTextName} ${styles.alarmDetailInfo}`}>
               <EIcon type={`${styles.alarmDetailInfoIcon} myicon-vehicleIcon`} />
               <span>
                 {val.plate.licenseNo || '-'}
