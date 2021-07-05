@@ -132,26 +132,27 @@ class AlarmList extends Component {
   )
 
   getTypeContent = (val) => {
-    if (val.face && val.face.label !== 'OTHER') {
+    if (val.face) {
       return (
-        <p className={styles.historyTextName}>
-          <span>姓名：</span>
+        <div className={`${styles.historyTextName} ${styles.alarmDetailInfo}`}>
+          <EIcon type={`${styles.alarmDetailInfoIcon} myicon-personNameIcon`} />
           <span>
             {val.face.username || '-'}
           </span>
           {this.getTag(LABEL_PERSON[val.face.label], val.face.label)}
-        </p>
+        </div>
       );
     }
-    if (val.plate && val.plate.label !== 'OTHER') {
+    // if (val.plate && val.plate.label !== 'OTHER') {
+    if (val.plate) {
       return (
-        <p className={styles.historyTextName}>
-          <span>车牌：</span>
+        <div className={`${styles.historyTextName} ${styles.alarmDetailInfo}`}>
+          <EIcon type={`${styles.alarmDetailInfoIcon} myicon-vehicleIcon`} />
           <span>
             {val.plate.licenseNo || '-'}
           </span>
           {this.getTag(LABEL_CAR[val.plate.label], val.plate.label)}
-        </p>
+        </div>
       );
     }
     return false;
@@ -225,23 +226,26 @@ class AlarmList extends Component {
             <img src={`${imageURI}${modalShowInfo.image}`} onError={this.handleImageError} alt="" />
             <div className={styles.alarmModalName}>{modalShowInfo.algorithmCnName}</div>
           </div>
-          <p>
-            告警时间：
-            <span>{modalShowInfo.resTime}</span>
-          </p>
-          <p>
-            告警区域：
-            <span>{modalShowInfo.areaPath}</span>
-          </p>
-          <p>
-            告警位置：
-            <span>{modalShowInfo.deviceName}</span>
-          </p>
-          {this.getTypeContent(modalShowInfo)}
-          <p>
-            告警规则：
-            <span>{modalShowInfo.controlRule}</span>
-          </p>
+          <div className={styles.alarmDetailInfoBox}>
+            <div className={styles.alarmDetailInfo}>
+              <EIcon type={`${styles.alarmDetailInfoIcon} myicon-alarmAreaIcon`} />
+              <span>{modalShowInfo.areaPath}</span>
+            </div>
+            <div className={styles.alarmDetailInfo}>
+              <EIcon type={`${styles.alarmDetailInfoIcon} myicon-alarmTimeIcon`} />
+              <span>{modalShowInfo.resTime}</span>
+            </div>
+            <div className={styles.alarmDetailInfo}>
+              <EIcon type={`${styles.alarmDetailInfoIcon} myicon-locationIcon`} />
+              <span>{modalShowInfo.deviceName}</span>
+            </div>
+
+            {this.getTypeContent(modalShowInfo)}
+            {/** <div  className={styles.alarmDetailInfo}>
+                <EIcon type="myicon-alarmDetailIcon" />
+                <span>{modalShowInfo.controlRule}</span>
+          </div> * */}
+          </div>
         </Modal>
       </div>
     );
