@@ -21,7 +21,9 @@ import {
 import {
   AlgoConfigs,
   ALARM_DETAIL_TYPE,
-  LABEL,
+  LABEL_PERSON,
+  LABEL_CAR,
+  Tag,
 } from './constants';
 // import { push } from 'react-router-redux';
 // import PropTypes from 'prop-types';
@@ -45,23 +47,6 @@ const getImgUrl = (name) => {
   }
   return require('Assets/algorithmIcons/default.png');
 };
-
-const Tag = ({
-  title,
-  // color = '#F5222D', borderColor = '#FFA39E', background = '#FFF1F0'
-  type
-}) => (
-  <span
-    className={`AlarmCardTag ${`AlarmCardTag-${type}`}`}
-    // style={{
-    //   color,
-    //   border: `1px solid ${borderColor}`,
-    //   background
-    // }}
-  >
-    {title}
-  </span>
-);
 
 const mapStateToProps = state => ({ alarms: state.alarms });
 const mapDispatchToProps = dispatch => bindActionCreators(
@@ -187,7 +172,8 @@ class AlarmCard extends Component {
         <ImageModal
           visible={imgDialogVisible}
           closeModal={this.closeImgDialog}
-          src={`${imageURI}${image}`}
+          // src={`${imageURI}${image}`}
+          data={data}
           handleImageError={e => this.handleImageError(e)}
         />
         <div className="AlarmCard-title">
@@ -243,8 +229,8 @@ class AlarmCard extends Component {
                         {plate?.licenseNo || '-'}
                         <React.Fragment>
                           {
-                            plate.label && LABEL[plate.label]
-                              ? (<Tag title={LABEL[plate.label]} type={plate.label} />)
+                            plate.label && LABEL_CAR[plate.label]
+                              ? (<Tag title={LABEL_CAR[plate.label]} type={plate.label} />)
                               : null}
                         </React.Fragment>
                       </div>
@@ -258,8 +244,8 @@ class AlarmCard extends Component {
                           {face?.username || '-'}
                           <React.Fragment>
                             {
-                        face?.label && LABEL[face.label]
-                          ? <Tag title={LABEL[face.label]} type={face.label} />
+                        face?.label && LABEL_PERSON[face.label]
+                          ? <Tag title={LABEL_PERSON[face.label]} type={face.label} />
                           : null}
                           </React.Fragment>
                         </div>

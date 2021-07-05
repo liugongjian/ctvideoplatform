@@ -9,8 +9,16 @@ import {
   Input,
   Button,
 } from 'antd';
+
+import EIcon from 'Components/Icon';
+import { imageURI } from 'Constants/Dictionary';
 import warnPic from 'Assets/role/warn.png';
-import { LicenseProvinces } from './constants';
+import {
+  LicenseProvinces,
+  LABEL_PERSON,
+  LABEL_CAR,
+  Tag,
+} from './constants';
 import styles from './index.less';
 
 const licenseNoReg = /^[0-9a-zA-Z]+$/;
@@ -232,27 +240,112 @@ const LicenseImportModal = Form.create()(LicenseImportModalComp);
 
 
 const ImageModal = ({
-  visible, closeModal, src, handleImageError
-}) => (
-  <Modal
-    className={styles.imgModal}
-    title="告警图片"
-    visible={visible}
-    footer={null}
-    onCancel={closeModal}
-    width="50vw"
-    style={{
-      maxWidth: '800px'
-    }}
-  >
-    <img
-      src={src}
-      onError={handleImageError}
-      width="100%"
-      alt="告警图片"
-    />
-  </Modal>
-);
+  visible, closeModal, handleImageError, data
+}) => {
+  const {
+    deviceName,
+    algorithmName, algorithmCnName, imageCompress, image,
+    controlRule, details, resTime, areaPath,
+    type, plate, face
+  } = data;
+  const getTypeContent = () => {
+    // if (face && face.label !== 'OTHER') {
+    if (face) {
+      return (
+        <div className={`${styles.alarmDetailInfo}`}>
+          <EIcon type={`${styles.alarmDetailInfoIcon} myicon-personNameIcon`} />
+          <span>
+            {face.username || '-'}
+          </span>
+          {/* {this.getTag(LABEL_PERSON[face.label], face.label)}
+           */}
+          <React.Fragment>
+            {
+              face?.label && LABEL_PERSON[face.label]
+                ? <Tag title={LABEL_PERSON[face.label]} type={face.label} />
+                : null}
+          </React.Fragment>
+        </div>
+      );
+    }
+    // if (plate && plate.label !== 'OTHER') {
+    if (plate) {
+      return (
+        <div className={`${styles.alarmDetailInfo}`}>
+          <EIcon type={`${styles.alarmDetailInfoIcon} myicon-vehicleIcon`} />
+          <span>
+            {plate.licenseNo || '-'}
+          </span>
+          <React.Fragment>
+            {
+              plate.label && LABEL_CAR[plate.label]
+                ? (<Tag title={LABEL_CAR[plate.label]} type={plate.label} />)
+                : null}
+          </React.Fragment>
+        </div>
+      );
+    }
+    return false;
+  };
+  return (
+    // <Modal
+    //   className={styles.imgModal}
+    //   title="告警图片"
+    //   visible={visible}
+    //   footer={null}
+    //   onCancel={closeModal}
+    //   width="50vw"
+    //   style={{
+    //     maxWidth: '800px'
+    //   }}
+    // >
+    //   <img
+    //     src={src}
+    //     onError={handleImageError}
+    //     width="100%"
+    //     alt="告警图片"
+    //   />
+    // </Modal>
+    <Modal
+      title="告警记录"
+      visible={visible}
+      onCancel={closeModal}
+      // className={styles.pswModal}
+      forceRender
+      destroyOnClose
+      style={{
+        maxWidth: '800px'
+      }}
+      footer={null}
+      wrapClassName={styles.alarmDetailModal}
+    >
+      <div className={styles.alarmListImg}>
+        <img src={`${imageURI}${image}`} onError={handleImageError} alt="" />
+        <div className={styles.alarmModalName}>{algorithmCnName}</div>
+      </div>
+      <div className={styles.alarmDetailInfoBox}>
+        <div className={styles.alarmDetailInfo}>
+          <EIcon type={`${styles.alarmDetailInfoIcon} myicon-alarmAreaIcon`} />
+          <span>{areaPath}</span>
+        </div>
+        <div className={styles.alarmDetailInfo}>
+          <EIcon type={`${styles.alarmDetailInfoIcon} myicon-alarmTimeIcon`} />
+          <span>{resTime}</span>
+        </div>
+        <div className={styles.alarmDetailInfo}>
+          <EIcon type={`${styles.alarmDetailInfoIcon} myicon-locationIcon`} />
+          <span>{deviceName}</span>
+        </div>
+
+        {getTypeContent()}
+        {/** <div  className={styles.alarmDetailInfo}>
+                <EIcon type="myicon-alarmDetailIcon" />
+                <span>{controlRule}</span>
+          </div> * */}
+      </div>
+    </Modal>
+  );
+};
 export {
   LicenseImportModal,
   ImageModal,

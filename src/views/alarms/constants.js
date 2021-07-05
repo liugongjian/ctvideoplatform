@@ -1,3 +1,5 @@
+import React, { Component } from 'react';
+
 const LicenseProvinces = [
   '京', '津', '冀', '晋', '蒙', '辽', '吉', '黑', '沪', '苏', '浙',
   '皖', '闽', '赣', '鲁', '豫', '鄂', '湘', '粤', '桂', '琼', '渝',
@@ -11,7 +13,10 @@ const ALARM_DETAIL_TYPE = {
   OTHER: '其他',
 };
 
-const LABEL = {
+const LABEL_PERSON = {
+  WHITE: '白名单', BLACK: '黑名单', OTHER: '陌生人'
+};
+const LABEL_CAR = {
   WHITE: '白名单', BLACK: '黑名单', OTHER: '其他'
 };
 
@@ -42,9 +47,24 @@ const AlgoConfigs = {
     alarmDetail: null,
   },
 };
+
+
+const Tag = ({
+  title,
+  type
+}) => (
+  <span
+    className={`AlarmCardTag ${`AlarmCardTag-${type}`}`}
+  >
+    {title}
+  </span>
+);
+
 export {
   LicenseProvinces,
   AlgoConfigs,
   ALARM_DETAIL_TYPE,
-  LABEL,
+  LABEL_PERSON,
+  LABEL_CAR,
+  Tag,
 };
