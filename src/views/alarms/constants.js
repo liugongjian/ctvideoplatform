@@ -29,8 +29,15 @@ const AlgoConfigs = {
   faceRecognize: {
     alarmDetail: null,
   },
+  faceRecognizeDS: {
+    alarmDetail: null,
+  },
   // 车辆布控
   plateRecognize: {
+    alarmDetail: null,
+    carImport: true,
+  },
+  carMonitorDS: {
     alarmDetail: null,
     carImport: true,
   },
@@ -38,8 +45,14 @@ const AlgoConfigs = {
   areaAlarm: {
     alarmDetail: '电子围栏内出现{type}',
   },
+  areaAlarmDS: {
+    alarmDetail: '电子围栏内出现{type}',
+  },
   // 安全帽识别
   safetyHat: {
+    alarmDetail: null,
+  },
+  helmetDetectDS: {
     alarmDetail: null,
   },
   // 口罩识别

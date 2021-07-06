@@ -156,19 +156,25 @@ class AlarmCard extends Component {
     }
     return (
       <div className={`AlarmCard ${disableOperators ? 'AlarmCard-DisableOperators' : ''}`}>
-        <LicenseImportModal
-          visible={importDialogVisible}
-          handleImport={this.handleImport}
-          closeModal={this.closeImportDialog}
-          isLicenseExist={isLicenseExist}
-          initailVal={plate}
-        />
-        <DeleteModal
-          visible={delVisible}
-          content="您确定要删除该条告警信息吗？"
-          handleOk={this.handleDelete}
-          closeModal={this.closeDelDialog}
-        />
+        {
+          disableOperators ? null : (
+            <React.Fragment>
+              <LicenseImportModal
+                visible={importDialogVisible}
+                handleImport={this.handleImport}
+                closeModal={this.closeImportDialog}
+                isLicenseExist={isLicenseExist}
+                initailVal={plate}
+              />
+              <DeleteModal
+                visible={delVisible}
+                content="您确定要删除该条告警信息吗？"
+                handleOk={this.handleDelete}
+                closeModal={this.closeDelDialog}
+              />
+            </React.Fragment>
+          )
+        }
         <ImageModal
           visible={imgDialogVisible}
           closeModal={this.closeImgDialog}
