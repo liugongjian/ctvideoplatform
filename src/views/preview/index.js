@@ -458,7 +458,7 @@ class Preview extends PureComponent {
               this.setState({
                 videoSquare: { ...videoSquare },
                 videoSrcOrder: '',
-                chooseSquare: {}
+                // chooseSquare: {}
               }, () => {
 
               });
@@ -518,12 +518,12 @@ class Preview extends PureComponent {
 
     clearVideo = (val) => {
       if (val) {
-        const { videoSquare, videoSrcOrder } = this.state;
-        videoSquare[`videoSrc${val}`] = {};
-        videoSquare[`videoSrc${val}`].showText = '无信号';
-        this.setState({
-          videoSquare
-        });
+        this.setState(preState => ({
+          videoSquare: {
+            ...preState.videoSquare,
+            [`videoSrc${val}`]: { showText: '无信号' }
+          }
+        }));
       } else {
         this.setState({
           videoSrc: '',
@@ -773,7 +773,11 @@ class Preview extends PureComponent {
               videoSquare.videoSrc1 = deviceInfo;
               this.setState({
                 videoSquare,
-                squareHistoryID: deviceInfo.id
+                squareHistoryID: deviceInfo.id,
+                chooseSquare: {
+                  ...deviceInfo,
+                  chooseNum: 1
+                }
               }, () => {
                 // this.getVideoSrc();
                 Object.keys(videoSquare).map(item => this.getVideoSrc(videoSquare[item].id, videoSquare[item].name, 'no', item));
@@ -809,6 +813,7 @@ class Preview extends PureComponent {
 
       getAddIconDom = (val) => {
         const { videoSquare, videoSrcOrder, chooseSquare } = this.state;
+        console.log('chooseSquare---------->', chooseSquare);
         if (videoSquare[`videoSrc${val}`] && videoSquare[`videoSrc${val}`].src) {
           const getCls = () => (chooseSquare.chooseNum === val ? 'hasline' : '');
           return (
@@ -852,7 +857,7 @@ class Preview extends PureComponent {
       squareClick = (info, val) => {
         this.setState({
           chooseSquare: { ...info, chooseNum: val },
-          videoSrcOrder: '',
+          videoSrcOrder: val,
           squareHistoryID: info.id
         }, () => {
           this.clearTimer();
