@@ -16,6 +16,7 @@ import {
 } from 'Redux/reducer/intelligentSearch';
 import AlarmCard from 'Views/alarms/alarmCard';
 import Pagination from 'Components/EPagination';
+import { getPlateColor } from '../utils';
 import styles from './index.less';
 
 const { Search } = Input;
@@ -33,6 +34,7 @@ class CarRes extends Component {
     this.state = {
       pageNo: 0,
       pageSize: 12,
+      curLicense: undefined,
       total: 0,
       listLoading: false,
       listData: [],
@@ -52,29 +54,36 @@ class CarRes extends Component {
     const {
       data: { detail }, searchPlateAlarms
     } = props;
+    const {
+      curLicense
+    } = this.state;
     const curPlate = detail && detail[0];
     const { platelicense } = curPlate || {};
     if (!platelicense) {
       return;
     }
-    this.setState({
-      listLoading: true,
-    });
-    const {
-      pageNo, pageSize
-    } = this.state;
-    searchPlateAlarms({
-      licenseNo: platelicense, pageNo, pageSize // '苏E99G06'
-    }).then((res) => {
+    const nextState = { listLoading: true };
+    if (!curLicense) {
+      nextState.curLicense = platelicense;
+    }
+
+    this.setState(nextState, () => {
       const {
-        list, pageNo, pageSize, pageTotal, recordsTotal
-      } = res;
-      this.setState({
-        listData: list,
-        listLoading: false,
-        pageSize,
-        pageNo,
-        total: recordsTotal,
+        pageNo, pageSize, curLicense
+      } = this.state;
+      searchPlateAlarms({
+        licenseNo: curLicense, pageNo, pageSize // '苏E99G06'
+      }).then((res) => {
+        const {
+          list, pageNo, pageSize, pageTotal, recordsTotal
+        } = res;
+        this.setState({
+          listData: list,
+          listLoading: false,
+          pageSize,
+          pageNo,
+          total: recordsTotal,
+        });
       });
     });
   }
@@ -88,66 +97,66 @@ class CarRes extends Component {
 
   showTotal = total => (<span className={styles.totalText}>{`总条数： ${total}`}</span>)
 
+  onPlateChoose = (platelicense) => {
+    this.setState({
+      curLicense: platelicense
+    }, () => this.getAlarms(this.props));
+  }
+
   render() {
     const {
       data: {
-        detail, picture
+        detail, picture, plateNum
       }
     } = this.props;
-    const curPlate = detail && detail[0];
+    // const curPlate = detail && detail[0];
+    // const {
+    //   platelicense, plate_type, confidence
+    // } = curPlate || {};
     const {
-      platelicense, plate_type, confidence
-    } = curPlate || {};
-    let color = 'blue';
-    switch (plate_type) {
-      case '蓝牌':
-        color = 'blue';
-        break;
-      case '黄牌':
-        color = 'yellow';
-        break;
-      case '绿牌':
-        color = 'green';
-        break;
-      case '黑牌':
-        color = 'black';
-        break;
-      case '白牌':
-        color = 'white';
-        break;
-      default:
-        break;
-    }
-    const {
-      listData, listLoading, pageSize, pageNo, total
+      listData, listLoading, pageSize, pageNo, total, curLicense
     } = this.state;
     return (
       <div className={styles.carRes}>
-        <div className={styles.plateWrapper}>
-          <div className={styles.imageWrapper}>
+        <div className={`${styles.plateWrapper} ${plateNum <= 1 ? styles['plateWrapper-bigImg'] : styles['plateWrapper-smallImg']}`}>
+          <div className={`${styles.imageWrapper}`}>
             <img src={picture} alt="图片" />
           </div>
-          <div className={styles.textWrapper}>
-            <div className={`${styles.plateShow} ${styles[`plateShow-${color}`]}`}>
-              {platelicense}
-            </div>
-            <div>
-              车牌号：
-              {platelicense}
-            </div>
-            <div>
-              车牌颜色：
-              {plate_type}
-            </div>
-            <div>
-              置信度：
-              {parseFloat(confidence * 100).toFixed(2)}
-              %
-            </div>
+          <div className={`${styles.textWrapper} `}>
+            {
+              detail.map(({ platelicense, plate_type, confidence }) => (
+                <div className={styles.plateInfo}>
+                  <div
+                    className={`${styles.plateShow} ${styles[`plateShow-${getPlateColor(plate_type)}`]} ${curLicense === platelicense ? styles['plateShow-selected'] : ''}`}
+                    onClick={() => this.onPlateChoose(platelicense)}
+                  >
+                    {platelicense}
+                  </div>
+                  <div>
+                    车牌号：
+                    {platelicense}
+                  </div>
+                  <div>
+                    车牌颜色：
+                    {plate_type}
+                  </div>
+                  <div>
+                    置信度：
+                    {parseFloat(confidence * 100).toFixed(2)}
+                    %
+                  </div>
+                </div>
+              ))
+            }
           </div>
+
         </div>
         <div className={styles.plateAlarms}>
-          <div className={styles.plateAlarmsTitle}>相关告警信息</div>
+          <div className={styles.plateAlarmsTitle}>
+            {curLicense}
+            {' '}
+            相关告警信息
+          </div>
           <Spin spinning={listLoading} className={styles['plateAlarms-listSpin']}>
             <div className={styles['plateAlarms-listWrapper']}>
               {

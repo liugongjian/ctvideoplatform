@@ -32,7 +32,32 @@ const getTypeFromUrl = (props) => {
   return undefined;
 };
 
+const getPlateColor = (plateType) => {
+  let color = 'blue';
+  switch (plateType) {
+    case '蓝牌':
+      color = 'blue';
+      break;
+    case '黄牌':
+      color = 'yellow';
+      break;
+    case '绿牌':
+      color = 'green';
+      break;
+    case '黑牌':
+      color = 'black';
+      break;
+    case '白牌':
+      color = 'white';
+      break;
+    default:
+      break;
+  }
+  return color;
+};
+
 export {
   dataURLtoFile,
-  getTypeFromUrl
+  getTypeFromUrl,
+  getPlateColor
 };

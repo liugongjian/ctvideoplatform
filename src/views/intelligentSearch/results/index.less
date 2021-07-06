@@ -10,7 +10,7 @@
             margin-bottom:10px;
         }
         &-listWrapper{
-            height: calc(100vh - 510px);
+            height: calc(100vh - 520px);
             width: 100%;
             overflow-y: auto;
             :global{
@@ -68,11 +68,29 @@
     }
     .plateWrapper{
         background-color: white;
-        display: flex;
+        // display: flex;
         height: 300px;
-        align-items: center;
+        // align-items: center;
+        display: block;
+        &-bigImg{
+            .imageWrapper{
+                width: 50%;
+            }
+            .textWrapper{
+                width: 50%;
+            }
+        }
+        &-smallImg{
+            .imageWrapper{
+                width: 40%;
+            }
+            .textWrapper{
+                width: 60%;
+            }
+        }
         .imageWrapper{
-            width: 50%;
+            float: left;
+            line-height: 300px;
             text-align: right;
             img{
                 max-width: calc(100% - 20px);
@@ -81,33 +99,49 @@
             }
         }
         .textWrapper{
-            width: 50%;
-            margin-left: 30px;
-            .plateShow{
-                width: 160px;
-                height: 38px;
-                line-height: 38px;
-                font-size: 20px;
-                text-align: center;
-                color:white;
-                margin-bottom: 15px;
-                &-blue{
-                    background: #4095E3;
+            height: 100%;
+            margin-left: 15px;
+            display:flex;
+            overflow-x:auto;
+            align-items: center;
+            .plateInfo{
+                width: 170px;
+                flex-shrink: 0;
+                margin-left: 15px;
+                &:last-of-type{
+                    margin-right: 15px;
                 }
-                &-green{
-                    background:#52C41A;
-                }
-                &-yellow{
-                    background: #F5A623;
-                }
-                &-black{
-                    background-color: black;
-                }
-                &-white{
-                    color:black;
-                    background-color: white;
-                    border: 1px solid #CCCCCC;
-                }
+            }
+        }
+        
+         .plateShow{
+            width: 160px;
+            height: 38px;
+            line-height: 38px;
+            font-size: 20px;
+            text-align: center;
+            color:white;
+            margin-bottom: 15px;
+            cursor: pointer;
+            &-selected{
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            }
+            &-blue{
+                background: #4095E3;
+            }
+            &-green{
+                background:#52C41A;
+            }
+            &-yellow{
+                background: #F5A623;
+            }
+            &-black{
+                background-color: black;
+            }
+            &-white{
+                color:black;
+                background-color: white;
+                border: 1px solid #CCCCCC;
             }
         }
     }
