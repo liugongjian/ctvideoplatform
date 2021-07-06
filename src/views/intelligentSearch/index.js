@@ -10,7 +10,7 @@ import {
   searchPlate, searchFace, saveImages, addImage, delImage
 } from 'Redux/reducer/intelligentSearch';
 import NODATA_IMG from 'Assets/nodata.png';
-import { trueDependencies } from 'mathjs';
+import { resizeDependencies, trueDependencies } from 'mathjs';
 import PeopleRes from './results/peopleRes';
 import CarRes from './results/carRes';
 import ImagePicker from './imagePicker';
@@ -195,7 +195,7 @@ class IntelligentSearch extends Component {
    const renderRes = (resData) => {
      switch (searchType) {
        case SEARCH_TYPES_PLATE:
-         return <CarRes data={resData} />;
+         return <CarRes key={JSON.stringify(resData)} data={resData} />;
        case SEARCH_TYPES_FACE:
          if (resData?.list?.length > 0) {
            return (
