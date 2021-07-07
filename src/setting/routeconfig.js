@@ -61,7 +61,8 @@ import AddAccount from 'Views/system/user/addUser';
 import Face from 'Views/gallery/face';
 import ImportFace from 'Views/gallery/face/import';
 import Alarms from 'Views/alarms';
-import IntelligentSearch from 'Views/intelligentSearch';
+import IntelligentSearchPlate from 'Views/intelligentSearch/plate';
+import IntelligentSearchFace from 'Views/intelligentSearch/face';
 import Tenants from 'Views/tenants';
 import TenantsDetail from 'Views/tenants/detail';
 import { pathPrefix } from 'Constants/Dictionary';
@@ -195,13 +196,13 @@ const menuRoutes = [
         path: '/face',
         exact: true,
         pageTitle: '人脸检索',
-        component: IntelligentSearch,
+        component: IntelligentSearchFace,
       },
       {
         path: '/plate',
         exact: true,
         pageTitle: '车牌识别',
-        component: IntelligentSearch,
+        component: IntelligentSearchPlate,
       }
     ]
   },
