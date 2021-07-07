@@ -14,7 +14,7 @@ import {
 import noImg from '@/assets/defaultFace.png';
 import { urlPrefix } from 'Constants/Dictionary';
 
-import styles from './index.less';
+import styles from './peopleRes.less';
 
 const FormItem = Form.Item;
 

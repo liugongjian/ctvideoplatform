@@ -17,7 +17,7 @@ import {
 import AlarmCard from 'Views/alarms/alarmCard';
 import Pagination from 'Components/EPagination';
 import { getPlateColor } from '../utils';
-import styles from './index.less';
+import styles from './carRes.less';
 
 const { Search } = Input;
 const { Option } = Select;

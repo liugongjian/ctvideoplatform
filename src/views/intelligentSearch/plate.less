@@ -1,0 +1,185 @@
+
+:global{
+    .ant-calendar-picker-container{
+        position: absolute;
+        z-index: 1050;
+        font-size: 14px;
+        white-space: nowrap;
+        background: #fff;
+        border-radius: 4px;
+        -webkit-box-shadow: 0 2px 8px rgba(0,0,0,.15);
+        box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    }
+}
+.span10px{
+    width: 10px;
+    display: inline-block;
+}
+.span20px{
+    width: 20px;
+    display: inline-block;
+}
+.cameraCascader{
+    position: absolute;
+    z-index: 1050;
+    font-size: 14px;
+    white-space: nowrap;
+    background: #fff;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 2px 8px rgba(107, 29, 29, 0.15) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15) !important;
+    :global{
+        .ant-cascader-menu{
+            height: 280px;
+        }
+        .ant-cascader-menu > .ant-cascader-menu-item{
+            width: 195px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+}
+.intelligentSearch{
+    min-width: 960px;
+    height: calc(100% - 10px);
+    position:relative;
+    // .steps-action{
+    //     position: absolute;
+    //     bottom: 10px;
+    //     width:100%;
+    //     text-align: center;
+    // }
+    .span10px{
+        width: 10px;
+        display: inline-block;
+    }
+    // &-filterWrapper{
+    //     overflow:hidden;
+    //     &-btnWrapper{
+    //         float: right;
+    //         display:inline-block;
+    //         vertical-align: middle;
+    //     }
+        
+    // }
+    // &-tabs{
+    //     padding:0;
+    //     height:100%;
+    // }
+    &-contentWrapper{
+        height: 100%;
+        display: flex;
+        .subTitle{
+            margin-bottom: 15px;
+            font-family: MicrosoftYaHei;
+            font-size: 16px;
+            color: #333333;
+        }
+        &-leftPart{
+            width: 370px;
+            height: 100%;
+            background-color: white;
+            padding: 15px 0;
+            border-right: 1px solid #eee;
+        }
+        &-rightPart{
+            position: relative;
+            width: calc(100% - 370px);
+            height: 100%;
+            padding: 15px;
+            .nodataWrapper{
+                width: 100%;
+                height: calc(100vh - 150px);
+                line-height: calc(100vh - 150px);
+                text-align: center;
+                // background-color: #f6f6f6;
+                img{
+                    height: 150px;
+                }
+            }
+        }
+    }
+    :global{
+        .anticon{
+            vertical-align: baseline;
+        }
+        // .ant-select-selection--single{
+        //     text-align: left;
+        //     min-width: 100px;
+        //     height: 32px;
+        //     line-height: 32px;
+        // }
+        .ant-select-selection--multiple{
+            padding-bottom: 0 !important;
+        }
+        .ant-pagination-options-quick-jumper input {
+            height: 32px;
+        }
+        // .ant-select-selection__rendered{
+        //     line-height: 32px;
+        // }
+        .ant-pagination-options-quick-jumper {
+            height: 32px;
+            line-height: 32px;
+        }
+    }
+    .MapTrack{
+        width: 100%;
+        height: calc(100% - 64px);
+    }
+}
+.searchWrapper{
+    height: 540px;
+    // width: calc(370px - 30px);
+   .searchContent{
+        max-height: calc(100vh - 130px);
+        overflow-y: overlay;
+        padding: 0 15px;
+   }
+    .filterWrapper{
+        text-align: center;
+        margin-bottom: 15px;
+        width: 330px;
+        .filterType{
+            margin-bottom: 15px;
+            .btnGroup{
+                width: 330px;
+                &-btn{
+                    width:110px;
+                    &:focus:not(:disabled),&:hover:not(:disabled),&-selected{
+                        color:#4095E3;
+                        border-color:#4095E3;
+                        z-index:10;
+                    }
+                }
+            }
+        }
+    }
+    .btnWrapper{
+        text-align: center;
+        margin-top: 15px;
+        .searchBtn{
+            width: 124px;
+            height: 36px;
+            &Text{
+                line-height: 36px;
+            }
+            &Icon{
+                float: right;
+                line-height: 36px;
+            }
+        }
+    }
+    .reUpload{
+        margin-top: 5px;
+        line-height: 22px;
+        &-text, &-icon{
+            display: inline-block;
+            vertical-align: middle;
+        }
+        &-icon{
+            margin-left: 3px;
+        }
+    }
+}

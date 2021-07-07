@@ -1,0 +1,93 @@
+.paginationWrapper{
+    position: fixed;
+    width: calc(100% - 460px);
+    bottom: 10px;
+}
+.faceList{
+    width: 100%;
+    height: calc(100vh - 140px);
+    overflow-y: auto;
+}
+.cardContanier{
+    border: 1px solid #E9E9E9;  
+    display:inline-block;
+    margin-bottom: 15px;
+    width: calc((100% - 15px * 4)/ 5);
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    &:not(:nth-of-type(5n+0)){
+        margin-right:15px;
+    }
+    @media screen and (min-width: 1801px) { 
+        .imgContainer{
+            height: 350px;
+            img{
+                height: 350px;
+            }
+        }
+    }
+    @media screen and (max-width: 1800px) { 
+        .imgContainer{
+            height: 225px;
+            img{
+                height: 225px;
+            }
+        }
+    }
+    .imgContainer{
+        text-align: center;
+        position: relative;
+        img{
+            width: 100%;
+            // object-fit: cover;
+        }
+        .faceTip{
+            position: absolute;
+            top:0;
+            right:0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            height: 30px;
+            font-size: 12px;
+            line-height: 30px;
+            width: 60px;
+            opacity: 0.85;
+            background: #FA8334;
+            color:white;
+            // background-image: linear-gradient(90deg, rgba(51,51,51,0.48) 57%, rgba(98,98,98,0.00) 100%);
+
+        }
+    }
+    .btn{
+        display: none;
+    }
+    .info{
+        height: 40px;
+        padding: 0 10px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #FAFAFA;
+        .name{
+            width: auto;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            padding: 7px 0;
+            font-size: 12px;
+            color: rgba(0,0,0,0.85);
+            margin-right: 5px;
+            font-family: PingFangSC-Regular;
+        }
+        .tagContainer{
+            :global{
+                .ant-tag{
+                    margin-right: 0px;
+                }
+            }
+        }
+        
+    }
+}

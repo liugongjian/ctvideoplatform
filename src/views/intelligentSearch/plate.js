@@ -7,19 +7,16 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import math from 'Utils/math';
 import {
-  searchPlate, searchFace, saveImages, addImage, delImage
+  searchPlate, saveImages, addImage, delImage
 } from 'Redux/reducer/intelligentSearch';
 import NODATA_IMG from 'Assets/nodata.png';
 import { resizeDependencies, trueDependencies } from 'mathjs';
 import PeopleRes from './results/peopleRes';
 import CarRes from './results/carRes';
 import ImagePicker from './imagePicker';
-import styles from './index.less';
+import styles from './plate.less';
 import {
-  SEARCH_TYPES,
-  SEARCH_TYPES_FACE,
   SEARCH_TYPES_PLATE,
-  SEARCH_FACE_ORIGIN_TYPE,
 } from './constants';
 import {
   getTypeFromUrl, dataURLtoFile
@@ -29,13 +26,11 @@ const { Search } = Input;
 const { Option } = Select;
 const ButtonGroup = Button.Group;
 const mapStateToProps = state => ({
-  faceImages: state.intelligentSearch.faceImages,
   plateImages: state.intelligentSearch.plateImages,
-  nextImageId: state.intelligentSearch.nextImageId,
   nextPlateImageId: state.intelligentSearch.nextPlateImageId,
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  { searchPlate, searchFace },
+  { searchPlate },
   dispatch
 );
 
@@ -58,12 +53,10 @@ class IntelligentSearch extends Component {
   }
 
  handleSearch = () => {
-   const searchType = getTypeFromUrl(this.props);
-   console.log('menuClick-searchType', searchType);
    const {
      curImage
    } = this.state;
-   const { faceImages, plateImages } = this.props;
+   const { plateImages } = this.props;
    if (!curImage) {
      message.warn('请上传图片!');
      return;
@@ -72,69 +65,18 @@ class IntelligentSearch extends Component {
    const formData = new FormData();
    //  const file = dataURLtoFile(afterCrop, 'test.jpeg');
    // curImage的数据可能没更新，去images里查找对应id
-   const images = searchType === SEARCH_TYPES_PLATE ? plateImages : faceImages;
-   const chosenImage = images.find(item => item.id === curImage.id);
+   const chosenImage = plateImages.find(item => item.id === curImage.id);
    const file = chosenImage.file || dataURLtoFile(chosenImage.base64, 'cropped.jpeg');
    formData.append('file', file, 'cropped.jpeg');
-   switch (searchType) {
-     case SEARCH_TYPES_PLATE:
-       this.handleSearchApi(formData, this.props.searchPlate);
-       break;
-     case SEARCH_TYPES_FACE:
-     {
-       const {
-         form: { validateFields }
-       } = this.props;
-       validateFields((err, values) => {
-         if (!err) {
-           console.log('Received values of form: ', values);
-           const { name, label, confirm } = values;
-           const { current, pageSize } = this.state;
-           if (name) formData.append('name', name);
-           if (label || label === 0) formData.append('label', label);
-           if (typeof confirm === 'number') {
-             const threshold = (100 - confirm) / 100;
-             formData.append('threshold', threshold);
-           }
-           formData.append('pageNo', current - 1);
-           formData.append('pageSize', pageSize);
-           this.handleSearchApi(formData, this.props.searchFace);
-         }
-       });
-       break;
-     }
-     default:
-       break;
-   }
+   this.handleSearchApi(formData, this.props.searchPlate);
  }
 
  handleSearchApi = (data, searchFunc) => {
-   const searchType = getTypeFromUrl(this.props);
    searchFunc(data).then((res) => {
      const nextState = {
        resData: res,
        resLoading: false,
      };
-     if (searchType === SEARCH_TYPES_FACE) {
-       const {
-         pageNo,
-         pageSize,
-         pageTotal,
-         recordsTotal,
-         list,
-       } = res;
-       let current = pageNo + 1;
-       const maxPage = recordsTotal === 0
-         ? 1 : math.ceil(math.divide(recordsTotal, pageSize));
-       if (!list?.length && current > maxPage) {
-         current = maxPage;
-         this.onPageChange(current, pageSize);
-         return;
-       }
-       nextState.pageSize = pageSize;
-       nextState.total = recordsTotal;
-       nextState.current = pageNo + 1;
-     }
      this.setState(nextState);
      console.log('res', res);
    }).catch((err) => {
@@ -191,96 +133,62 @@ class IntelligentSearch extends Component {
    //    100: '0',
    //  };
 
-   const searchType = getTypeFromUrl(this.props);
-   const renderRes = (resData) => {
-     switch (searchType) {
-       case SEARCH_TYPES_PLATE:
-         return <CarRes key={JSON.stringify(resData)} data={resData} />;
-       case SEARCH_TYPES_FACE:
-         if (resData?.list?.length > 0) {
-           return (
-             <PeopleRes
-               data={resData}
-               pageSize={pageSize}
-               total={total}
-               current={current}
-               handlePageChange={this.onPageChange}
-             />
-           );
-         }
-         return (
-           <div className={styles.nodataWrapper}>
-             <img src={NODATA_IMG} alt="" />
-           </div>
-         );
-       default:
-         return null;
-     }
-   };
+   const renderRes = resData => <CarRes key={JSON.stringify(resData)} data={resData} />;
 
-   const renderForm = () => {
-     switch (searchType) {
-       case SEARCH_TYPES_FACE:
-         return (
-           <React.Fragment>
-             <div className={styles.filterType}>
-               <ButtonGroup size="large" className={styles.btnGroup} onClick={this.switchFaceOrigin}>
-                 {
-                   SEARCH_FACE_ORIGIN_TYPE.map((item, idx) => (
-                     <Button
-                       key={idx}
-                       value={idx}
-                       className={`${styles['btnGroup-btn']} ${idx === filterType - 0 ? styles['btnGroup-btn-selected'] : ''}`}
-                       disabled={idx > 0}
-                     >
-                       {item}
-                     </Button>
-                   ))
-                 }
-               </ButtonGroup>
-             </div>
-             <Form {...formItemLayout}>
-               <Form.Item label="姓名">
-                 {getFieldDecorator('name', {
-                   rules: [
-                   ],
-                 })(<Input />)}
-               </Form.Item>
-               <Form.Item label="布控标签">
-                 {getFieldDecorator('label', {
-                   rules: [
-                   ],
-                 })(
-                   <Select>
-                     <Option value="WHITE">白名单</Option>
-                     <Option value="BLACK">黑名单</Option>
-                     <Option value="OTHER">其他</Option>
-                   </Select>
-                 )}
-               </Form.Item>
-               <Form.Item label="置信度">
-                 {getFieldDecorator('confirm', {
-                   initialValue: 70,
-                   rules: [
-                   ],
-                 })(
-                   <Slider
-                     step={1}
-                     tipFormatter={value => (`${100 - value}%`)}
-                     reverse
-                   //  tooltipVisible
-                   />
-                 )}
-               </Form.Item>
-             </Form>
-           </React.Fragment>
-         );
-       case SEARCH_TYPES_PLATE:
-       default:
-         return null;
-     }
-   };
-
+   const renderForm = () =>
+   //    <React.Fragment>
+   //      <div className={styles.filterType}>
+   //        <ButtonGroup size="large" className={styles.btnGroup} onClick={this.switchFaceOrigin}>
+   //          {
+   //            SEARCH_FACE_ORIGIN_TYPE.map((item, idx) => (
+   //              <Button
+   //                key={idx}
+   //                value={idx}
+   //                className={`${styles['btnGroup-btn']} ${idx === filterType - 0 ? styles['btnGroup-btn-selected'] : ''}`}
+   //                disabled={idx > 0}
+   //              >
+   //                {item}
+   //              </Button>
+   //            ))
+   //          }
+   //        </ButtonGroup>
+   //      </div>
+   //      <Form {...formItemLayout}>
+   //        <Form.Item label="姓名">
+   //          {getFieldDecorator('name', {
+   //            rules: [
+   //            ],
+   //          })(<Input />)}
+   //        </Form.Item>
+   //        <Form.Item label="布控标签">
+   //          {getFieldDecorator('label', {
+   //            rules: [
+   //            ],
+   //          })(
+   //            <Select>
+   //              <Option value="WHITE">白名单</Option>
+   //              <Option value="BLACK">黑名单</Option>
+   //              <Option value="OTHER">其他</Option>
+   //            </Select>
+   //          )}
+   //        </Form.Item>
+   //        <Form.Item label="置信度">
+   //          {getFieldDecorator('confirm', {
+   //            initialValue: 70,
+   //            rules: [
+   //            ],
+   //          })(
+   //            <Slider
+   //              step={1}
+   //              tipFormatter={value => (`${100 - value}%`)}
+   //              reverse
+   //            //  tooltipVisible
+   //            />
+   //          )}
+   //        </Form.Item>
+   //      </Form>
+   //    </React.Fragment>
+     null;
    return (
      <div className={styles.intelligentSearch}>
        <div className={styles['intelligentSearch-contentWrapper']}>
@@ -289,7 +197,7 @@ class IntelligentSearch extends Component {
            <div className={styles.searchWrapper}>
              <div className={styles.searchContent}>
                <ImagePicker
-                 imageType={searchType}
+                 imageType={SEARCH_TYPES_PLATE}
                  curImage={curImage}
                  onImageChange={this.onImageChange}
                />
@@ -308,9 +216,7 @@ class IntelligentSearch extends Component {
                </Dropdown> */}
                <Button type="primary" className={styles.searchBtn} onClick={this.handleSearch}>
                  <span className={styles.searchBtnText}>
-                   {
-                     searchType === SEARCH_TYPES_PLATE ? '识别' : '检索'
-                   }
+                   识别
                  </span>
                </Button>
                {
