@@ -224,6 +224,7 @@ class Preview extends PureComponent {
       this.clearTimer();
       const { videoSrcOrder, showSquaredDom } = this.state;
       if (showSquaredDom === 1) {
+        console.log('showSquaredDom1', val);
         if (val.online) {
           this.setState({
             selectAreaKeys: [val.id],
@@ -231,7 +232,9 @@ class Preview extends PureComponent {
             tempTotal: -1,
             historyID: val.id
           }, () => {
-            window.sessionStorage.setItem('deviceInfo', JSON.stringify(val));
+            if (Object.keys(val).length > 0) {
+              window.sessionStorage.setItem('deviceInfo', JSON.stringify(val));
+            }
             this.getHistory();
             this.getCurrentDay();
             this.getVideoSrc(val.id, val.name);
@@ -247,7 +250,9 @@ class Preview extends PureComponent {
             tempTotal: -1,
             appliedTraffic: false, // fix 切换到离线设备时仍有上个设备人流信息
           }, () => {
-            window.sessionStorage.setItem('deviceInfo', JSON.stringify(val));
+            if (Object.keys(val).length > 0) {
+              window.sessionStorage.setItem('deviceInfo', JSON.stringify(val));
+            }
             this.getHistory();
             this.getCurrentDay();
             this.getVideoSrc(val.id, val.name);
@@ -292,13 +297,11 @@ class Preview extends PureComponent {
         this.setState({
           appliedTraffic: applied,
           pointsInfo: res
-        }, () => {
-          this.setIntervalTimer();
         });
       });
     }
 
-    getHistory=() => {
+    getHistory = () => {
       const { historyID, showSquaredDom } = this.state;
       const { getHistoryListTopTen } = this.props;
 
@@ -308,22 +311,24 @@ class Preview extends PureComponent {
           pageNo: 0,
           deviceId: historyID
         };
-        getHistoryListTopTen(param).then((res) => {
-          const { tempTotal } = this.state;
-          if (tempTotal === -1) {
-            this.setState({
-              historyListData: res,
-              tempTotal: res.recordsTotal
-            });
-          } else if (res.recordsTotal > tempTotal) {
-            this.setState({
-              historyListData: res,
-              tempTotal: res.recordsTotal
-            });
-          } else {
-            // this.timer = window.setInterval(getTopTenList, 5000);
-          }
-        });
+        if (historyID) {
+          getHistoryListTopTen(param).then((res) => {
+            const { tempTotal } = this.state;
+            if (tempTotal === -1) {
+              this.setState({
+                historyListData: res,
+                tempTotal: res.recordsTotal
+              });
+            } else if (res.recordsTotal > tempTotal) {
+              this.setState({
+                historyListData: res,
+                tempTotal: res.recordsTotal
+              });
+            } else {
+              // this.timer = window.setInterval(getTopTenList, 5000);
+            }
+          });
+        }
       } else if (showSquaredDom === 4) {
         const { chooseSquare, squareHistoryID } = this.state;
         const param = {
@@ -521,9 +526,15 @@ class Preview extends PureComponent {
         this.setState(preState => ({
           videoSquare: {
             ...preState.videoSquare,
-            [`videoSrc${val}`]: { showText: '无信号' }
+            [`videoSrc${val}`]: {}
+          },
+          historyListData: {}
+        }), () => {
+          this.clearTimer();
+          if (val === 1) {
+            window.sessionStorage.removeItem('deviceInfo');
           }
-        }));
+        });
       } else {
         this.setState({
           videoSrc: '',
@@ -531,6 +542,7 @@ class Preview extends PureComponent {
           showText: '无信号',
           historyID: ''
         }, () => {
+          this.clearTimer();
           window.sessionStorage.removeItem('deviceInfo');
         });
       }
@@ -763,8 +775,10 @@ class Preview extends PureComponent {
           if (showSquaredDom === 1) {
             const { videoSquare } = this.state;
             console.log('videoSquare.videoSrc1', videoSquare.videoSrc1);
-            if (Object.keys(videoSquare.videoSrc1).length !== 0) {
+            if (videoSquare.videoSrc1 && Object.keys(videoSquare.videoSrc1).length !== 0) {
               this.doubleClickHandle(undefined, videoSquare.videoSrc1);
+            } else {
+              this.doubleClickHandle(undefined, {});
             }
           } else {
             const deviceInfo = JSON.parse(window.sessionStorage.getItem('deviceInfo')) || {};
@@ -815,9 +829,9 @@ class Preview extends PureComponent {
         const { videoSquare, videoSrcOrder, chooseSquare } = this.state;
         console.log('chooseSquare---------->', chooseSquare);
         if (videoSquare[`videoSrc${val}`] && videoSquare[`videoSrc${val}`].src) {
-          const getCls = () => (chooseSquare.chooseNum === val ? 'hasline' : '');
+          const getCls = () => (chooseSquare.chooseNum === val ? `${styles.iconBtnWithFocus}` : '');
           return (
-            <div className={styles.allStatusBox}>
+            <div className={`${styles.allStatusBox} ${getCls()}`}>
               <div className={styles.videoHandle}>
                 <EIcon type={`${styles.videoMonitoring} myicon-monitoring`} />
                 <div>
