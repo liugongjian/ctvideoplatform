@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   Input, Select, Upload, Icon, message, Button, Radio, Dropdown, Menu,
-  Spin, Form, Slider
+  Spin, Form, Slider, DatePicker
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -24,6 +24,8 @@ import {
 import {
   getTypeFromUrl, dataURLtoFile
 } from './utils';
+
+const { RangePicker } = DatePicker;
 
 const { Search } = Input;
 const { Option } = Select;
@@ -192,6 +194,116 @@ class IntelligentSearch extends Component {
      );
    };
 
+   const renderFilters = (filterType) => {
+     switch (filterType) {
+       case 0:
+         return (
+           <React.Fragment>
+             <Form.Item label="姓名">
+               {getFieldDecorator('name', {
+                 rules: [
+                 ],
+               })(<Input />)}
+             </Form.Item>
+             <Form.Item label="布控标签">
+               {getFieldDecorator('label', {
+                 rules: [
+                 ],
+               })(
+                 <Select>
+                   <Option value="WHITE">白名单</Option>
+                   <Option value="BLACK">黑名单</Option>
+                   <Option value="OTHER">其他</Option>
+                 </Select>
+               )}
+             </Form.Item>
+             <Form.Item label="置信度">
+               {getFieldDecorator('confirm', {
+                 initialValue: 70,
+                 rules: [
+                 ],
+               })(
+                 <Slider
+                   step={1}
+                   tipFormatter={value => (`${100 - value}%`)}
+                   reverse
+                   //  tooltipVisible
+                 />
+               )}
+             </Form.Item>
+           </React.Fragment>
+         );
+       case 1:
+         return (
+           <React.Fragment>
+             <Form.Item label="姓名">
+               {getFieldDecorator('name', {
+                 rules: [
+                 ],
+               })(<Input />)}
+             </Form.Item>
+             <Form.Item label="设备">
+               {getFieldDecorator('device', {
+                 rules: [
+                 ],
+               })(
+                 <Select>
+                   <Option value="1">设备1</Option>
+                   <Option value="2">设备2</Option>
+                   <Option value="3">设备3</Option>
+                 </Select>
+               )}
+             </Form.Item>
+             <Form.Item label="时间范围">
+               {getFieldDecorator('timeRange', {
+                 rules: [
+                 ],
+               })(
+                 <RangePicker
+                   style={{ width: '100%' }}
+                   showTime={{ format: 'HH:mm' }}
+                   format="MM-DD HH:mm"
+                   placeholder={['开始时间', '结束时间']}
+                   //  onChange={this.onTimeChange}
+                   //  value={[startTime, endTime]}
+                   //  onOk={this.onTimeChange}
+                   allowClear={false}
+                 />
+               )}
+             </Form.Item>
+             <Form.Item label="布控标签">
+               {getFieldDecorator('label', {
+                 rules: [
+                 ],
+               })(
+                 <Select>
+                   <Option value="WHITE">白名单</Option>
+                   <Option value="BLACK">黑名单</Option>
+                   <Option value="OTHER">其他</Option>
+                 </Select>
+               )}
+             </Form.Item>
+             <Form.Item label="置信度">
+               {getFieldDecorator('confirm', {
+                 initialValue: 70,
+                 rules: [
+                 ],
+               })(
+                 <Slider
+                   step={1}
+                   tipFormatter={value => (`${100 - value}%`)}
+                   reverse
+                   //  tooltipVisible
+                 />
+               )}
+             </Form.Item>
+           </React.Fragment>
+         );
+       default:
+         break;
+     }
+   };
+
    const renderForm = () => (
      <React.Fragment>
        <div className={styles.filterType}>
@@ -202,7 +314,7 @@ class IntelligentSearch extends Component {
                  key={idx}
                  value={idx}
                  className={`${styles['btnGroup-btn']} ${idx === filterType - 0 ? styles['btnGroup-btn-selected'] : ''}`}
-                 disabled={idx > 0}
+                 disabled={idx > 1}
                >
                  {item}
                </Button>
@@ -211,38 +323,9 @@ class IntelligentSearch extends Component {
          </ButtonGroup>
        </div>
        <Form {...formItemLayout}>
-         <Form.Item label="姓名">
-           {getFieldDecorator('name', {
-             rules: [
-             ],
-           })(<Input />)}
-         </Form.Item>
-         <Form.Item label="布控标签">
-           {getFieldDecorator('label', {
-             rules: [
-             ],
-           })(
-             <Select>
-               <Option value="WHITE">白名单</Option>
-               <Option value="BLACK">黑名单</Option>
-               <Option value="OTHER">其他</Option>
-             </Select>
-           )}
-         </Form.Item>
-         <Form.Item label="置信度">
-           {getFieldDecorator('confirm', {
-             initialValue: 70,
-             rules: [
-             ],
-           })(
-             <Slider
-               step={1}
-               tipFormatter={value => (`${100 - value}%`)}
-               reverse
-               //  tooltipVisible
-             />
-           )}
-         </Form.Item>
+         {
+           renderFilters(filterType - 0)
+         }
        </Form>
      </React.Fragment>
    );
