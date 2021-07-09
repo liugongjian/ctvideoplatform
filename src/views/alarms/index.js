@@ -26,6 +26,7 @@ import NODATA_IMG from 'Assets/nodata.png';
 import Pagination from 'Components/EPagination';
 import AlarmCard from './alarmCard';
 import styles from './index.less';
+import { AlgoConfigs } from './constants';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -42,7 +43,7 @@ const initialVals = () => ({
   startTime: moment().subtract('days', 7),
   endTime: moment(),
   deviceVal: [],
-  algoVal: [],
+  algoVal: undefined, // 算法改成单选
   pageSize: 12,
   current: 1,
 });
@@ -111,7 +112,7 @@ class Alarms extends Component {
     const params = {
       pageNo: current - 1,
       pageSize,
-      algorithmIdList: algoVal,
+      algorithmIdList: algoVal ? [algoVal] : undefined, // 算法改成单选
       startTime: startTime.startOf('minute').format(timeFormat),
       endTime: endTime.startOf('minute').format(timeFormat),
     };
@@ -233,6 +234,40 @@ class Alarms extends Component {
       }, this.getAlarms);
     }
 
+    onMoreFilterChange = (key, val) => {
+      this.setState({ [key]: val });
+    }
+
+    renderMoreFilter = moreFilter => (
+      <React.Fragment>
+        {
+          moreFilter.map(({
+            key, name, selection, mutiple
+          }) => {
+            const options = {
+              placeholder: name,
+              onChange: val => this.onMoreFilterChange(key, val),
+              style: { width: '160px' }
+            };
+            if (mutiple) {
+              options.mode = 'multiple';
+              options.maxTagCount = 1;
+              options.maxTagTextLength = 2;
+            }
+            return (
+              <Select {...options}>
+                {
+                  selection.map(item => (
+                    <Option value={item.value}>{item.label}</Option>
+                  ))
+                }
+              </Select>
+            );
+          })
+        }
+      </React.Fragment>
+    )
+
     render() {
       const {
         listData, listLoading,
@@ -241,6 +276,9 @@ class Alarms extends Component {
         total, current, pageSize,
         startTime, endTime, algoVal, deviceVal
       } = this.state;
+
+      const chosenAlgoEnName = algoList?.find(item => item.id === algoVal)?.name;
+
       return (
         <div className={styles.alarms}>
           <div className={styles['alarms-filterWrapper']}>
@@ -256,13 +294,13 @@ class Alarms extends Component {
               />
               <span className={styles.span10px} />
               <Select
-                style={{ width: '180px' }}
-                mode="multiple"
+                style={{ width: '150px' }}
+                // mode="multiple" // 算法改成单选
                 placeholder="请选择告警类型"
                 value={algoVal}
                 onChange={this.onAlgoChange}
-                maxTagCount={1}
-                maxTagTextLength={2}
+                // maxTagCount={1} // 算法改成单选
+                // maxTagTextLength={2} // 算法改成单选
               >
                 {
                   algoList?.map(item => (<Option value={item.id}>{item.cnName}</Option>))
@@ -278,6 +316,12 @@ class Alarms extends Component {
                 value={deviceVal}
                 onChange={this.onDeviceChange}
               />
+              <span className={styles.span10px} />
+              {
+                AlgoConfigs[chosenAlgoEnName]?.moreFilter
+                  ? this.renderMoreFilter(AlgoConfigs[chosenAlgoEnName]?.moreFilter)
+                  : null
+              }
               <span className={styles['alarms-filterWrapper-btnWrapper']}>
                 <Button type="primary" onClick={this.onSearch}>搜索</Button>
                 <span className={styles.span10px} />

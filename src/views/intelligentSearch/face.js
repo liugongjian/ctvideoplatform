@@ -145,8 +145,6 @@ class IntelligentSearch extends Component {
    }, this.handleSearch);
  }
 
- onReUpload = () => { this.setState({ imageUrl: undefined, resData: undefined }); }
-
  onImageChange = (curImage) => {
    // 选择图片
    this.setState({
@@ -156,7 +154,7 @@ class IntelligentSearch extends Component {
 
  render() {
    const {
-     imageUrl, resData, resLoading, curImage, filterType, total, current, pageSize
+     resData, resLoading, curImage, filterType, total, current, pageSize
    } = this.state;
    const { getFieldDecorator } = this.props.form;
    const formItemLayout = {
@@ -257,6 +255,7 @@ class IntelligentSearch extends Component {
            <div className={styles.searchWrapper}>
              <div className={styles.searchContent}>
                <ImagePicker
+                 key={SEARCH_TYPES_FACE}
                  imageType={SEARCH_TYPES_FACE}
                  curImage={curImage}
                  onImageChange={this.onImageChange}
@@ -279,16 +278,6 @@ class IntelligentSearch extends Component {
                    检索
                  </span>
                </Button>
-               {
-                 imageUrl ? (
-                   <div className={styles.reUpload}>
-                     <a href="javascript:void(0);" onClick={this.onReUpload}>
-                       <span className={styles['reUpload-text']}>重新上传</span>
-                       <Icon type="undo" className={styles['reUpload-icon']} />
-                     </a>
-                   </div>
-                 ) : null
-               }
              </div>
            </div>
          </div>
