@@ -169,7 +169,8 @@ class FlvPlayer extends PureComponent {
       const getCls = () => (cls === 'hasline' ? styles.hasLine : '');
       const ifFour = () => (ifMask ? `${styles.videoFourWrap}` : '');
       return (
-        <div className={`${styles.videoWrap} ${getCls()} ${ifFour()}`}>
+        // <div className={`${styles.videoWrap} ${getCls()} ${ifFour()}`}>
+        <div className={`${styles.videoWrap}`}>
           <video className={`${styles.videojs} video-js `} id={videoId} ref={node => this.videoNode = node} controls />
           <div className={styles.canvasLine} style={canvasLineStyle}>
             <canvas width={canvasWidth} height={canvasHeight} id="pointToPoint" />

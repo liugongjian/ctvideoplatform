@@ -168,7 +168,7 @@ class AlarmList extends Component {
       if (item.algorithmName.indexOf('DS') > -1) {
         const newType = item.algorithmName.substring(0, item.algorithmName.length - 2);
         if (iconarr.indexOf(newType) > -1) {
-          return `myicon-algo-${iconmap[newType]}`;
+          return `myicon-algo-${iconmap[newType]} ${styles.algorithmIcon}`;
         }
         return `myicon-algo-${newType} ${styles.algorithmIcon}`;
       }
