@@ -68,7 +68,6 @@ class Face extends Component {
         total, current, pageSize
       } = this.props;
       const { data } = this.props;
-      console.log('data', data)
       return (
         <div className={styles.faceContent}>
           <div className={styles.faceList}>
@@ -112,7 +111,7 @@ class Face extends Component {
               // pageSize={pageSize}
               onChange={this.props.handlePageChange}
               onShowSizeChange={this.props.handlePageChange}
-              pageSizeOptions={['10', '20', '30', '40']}
+              pageSizeOptions={['15', '30', '45']}
               pageSize={pageSize}
               hideOnSinglePage={false}
               showSizeChanger

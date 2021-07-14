@@ -52,7 +52,7 @@ class IntelligentSearch extends Component {
       resData: undefined,
       resLoading: false,
       filterType: 0,
-      pageSize: 10,
+      pageSize: 15,
       total: 0,
       current: 1,
       deviceTree: [],
@@ -130,17 +130,16 @@ class IntelligentSearch extends Component {
      curImage
    } = this.state;
    const { faceImages } = this.props;
-   if (!curImage) {
-     message.warn('请上传图片!');
-     return;
-   }
-   this.setState({ resLoading: true });
+
+
    const formData = new FormData();
    //  const file = dataURLtoFile(afterCrop, 'test.jpeg');
    // curImage的数据可能没更新，去images里查找对应id
-   const chosenImage = faceImages.find(item => item.id === curImage.id);
-   const file = chosenImage.file || dataURLtoFile(chosenImage.base64, 'cropped.jpeg');
-   formData.append('file', file, 'cropped.jpeg');
+   if (curImage) {
+     const chosenImage = faceImages.find(item => item.id === curImage.id);
+     const file = chosenImage.file || dataURLtoFile(chosenImage.base64, 'cropped.jpeg');
+     formData.append('file', file, 'cropped.jpeg');
+   }
    const {
      form: { validateFields }
    } = this.props;
@@ -148,6 +147,10 @@ class IntelligentSearch extends Component {
      if (!err) {
        console.log('Received values of form: ', values);
        const { name, label, confirm } = values;
+       if (!curImage && !name) {
+         message.warn('请上传图片或输入姓名!');
+         return;
+       }
        const { current, pageSize } = this.state;
        if (name) formData.append('name', name);
        if (label || label === 0) formData.append('label', label);
@@ -157,6 +160,7 @@ class IntelligentSearch extends Component {
        }
        formData.append('pageNo', current - 1);
        formData.append('pageSize', pageSize);
+       this.setState({ resLoading: true });
        this.handleSearchApi(formData, this.props.searchFace);
      }
    });
@@ -338,18 +342,6 @@ class IntelligentSearch extends Component {
                    //  onOk={this.onTimeChange}
                    allowClear={false}
                  />
-               )}
-             </Form.Item>
-             <Form.Item label="布控标签">
-               {getFieldDecorator('label', {
-                 rules: [
-                 ],
-               })(
-                 <Select>
-                   <Option value="WHITE">白名单</Option>
-                   <Option value="BLACK">黑名单</Option>
-                   <Option value="OTHER">其他</Option>
-                 </Select>
                )}
              </Form.Item>
              <Form.Item label="置信度">
