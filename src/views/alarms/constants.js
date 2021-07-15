@@ -20,47 +20,95 @@ const LABEL_CAR = {
   WHITE: '白名单', BLACK: '黑名单', OTHER: '其他'
 };
 
-const AlgoConfigs = {
-  // 移动侦测
-  carPersonCheck: {
-    alarmDetail: '视频区域内出现{type}',
+
+const LABEL_VALUES = [
+  { label: '白名单', value: 'WHITE' },
+  { label: '黑名单', value: 'BLACK' },
+  { label: '其他', value: 'OTHER' },
+];
+
+const ALARM_TARGET_VALUES = [
+  { label: '人员', value: 0 },
+  { label: '机动车', value: 1 },
+  { label: '非机动车', value: 2 },
+];
+
+// 更多筛选项(全为Select)
+const MORE_FILTER = {
+  FACE_LIBRARY: {
+    key: 'labelFace',
+    name: '人脸底库',
+    selection: LABEL_VALUES,
+    mutiple: false,
   },
-  // 人员布控
-  faceRecognize: {
-    alarmDetail: null,
+  PLATE_LIBRARY: {
+    key: 'labelPlate',
+    name: '车牌底库',
+    selection: LABEL_VALUES,
+    mutiple: false,
   },
-  faceRecognizeDS: {
-    alarmDetail: null,
-  },
-  // 车辆布控
-  plateRecognize: {
-    alarmDetail: null,
-    carImport: true,
-  },
-  carMonitorDS: {
-    alarmDetail: null,
-    carImport: true,
-  },
-  // 电子围栏
-  areaAlarm: {
-    alarmDetail: '电子围栏内出现{type}',
-  },
-  areaAlarmDS: {
-    alarmDetail: '电子围栏内出现{type}',
-  },
-  // 安全帽识别
-  safetyHat: {
-    alarmDetail: null,
-  },
-  helmetDetectDS: {
-    alarmDetail: null,
-  },
-  // 口罩识别
-  maskDetect: {
-    alarmDetail: null,
-  },
+  ALARM_TARGET: {
+    key: 'resultLabel',
+    name: '告警目标',
+    selection: ALARM_TARGET_VALUES,
+    mutiple: true,
+  }
 };
 
+// 去掉告警详情，算法名修改
+const AlgoConfigs = {
+  // // 移动侦测
+  // carPersonCheck: {
+  //   // alarmDetail: '视频区域内出现{type}',
+  //   hasLabel: true,
+  // },
+  // // 人员布控
+  // faceRecognize: {
+  //   alarmDetail: null,
+  // },
+
+  // // 车辆布控
+  // plateRecognize: {
+  //   alarmDetail: null,
+  //   carImport: true,
+  // },
+  // // 电子围栏
+  // areaAlarm: {
+  //   // alarmDetail: '电子围栏内出现{type}',
+  //   hasLabel: true,
+  // },
+  // // 安全帽识别
+  // safetyHat: {
+  //   alarmDetail: null,
+  // },
+
+  // // 口罩识别
+  // maskDetect: {
+  //   alarmDetail: null,
+  // },
+
+  // 人员布控
+  faceRecognizeDS: {
+    moreFilter: [MORE_FILTER.FACE_LIBRARY]
+  },
+  // 车辆布控
+  carMonitorDS: {
+    carImport: true,
+    moreFilter: [MORE_FILTER.PLATE_LIBRARY]
+  },
+  // 电子围栏
+  areaAlarmDS: {
+    // alarmDetail: '电子围栏内出现{type}',
+    hasLabel: true,
+    moreFilter: [MORE_FILTER.ALARM_TARGET]
+  },
+  // 安全帽识别
+  helmetDetectDS: {
+  },
+  // 口罩检测
+  maskDetectDS: {
+  }
+};
 
 const Tag = ({
   title,

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   Input, Select, Upload, Icon, message, Button, Radio, Dropdown, Menu,
-  Spin, Form, Slider
+  Spin, Form, Slider, DatePicker, Cascader
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -11,6 +11,9 @@ import {
 } from 'Redux/reducer/intelligentSearch';
 import NODATA_IMG from 'Assets/nodata.png';
 import { resizeDependencies, trueDependencies } from 'mathjs';
+import {
+  getDeviceTree
+} from 'Redux/reducer/alarms';
 import PeopleRes from './results/peopleRes';
 import CarRes from './results/carRes';
 import ImagePicker from './imagePicker';
@@ -25,6 +28,8 @@ import {
   getTypeFromUrl, dataURLtoFile
 } from './utils';
 
+const { RangePicker } = DatePicker;
+
 const { Search } = Input;
 const { Option } = Select;
 const ButtonGroup = Button.Group;
@@ -35,7 +40,7 @@ const mapStateToProps = state => ({
   nextPlateImageId: state.intelligentSearch.nextPlateImageId,
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  { searchPlate, searchFace },
+  { searchPlate, searchFace, getDeviceTree },
   dispatch
 );
 
@@ -47,32 +52,94 @@ class IntelligentSearch extends Component {
       resData: undefined,
       resLoading: false,
       filterType: 0,
-      pageSize: 10,
+      pageSize: 15,
       total: 0,
       current: 1,
+      deviceTree: [],
+      devicesLoading: false,
       // searchType: SEARCH_TYPES_PLATE,
     };
   }
 
   componentDidMount() {
+    this.initData();
   }
+
+  initData = () => {
+    this.setState({ devicesLoading: true });
+    this.props.getDeviceTree().then((res) => {
+      console.log('getDeviceTree', res);
+      const tree = this.dataToTree(res);
+      console.log('DeviceTree', tree);
+      this.setState({
+        devicesLoading: false,
+        deviceList: res,
+        deviceTree: tree
+      });
+    }).catch((err) => {
+      this.setState({
+        devicesLoading: false,
+      });
+    });
+  }
+
+  dataToTree = (data) => {
+    // 下面的forEach写法会改变原数组，所以深度拷贝一次
+    const copy = JSON.parse(JSON.stringify(data));
+    const map = {};
+    copy.forEach((item) => {
+      item.label = item.name;
+      // if (item.type == 0) {
+      //   item.label = item.name;
+      // } else {
+      //   item.label = (
+      //     <span>
+      //       <EIcon type="myicon-monitorIcon" />
+      //       {item.name}
+      //     </span>
+      //   );
+      // }
+      item.value = item.id;
+      map[item.id] = item;
+    });
+    const val = [];
+    copy.forEach((item) => {
+      const parent = map[item.pid];
+      if (parent) {
+        (parent.children || (parent.children = [])).push(item);
+      } else {
+        val.push(item);
+      }
+    });
+    // 子节点为区域，不是设备，不可选
+    // const setAreaNodeDisabled = (tree) => {
+    //   tree.forEach((item) => {
+    //     if (item.children) {
+    //       setAreaNodeDisabled(item.children);
+    //     } else {
+    //       item.disabled = item.type == 0;
+    //     }
+    //   });
+    // };
+    // setAreaNodeDisabled(val);
+    return val;
+  };
 
  handleSearch = () => {
    const {
      curImage
    } = this.state;
    const { faceImages } = this.props;
-   if (!curImage) {
-     message.warn('请上传图片!');
-     return;
-   }
-   this.setState({ resLoading: true });
+
+
    const formData = new FormData();
    //  const file = dataURLtoFile(afterCrop, 'test.jpeg');
    // curImage的数据可能没更新，去images里查找对应id
-   const chosenImage = faceImages.find(item => item.id === curImage.id);
-   const file = chosenImage.file || dataURLtoFile(chosenImage.base64, 'cropped.jpeg');
-   formData.append('file', file, 'cropped.jpeg');
+   if (curImage) {
+     const chosenImage = faceImages.find(item => item.id === curImage.id);
+     const file = chosenImage.file || dataURLtoFile(chosenImage.base64, 'cropped.jpeg');
+     formData.append('file', file, 'cropped.jpeg');
+   }
    const {
      form: { validateFields }
    } = this.props;
@@ -80,6 +147,10 @@ class IntelligentSearch extends Component {
      if (!err) {
        console.log('Received values of form: ', values);
        const { name, label, confirm } = values;
+       if (!curImage && !name) {
+         message.warn('请上传图片或输入姓名!');
+         return;
+       }
        const { current, pageSize } = this.state;
        if (name) formData.append('name', name);
        if (label || label === 0) formData.append('label', label);
@@ -89,6 +160,7 @@ class IntelligentSearch extends Component {
        }
        formData.append('pageNo', current - 1);
        formData.append('pageSize', pageSize);
+       this.setState({ resLoading: true });
        this.handleSearchApi(formData, this.props.searchFace);
      }
    });
@@ -145,8 +217,6 @@ class IntelligentSearch extends Component {
    }, this.handleSearch);
  }
 
- onReUpload = () => { this.setState({ imageUrl: undefined, resData: undefined }); }
-
  onImageChange = (curImage) => {
    // 选择图片
    this.setState({
@@ -156,7 +226,8 @@ class IntelligentSearch extends Component {
 
  render() {
    const {
-     imageUrl, resData, resLoading, curImage, filterType, total, current, pageSize
+     resData, resLoading, curImage, filterType, total, current, pageSize,
+     deviceTree, devicesLoading,
    } = this.state;
    const { getFieldDecorator } = this.props.form;
    const formItemLayout = {
@@ -194,6 +265,106 @@ class IntelligentSearch extends Component {
      );
    };
 
+   const renderFilters = (filterType) => {
+     switch (filterType) {
+       case 0:
+         return (
+           <React.Fragment>
+             <Form.Item label="姓名">
+               {getFieldDecorator('name', {
+                 rules: [
+                 ],
+               })(<Input />)}
+             </Form.Item>
+             <Form.Item label="布控标签">
+               {getFieldDecorator('label', {
+                 rules: [
+                 ],
+               })(
+                 <Select>
+                   <Option value="WHITE">白名单</Option>
+                   <Option value="BLACK">黑名单</Option>
+                   <Option value="OTHER">其他</Option>
+                 </Select>
+               )}
+             </Form.Item>
+             <Form.Item label="置信度">
+               {getFieldDecorator('confirm', {
+                 initialValue: 70,
+                 rules: [
+                 ],
+               })(
+                 <Slider
+                   step={1}
+                   tipFormatter={value => (`${100 - value}%`)}
+                   reverse
+                   //  tooltipVisible
+                 />
+               )}
+             </Form.Item>
+           </React.Fragment>
+         );
+       case 1:
+         return (
+           <React.Fragment>
+             <Form.Item label="姓名">
+               {getFieldDecorator('name', {
+                 rules: [
+                 ],
+               })(<Input />)}
+             </Form.Item>
+             <Form.Item label="设备">
+               {getFieldDecorator('device', {
+                 rules: [
+                 ],
+               })(
+                 <Cascader
+                   changeOnSelect
+                   placeholder="请选择设备"
+                   popupClassName={styles.cameraCascader}
+                   options={deviceTree}
+                   allowClear={false}
+                 />
+               )}
+             </Form.Item>
+             <Form.Item label="时间范围">
+               {getFieldDecorator('timeRange', {
+                 rules: [
+                 ],
+               })(
+                 <RangePicker
+                   style={{ width: '100%' }}
+                   showTime={{ format: 'HH:mm' }}
+                   format="MM-DD HH:mm"
+                   placeholder={['开始时间', '结束时间']}
+                   //  onChange={this.onTimeChange}
+                   //  value={[startTime, endTime]}
+                   //  onOk={this.onTimeChange}
+                   allowClear={false}
+                 />
+               )}
+             </Form.Item>
+             <Form.Item label="置信度">
+               {getFieldDecorator('confirm', {
+                 initialValue: 70,
+                 rules: [
+                 ],
+               })(
+                 <Slider
+                   step={1}
+                   tipFormatter={value => (`${100 - value}%`)}
+                   reverse
+                   //  tooltipVisible
+                 />
+               )}
+             </Form.Item>
+           </React.Fragment>
+         );
+       default:
+         break;
+     }
+   };
+
    const renderForm = () => (
      <React.Fragment>
        <div className={styles.filterType}>
@@ -204,7 +375,7 @@ class IntelligentSearch extends Component {
                  key={idx}
                  value={idx}
                  className={`${styles['btnGroup-btn']} ${idx === filterType - 0 ? styles['btnGroup-btn-selected'] : ''}`}
-                 disabled={idx > 0}
+                 disabled={idx > 1}
                >
                  {item}
                </Button>
@@ -213,38 +384,9 @@ class IntelligentSearch extends Component {
          </ButtonGroup>
        </div>
        <Form {...formItemLayout}>
-         <Form.Item label="姓名">
-           {getFieldDecorator('name', {
-             rules: [
-             ],
-           })(<Input />)}
-         </Form.Item>
-         <Form.Item label="布控标签">
-           {getFieldDecorator('label', {
-             rules: [
-             ],
-           })(
-             <Select>
-               <Option value="WHITE">白名单</Option>
-               <Option value="BLACK">黑名单</Option>
-               <Option value="OTHER">其他</Option>
-             </Select>
-           )}
-         </Form.Item>
-         <Form.Item label="置信度">
-           {getFieldDecorator('confirm', {
-             initialValue: 70,
-             rules: [
-             ],
-           })(
-             <Slider
-               step={1}
-               tipFormatter={value => (`${100 - value}%`)}
-               reverse
-               //  tooltipVisible
-             />
-           )}
-         </Form.Item>
+         {
+           renderFilters(filterType - 0)
+         }
        </Form>
      </React.Fragment>
    );
@@ -257,6 +399,7 @@ class IntelligentSearch extends Component {
            <div className={styles.searchWrapper}>
              <div className={styles.searchContent}>
                <ImagePicker
+                 key={SEARCH_TYPES_FACE}
                  imageType={SEARCH_TYPES_FACE}
                  curImage={curImage}
                  onImageChange={this.onImageChange}
@@ -279,16 +422,6 @@ class IntelligentSearch extends Component {
                    检索
                  </span>
                </Button>
-               {
-                 imageUrl ? (
-                   <div className={styles.reUpload}>
-                     <a href="javascript:void(0);" onClick={this.onReUpload}>
-                       <span className={styles['reUpload-text']}>重新上传</span>
-                       <Icon type="undo" className={styles['reUpload-icon']} />
-                     </a>
-                   </div>
-                 ) : null
-               }
              </div>
            </div>
          </div>

@@ -45,7 +45,7 @@
     }
 }
 .alarms{
-    min-width: 960px;
+    min-width: 1100px;
     height: calc(100vh - 72px);
     position:relative;
     background-color: white;
@@ -190,6 +190,16 @@
     background-color: white;
     // padding: 15px;
     border-radius: 4px 4px 0 0;
+    &-label{
+        display: inline-block;
+        height: 22px;
+        line-height: 22px;
+        color: rgba(0,0,0,0.65);
+        font-size: 12px;
+        background: #F5F5F5;
+        border: 1px solid #D9D9D9;
+        border-radius: 2px;
+    }
     &-operatorWrapper{
         display: none;
     }
@@ -433,7 +443,7 @@
             width: 50%;
             padding: 5px 5px;
             &:nth-child(even){
-                width: 180px;
+                width: 220px;
                 float: right;
             }
         }

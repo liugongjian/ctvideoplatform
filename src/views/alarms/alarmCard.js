@@ -206,56 +206,53 @@ class AlarmCard extends Component {
           />
         </div>
         <div className="AlarmCard-contentWrapper">
-          <div>
-            {/* 布控规则 */}
+          {/* <div>
+            布控规则
             <EIcon type="myicon-alarmDetailIcon" />
             <span className={styles.span5px} />
             <span title={controlRule}>{controlRule}</span>
-          </div>
-          {
+          </div> */}
+          {/* {
             detail ? (
               <div>
-                {/* 告警详情： */}
+                告警详情：
                 <EIcon type="myicon-alarmDetailIcon" />
                 <span className={styles.span5px} />
                 <span title={detail}>{detail}</span>
               </div>
             ) : null
-          }
+          } */}
           {
             recognizeType === '' ? null
               : (
                 <React.Fragment>
                   {recognizeType === 'car' ? (
-                    plate?.licenseNo ? (
-                      <div>
-                        {/* 车牌： */}
-                        <EIcon type="myicon-vehicleIcon" />
-                        <span className={styles.span5px} />
-                        {plate?.licenseNo || '-'}
-                        <React.Fragment>
-                          {
-                            plate.label && LABEL_CAR[plate.label]
-                              ? (<Tag title={LABEL_CAR[plate.label]} type={plate.label} />)
-                              : null}
-                        </React.Fragment>
-                      </div>
-                    ) : null
+
+                    <div>
+                      {/* 车牌： */}
+                      <EIcon type="myicon-vehicleIcon" />
+                      <span className={styles.span5px} />
+                      {plate?.licenseNo || '-'}
+                      <React.Fragment>
+                        {
+                          plate.label && LABEL_CAR[plate.label]
+                            ? (<Tag title={LABEL_CAR[plate.label]} type={plate.label} />)
+                            : null}
+                      </React.Fragment>
+                    </div>
                   ) : (
-                      face?.username ? (
-                        <div>
-                          {/* 姓名： */}
-                          <EIcon type="myicon-personNameIcon" />
-                          <span className={styles.span5px} />
-                          {face?.username || '-'}
-                          <React.Fragment>
-                            {
+                    <div>
+                      {/* 姓名： */}
+                      <EIcon type="myicon-personNameIcon" />
+                      <span className={styles.span5px} />
+                      {face?.username || '-'}
+                      <React.Fragment>
+                        {
                         face?.label && LABEL_PERSON[face.label]
                           ? <Tag title={LABEL_PERSON[face.label]} type={face.label} />
                           : null}
-                          </React.Fragment>
-                        </div>
-                      ) : null
+                      </React.Fragment>
+                    </div>
                   )}
                 </React.Fragment>
               )
@@ -266,9 +263,18 @@ class AlarmCard extends Component {
             <span className={styles.span5px} />
             <span title={areaPath}>{areaPath}</span>
           </div>
+          <div>
+            {/* 抓拍点位（设备名称）： */}
+            <EIcon type="myicon-locationIcon" />
+            <span className={styles.span5px} />
+            <span>{deviceName}</span>
+          </div>
+          {
+            /**
+             * TODO人车非标签
+             */
+          }
         </div>
-
-
         <div className="AlarmCard-operatorWrapper">
           {
             hasImport ? (

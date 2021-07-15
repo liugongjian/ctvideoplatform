@@ -25,6 +25,7 @@ export const devApi = '/devApi';
 export const prodApi = '/prodApi';
 export const lixueping = '/lixueping';
 export const zhoulingpeng = '/zhoulingpeng';
+const zhaodan = '/zhaodan';
 const zhujianxia = '/zhujianxia';
 const prodName = '/';
 export const imageURI = 'http://59.36.160.171:9001/unsafe/'; // 根据deepstream修改告警图片地址
