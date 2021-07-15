@@ -25,6 +25,7 @@ export const devApi = '/devApi';
 export const prodApi = '/prodApi';
 export const lixueping = '/lixueping';
 export const zhoulingpeng = '/zhoulingpeng';
+export const captureLibrary = '/capture';
 const zhaodan = '/zhaodan';
 const zhujianxia = '/zhujianxia';
 const prodName = '/';
@@ -32,4 +33,4 @@ export const imageURI = 'http://59.36.160.171:9001/unsafe/'; // 根据deepstream
 
 
 export const urlPrefix = devApi;
-export const captureLibraryUrl = zhoulingpeng;
+export const captureLibraryUrl = captureLibrary;
