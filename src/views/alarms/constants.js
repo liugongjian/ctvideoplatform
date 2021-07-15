@@ -28,27 +28,27 @@ const LABEL_VALUES = [
 ];
 
 const ALARM_TARGET_VALUES = [
-  { label: '人员', value: 'WHITE' },
-  { label: '机动车', value: 'BLACK' },
-  { label: '非机动车', value: 'OTHER' },
+  { label: '人员', value: 0 },
+  { label: '机动车', value: 1 },
+  { label: '非机动车', value: 2 },
 ];
 
 // 更多筛选项(全为Select)
 const MORE_FILTER = {
   FACE_LIBRARY: {
-    key: 'faceLibrary',
+    key: 'labelFace',
     name: '人脸底库',
     selection: LABEL_VALUES,
     mutiple: false,
   },
   PLATE_LIBRARY: {
-    key: 'plateLibrary',
+    key: 'labelPlate',
     name: '车牌底库',
     selection: LABEL_VALUES,
     mutiple: false,
   },
   ALARM_TARGET: {
-    key: 'alarmTarget',
+    key: 'resultLabel',
     name: '告警目标',
     selection: ALARM_TARGET_VALUES,
     mutiple: true,

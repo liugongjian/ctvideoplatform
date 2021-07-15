@@ -61,7 +61,7 @@ class Alarms extends Component {
       listData: [],
       listLoading: false,
       total: 0,
-      algorithmIdList: undefined,
+      // algorithmIdList: undefined,
       ...initialVals(),
     };
   }
@@ -105,17 +105,29 @@ class Alarms extends Component {
     const {
       current,
       pageSize,
-      algorithmIdList,
-      startTime, endTime, algoVal, deviceVal, deviceList
+      // algorithmIdList,
+      startTime, endTime, algoVal, deviceVal, deviceList,
+      algoList,
+
     } = this.state;
 
     const params = {
       pageNo: current - 1,
       pageSize,
-      algorithmIdList: algoVal ? [algoVal] : undefined, // 算法改成单选
+      algorithmId: algoVal, // 算法改成单选
       startTime: startTime.startOf('minute').format(timeFormat),
       endTime: endTime.startOf('minute').format(timeFormat),
+
     };
+    const chosenAlgoEnName = algoList?.find(item => item.id === algoVal)?.name;
+    const moreFilter = AlgoConfigs[chosenAlgoEnName]?.moreFilter;
+    if (moreFilter) {
+      moreFilter.forEach(({ key }) => {
+        if (this.state[key]) {
+          params[key] = this.state[key];
+        }
+      });
+    }
     const deviceOrAreaId = deviceVal ? deviceVal[deviceVal.length - 1] : undefined;
     const item = deviceOrAreaId ? deviceList.find(({ id }) => id == deviceOrAreaId) : {};
     if (item && item.type == 0) {
@@ -245,6 +257,7 @@ class Alarms extends Component {
             key, name, selection, mutiple
           }) => {
             const options = {
+              key,
               placeholder: name,
               onChange: val => this.onMoreFilterChange(key, val),
               style: { width: '160px' }
