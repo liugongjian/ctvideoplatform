@@ -12,7 +12,7 @@ import {
   LoadingOutlined, PlusOutlined, ImportOutlined, SearchOutlined
 } from '@ant-design/icons';
 import noImg from '@/assets/defaultFace.png';
-import { urlPrefix } from 'Constants/Dictionary';
+import { urlPrefix, imageURI } from 'Constants/Dictionary';
 
 import styles from './peopleRes.less';
 
@@ -77,7 +77,7 @@ class Face extends Component {
                   className={styles.cardContanier}
                 >
                   <div className={styles.imgContainer}>
-                    <img src={`${urlPrefix}/face/displayexist/${item.photoId}?${new Date().getTime()}`} onError={e => this.handleImageError(e)} alt="" />
+                    <img src={item.photoId ? `${urlPrefix}/face/displayexist/${item.photoId}?${new Date().getTime()}`:`${imageURI}${item.imageCompress}`} onError={e => this.handleImageError(e)} alt="" />
                     <div className={styles.faceTip}>
                       {parseFloat(item.score * 100).toFixed(2)}
                       %
@@ -85,17 +85,19 @@ class Face extends Component {
                   </div>
                   <div className={styles.footerContanier}>
                     <div className={styles.info}>
-                      <div title={item.name} className={styles.name}>{item.name.split('.')[0]}</div>
+                      <div title={item.name} className={styles.name}>{item.name || item.username}</div>
                       {
-                        item.labelCode === 0 || item.labelCode === 1 ? (
-                          <div className={styles.tagContainer}>
-                            {
-                              item.labelCode === 0
-                                ? <Tag color="green">白名单</Tag> : <Tag color="red">黑名单</Tag>
-                            }
-                          </div>
-                        )
+                        item.labelCode === undefined ? null : (
+                          item.labelCode === 0 || item.labelCode === 1 ? (
+                            <div className={styles.tagContainer}>
+                              {
+                                item.labelCode === 0
+                                  ? <Tag color="green">白名单</Tag> : <Tag color="red">黑名单</Tag>
+                              }
+                            </div>
+                          )
                           : <div className={styles.tagContainer}><Tag color="blue">其他</Tag></div>
+                        )
                       }
                     </div>
                   </div>

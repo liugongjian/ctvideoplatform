@@ -60,6 +60,14 @@ const proxyServer = {
     secure: false,
     changeOrigin: true
   },
+  '/capture': {
+    target: 'http://192.168.10.146:18671',
+    pathRewrite: {
+      '^/capture': ''
+    },
+    secure: false,
+    changeOrigin: true
+  },
 };
 
 module.exports = merge(common, {

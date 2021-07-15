@@ -73,8 +73,11 @@ class CarRes extends Component {
       const {
         pageNo, pageSize, curLicense
       } = this.state;
+      if (searchParam.searchType) {
+        delete searchParam.searchType;
+      }
       getDataProxyFunc({
-        licenseNo: curLicense, pageNo, pageSize, ...searchParam // '苏E99G06'
+        ...searchParam, licenseNo: curLicense || searchParam.lisenceNo, pageNo, pageSize, // '苏E99G06'
       }).then((res) => {
         const {
           list, pageNo, pageSize, pageTotal, recordsTotal
@@ -86,6 +89,12 @@ class CarRes extends Component {
           pageNo,
           total: recordsTotal,
         });
+      }).catch((err) => {
+        this.setState({
+          listData: [],
+          listLoading: false,
+        });
+        console.log(err);
       });
     });
   }

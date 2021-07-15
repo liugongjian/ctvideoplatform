@@ -6,8 +6,9 @@ import {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import math from 'Utils/math';
+import moment from 'moment';
 import {
-  searchPlate, searchFace, saveImages, addImage, delImage
+  searchPlate, searchFace, searchFaceFromCapture
 } from 'Redux/reducer/intelligentSearch';
 import NODATA_IMG from 'Assets/nodata.png';
 import { resizeDependencies, trueDependencies } from 'mathjs';
@@ -38,12 +39,16 @@ const mapStateToProps = state => ({
   plateImages: state.intelligentSearch.plateImages,
   nextImageId: state.intelligentSearch.nextImageId,
   nextPlateImageId: state.intelligentSearch.nextPlateImageId,
+  userinfo: state.login?.userinfo,
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
-  { searchPlate, searchFace, getDeviceTree },
+  {
+    searchPlate, searchFace, getDeviceTree, searchFaceFromCapture
+  },
   dispatch
 );
 
+const timeFormat = 'YYYY-MM-DD HH:mm:ss';
 class IntelligentSearch extends Component {
   constructor() {
     super();
@@ -146,14 +151,23 @@ class IntelligentSearch extends Component {
    validateFields((err, values) => {
      if (!err) {
        console.log('Received values of form: ', values);
-       const { name, label, confirm } = values;
+       const {
+         name, label, confirm, timeRange, deviceId
+       } = values;
+       console.log('timeRange', timeRange);
        if (!curImage && !name) {
          message.warn('请上传图片或输入姓名!');
          return;
        }
        const { current, pageSize } = this.state;
        if (name) formData.append('name', name);
-       if (label || label === 0) formData.append('label', label);
+       if (label !== undefined) formData.append('label', label);
+       if (deviceId !== undefined) formData.append('deviceId', deviceId);
+       if (timeRange !== undefined) {
+         const [startMoment, endMoment] = timeRange;
+         formData.append('startTime', startMoment.format(timeFormat));
+         formData.append('endTime', endMoment.format(timeFormat));
+       }
        if (typeof confirm === 'number') {
          const threshold = (100 - confirm) / 100;
          formData.append('threshold', threshold);
@@ -161,13 +175,35 @@ class IntelligentSearch extends Component {
        formData.append('pageNo', current - 1);
        formData.append('pageSize', pageSize);
        this.setState({ resLoading: true });
-       this.handleSearchApi(formData, this.props.searchFace);
+       this.handleSearchApi(formData);
      }
    });
  }
 
- handleSearchApi = (data, searchFunc) => {
+ searchFaceFromCapture = () => {
+   this.props.searchFaceFromCapture;
+ }
+
+ handleSearchApi = (data) => {
    const searchType = getTypeFromUrl(this.props);
+   const { filterType } = this.state;
+   const { searchFace, searchFaceFromCapture } = this.props;
+   let searchFunc = () => {};
+   switch (filterType - 0) {
+     case 0:
+       searchFunc = searchFace;
+       break;
+     case 1:
+       //  if (!this.props.userinfo?.tenantId) {
+       //    message.error('请登陆！');
+       //    return;
+       //  }
+       data.append('tenantId', this.props.userinfo?.tenantId); // 'ff8081817a194de4017a19ae4fbd005f'
+       searchFunc = searchFaceFromCapture;
+       break;
+     default:
+       break;
+   }
    searchFunc(data).then((res) => {
      const nextState = {
        resData: res,
@@ -314,7 +350,7 @@ class IntelligentSearch extends Component {
                })(<Input />)}
              </Form.Item>
              <Form.Item label="设备">
-               {getFieldDecorator('device', {
+               {getFieldDecorator('deviceId', {
                  rules: [
                  ],
                })(
@@ -331,6 +367,7 @@ class IntelligentSearch extends Component {
                {getFieldDecorator('timeRange', {
                  rules: [
                  ],
+                 initialValue: [moment().subtract('days', 7), moment()]
                })(
                  <RangePicker
                    style={{ width: '100%' }}

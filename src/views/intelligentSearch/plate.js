@@ -29,8 +29,11 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 const ButtonGroup = Button.Group;
 const mapStateToProps = state => ({
+  faceImages: state.intelligentSearch.faceImages,
   plateImages: state.intelligentSearch.plateImages,
+  nextImageId: state.intelligentSearch.nextImageId,
   nextPlateImageId: state.intelligentSearch.nextPlateImageId,
+  userinfo: state.login?.userinfo,
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
   { searchPlate, getDeviceTree },
@@ -119,7 +122,7 @@ class IntelligentSearch extends Component {
     return val;
   };
 
-  dateToString = (date) => {
+  dateToString = (date, time) => {
     date = new Date(date);
     const year = date.getFullYear(); // 获取完整的年份(4位,1970-????)
     let month = date.getMonth() + 1; // 获取当前月份(0-11,0代表1月)
@@ -130,7 +133,7 @@ class IntelligentSearch extends Component {
     if (day < 10) {
       day = `0${day}`;
     }
-    return `${year}-${month}-${day} 00:00:00`;
+    return `${year}-${month}-${day} ${time}`;
   }
 
  handleSearch = () => {
@@ -147,16 +150,18 @@ class IntelligentSearch extends Component {
    this.setState({ resLoading: true });
    const formData = new FormData();
    const searchParam = {
-     startTime: getFieldValue('timerange') ? this.dateToString(getFieldValue('timerange')[0]) : null,
-     endTime: getFieldValue('timerange') ? this.dateToString(getFieldValue('timerange')[1]) : null,
-     deviceId: getFieldValue('device') || null,
-     label: getFieldValue('label') || null,
+     startTime: getFieldValue('timerange') && getFieldValue('timerange').length !== 0 ? this.dateToString(getFieldValue('timerange')[0], '00:00:00') : this.dateToString(new Date(), '00:00:00'),
+     endTime: getFieldValue('timerange') && getFieldValue('timerange').length !== 0 ? this.dateToString(getFieldValue('timerange')[1], '23:59:59') : this.dateToString(new Date(), '23:59:59'),
+     deviceId: getFieldValue('device') ? getFieldValue('device')[getFieldValue('device').length - 1] : null,
      searchType: filterType,
    };
    if (!parseInt(filterType)) {
      searchParam.label = getFieldValue('label') || null;
+   } else {
+     searchParam.tenantId = this.props.userinfo?.tenantId;
    }
-   getFieldValue('lisenceNo') && (searchParam.lisenceNo = getFieldValue('lisenceNo'));
+   console.log(searchParam, searchParam);
+   getFieldValue('lisenceNo') && (searchParam.licenseNo = getFieldValue('lisenceNo'));
    if (curImage) {
      const chosenImage = plateImages.find(item => item.id === curImage.id);
      const file = chosenImage.file || dataURLtoFile(chosenImage.base64, 'cropped.jpeg');

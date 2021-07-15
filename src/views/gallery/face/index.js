@@ -452,7 +452,10 @@ class Face extends Component {
 
     renderTable = () => {
       const {
-        loading, uploadUrl, faceData, modalVisible, textMap, modalStatus, imageLoading, imageUrl, delModalVisible, selectedRowKeys, delName, delIds, total, pageNum, pageSize, pageSizeOptions, submitBtnDis
+        loading, uploadUrl, faceData, modalVisible, textMap,
+        modalStatus, imageLoading, imageUrl, delModalVisible,
+        selectedRowKeys, delName, delIds, total, pageNum, pageSize,
+        pageSizeOptions, submitBtnDis
       } = this.state;
       const delIdsLength = delIds.length;
       const {
