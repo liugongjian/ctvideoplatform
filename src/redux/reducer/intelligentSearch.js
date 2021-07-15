@@ -1,5 +1,5 @@
 import React from 'react';
-import { urlPrefix } from 'Constants/Dictionary';
+import { urlPrefix, captureLibraryUrl } from 'Constants/Dictionary';
 import { message } from 'antd';
 import { store } from '../store';
 
@@ -117,6 +117,13 @@ export function searchFace(formData) {
   return {
     type: DO_NOTHING,
     promise: apiClient => apiClient.post(`${urlPrefix}/detect/face`, { data: formData })
+  };
+}
+
+export function searchFaceFromCapture(formData) {
+  return {
+    type: DO_NOTHING,
+    promise: apiClient => apiClient.post(`${captureLibraryUrl}/facecapture/list`, { data: formData })
   };
 }
 

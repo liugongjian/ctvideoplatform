@@ -32,3 +32,4 @@ export const imageURI = 'http://59.36.160.171:9001/unsafe/'; // 根据deepstream
 
 
 export const urlPrefix = devApi;
+export const captureLibraryUrl = zhoulingpeng;

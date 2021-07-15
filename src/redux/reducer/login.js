@@ -99,7 +99,7 @@ export function userlogout() {
 
 export function userInfo() {
   return {
-    type: [LOGOUT, LOGOUT_SUCCESS, LOGOUT_FAIL],
+    type: [USERINFO, USERINFO_SUCCESS, USERINFO_FAIL],
     promise: apiClient => apiClient.get(`${urlPrefix}/userInfo`)
   };
 }
