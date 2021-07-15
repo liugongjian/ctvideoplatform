@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import {
-  searchPlateAlarms
+  searchPlateAlarms, searchPlateCaptures
 } from 'Redux/reducer/intelligentSearch';
 import AlarmCard from 'Views/alarms/alarmCard';
 import Pagination from 'Components/EPagination';
@@ -24,7 +24,7 @@ const { Option } = Select;
 const mapStateToProps = state => ({ monitor: state.monitor });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    searchPlateAlarms,
+    searchPlateAlarms, searchPlateCaptures
   },
   dispatch
 );
@@ -52,13 +52,15 @@ class CarRes extends Component {
 
   getAlarms = (props) => {
     const {
-      data: { detail }, searchPlateAlarms
+      data: { detail }, searchPlateAlarms, searchPlateCaptures,
+      searchParam
     } = props;
     const {
       curLicense
     } = this.state;
     const curPlate = detail && detail[0];
     const { platelicense } = curPlate || {};
+    const getDataProxyFunc = parseInt(searchParam.searchType) ? searchPlateCaptures : searchPlateAlarms;
     if (!platelicense) {
       return;
     }
@@ -71,8 +73,8 @@ class CarRes extends Component {
       const {
         pageNo, pageSize, curLicense
       } = this.state;
-      searchPlateAlarms({
-        licenseNo: curLicense, pageNo, pageSize // '苏E99G06'
+      getDataProxyFunc({
+        licenseNo: curLicense, pageNo, pageSize, ...searchParam // '苏E99G06'
       }).then((res) => {
         const {
           list, pageNo, pageSize, pageTotal, recordsTotal
@@ -120,7 +122,7 @@ class CarRes extends Component {
       <div className={styles.carRes}>
         <div className={`${styles.plateWrapper} ${plateNum <= 1 ? styles['plateWrapper-bigImg'] : styles['plateWrapper-smallImg']}`}>
           <div className={`${styles.imageWrapper}`}>
-            <img src={picture} alt="图片" />
+            {picture ? <img src={picture} alt="图片" /> : <img src={NODATA_IMG} alt="" />}
           </div>
           <div className={`${styles.textWrapper} `}>
             {

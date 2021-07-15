@@ -1,5 +1,5 @@
 import React from 'react';
-import { urlPrefix } from 'Constants/Dictionary';
+import { urlPrefix, zhoulingpeng } from 'Constants/Dictionary';
 import { message } from 'antd';
 import { store } from '../store';
 
@@ -110,6 +110,13 @@ export function searchPlateAlarms(data) {
   return {
     type: DO_NOTHING,
     promise: apiClient => apiClient.post(`${urlPrefix}/detect/plate/result`, { data })
+  };
+}
+
+export function searchPlateCaptures(data) {
+  return {
+    type: DO_NOTHING,
+    promise: apiClient => apiClient.post(`${zhoulingpeng}/platecapture/list`, { data })
   };
 }
 
