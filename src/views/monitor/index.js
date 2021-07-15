@@ -15,6 +15,7 @@ import {
 } from 'Redux/reducer/monitor';
 import DeleteModal from 'Components/modals/warnModal';
 
+import { number } from 'prop-types';
 import styles from './index.less';
 
 const { Search } = Input;
@@ -114,7 +115,9 @@ class Monitor extends Component {
           selectAreaKeys: areaId ? [areaId.toString()] : [],
           expandedKeys: expendsIds
         }, () => {
-          this.getDeviceList();
+          if (res.length > 0) {
+            this.getDeviceList();
+          }
         });
       } else {
         this.setState({

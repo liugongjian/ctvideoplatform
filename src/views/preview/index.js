@@ -224,22 +224,20 @@ class Preview extends PureComponent {
       this.clearTimer();
       const { videoSrcOrder, showSquaredDom } = this.state;
       if (showSquaredDom === 1) {
-        console.log('showSquaredDom1', val);
         if (val.online) {
           this.setState({
             selectAreaKeys: [val.id],
             videoSrc: null,
             tempTotal: -1,
-            historyID: val.id
+            historyID: val.id,
           }, () => {
             if (Object.keys(val).length > 0) {
               window.sessionStorage.setItem('deviceInfo', JSON.stringify(val));
             }
             this.getHistory();
+            this.getPeopleArea(val.id);
             this.getCurrentDay();
             this.getVideoSrc(val.id, val.name);
-            this.getPeopleArea(val.id);
-            this.setIntervalTimer();
           });
         } else {
           this.setState({
@@ -280,16 +278,16 @@ class Preview extends PureComponent {
             chooseSquare: temp[`videoSrc${videoSrcOrder}`]
           }, () => {
             this.getHistory();
+            this.getPeopleArea(val.id);
             this.getCurrentDay();
             this.getVideoSrc(val.id, val.name);
-            this.getPeopleArea(val.id);
-            this.setIntervalTimer();
+            // this.setIntervalTimer();
           });
         }
       }
     }
 
-    getPeopleArea = (id) => {
+    getPeopleArea = (id, val) => {
       const { getAreaInfo } = this.props;
       // 人流量检测算法id为 10
       getAreaInfo(id, 105).then((res) => {
@@ -297,6 +295,8 @@ class Preview extends PureComponent {
         this.setState({
           appliedTraffic: applied,
           pointsInfo: res
+        }, () => {
+          this.setIntervalTimer();
         });
       });
     }
