@@ -769,11 +769,14 @@ class Preview extends PureComponent {
             </div>
 
             <div className={styles.videoBox}>
-              <div style={{ fontSize: '16px', fontWeight: 500, color: 'rgba(0, 0, 0, 0.85)' }}>
-                视频回放-
-                {this.state.isListView ? '时间轴模式' : '列表模式' }
-              </div>
               <div className={styles.switchBox}>
+                <div style={{
+                  fontSize: '16px', fontWeight: 500, color: 'rgba(0, 0, 0, 0.85)', float: 'left'
+                }}
+                >
+                  视频回放-
+                  {this.state.isListView ? '时间轴模式' : '列表模式' }
+                </div>
                 <div>
                   <DatePicker />
                   <Button onClick={this.handleViewType} type="primary">

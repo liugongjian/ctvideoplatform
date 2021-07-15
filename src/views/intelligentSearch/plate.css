@@ -1,0 +1,154 @@
+:global .ant-calendar-picker-container {
+  position: absolute;
+  z-index: 1050;
+  font-size: 14px;
+  white-space: nowrap;
+  background: #fff;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+.span10px {
+  width: 10px;
+  display: inline-block;
+}
+.span20px {
+  width: 20px;
+  display: inline-block;
+}
+.cameraCascader {
+  position: absolute;
+  z-index: 1050;
+  font-size: 14px;
+  white-space: nowrap;
+  background: #fff;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 2px 8px rgba(107, 29, 29, 0.15) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+}
+.cameraCascader :global .ant-cascader-menu {
+  height: 280px;
+}
+.cameraCascader :global .ant-cascader-menu > .ant-cascader-menu-item {
+  width: 195px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.intelligentSearch {
+  min-width: 960px;
+  height: calc(100% - 10px);
+  position: relative;
+}
+.intelligentSearch .span10px {
+  width: 10px;
+  display: inline-block;
+}
+.intelligentSearch-contentWrapper {
+  height: 100%;
+  display: flex;
+}
+.intelligentSearch-contentWrapper .subTitle {
+  margin-bottom: 15px;
+  font-family: MicrosoftYaHei;
+  font-size: 16px;
+  color: #333333;
+}
+.intelligentSearch-contentWrapper-leftPart {
+  width: 370px;
+  height: 100%;
+  background-color: white;
+  padding: 15px 0;
+  border-right: 1px solid #eee;
+}
+.intelligentSearch-contentWrapper-rightPart {
+  position: relative;
+  width: calc(100% - 370px);
+  height: 100%;
+  padding: 15px;
+}
+.intelligentSearch-contentWrapper-rightPart .nodataWrapper {
+  width: 100%;
+  height: calc(100vh - 150px);
+  line-height: calc(100vh - 150px);
+  text-align: center;
+}
+.intelligentSearch-contentWrapper-rightPart .nodataWrapper img {
+  height: 150px;
+}
+.intelligentSearch :global .anticon {
+  vertical-align: baseline;
+}
+.intelligentSearch :global .ant-select-selection--multiple {
+  padding-bottom: 0 !important;
+}
+.intelligentSearch :global .ant-pagination-options-quick-jumper input {
+  height: 32px;
+}
+.intelligentSearch :global .ant-pagination-options-quick-jumper {
+  height: 32px;
+  line-height: 32px;
+}
+.intelligentSearch .MapTrack {
+  width: 100%;
+  height: calc(100% - 64px);
+}
+.searchWrapper {
+  height: 540px;
+}
+.searchWrapper .searchContent {
+  max-height: calc(100vh - 130px);
+  overflow-y: overlay;
+  padding: 0 15px;
+}
+.searchWrapper .filterWrapper {
+  text-align: center;
+  margin-bottom: 15px;
+  width: 330px;
+}
+.searchWrapper .filterWrapper :global .ant-calendar-picker {
+  width: 100%;
+}
+.searchWrapper .filterWrapper .filterType {
+  margin-bottom: 15px;
+}
+.searchWrapper .filterWrapper .filterType .btnGroup {
+  width: 330px;
+}
+.searchWrapper .filterWrapper .filterType .btnGroup-btn {
+  width: 110px;
+}
+.searchWrapper .filterWrapper .filterType .btnGroup-btn:focus:not(:disabled),
+.searchWrapper .filterWrapper .filterType .btnGroup-btn:hover:not(:disabled),
+.searchWrapper .filterWrapper .filterType .btnGroup-btn-selected {
+  color: #4095e3;
+  border-color: #4095e3;
+  z-index: 10;
+}
+.searchWrapper .btnWrapper {
+  text-align: center;
+  margin-top: 15px;
+}
+.searchWrapper .btnWrapper .searchBtn {
+  width: 124px;
+  height: 36px;
+}
+.searchWrapper .btnWrapper .searchBtnText {
+  line-height: 36px;
+}
+.searchWrapper .btnWrapper .searchBtnIcon {
+  float: right;
+  line-height: 36px;
+}
+.searchWrapper .reUpload {
+  margin-top: 5px;
+  line-height: 22px;
+}
+.searchWrapper .reUpload-text,
+.searchWrapper .reUpload-icon {
+  display: inline-block;
+  vertical-align: middle;
+}
+.searchWrapper .reUpload-icon {
+  margin-left: 3px;
+}

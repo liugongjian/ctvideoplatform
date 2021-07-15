@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   Input, Select, Upload, Icon, message, Button, Radio, Dropdown, Menu,
-  Spin, Form, Slider
+  Spin, Form, Slider, DatePicker
 } from 'antd';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -10,12 +10,11 @@ import {
   searchPlate, saveImages, addImage, delImage
 } from 'Redux/reducer/intelligentSearch';
 import NODATA_IMG from 'Assets/nodata.png';
-import { resizeDependencies, trueDependencies } from 'mathjs';
-import PeopleRes from './results/peopleRes';
 import CarRes from './results/carRes';
 import ImagePicker from './imagePicker';
 import styles from './plate.less';
 import {
+  SEARCH_PLATE_ORIGIN_TYPE,
   SEARCH_TYPES_PLATE,
 } from './constants';
 import {
@@ -24,6 +23,7 @@ import {
 
 const { Search } = Input;
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 const ButtonGroup = Button.Group;
 const mapStateToProps = state => ({
   plateImages: state.intelligentSearch.plateImages,
@@ -56,7 +56,7 @@ class IntelligentSearch extends Component {
    const {
      curImage
    } = this.state;
-   const { plateImages } = this.props;
+   const { plateImages, getFieldValue } = this.props;
    if (!curImage) {
      message.warn('请上传图片!');
      return;
@@ -68,6 +68,7 @@ class IntelligentSearch extends Component {
    const chosenImage = plateImages.find(item => item.id === curImage.id);
    const file = chosenImage.file || dataURLtoFile(chosenImage.base64, 'cropped.jpeg');
    formData.append('file', file, 'cropped.jpeg');
+   formData.append('lisenceNo', getFieldValue('lisenceNo'));
    this.handleSearchApi(formData, this.props.searchPlate);
  }
 
@@ -88,7 +89,7 @@ class IntelligentSearch extends Component {
    });
  }
 
- switchFaceOrigin = (e) => {
+ switchPlateOrigin = (e) => {
    e.preventDefault();
    console.log('click', e.target.value);
    this.setState({
@@ -135,60 +136,62 @@ class IntelligentSearch extends Component {
 
    const renderRes = resData => <CarRes key={JSON.stringify(resData)} data={resData} />;
 
-   const renderForm = () =>
-   //    <React.Fragment>
-   //      <div className={styles.filterType}>
-   //        <ButtonGroup size="large" className={styles.btnGroup} onClick={this.switchFaceOrigin}>
-   //          {
-   //            SEARCH_FACE_ORIGIN_TYPE.map((item, idx) => (
-   //              <Button
-   //                key={idx}
-   //                value={idx}
-   //                className={`${styles['btnGroup-btn']} ${idx === filterType - 0 ? styles['btnGroup-btn-selected'] : ''}`}
-   //                disabled={idx > 0}
-   //              >
-   //                {item}
-   //              </Button>
-   //            ))
-   //          }
-   //        </ButtonGroup>
-   //      </div>
-   //      <Form {...formItemLayout}>
-   //        <Form.Item label="姓名">
-   //          {getFieldDecorator('name', {
-   //            rules: [
-   //            ],
-   //          })(<Input />)}
-   //        </Form.Item>
-   //        <Form.Item label="布控标签">
-   //          {getFieldDecorator('label', {
-   //            rules: [
-   //            ],
-   //          })(
-   //            <Select>
-   //              <Option value="WHITE">白名单</Option>
-   //              <Option value="BLACK">黑名单</Option>
-   //              <Option value="OTHER">其他</Option>
-   //            </Select>
-   //          )}
-   //        </Form.Item>
-   //        <Form.Item label="置信度">
-   //          {getFieldDecorator('confirm', {
-   //            initialValue: 70,
-   //            rules: [
-   //            ],
-   //          })(
-   //            <Slider
-   //              step={1}
-   //              tipFormatter={value => (`${100 - value}%`)}
-   //              reverse
-   //            //  tooltipVisible
-   //            />
-   //          )}
-   //        </Form.Item>
-   //      </Form>
-   //    </React.Fragment>
-     null;
+   const renderForm = () => (
+     <React.Fragment>
+       <div className={styles.filterType}>
+         <ButtonGroup size="large" className={styles.btnGroup} onClick={this.switchPlateOrigin}>
+           {
+             SEARCH_PLATE_ORIGIN_TYPE.map((item, idx) => (
+               <Button
+                 key={idx}
+                 value={idx}
+                 className={`${styles['btnGroup-btn']} ${idx === filterType - 0 ? styles['btnGroup-btn-selected'] : ''}`}
+                 //  disabled={idx > 0}
+               >
+                 {item}
+               </Button>
+             ))
+           }
+         </ButtonGroup>
+       </div>
+       <Form {...formItemLayout}>
+         <Form.Item label="车牌号">
+           {getFieldDecorator('lisenceNo', {
+             rules: [
+             ],
+           })(<Input />)}
+         </Form.Item>
+         <Form.Item label="时间区间">
+           {getFieldDecorator('timerange', {
+             rules: [
+             ],
+           })(<RangePicker />)}
+         </Form.Item>
+         <Form.Item label="设备">
+           {getFieldDecorator('device', {
+             rules: [
+             ],
+           })(
+             <Select>
+               <Option value="WHITE">白名单</Option>
+               <Option value="BLACK">黑名单</Option>
+             </Select>
+           )}
+         </Form.Item>
+         <Form.Item label="布控标签">
+           {getFieldDecorator('label', {
+             rules: [
+             ],
+           })(
+             <Select>
+               <Option value="WHITE">白名单</Option>
+               <Option value="BLACK">黑名单</Option>
+             </Select>
+           )}
+         </Form.Item>
+       </Form>
+     </React.Fragment>
+   );
    return (
      <div className={styles.intelligentSearch}>
        <div className={styles['intelligentSearch-contentWrapper']}>
@@ -208,12 +211,6 @@ class IntelligentSearch extends Component {
                </div>
              </div>
              <div className={styles.btnWrapper}>
-               {/* <Dropdown overlay={searchOptions}>
-                 <Button type="primary" className={styles.searchBtn}>
-                   <span className={styles.searchBtnText}>开始检索</span>
-                   <Icon type="down" className={styles.searchBtnIcon} />
-                 </Button>
-               </Dropdown> */}
                <Button type="primary" className={styles.searchBtn} onClick={this.handleSearch}>
                  <span className={styles.searchBtnText}>
                    识别
@@ -243,7 +240,6 @@ class IntelligentSearch extends Component {
                )
              }
            </Spin>
-
          </div>
        </div>
      </div>

@@ -61,7 +61,7 @@
   position: relative;
 }
 .videoBox .switchBox {
-  margin: 7px 0 30px 0;
+  margin-bottom: 30px;
 }
 .videoBox .switchBox > div {
   float: right;
@@ -126,6 +126,7 @@
   width: 100%;
   position: relative;
   padding-top: 8px;
+  overflow-x: hidden;
 }
 .videoBox .emptySlider :global .react_time_range__time_range_container {
   padding: 30px 0px 0px !important;
