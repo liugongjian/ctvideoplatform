@@ -38,16 +38,17 @@ class CarRes extends Component {
       total: 0,
       listLoading: false,
       listData: [],
+      searchParam: null,
     };
   }
 
 
   componentDidMount() {
-    this.getAlarms(this.props);
+    this.setState({ searchParam: this.props.searchParam }, () => this.getAlarms(this.props));
   }
 
   componentWillReceiveProps(nextProps) {
-    this.getAlarms(nextProps);
+    this.setState({ searchParam: nextProps.searchParam }, () => this.getAlarms(nextProps));
   }
 
   getAlarms = (props) => {
@@ -60,7 +61,7 @@ class CarRes extends Component {
     } = this.state;
     const curPlate = detail && detail[0];
     const { platelicense } = curPlate || {};
-    const getDataProxyFunc = parseInt(searchParam.searchType) ? searchPlateCaptures : searchPlateAlarms;
+    const getDataProxyFunc = parseInt(this.state.searchParam.searchType) ? searchPlateCaptures : searchPlateAlarms;
     if (!platelicense) {
       return;
     }
@@ -73,9 +74,10 @@ class CarRes extends Component {
       const {
         pageNo, pageSize, curLicense
       } = this.state;
-      if (searchParam.searchType) {
-        delete searchParam.searchType;
-      }
+      // const searchParamTemp = searchParam;
+      // if (searchParam.searchType) {
+      //   delete searchParamTemp.searchType;
+      // }
       getDataProxyFunc({
         ...searchParam, licenseNo: curLicense || searchParam.lisenceNo, pageNo, pageSize, // '苏E99G06'
       }).then((res) => {
@@ -103,7 +105,7 @@ class CarRes extends Component {
     this.setState({
       pageNo: current - 1,
       pageSize,
-    }, () => this.getAlarms(this.props));
+    }, () => { console.log('this.props', this.props); this.getAlarms(this.props); });
   }
 
   showTotal = total => (<span className={styles.totalText}>{`总条数： ${total}`}</span>)
@@ -115,6 +117,7 @@ class CarRes extends Component {
   }
 
   render() {
+    console.log('this.props.searchParam-render', this.props.searchParam);
     const {
       data: {
         detail, picture, plateNum
@@ -166,7 +169,7 @@ class CarRes extends Component {
           <div className={styles.plateAlarmsTitle}>
             {curLicense}
             {' '}
-            相关告警信息
+            检索信息
           </div>
           <Spin spinning={listLoading} className={styles['plateAlarms-listSpin']}>
             <div className={styles['plateAlarms-listWrapper']}>

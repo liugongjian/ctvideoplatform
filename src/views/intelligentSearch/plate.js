@@ -6,6 +6,7 @@ import {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import math from 'Utils/math';
+import moment from 'moment';
 import {
   searchPlate, saveImages, addImage, delImage
 } from 'Redux/reducer/intelligentSearch';
@@ -149,9 +150,11 @@ class IntelligentSearch extends Component {
 
    this.setState({ resLoading: true });
    const formData = new FormData();
+   const [startTime, endTime] = getFieldValue('timerange');
+   console.log('startTime', startTime);
    const searchParam = {
-     startTime: getFieldValue('timerange') && getFieldValue('timerange').length !== 0 ? this.dateToString(getFieldValue('timerange')[0], '00:00:00') : this.dateToString(new Date(), '00:00:00'),
-     endTime: getFieldValue('timerange') && getFieldValue('timerange').length !== 0 ? this.dateToString(getFieldValue('timerange')[1], '23:59:59') : this.dateToString(new Date(), '23:59:59'),
+     startTime: startTime.format('YYYY-MM-DD hh:mm:ss'),
+     endTime: endTime.format('YYYY-MM-DD hh:mm:ss'),
      deviceId: getFieldValue('device') ? getFieldValue('device')[getFieldValue('device').length - 1] : null,
      searchType: filterType,
    };
@@ -160,8 +163,8 @@ class IntelligentSearch extends Component {
    } else {
      searchParam.tenantId = this.props.userinfo?.tenantId;
    }
-   console.log(searchParam, searchParam);
    getFieldValue('lisenceNo') && (searchParam.licenseNo = getFieldValue('lisenceNo'));
+   console.log('searchParam-out', searchParam);
    if (curImage) {
      const chosenImage = plateImages.find(item => item.id === curImage.id);
      const file = chosenImage.file || dataURLtoFile(chosenImage.base64, 'cropped.jpeg');
@@ -284,11 +287,23 @@ class IntelligentSearch extends Component {
              ],
            })(<Input />)}
          </Form.Item>
-         <Form.Item label="时间区间">
+         <Form.Item label="时间范围">
            {getFieldDecorator('timerange', {
              rules: [
              ],
-           })(<RangePicker format="YYYY-MM-DD" />)}
+             initialValue: [moment().subtract('days', 7), moment()]
+           })(
+             <RangePicker
+               style={{ width: '100%' }}
+               showTime={{ format: 'HH:mm' }}
+               format="MM-DD HH:mm"
+               placeholder={['开始时间', '结束时间']}
+               //  onChange={this.onTimeChange}
+               //  value={[startTime, endTime]}
+               //  onOk={this.onTimeChange}
+               allowClear={false}
+             />
+           )}
          </Form.Item>
          <Form.Item label="设备">
            {getFieldDecorator('device', {
