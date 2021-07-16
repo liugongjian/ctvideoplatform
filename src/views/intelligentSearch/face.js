@@ -118,16 +118,16 @@ class IntelligentSearch extends Component {
       }
     });
     // 子节点为区域，不是设备，不可选
-    // const setAreaNodeDisabled = (tree) => {
-    //   tree.forEach((item) => {
-    //     if (item.children) {
-    //       setAreaNodeDisabled(item.children);
-    //     } else {
-    //       item.disabled = item.type == 0;
-    //     }
-    //   });
-    // };
-    // setAreaNodeDisabled(val);
+    const setAreaNodeDisabled = (tree) => {
+      tree.forEach((item) => {
+        if (item.children) {
+          setAreaNodeDisabled(item.children);
+        } else {
+          item.disabled = item.type == 0;
+        }
+      });
+    };
+    setAreaNodeDisabled(val);
     return val;
   };
 
@@ -356,7 +356,7 @@ class IntelligentSearch extends Component {
                  ],
                })(
                  <Cascader
-                   changeOnSelect
+                   //  changeOnSelect
                    placeholder="请选择设备"
                    popupClassName={styles.cameraCascader}
                    options={deviceTree}
