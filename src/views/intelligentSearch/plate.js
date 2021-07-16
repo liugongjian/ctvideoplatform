@@ -42,7 +42,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   dispatch
 );
 const licenseNoReg = /^[0-9a-zA-Z]+$/;
-
+const dateFormat = 'YYYY-MM-DD';
 class IntelligentSearch extends Component {
   constructor() {
     super();
@@ -141,8 +141,8 @@ class IntelligentSearch extends Component {
    const [startTime, endTime] = getFieldValue('timerange');
    const device = getFieldValue('device') || null;
    const searchParam = {
-     startTime: startTime.format(TIME_TO_STRING_FORMAT),
-     endTime: endTime.format(TIME_TO_STRING_FORMAT),
+     startTime: startTime.startOf('day').format(TIME_TO_STRING_FORMAT),
+     endTime: endTime.endOf('day').format(TIME_TO_STRING_FORMAT),
      deviceId: device && device[device.length - 1],
      searchType: filterType,
    };
@@ -277,12 +277,12 @@ class IntelligentSearch extends Component {
            {getFieldDecorator('timerange', {
              rules: [
              ],
-             initialValue: [moment().subtract('days', 7), moment()]
+             initialValue: [moment().subtract('days', 7).startOf('day'), moment().endOf('day')]
            })(
              <RangePicker
                style={{ width: '100%' }}
-               showTime={{ format: 'HH:mm' }}
-               format="MM-DD HH:mm"
+               //  showTime={{ format: 'HH:mm' }}
+               format={dateFormat}
                placeholder={['开始时间', '结束时间']}
                //  onChange={this.onTimeChange}
                //  value={[startTime, endTime]}

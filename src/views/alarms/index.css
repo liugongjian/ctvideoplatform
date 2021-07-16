@@ -1,0 +1,424 @@
+:global .ant-calendar-picker-container {
+  position: absolute;
+  z-index: 1050;
+  font-size: 14px;
+  white-space: nowrap;
+  background: #fff;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+.span5px {
+  width: 5px;
+  display: inline-block;
+}
+.span10px {
+  width: 10px;
+  display: inline-block;
+}
+.span20px {
+  width: 20px;
+  display: inline-block;
+}
+.cameraCascader {
+  position: absolute;
+  z-index: 1050;
+  font-size: 14px;
+  white-space: nowrap;
+  background: #fff;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 2px 8px rgba(107, 29, 29, 0.15) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+}
+.cameraCascader :global .ant-cascader-menu {
+  height: 280px;
+}
+.cameraCascader :global .ant-cascader-menu > .ant-cascader-menu-item {
+  width: 195px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.alarms {
+  min-width: 1100px;
+  height: calc(100vh - 72px);
+  position: relative;
+  background-color: white;
+  min-height: calc(100% - 30px);
+  margin: 10px 10px 20px 10px;
+  padding: 20px 20px 72px 20px;
+  border-radius: 2px;
+}
+.alarms .span10px {
+  width: 10px;
+  display: inline-block;
+}
+.alarms-filterWrapper {
+  background: rgba(0, 0, 0, 0.03);
+  width: 100%;
+  height: 72px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.alarms-filterWrapper-btnWrapper {
+  float: right;
+  vertical-align: middle;
+}
+.alarms-filterWrapper-btnWrapper :global .ant-btn > span,
+.alarms-filterWrapper-btnWrapper :global .ant-btn > i {
+  vertical-align: middle;
+}
+.alarms-filterWrapper-inner {
+  width: 100%;
+  height: 32px;
+}
+.alarms-filterWrapper-inner > div,
+.alarms-filterWrapper-inner > span {
+  vertical-align: top;
+}
+.alarms-listWrapper {
+  width: 100%;
+  height: calc(100vh - 250px);
+  overflow-y: auto;
+}
+.alarms-listWrapper-nodata {
+  width: 100%;
+  height: calc(100vh - 250px);
+  line-height: calc(100vh - 250px);
+  text-align: center;
+  background-color: #f6f6f6;
+}
+.alarms-listWrapper-nodata img {
+  height: 150px;
+}
+.alarms-listWrapper :global .AlarmCard {
+  margin-bottom: 20px;
+}
+.alarms-listWrapper :global .AlarmCard:hover {
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.15);
+}
+@media screen and (min-width: 1701px) {
+  .alarms-listWrapper :global .AlarmCard {
+    height: 300px;
+    width: calc((100% - 15px * 5) / 6);
+  }
+  .alarms-listWrapper :global .AlarmCard-imgWrapper {
+    height: 170px;
+    line-height: 170px;
+  }
+  .alarms-listWrapper :global .AlarmCard:not(:nth-of-type(6n + 0)) {
+    margin-right: 15px;
+  }
+}
+@media screen and (max-width: 1700px) {
+  .alarms-listWrapper :global .AlarmCard {
+    height: 270px;
+    width: calc((100% - 15px * 3) / 4);
+  }
+  .alarms-listWrapper :global .AlarmCard-imgWrapper {
+    height: 140px;
+    line-height: 140px;
+  }
+  .alarms-listWrapper :global .AlarmCard:not(:nth-of-type(4n + 0)) {
+    margin-right: 15px;
+  }
+}
+@media screen and (min-width: 1951px) {
+  .alarms-listWrapper :global .AlarmCard-Plate {
+    height: 300px;
+    width: calc((100% - 15px * 5) / 6);
+  }
+  .alarms-listWrapper :global .AlarmCard-Plate-imgWrapper {
+    height: 170px;
+    line-height: 170px;
+  }
+  .alarms-listWrapper :global .AlarmCard-Plate:not(:nth-of-type(6n + 0)) {
+    margin-right: 15px;
+  }
+}
+@media screen and (max-width: 1950px) {
+  .alarms-listWrapper :global .AlarmCard-Plate {
+    height: 270px;
+    width: calc((100% - 15px * 3) / 4);
+  }
+  .alarms-listWrapper :global .AlarmCard-Plate-imgWrapper {
+    height: 140px;
+    line-height: 140px;
+  }
+  .alarms-listWrapper :global .AlarmCard-Plate:not(:nth-of-type(4n + 0)) {
+    margin-right: 15px;
+  }
+}
+.alarms-paginationWrapper {
+  position: absolute;
+  width: calc(100% - 40px);
+  bottom: 10px;
+}
+.alarms :global .anticon {
+  vertical-align: baseline;
+}
+.alarms :global .ant-select-selection--multiple {
+  padding-bottom: 0 !important;
+}
+.alarms :global .ant-pagination-options-quick-jumper input {
+  height: 32px;
+}
+.alarms :global .ant-pagination-options-quick-jumper {
+  height: 32px;
+  line-height: 32px;
+}
+:global(.AlarmCard) {
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  border: 1px solid #ededed;
+  background-color: white;
+  border-radius: 4px 4px 0 0;
+}
+:global(.AlarmCard)-label {
+  display: inline-block;
+  height: 22px;
+  line-height: 22px;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 12px;
+  background: #f5f5f5;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+}
+:global(.AlarmCard)-operatorWrapper {
+  display: none;
+}
+:global(.AlarmCard) > div:not(:global(.AlarmCard)-imgWrapper) {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+:global(.AlarmCard)-title {
+  width: 100%;
+  height: 44px;
+  line-height: 44px;
+  border-radius: 3px 3px 0px 0px;
+  background-color: #ededed;
+}
+:global(.AlarmCard)-title-icon {
+  height: 20px;
+  width: 20px;
+}
+:global(.AlarmCard)-title-name {
+  font-family: PingFangSC-Regular;
+  font-size: 12px;
+  color: #000000;
+}
+:global(.AlarmCard)-title-time {
+  font-family: PingFangSC-Regular;
+  font-size: 10px;
+  max-width: calc(100% - 50px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #8c8c8c;
+  float: right;
+}
+:global(.AlarmCard)-imgWrapper-cursor {
+  cursor: pointer;
+}
+:global(.AlarmCard)-imgWrapper {
+  background-color: #f6f6f6;
+  position: relative;
+}
+:global(.AlarmCard)-imgWrapper-title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  height: 28px;
+  font-size: 12px;
+  line-height: 28px;
+  width: 100px;
+  padding: 0 12px;
+  color: white;
+  background-image: linear-gradient(90deg, rgba(51, 51, 51, 0.48) 57%, rgba(98, 98, 98, 0) 100%);
+}
+:global(.AlarmCard)-imgWrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+:global(.AlarmCard) > :global(.AlarmCard)-imgWrapper > :global(.AlarmCard)-noImage {
+  width: 100%;
+  height: 100px;
+  object-fit: contain;
+}
+:global(.AlarmCard)-contentWrapper > div {
+  margin-top: 5px;
+  font-size: 12px;
+  line-height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+:global(.AlarmCard):not(:global(.AlarmCard-DisableOperators)):hover {
+  border: 1px solid #fa8334;
+}
+:global(.AlarmCard):not(:global(.AlarmCard-DisableOperators)):hover :global(.AlarmCard-operatorWrapper) {
+  display: block;
+  position: absolute;
+  z-index: 100;
+  height: 30px;
+  line-height: 30px;
+  top: 0;
+  right: 0;
+  background-color: #fa8334;
+  border: 1px solid #fa8334;
+  color: white;
+  text-align: right;
+}
+:global(.AlarmCard):not(:global(.AlarmCard-DisableOperators)):hover :global(.AlarmCard-operatorWrapper) a {
+  color: white;
+  vertical-align: middle;
+}
+:global(.AlarmCard):not(:global(.AlarmCard-DisableOperators)):hover :global(.AlarmCard-operatorWrapper)-split {
+  display: inline-block;
+  vertical-align: middle;
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+  width: 10px;
+  height: 14px;
+  margin-right: 10px;
+  margin-bottom: 2px;
+}
+:global(.AlarmCard-label) {
+  display: inline-block;
+  padding: 0 5px;
+  line-height: 18px;
+  height: 20px;
+  text-align: center;
+  margin-right: 5px;
+  background: #f5f5f5;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+}
+:global(.AlarmCardTag) {
+  display: inline-block;
+  width: 52px;
+  line-height: 18px;
+  height: 20px;
+  text-align: center;
+  border-radius: 4px;
+  margin-left: 5px;
+  border: 1px solid #ffa39e;
+}
+:global(.AlarmCardTag)-WHITE {
+  color: #52c41a;
+  background: #f6ffed;
+  border-color: #b7eb8f;
+}
+:global(.AlarmCardTag)-BLACK {
+  color: #f5222d;
+  border-color: #ffa39e;
+  background: #fff1f0;
+}
+:global(.AlarmCardTag)-OTHER {
+  color: #1890ff;
+  border-color: #91d5ff;
+  background: #e6f7ff;
+}
+.LicenseImport .existMsg {
+  margin-left: 20px;
+  color: #fa8334;
+  font-size: 12px;
+}
+.LicenseImport .existMsg-icon {
+  margin-right: 5px;
+}
+.LicenseImport-formWrapper :global .ant-form .ant-form-item {
+  margin-bottom: 12px;
+}
+.LicenseImport-formWrapper :global .ant-form > .ant-form-item > .ant-form-item-label {
+  width: 100px;
+  vertical-align: top;
+}
+.LicenseImport-formWrapper :global .ant-form > .ant-form-item > .ant-form-item-control-wrapper {
+  width: calc(100% - 180px);
+  display: inline-block;
+}
+.LicenseImport-formWrapper .licenseSplit {
+  display: inline-block;
+  width: 8px;
+}
+.LicenseImport-formWrapper .licenseSel {
+  display: inline-block;
+  width: 80px;
+}
+.LicenseImport-formWrapper .licenseSel :global .ant-form-explain {
+  width: 230px;
+}
+.LicenseImport-formWrapper .licenseInput {
+  display: inline-block;
+  width: calc(100% - 88px);
+}
+.LicenseImport-formWrapper .addItemRequiredIcon label::before {
+  display: inline-block;
+  margin-right: 4px;
+  color: #f5222d;
+  font-size: 14px;
+  font-family: SimSun, sans-serif;
+  line-height: 1;
+  content: "*";
+}
+.alarmDetailModal {
+  display: block;
+}
+.alarmDetailModal .AlarmCard-noImage {
+  width: 100%;
+  height: 30vh;
+  padding: 5vh 0;
+  object-fit: contain;
+}
+.alarmDetailModal :global .ant-modal-header {
+  display: none;
+}
+.alarmDetailModal :global .ant-modal-body {
+  padding: 20px !important;
+}
+.alarmDetailModal :global .ant-modal-close {
+  top: -20px !important;
+  right: -45px !important;
+  color: white;
+}
+.alarmDetailModal .alarmListImg {
+  width: 100%;
+  position: relative;
+  margin-bottom: 5px;
+}
+.alarmDetailModal .alarmListImg img {
+  width: 100%;
+}
+.alarmDetailModal .historyTopnoImage {
+  width: 100%;
+  height: 100px;
+  object-fit: contain;
+}
+.alarmDetailModal .alarmModalName {
+  background: #fa8334;
+  padding: 5px 8px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  color: #fff;
+}
+.alarmDetailModal .alarmDetailInfoBox {
+  width: 100%;
+}
+.alarmDetailModal .alarmDetailInfoBox .alarmDetailInfo {
+  display: inline-block;
+  width: 50%;
+  padding: 5px 5px;
+}
+.alarmDetailModal .alarmDetailInfoBox .alarmDetailInfo:nth-child(even) {
+  width: 220px;
+  float: right;
+}
+.alarmDetailModal .alarmDetailInfoBox .alarmDetailInfoIcon {
+  margin-right: 5px;
+}

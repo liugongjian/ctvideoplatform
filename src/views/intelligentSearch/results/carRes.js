@@ -184,6 +184,7 @@ class CarRes extends Component {
                       data={item}
                       // onDelete={this.handleDel}
                       disableOperators
+                      widthUtilized
                     />
                   ))
                   : (

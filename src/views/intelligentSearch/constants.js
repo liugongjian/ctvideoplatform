@@ -10,7 +10,7 @@ const SEARCH_FACE_ORIGIN_TYPE = ['注册库', '抓拍库', '离线视频'];
 
 const SEARCH_PLATE_ORIGIN_TYPE = ['告警历史', '抓拍库'];
 
-const TIME_TO_STRING_FORMAT = 'YYYY-MM-DD hh:mm:ss';
+const TIME_TO_STRING_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
 export {
   SEARCH_TYPES,
