@@ -123,19 +123,6 @@ class IntelligentSearch extends Component {
     return val;
   };
 
-  dateToString = (date, time) => {
-    date = new Date(date);
-    const year = date.getFullYear(); // 获取完整的年份(4位,1970-????)
-    let month = date.getMonth() + 1; // 获取当前月份(0-11,0代表1月)
-    let day = date.getDate(); // 获取当前日(1-31)
-    if (month < 10) {
-      month = `0${month}`;
-    }
-    if (day < 10) {
-      day = `0${day}`;
-    }
-    return `${year}-${month}-${day} ${time}`;
-  }
 
  handleSearch = () => {
    const {
@@ -160,9 +147,10 @@ class IntelligentSearch extends Component {
    };
    if (!parseInt(filterType)) {
      searchParam.label = getFieldValue('label') || null;
-   } else {
-     searchParam.tenantId = this.props.userinfo?.tenantId;
    }
+   //   else {
+   //    searchParam.tenantId = this.props.userinfo?.tenantId;
+   //  }
    getFieldValue('lisenceNo') && (searchParam.licenseNo = getFieldValue('lisenceNo'));
    console.log('searchParam-out', searchParam);
    if (curImage) {
