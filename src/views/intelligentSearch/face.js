@@ -163,7 +163,9 @@ class IntelligentSearch extends Component {
        const { current, pageSize } = this.state;
        if (name) formData.append('name', name);
        if (label !== undefined) formData.append('label', label);
-       if (deviceId !== undefined) formData.append('deviceId', deviceId);
+       if (deviceId !== undefined) {
+         formData.append('deviceId', deviceId.pop());
+       }
        if (timeRange !== undefined) {
          const [startMoment, endMoment] = timeRange;
          formData.append('startTime', startMoment.startOf('day').format(timeFormat));
