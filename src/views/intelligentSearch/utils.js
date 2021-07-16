@@ -56,8 +56,9 @@ const getPlateColor = (plateType) => {
   return color;
 };
 
+
 export {
   dataURLtoFile,
   getTypeFromUrl,
-  getPlateColor
+  getPlateColor,
 };

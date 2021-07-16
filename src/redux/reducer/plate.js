@@ -5,7 +5,7 @@ import { func } from 'prop-types';
 
 const PLATE_LIST = 'PLATE_LIST';
 const PLATE_LIST_SUCCESS = 'PLATE_LIST_SUCCESS';
-const PLATE_LIST_FAIL = 'ROLE_LIST_FAIL'
+const PLATE_LIST_FAIL = 'ROLE_LIST_FAIL';
 
 const ADD_PLATE = 'ADD_PLATE';
 const DELETE_PLATE = 'DELETE_PLATE';
@@ -30,50 +30,50 @@ export default function role(state = initialState, action = {}) {
         ...state,
       };
     case PLATE_LIST_SUCCESS:
-     return {
-       ...state, 
+      return {
+        ...state,
       };
     case PLATE_LIST_FAIL:
-      return{
+      return {
         ...state,
-        error:action.error
+        error: action.error
       };
-    
+
     case ADD_PLATE:
       return {
         ...state,
-      };  
+      };
     case DELETE_PLATE:
       return {
         ...state,
-      };  
+      };
     case UPDATE_PLATE:
-    return {
-      ...state,
-      };  
-    
+      return {
+        ...state,
+      };
+
     case IMPORTED_PLATE:
       return {
         ...state,
-    };  
-    
+      };
+
     case TEMPLATE_PLATE:
       return {
         ...state,
-    };  
+      };
     case DUPLICATED_PLATE:
       return {
         ...state,
-    };  
+      };
     case SUBMIT_PLATE:
       return {
         ...state,
-    };  
-    
+      };
+
     case EXIST_PLATE:
       return {
         ...state,
-    };  
+      };
     default:
       return {
         ...state
@@ -82,9 +82,8 @@ export default function role(state = initialState, action = {}) {
 }
 
 export function getPlateList(params) {
-  
   return {
-    type: [PLATE_LIST,PLATE_LIST_SUCCESS,PLATE_LIST_FAIL],
+    type: [PLATE_LIST, PLATE_LIST_SUCCESS, PLATE_LIST_FAIL],
     promise: apiClient => apiClient.post(`${urlPrefix}/license/list`,
       {
         data: params
@@ -93,13 +92,12 @@ export function getPlateList(params) {
 }
 
 export function addPlate(params) {
-  
   return {
-      type: ADD_PLATE,
-      promise: apiClient => apiClient.post(`${urlPrefix}/license/add`,
-        {
-          data: params
-        })
+    type: ADD_PLATE,
+    promise: apiClient => apiClient.post(`${urlPrefix}/license/add`,
+      {
+        data: params
+      })
   };
 }
 
@@ -128,9 +126,9 @@ export function getImportedPlate(params) {
   return {
     type: IMPORTED_PLATE,
     promise: apiClient => apiClient.post(`${urlPrefix}/license/imported`,
-    {
-      data: params
-    })
+      {
+        data: params
+      })
   };
 }
 
@@ -138,9 +136,9 @@ export function getDuplicatedPlate(params) {
   return {
     type: DUPLICATED_PLATE,
     promise: apiClient => apiClient.get(`${urlPrefix}/license/duplicated`,
-    {
-      data: params
-    })
+      {
+        data: params
+      })
   };
 }
 
@@ -148,9 +146,9 @@ export function submitImportedPlate(params) {
   return {
     type: SUBMIT_PLATE,
     promise: apiClient => apiClient.post(`${urlPrefix}/license/submit`,
-    {
-      data: params
-    })
+      {
+        data: params
+      })
   };
 }
 

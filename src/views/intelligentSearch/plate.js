@@ -20,6 +20,7 @@ import styles from './plate.less';
 import {
   SEARCH_PLATE_ORIGIN_TYPE,
   SEARCH_TYPES_PLATE,
+  TIME_TO_STRING_FORMAT
 } from './constants';
 import {
   getTypeFromUrl, dataURLtoFile
@@ -49,7 +50,7 @@ class IntelligentSearch extends Component {
       curImage: null,
       resData: undefined,
       resLoading: false,
-      filterType: '0',
+      filterType: 0,
       pageSize: 10,
       total: 0,
       current: 1,
@@ -138,21 +139,20 @@ class IntelligentSearch extends Component {
    this.setState({ resLoading: true });
    const formData = new FormData();
    const [startTime, endTime] = getFieldValue('timerange');
-   console.log('startTime', startTime);
+   const device = getFieldValue('device') || null;
    const searchParam = {
-     startTime: startTime.format('YYYY-MM-DD hh:mm:ss'),
-     endTime: endTime.format('YYYY-MM-DD hh:mm:ss'),
-     deviceId: getFieldValue('device') ? getFieldValue('device')[getFieldValue('device').length - 1] : null,
+     startTime: startTime.format(TIME_TO_STRING_FORMAT),
+     endTime: endTime.format(TIME_TO_STRING_FORMAT),
+     deviceId: device && device[device.length - 1],
      searchType: filterType,
    };
-   if (!parseInt(filterType)) {
+   if (!filterType) {
      searchParam.label = getFieldValue('label') || null;
    }
    //   else {
    //    searchParam.tenantId = this.props.userinfo?.tenantId;
    //  }
    getFieldValue('lisenceNo') && (searchParam.licenseNo = getFieldValue('lisenceNo'));
-   console.log('searchParam-out', searchParam);
    if (curImage) {
      const chosenImage = plateImages.find(item => item.id === curImage.id);
      const file = chosenImage.file || dataURLtoFile(chosenImage.base64, 'cropped.jpeg');
@@ -173,7 +173,6 @@ class IntelligentSearch extends Component {
 
  handleSearchApi = (data, searchFunc, searchParam) => {
    searchFunc(data).then((res) => {
-     console.log('resData', res);
      const nextState = {
        resData: res,
        resLoading: false,
@@ -191,9 +190,8 @@ class IntelligentSearch extends Component {
 
  switchPlateOrigin = (e) => {
    e.preventDefault();
-   console.log('click', e.target.value);
    this.setState({
-     filterType: e.target.value,
+     filterType: parseInt(e.target.value, 0),
    });
  }
 
@@ -307,7 +305,7 @@ class IntelligentSearch extends Component {
              />
            )}
          </Form.Item>
-         {parseInt(this.state.filterType) === 0 ? (
+         { !this.state.filterType ? (
            <Form.Item label="布控标签">
              {getFieldDecorator('label', {
                rules: [

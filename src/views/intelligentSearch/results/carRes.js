@@ -38,17 +38,19 @@ class CarRes extends Component {
       total: 0,
       listLoading: false,
       listData: [],
-      searchParam: null,
+      // searchParam: null,
     };
   }
 
 
   componentDidMount() {
-    this.setState({ searchParam: this.props.searchParam }, () => this.getAlarms(this.props));
+    this.getAlarms(this.props);
+    // this.setState({ searchParam: this.props.searchParam }, () => this.getAlarms(this.props));
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ searchParam: nextProps.searchParam }, () => this.getAlarms(nextProps));
+    this.getAlarms(nextProps);
+    // this.setState({ searchParam: nextProps.searchParam }, () => this.getAlarms(nextProps));
   }
 
   getAlarms = (props) => {
@@ -61,7 +63,8 @@ class CarRes extends Component {
     } = this.state;
     const curPlate = detail && detail[0];
     const { platelicense } = curPlate || {};
-    const getDataProxyFunc = parseInt(this.state.searchParam.searchType) ? searchPlateCaptures : searchPlateAlarms;
+    // const getDataProxyFunc = this.state.searchParam.searchType ? searchPlateCaptures : searchPlateAlarms;
+    const getDataProxyFunc = searchParam.searchType ? searchPlateCaptures : searchPlateAlarms;
     if (!platelicense) {
       return;
     }
@@ -105,7 +108,7 @@ class CarRes extends Component {
     this.setState({
       pageNo: current - 1,
       pageSize,
-    }, () => { console.log('this.props', this.props); this.getAlarms(this.props); });
+    }, () => this.getAlarms(this.props));
   }
 
   showTotal = total => (<span className={styles.totalText}>{`总条数： ${total}`}</span>)
@@ -117,11 +120,11 @@ class CarRes extends Component {
   }
 
   render() {
-    console.log('this.props.searchParam-render', this.props.searchParam);
     const {
       data: {
         detail, picture, plateNum
-      }
+      },
+      searchParam: { searchType }
     } = this.props;
     // const curPlate = detail && detail[0];
     // const {
@@ -169,7 +172,7 @@ class CarRes extends Component {
           <div className={styles.plateAlarmsTitle}>
             {curLicense}
             {' '}
-            检索信息
+            {`${searchType ? '抓拍' : '告警'}信息`}
           </div>
           <Spin spinning={listLoading} className={styles['plateAlarms-listSpin']}>
             <div className={styles['plateAlarms-listWrapper']}>
