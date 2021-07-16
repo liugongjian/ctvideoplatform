@@ -48,6 +48,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   dispatch
 );
 
+const dateFormat = 'YYYY-MM-DD';
 const timeFormat = 'YYYY-MM-DD HH:mm:ss';
 class IntelligentSearch extends Component {
   constructor() {
@@ -165,8 +166,8 @@ class IntelligentSearch extends Component {
        if (deviceId !== undefined) formData.append('deviceId', deviceId);
        if (timeRange !== undefined) {
          const [startMoment, endMoment] = timeRange;
-         formData.append('startTime', startMoment.format(timeFormat));
-         formData.append('endTime', endMoment.format(timeFormat));
+         formData.append('startTime', startMoment.startOf('day').format(timeFormat));
+         formData.append('endTime', endMoment.endOf('day').format(timeFormat));
        }
        if (typeof confirm === 'number') {
          const threshold = (100 - confirm) / 100;
@@ -363,17 +364,17 @@ class IntelligentSearch extends Component {
                  />
                )}
              </Form.Item>
-             <Form.Item label="时间范围">
+             <Form.Item label="日期范围">
                {getFieldDecorator('timeRange', {
                  rules: [
                  ],
-                 initialValue: [moment().subtract('days', 7), moment()]
+                 initialValue: [moment().subtract('days', 7).startOf('day'), moment().endOf('day')]
                })(
                  <RangePicker
                    style={{ width: '100%' }}
-                   showTime={{ format: 'HH:mm' }}
-                   format="MM-DD HH:mm"
-                   placeholder={['开始时间', '结束时间']}
+                   //  showTime={{ format: 'HH:mm' }}
+                   format={dateFormat}
+                   placeholder={['开始日期', '结束日期']}
                    //  onChange={this.onTimeChange}
                    //  value={[startTime, endTime]}
                    //  onOk={this.onTimeChange}
