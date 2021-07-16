@@ -137,11 +137,11 @@ class CarRes extends Component {
       <div className={styles.carRes}>
         <div className={`${styles.plateWrapper} ${plateNum <= 1 ? styles['plateWrapper-bigImg'] : styles['plateWrapper-smallImg']}`}>
           <div className={`${styles.imageWrapper}`}>
-            {picture ? <img src={picture} alt="图片" /> : <img src={NODATA_IMG} alt="" />}
+            {picture ? <img src={picture} alt="图片" /> : <img src={NODATA_IMG} alt="" className={`${styles.nopic} `} />}
           </div>
           <div className={`${styles.textWrapper} `}>
             {
-              detail.map(({ platelicense, plate_type, confidence }) => (
+              picture ? detail.map(({ platelicense, plate_type, confidence }) => (
                 <div className={styles.plateInfo}>
                   <div
                     className={`${styles.plateShow} ${styles[`plateShow-${getPlateColor(plate_type)}`]} ${curLicense === platelicense ? styles['plateShow-selected'] : ''}`}
@@ -163,7 +163,7 @@ class CarRes extends Component {
                     %
                   </div>
                 </div>
-              ))
+              )) : null
             }
           </div>
 

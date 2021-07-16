@@ -69,6 +69,9 @@
 .carRes .plateWrapper-bigImg .imageWrapper {
   width: 40%;
 }
+.carRes .plateWrapper-bigImg .imageWrapper .nopic {
+  margin-left: 100px;
+}
 .carRes .plateWrapper-bigImg .textWrapper {
   width: 60%;
 }
