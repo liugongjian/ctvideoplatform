@@ -142,7 +142,7 @@ class AlarmCard extends Component {
       deviceName,
       algorithmName, algorithmCnName, imageCompress, image,
       controlRule, details, resTime, areaPath,
-      type, plate, face
+      type, plate, face, labelNames
     } = data;
     let recognizeType = '';
     if (plate) recognizeType = 'car';
@@ -150,6 +150,7 @@ class AlarmCard extends Component {
     const detailExp = AlgoConfigs[algorithmName]?.alarmDetail;
     const hasImport = AlgoConfigs[algorithmName]?.carImport;
     let detail = null;
+    const labels = labelNames?.length > 0 ? labelNames.split(',') : [];
     if (detailExp) {
       const reg = /\{(\w+)\}/g;
       detail = detailExp.replace(reg, (match, matchStr, index, stringObj) => ALARM_DETAIL_TYPE[type] || '未知目标');
@@ -268,6 +269,12 @@ class AlarmCard extends Component {
             <EIcon type="myicon-locationIcon" />
             <span className={styles.span5px} />
             <span>{deviceName}</span>
+          </div>
+          <div>
+            {/* 人车非标签 */}
+            {
+              labels.map(name => (<span className="AlarmCard-label">{name}</span>))
+            }
           </div>
           {
             /**
