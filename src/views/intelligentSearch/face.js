@@ -39,7 +39,7 @@ const mapStateToProps = state => ({
   plateImages: state.intelligentSearch.plateImages,
   nextImageId: state.intelligentSearch.nextImageId,
   nextPlateImageId: state.intelligentSearch.nextPlateImageId,
-  userinfo: state.login?.userinfo,
+  // userinfo: state.login?.userinfo,
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
@@ -164,7 +164,7 @@ class IntelligentSearch extends Component {
        if (name) formData.append('name', name);
        if (label !== undefined) formData.append('label', label);
        if (deviceId !== undefined) {
-         formData.append('deviceId', deviceId.pop());
+         formData.append('deviceId', deviceId[deviceId.length - 1]);
        }
        if (timeRange !== undefined) {
          const [startMoment, endMoment] = timeRange;
@@ -201,7 +201,7 @@ class IntelligentSearch extends Component {
        //    message.error('请登陆！');
        //    return;
        //  }
-       data.append('tenantId', this.props.userinfo?.tenantId); // 'ff8081817a194de4017a19ae4fbd005f'
+       //  data.append('tenantId', this.props.userinfo?.tenantId); // 'ff8081817a194de4017a19ae4fbd005f'
        searchFunc = searchFaceFromCapture;
        break;
      default:
@@ -386,7 +386,7 @@ class IntelligentSearch extends Component {
              </Form.Item>
              <Form.Item label="置信度">
                {getFieldDecorator('confirm', {
-                 initialValue: 70,
+                 initialValue: 50,
                  rules: [
                  ],
                })(

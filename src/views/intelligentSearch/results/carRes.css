@@ -29,7 +29,7 @@
     height: 170px;
     line-height: 170px;
   }
-  .carRes .plateAlarms-listWrapper :global .AlarmCard:not(:nth-of-type(6n+0)) {
+  .carRes .plateAlarms-listWrapper :global .AlarmCard:not(:nth-of-type(6n + 0)) {
     margin-right: 15px;
   }
 }
@@ -42,14 +42,14 @@
     height: 140px;
     line-height: 140px;
   }
-  .carRes .plateAlarms-listWrapper :global .AlarmCard:not(:nth-of-type(3n+0)) {
+  .carRes .plateAlarms-listWrapper :global .AlarmCard:not(:nth-of-type(3n + 0)) {
     margin-right: 15px;
   }
 }
 .carRes .plateAlarms-listWrapper-nodata {
   width: 100%;
-  height: calc(100vh - 510px);
-  line-height: calc(100vh - 510px);
+  height: calc(100vh - 520px);
+  line-height: calc(100vh - 520px);
   text-align: center;
   background-color: #f6f6f6;
 }
@@ -67,10 +67,10 @@
   display: block;
 }
 .carRes .plateWrapper-bigImg .imageWrapper {
-  width: 50%;
+  width: 40%;
 }
 .carRes .plateWrapper-bigImg .textWrapper {
-  width: 50%;
+  width: 60%;
 }
 .carRes .plateWrapper-smallImg .imageWrapper {
   width: 40%;
@@ -117,13 +117,13 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 .carRes .plateWrapper .plateShow-blue {
-  background: #4095E3;
+  background: #4095e3;
 }
 .carRes .plateWrapper .plateShow-green {
-  background: #52C41A;
+  background: #52c41a;
 }
 .carRes .plateWrapper .plateShow-yellow {
-  background: #F5A623;
+  background: #f5a623;
 }
 .carRes .plateWrapper .plateShow-black {
   background-color: black;
@@ -131,5 +131,5 @@
 .carRes .plateWrapper .plateShow-white {
   color: black;
   background-color: white;
-  border: 1px solid #CCCCCC;
+  border: 1px solid #cccccc;
 }
