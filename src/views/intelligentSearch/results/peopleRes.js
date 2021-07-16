@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
+import moment from 'moment';
 import {
   message, Button, Modal, Form, Input, Icon, Radio, Upload, List, Spin, Card, Tag, Checkbox,
 } from 'antd';
@@ -26,6 +27,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   dispatch
 );
 
+const timeFormat = 'YYYY-MM-DD HH:mm:ss';
 class Face extends Component {
     state = {
       loading: false,
@@ -104,7 +106,21 @@ class Face extends Component {
                   className={styles.cardContanier}
                 >
                   <div className={styles.imgContainer}>
-                    <img src={item.photoId ? `${urlPrefix}/face/displayexist/${item.photoId}?${new Date().getTime()}`:`${imageURI}${item.imageCompress}`} onError={e => this.handleImageError(e)} alt="" />
+                    {
+                      item.deviceName ? (
+                        <div className={styles['imgContainer-deviceName']} title={item.deviceName}>
+                        {item.deviceName}
+                      </div>
+                      ) : null
+                    }
+                    {
+                      item.recTime ? (
+                        <div className={styles['imgContainer-time']} title={moment(item.recTime).format(timeFormat)}>
+                        {moment(item.recTime).format(timeFormat)}
+                      </div>
+                      ) : null
+                    }
+                    <img src={item.photoId ? `${urlPrefix}/face/displayexist/${item.photoId}?${new Date().getTime()}`:`${imageURI}${item.faceCroppedImage}`} onError={e => this.handleImageError(e)} alt="" />
                     <div className={styles.faceTip}>
                       {parseFloat(item.score * 100).toFixed(2)}
                       %

@@ -164,7 +164,7 @@ class IntelligentSearch extends Component {
        if (name) formData.append('name', name);
        if (label !== undefined) formData.append('label', label);
        if (deviceId !== undefined) {
-         formData.append('deviceId', deviceId.pop());
+         formData.append('deviceId', deviceId[deviceId.length - 1]);
        }
        if (timeRange !== undefined) {
          const [startMoment, endMoment] = timeRange;
@@ -386,7 +386,7 @@ class IntelligentSearch extends Component {
              </Form.Item>
              <Form.Item label="置信度">
                {getFieldDecorator('confirm', {
-                 initialValue: 70,
+                 initialValue: 50,
                  rules: [
                  ],
                })(
