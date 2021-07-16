@@ -48,7 +48,7 @@ const MORE_FILTER = {
     mutiple: false,
   },
   ALARM_TARGET: {
-    key: 'resultLabel',
+    key: 'resultLabels',
     name: '告警目标',
     selection: ALARM_TARGET_VALUES,
     mutiple: true,
