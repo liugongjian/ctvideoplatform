@@ -113,6 +113,13 @@ export function searchPlateAlarms(data) {
   };
 }
 
+export function searchPlateCaptures(data) {
+  return {
+    type: DO_NOTHING,
+    promise: apiClient => apiClient.post(`${captureLibraryUrl}/platecapture/list`, { data })
+  };
+}
+
 export function searchFace(formData) {
   return {
     type: DO_NOTHING,
@@ -123,7 +130,7 @@ export function searchFace(formData) {
 export function searchFaceFromCapture(formData) {
   return {
     type: DO_NOTHING,
-    promise: apiClient => apiClient.post(`${captureLibraryUrl}/facecapture/list`, { data: formData })
+    promise: apiClient => apiClient.post(`${urlPrefix}/facecapture/list`, { data: formData })
   };
 }
 

@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import {
-  searchPlateAlarms
+  searchPlateAlarms, searchPlateCaptures
 } from 'Redux/reducer/intelligentSearch';
 import AlarmCard from 'Views/alarms/alarmCard';
 import Pagination from 'Components/EPagination';
@@ -24,7 +24,7 @@ const { Option } = Select;
 const mapStateToProps = state => ({ monitor: state.monitor });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
-    searchPlateAlarms,
+    searchPlateAlarms, searchPlateCaptures
   },
   dispatch
 );
@@ -38,27 +38,30 @@ class CarRes extends Component {
       total: 0,
       listLoading: false,
       listData: [],
+      searchParam: null,
     };
   }
 
 
   componentDidMount() {
-    this.getAlarms(this.props);
+    this.setState({ searchParam: this.props.searchParam }, () => this.getAlarms(this.props));
   }
 
   componentWillReceiveProps(nextProps) {
-    this.getAlarms(nextProps);
+    this.setState({ searchParam: nextProps.searchParam }, () => this.getAlarms(nextProps));
   }
 
   getAlarms = (props) => {
     const {
-      data: { detail }, searchPlateAlarms
+      data: { detail }, searchPlateAlarms, searchPlateCaptures,
+      searchParam
     } = props;
     const {
       curLicense
     } = this.state;
     const curPlate = detail && detail[0];
     const { platelicense } = curPlate || {};
+    const getDataProxyFunc = parseInt(this.state.searchParam.searchType) ? searchPlateCaptures : searchPlateAlarms;
     if (!platelicense) {
       return;
     }
@@ -71,8 +74,12 @@ class CarRes extends Component {
       const {
         pageNo, pageSize, curLicense
       } = this.state;
-      searchPlateAlarms({
-        licenseNo: curLicense, pageNo, pageSize // '苏E99G06'
+      // const searchParamTemp = searchParam;
+      // if (searchParam.searchType) {
+      //   delete searchParamTemp.searchType;
+      // }
+      getDataProxyFunc({
+        ...searchParam, licenseNo: curLicense || searchParam.lisenceNo, pageNo, pageSize, // '苏E99G06'
       }).then((res) => {
         const {
           list, pageNo, pageSize, pageTotal, recordsTotal
@@ -84,6 +91,12 @@ class CarRes extends Component {
           pageNo,
           total: recordsTotal,
         });
+      }).catch((err) => {
+        this.setState({
+          listData: [],
+          listLoading: false,
+        });
+        console.log(err);
       });
     });
   }
@@ -92,7 +105,7 @@ class CarRes extends Component {
     this.setState({
       pageNo: current - 1,
       pageSize,
-    }, () => this.getAlarms(this.props));
+    }, () => { console.log('this.props', this.props); this.getAlarms(this.props); });
   }
 
   showTotal = total => (<span className={styles.totalText}>{`总条数： ${total}`}</span>)
@@ -104,6 +117,7 @@ class CarRes extends Component {
   }
 
   render() {
+    console.log('this.props.searchParam-render', this.props.searchParam);
     const {
       data: {
         detail, picture, plateNum
@@ -120,7 +134,7 @@ class CarRes extends Component {
       <div className={styles.carRes}>
         <div className={`${styles.plateWrapper} ${plateNum <= 1 ? styles['plateWrapper-bigImg'] : styles['plateWrapper-smallImg']}`}>
           <div className={`${styles.imageWrapper}`}>
-            <img src={picture} alt="图片" />
+            {picture ? <img src={picture} alt="图片" /> : <img src={NODATA_IMG} alt="" />}
           </div>
           <div className={`${styles.textWrapper} `}>
             {
@@ -155,7 +169,7 @@ class CarRes extends Component {
           <div className={styles.plateAlarmsTitle}>
             {curLicense}
             {' '}
-            相关告警信息
+            检索信息
           </div>
           <Spin spinning={listLoading} className={styles['plateAlarms-listSpin']}>
             <div className={styles['plateAlarms-listWrapper']}>

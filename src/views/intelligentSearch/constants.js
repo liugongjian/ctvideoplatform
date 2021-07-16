@@ -8,9 +8,12 @@ const SEARCH_TYPES_PLATE = 'plate';
 
 const SEARCH_FACE_ORIGIN_TYPE = ['注册库', '抓拍库', '离线视频'];
 
+const SEARCH_PLATE_ORIGIN_TYPE = ['告警历史', '抓拍库'];
+
 export {
   SEARCH_TYPES,
   SEARCH_TYPES_FACE,
   SEARCH_TYPES_PLATE,
   SEARCH_FACE_ORIGIN_TYPE,
+  SEARCH_PLATE_ORIGIN_TYPE
 };

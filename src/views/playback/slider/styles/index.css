@@ -41,7 +41,7 @@
   transform: translate(0%, -50%);
   pointer-events: none;
   background-color: #9b9b9b;
-  border-bottom: 1px solid #fff;
+  border-bottom: 1px solid #d9d9d9;
 }
 :global .react_time_range__handle_wrapper {
   position: absolute;
@@ -86,7 +86,7 @@
   margin-top: 20px;
   width: 1px;
   height: 5px;
-  background-color: #fff;
+  background-color: #d9d9d9;
   z-index: 2;
 }
 :global .react_time_range__tick_marker__large {
@@ -96,9 +96,9 @@
 :global .react_time_range__tick_label {
   position: absolute;
   margin-top: -25px;
-  font-size: 10px;
+  font-size: 9px;
   text-align: center;
   z-index: 2;
-  color: #fff;
+  color: #d9d9d9;
   font-family: sans-serif;
 }

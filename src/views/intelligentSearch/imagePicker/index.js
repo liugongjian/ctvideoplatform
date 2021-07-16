@@ -244,7 +244,6 @@ class ImagePicker extends Component {
          <Spin spinning={cropImgLoading}>
            {curImage
              ? (
-
                <Cropper
                  key={curImage.id}
                  src={curImage.base64}
