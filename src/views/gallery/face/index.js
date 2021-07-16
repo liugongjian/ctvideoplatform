@@ -60,12 +60,41 @@ class Face extends Component {
 
     componentDidMount() {
       this.getTableList();
+      this.setTimerInterval();
       window.addEventListener('resize', this.resize.bind(this));
     }
 
 
     componentWillUnmount() {
       window.removeEventListener('resize', this.resize.bind(this));
+      this.clearTimerInterval();
+    }
+
+    setTimerInterval = () => {
+      const {
+        location: {
+          state: withRefresh
+        }
+      } = this.props;
+      console.log('withRefresh', withRefresh);
+      if (withRefresh) {
+        this.props.history.replace('/gallery/face'); // 清除需要URI state中的参数
+        this.countTime = 0;
+        this.interVal = window.setInterval(() => {
+          if (this.countTime > 9) {
+            this.clearTimerInterval();
+          } else {
+            this.countTime++;
+            this.getTableList();
+          }
+        }, 5000);
+      }
+    }
+
+    clearTimerInterval = () => {
+      this.countTime = 0;
+      window.clearInterval(this.interVal);
+      this.interVal = null;
     }
 
     resize = () => {
@@ -490,10 +519,18 @@ class Face extends Component {
                 renderItem={item => (
                   <List.Item>
                     <Card bordered={false} hoverable>
-                      <div className={item.isChecked ? styles.cardContanierChecked : styles.cardContanier}>
+                      <div
+                        className={item.isChecked
+                          ? styles.cardContanierChecked : styles.cardContanier}
+                      >
                         <div className={styles.imgContainer}>
                           { !loading ? <img src={`${urlPrefix}/face/displayexist/${item.photoId}?${new Date().getTime()}`} onError={e => this.handleImageError(e)} alt="" /> : ''}
-                          <Checkbox className={item.isChecked ? styles.checkedbox : styles.checkbox} checked={item.isChecked} onChange={e => this.onChange(item, e)} />
+                          <Checkbox
+                            className={item.isChecked
+                              ? styles.checkedbox : styles.checkbox}
+                            checked={item.isChecked}
+                            onChange={e => this.onChange(item, e)}
+                          />
                           {
                             item.syncStatusCode !== 1 ? (
                               <div className={styles.faceTip}>

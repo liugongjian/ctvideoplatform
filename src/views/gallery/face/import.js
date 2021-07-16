@@ -150,14 +150,18 @@ class ImportFace extends Component {
       this.setState({
         submitLoading: false,
         submitBtnDis: false,
-      }, () => { this.props.history.go(-1); });
+      }, () => {
+        // this.props.history.go(-1);
+        this.props.history.push({ pathname: '/gallery/face', state: { withRefresh: 'true' } });
+      });
     });
   }
 
   render() {
     const that = this;
     const {
-      uploadZipUrl, fileList, stepCurrent, label, uploadStatus, faceData, total, pageNum, pageSize, submitLoading, submitBtnDis, pageSizeOptions
+      uploadZipUrl, fileList, stepCurrent, label, uploadStatus,
+      faceData, total, pageNum, pageSize, submitLoading, submitBtnDis, pageSizeOptions
     } = this.state;
     const props = {
       name: 'file',

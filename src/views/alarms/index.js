@@ -260,7 +260,8 @@ class Alarms extends Component {
               key,
               placeholder: name,
               onChange: val => this.onMoreFilterChange(key, val),
-              style: { width: '160px' }
+              style: { width: '170px' },
+              allowClear: true,
             };
             if (mutiple) {
               options.mode = 'multiple';
