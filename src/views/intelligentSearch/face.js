@@ -39,7 +39,7 @@ const mapStateToProps = state => ({
   plateImages: state.intelligentSearch.plateImages,
   nextImageId: state.intelligentSearch.nextImageId,
   nextPlateImageId: state.intelligentSearch.nextPlateImageId,
-  userinfo: state.login?.userinfo,
+  // userinfo: state.login?.userinfo,
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
@@ -48,6 +48,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   dispatch
 );
 
+const dateFormat = 'YYYY-MM-DD';
 const timeFormat = 'YYYY-MM-DD HH:mm:ss';
 class IntelligentSearch extends Component {
   constructor() {
@@ -117,16 +118,16 @@ class IntelligentSearch extends Component {
       }
     });
     // 子节点为区域，不是设备，不可选
-    // const setAreaNodeDisabled = (tree) => {
-    //   tree.forEach((item) => {
-    //     if (item.children) {
-    //       setAreaNodeDisabled(item.children);
-    //     } else {
-    //       item.disabled = item.type == 0;
-    //     }
-    //   });
-    // };
-    // setAreaNodeDisabled(val);
+    const setAreaNodeDisabled = (tree) => {
+      tree.forEach((item) => {
+        if (item.children) {
+          setAreaNodeDisabled(item.children);
+        } else {
+          item.disabled = item.type == 0;
+        }
+      });
+    };
+    setAreaNodeDisabled(val);
     return val;
   };
 
@@ -162,11 +163,13 @@ class IntelligentSearch extends Component {
        const { current, pageSize } = this.state;
        if (name) formData.append('name', name);
        if (label !== undefined) formData.append('label', label);
-       if (deviceId !== undefined) formData.append('deviceId', deviceId);
+       if (deviceId !== undefined) {
+         formData.append('deviceId', deviceId.pop());
+       }
        if (timeRange !== undefined) {
          const [startMoment, endMoment] = timeRange;
-         formData.append('startTime', startMoment.format(timeFormat));
-         formData.append('endTime', endMoment.format(timeFormat));
+         formData.append('startTime', startMoment.startOf('day').format(timeFormat));
+         formData.append('endTime', endMoment.endOf('day').format(timeFormat));
        }
        if (typeof confirm === 'number') {
          const threshold = (100 - confirm) / 100;
@@ -198,7 +201,7 @@ class IntelligentSearch extends Component {
        //    message.error('请登陆！');
        //    return;
        //  }
-       data.append('tenantId', this.props.userinfo?.tenantId); // 'ff8081817a194de4017a19ae4fbd005f'
+       //  data.append('tenantId', this.props.userinfo?.tenantId); // 'ff8081817a194de4017a19ae4fbd005f'
        searchFunc = searchFaceFromCapture;
        break;
      default:
@@ -355,7 +358,7 @@ class IntelligentSearch extends Component {
                  ],
                })(
                  <Cascader
-                   changeOnSelect
+                   //  changeOnSelect
                    placeholder="请选择设备"
                    popupClassName={styles.cameraCascader}
                    options={deviceTree}
@@ -363,17 +366,17 @@ class IntelligentSearch extends Component {
                  />
                )}
              </Form.Item>
-             <Form.Item label="时间范围">
+             <Form.Item label="日期范围">
                {getFieldDecorator('timeRange', {
                  rules: [
                  ],
-                 initialValue: [moment().subtract('days', 7), moment()]
+                 initialValue: [moment().subtract('days', 7).startOf('day'), moment().endOf('day')]
                })(
                  <RangePicker
                    style={{ width: '100%' }}
-                   showTime={{ format: 'HH:mm' }}
-                   format="MM-DD HH:mm"
-                   placeholder={['开始时间', '结束时间']}
+                   //  showTime={{ format: 'HH:mm' }}
+                   format={dateFormat}
+                   placeholder={['开始日期', '结束日期']}
                    //  onChange={this.onTimeChange}
                    //  value={[startTime, endTime]}
                    //  onOk={this.onTimeChange}

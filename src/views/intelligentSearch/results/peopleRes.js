@@ -63,6 +63,33 @@ class Face extends Component {
 
     showTotal = total => (<span className={styles.totalText}>{`总条数： ${total}`}</span>)
 
+    renderLabel = (item) =>{
+      if(item.labelCode !== undefined){
+        switch (item.labelCode) {
+          case 0:
+            return <Tag color="green">白名单</Tag>
+          case 1:
+            return <Tag color="red">黑名单</Tag>
+          case 2:
+            <Tag color="blue">陌生人</Tag>
+          default:
+            break;
+        }
+      }
+      else if(item.label !== undefined){
+        switch (item.label) {
+          case 'WHITE':
+            return <Tag color="green">白名单</Tag>
+          case 'BLACK':
+            return <Tag color="red">黑名单</Tag>
+          case 'OTHER':
+            return <Tag color="blue">陌生人</Tag>
+          default:
+            break;
+        }
+      }
+      return null;
+    }
     render() {
       const {
         total, current, pageSize
@@ -85,20 +112,10 @@ class Face extends Component {
                   </div>
                   <div className={styles.footerContanier}>
                     <div className={styles.info}>
-                      <div title={item.name} className={styles.name}>{item.name || item.username}</div>
-                      {
-                        item.labelCode === undefined ? null : (
-                          item.labelCode === 0 || item.labelCode === 1 ? (
-                            <div className={styles.tagContainer}>
-                              {
-                                item.labelCode === 0
-                                  ? <Tag color="green">白名单</Tag> : <Tag color="red">黑名单</Tag>
-                              }
-                            </div>
-                          )
-                          : <div className={styles.tagContainer}><Tag color="blue">其他</Tag></div>
-                        )
-                      }
+                      <div title={item.name} className={styles.name}>{item.name || item.username || '-'}</div>
+                        <div className={styles.tagContainer}>
+                        {this.renderLabel(item)}
+                        </div>            
                     </div>
                   </div>
                 </div>
