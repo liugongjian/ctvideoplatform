@@ -246,8 +246,9 @@ const ImageModal = ({
     deviceName,
     algorithmName, algorithmCnName, imageCompress, image,
     controlRule, details, resTime, areaPath,
-    type, plate, face
+    type, plate, face, labelNames
   } = data;
+  const labels = labelNames?.length > 0 ? labelNames.split(',') : [];
   const getTypeContent = () => {
     // if (face && face.label !== 'OTHER') {
     if (face) {
@@ -339,10 +340,12 @@ const ImageModal = ({
         </div>
 
         {getTypeContent()}
-        {/** <div  className={styles.alarmDetailInfo}>
-                <EIcon type="myicon-alarmDetailIcon" />
-                <span>{controlRule}</span>
-          </div> * */}
+        <div style={{ marginLeft: '5px' }}>
+          {/* 人车非标签 */}
+          {
+            labels.map(name => (<span className="AlarmCard-label">{name}</span>))
+          }
+        </div>
       </div>
     </Modal>
   );
