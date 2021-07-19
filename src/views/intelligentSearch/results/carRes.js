@@ -16,6 +16,7 @@ import {
 } from 'Redux/reducer/intelligentSearch';
 import AlarmCard from 'Views/alarms/alarmCard';
 import Pagination from 'Components/EPagination';
+import moment from 'moment';
 import { getPlateColor } from '../utils';
 import styles from './carRes.less';
 
@@ -84,9 +85,22 @@ class CarRes extends Component {
       getDataProxyFunc({
         ...searchParam, licenseNo: curLicense || searchParam.lisenceNo, pageNo, pageSize, // '苏E99G06'
       }).then((res) => {
-        const {
-          list, pageNo, pageSize, pageTotal, recordsTotal
+        let {
+          list
         } = res;
+        const {
+          pageNo, pageSize, pageTotal, recordsTotal
+        } = res;
+        if (searchParam.searchType) {
+          list = list.map(item => ({
+            ...item,
+            plate: {
+              label: item.label,
+              licenseNo: item.licenseNo,
+            },
+            resTime: moment(moment.utc(item.createTime).toDate()).format('YYYY-MM-DD hh:mm:ss')
+          }));
+        }
         this.setState({
           listData: list,
           listLoading: false,
@@ -135,47 +149,49 @@ class CarRes extends Component {
     } = this.state;
     return (
       <div className={styles.carRes}>
-        <div className={`${styles.plateWrapper} ${plateNum <= 1 ? styles['plateWrapper-bigImg'] : styles['plateWrapper-smallImg']}`}>
-          <div className={`${styles.imageWrapper}`}>
-            {picture ? <img src={picture} alt="图片" /> : <img src={NODATA_IMG} alt="" className={`${styles.nopic} `} />}
-          </div>
-          <div className={`${styles.textWrapper} `}>
-            {
-              picture ? detail.map(({ platelicense, plate_type, confidence }) => (
-                <div className={styles.plateInfo}>
-                  <div
-                    className={`${styles.plateShow} ${styles[`plateShow-${getPlateColor(plate_type)}`]} ${curLicense === platelicense ? styles['plateShow-selected'] : ''}`}
-                    onClick={() => this.onPlateChoose(platelicense)}
-                  >
-                    {platelicense}
-                  </div>
-                  <div>
-                    车牌号：
-                    {platelicense}
-                  </div>
-                  <div>
-                    车牌颜色：
-                    {plate_type}
-                  </div>
-                  <div>
-                    置信度：
-                    {parseFloat(confidence * 100).toFixed(2)}
-                    %
-                  </div>
-                </div>
-              )) : null
-            }
-          </div>
-
-        </div>
-        <div className={styles.plateAlarms}>
+        {picture
+          ? (
+            <div className={`${styles.plateWrapper} ${plateNum <= 1 ? styles['plateWrapper-bigImg'] : styles['plateWrapper-smallImg']}`}>
+              <div className={`${styles.imageWrapper}`}>
+                <img src={picture} alt="图片" />
+              </div>
+              <div className={`${styles.textWrapper} `}>
+                {
+                  picture ? detail.map(({ platelicense, plate_type, confidence }) => (
+                    <div className={styles.plateInfo}>
+                      <div
+                        className={`${styles.plateShow} ${styles[`plateShow-${getPlateColor(plate_type)}`]} ${curLicense === platelicense ? styles['plateShow-selected'] : ''}`}
+                        onClick={() => this.onPlateChoose(platelicense)}
+                      >
+                        {platelicense}
+                      </div>
+                      <div>
+                        车牌号：
+                        {platelicense}
+                      </div>
+                      <div>
+                        车牌颜色：
+                        {plate_type}
+                      </div>
+                      <div>
+                        置信度：
+                        {parseFloat(confidence * 100).toFixed(2)}
+                        %
+                      </div>
+                    </div>
+                  )) : null
+                }
+              </div>
+            </div>
+          ) : null}
+        <div className={`${styles.plateAlarms} ${picture ? '' : styles['plateAlarms-long']}`}>
           <div className={styles.plateAlarmsTitle}>
             {curLicense}
             {' '}
             {`${searchType ? '抓拍' : '告警'}信息`}
           </div>
           <Spin spinning={listLoading} className={styles['plateAlarms-listSpin']}>
-            <div className={styles['plateAlarms-listWrapper']}>
+            <div className={`${styles['plateAlarms-listWrapper']} ${picture ? '' : styles['plateAlarms-listWrapper-long']}`}>
               {
                 listData.length > 0 || listLoading
                   ? listData.map(item => (
@@ -184,7 +200,6 @@ class CarRes extends Component {
                       data={item}
                       // onDelete={this.handleDel}
                       disableOperators
-                      widthUtilized
                     />
                   ))
                   : (

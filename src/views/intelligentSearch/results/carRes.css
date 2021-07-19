@@ -1,3 +1,6 @@
+.carRes .plateAlarms-long {
+  height: calc(100vh - 108px) !important;
+}
 .carRes .plateAlarms {
   position: relative;
   height: calc(100vh - 421px);
@@ -8,6 +11,9 @@
 }
 .carRes .plateAlarms .plateAlarmsTitle {
   margin-bottom: 10px;
+}
+.carRes .plateAlarms-listWrapper-long {
+  height: calc(100vh - 173px) !important;
 }
 .carRes .plateAlarms-listWrapper {
   height: calc(100vh - 520px);
@@ -33,7 +39,20 @@
     margin-right: 15px;
   }
 }
-@media screen and (max-width: 1950px) {
+@media screen and (min-width: 1481px) and (max-width: 1950px) {
+  .carRes .plateAlarms-listWrapper :global .AlarmCard {
+    height: 270px;
+    width: calc((100% - 15px * 3) / 4);
+  }
+  .carRes .plateAlarms-listWrapper :global .AlarmCard-imgWrapper {
+    height: 140px;
+    line-height: 140px;
+  }
+  .carRes .plateAlarms-listWrapper :global .AlarmCard:not(:nth-of-type(4n + 0)) {
+    margin-right: 15px;
+  }
+}
+@media screen and (max-width: 1480px) {
   .carRes .plateAlarms-listWrapper :global .AlarmCard {
     height: 270px;
     width: calc((100% - 15px * 2) / 3);

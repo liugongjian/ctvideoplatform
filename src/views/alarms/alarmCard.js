@@ -125,8 +125,9 @@ class AlarmCard extends Component {
   handleImageError = (e) => {
     const image = e.target;
     image.src = noImage;
-    image.className = 'AlarmCard-noImage';
+    // image.className = 'AlarmCard-noImage';
     image.onerror = null;
+    console.log('image.src', image.src);
     this.setState({ imageErr: true });
   };
 
@@ -204,6 +205,7 @@ class AlarmCard extends Component {
             src={`${imageURI}${imageCompress}`}
             alt="图片"
             onError={e => this.handleImageError(e)}
+            className={imageErr ? 'AlarmCard-noImage' : ''}
           />
         </div>
         <div className="AlarmCard-contentWrapper">
