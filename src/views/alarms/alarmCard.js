@@ -276,11 +276,6 @@ class AlarmCard extends Component {
               labels.map(name => (<span className="AlarmCard-label">{name}</span>))
             }
           </div>
-          {
-            /**
-             * TODO人车非标签
-             */
-          }
         </div>
         <div className="AlarmCard-operatorWrapper">
           {
