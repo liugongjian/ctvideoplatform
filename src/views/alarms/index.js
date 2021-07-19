@@ -262,6 +262,7 @@ class Alarms extends Component {
               onChange: val => this.onMoreFilterChange(key, val),
               style: { width: '170px' },
               allowClear: true,
+              value: this.state[key]
             };
             if (mutiple) {
               options.mode = 'multiple';
