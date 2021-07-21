@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'cloudFont';
   src:
-    url('fonts/cloudFont.ttf?nvo3z6') format('truetype'),
-    url('fonts/cloudFont.woff?nvo3z6') format('woff'),
-    url('fonts/cloudFont.svg?nvo3z6#cloudFont') format('svg');
+    url('fonts/cloudFont.ttf?ixr545') format('truetype'),
+    url('fonts/cloudFont.woff?ixr545') format('woff'),
+    url('fonts/cloudFont.svg?ixr545#cloudFont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -24,6 +24,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.myicon-fireIcon:before {
+  content: "\eb7a";
+}
+.myicon-smokeIcon:before {
+  content: "\eb78";
+}
+.myicon-clothesIcon:before {
+  content: "\eb79";
+}
 .myicon-vehicleIcon:before {
   content: "\eb72";
 }
