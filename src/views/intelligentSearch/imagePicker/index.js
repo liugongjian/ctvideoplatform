@@ -110,15 +110,21 @@ class ImagePicker extends Component {
     reader.readAsDataURL(img);
   }
 
-  onUpload = ({ file }) => {
-    this.setState({
-      cropImgLoading: true,
-    });
-  }
+  // onUpload = ({ file }) => {
+  // this.setState({
+  //   cropImgLoading: true,
+  // });
+  // }
 
  beforeUpload = (file) => {
+   this.setState({
+     cropImgLoading: true,
+   });
    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
    if (!isJpgOrPng) {
+     this.setState({
+       cropImgLoading: false,
+     });
      message.error('请上传JPG/PNG类型的图片!');
      return false;
    }
@@ -225,7 +231,7 @@ class ImagePicker extends Component {
                    listType="picture-card"
                    //  className="avatar-uploader"
                    beforeUpload={this.beforeUpload}
-                   onChange={this.onUpload}
+                   //  onChange={this.onUpload}
                    showUploadList={false}
                  >
                    <Icon type="plus" />
@@ -264,7 +270,7 @@ class ImagePicker extends Component {
                  listType="picture-card"
                  //  className="avatar-uploader"
                  beforeUpload={this.beforeUpload}
-                 onChange={this.onUpload}
+                 //  onChange={this.onUpload}
                  showUploadList={false}
                >
                  { uploadButton}
