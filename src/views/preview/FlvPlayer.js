@@ -23,7 +23,12 @@ class FlvPlayer extends PureComponent {
     componentWillReceiveProps(props) {
       try {
         const { src } = props;
-        if (!src || src === this.props.src) return;
+        // if (!src || src === this.props.src) return;
+        if (!src) {
+          this.unloadPlayer();
+        } else if (src === this.props.src) {
+          return;
+        }
         this.initVideo(src);
       } catch (error) {
         console.log(error);
@@ -32,6 +37,10 @@ class FlvPlayer extends PureComponent {
 
     componentWillUnmount() {
       // 销毁播放器
+      this.unloadPlayer();
+    }
+
+    unloadPlayer = () => {
       if (this.player) {
         const {
           visibilityChange

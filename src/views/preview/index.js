@@ -883,10 +883,10 @@ class Preview extends PureComponent {
 
       getDomSquared = () => {
         const {
-          showSquaredDom, videoSrc, videoName, pointsInfo, appliedTraffic, historyID
+          showSquaredDom, videoSrc, videoName, pointsInfo, appliedTraffic, historyID, noVideo
         } = this.state;
         if (showSquaredDom === 1) {
-          return historyID
+          return historyID && !noVideo
             ? (
               <Fragment>
                 <div className={styles.videoHandle}>
