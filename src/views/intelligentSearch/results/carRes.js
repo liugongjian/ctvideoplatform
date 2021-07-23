@@ -246,7 +246,12 @@ class CarRes extends Component {
 
   renderResult = () => {
     const { listData } = this.state;
-    if (listData.length === 0) {
+    const {
+      data: {
+        picture
+      }
+    } = this.props;
+    if (listData.length === 0 && !picture) {
       return this.renderNoData();
     }
     return (
