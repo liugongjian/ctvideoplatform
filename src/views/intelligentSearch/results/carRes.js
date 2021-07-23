@@ -17,6 +17,7 @@ import {
 import AlarmCard from 'Views/alarms/alarmCard';
 import Pagination from 'Components/EPagination';
 import moment from 'moment';
+import { Fragment } from 'react';
 import { getPlateColor } from '../utils';
 import styles from './carRes.less';
 
@@ -133,101 +134,136 @@ class CarRes extends Component {
     }, () => this.getAlarms(this.props));
   }
 
-  render() {
+  renderPlateOption = () => {
     const {
       data: {
         detail, picture, plateNum
       },
+    } = this.props;
+    const {
+      curLicense
+    } = this.state;
+    return picture
+      ? (
+        <div className={`${styles.plateWrapper} ${plateNum <= 1 ? styles['plateWrapper-bigImg'] : styles['plateWrapper-smallImg']}`}>
+          <div className={`${styles.imageWrapper}`}>
+            <img src={picture} alt="图片" />
+          </div>
+          <div className={`${styles.textWrapper} `}>
+            {
+              picture ? detail.map(({ platelicense, plate_type, confidence }) => (
+                <div className={styles.plateInfo}>
+                  <div
+                    className={`${styles.plateShow} ${styles[`plateShow-${getPlateColor(plate_type)}`]} ${curLicense === platelicense ? styles['plateShow-selected'] : ''}`}
+                    onClick={() => this.onPlateChoose(platelicense)}
+                  >
+                    {platelicense}
+                  </div>
+                  <div>
+                    车牌号：
+                    {platelicense}
+                  </div>
+                  <div>
+                    车牌颜色：
+                    {plate_type}
+                  </div>
+                  <div>
+                    置信度：
+                    {parseFloat(confidence * 100).toFixed(2)}
+                    %
+                  </div>
+                </div>
+              )) : null
+            }
+          </div>
+        </div>
+      ) : null;
+  }
+
+  renderPlateDetail = () => {
+    const {
+      data: {
+        picture
+      },
       searchParam: { searchType }
     } = this.props;
-    // const curPlate = detail && detail[0];
-    // const {
-    //   platelicense, plate_type, confidence
-    // } = curPlate || {};
     const {
       listData, listLoading, pageSize, pageNo, total, curLicense
     } = this.state;
     return (
-      <div className={styles.carRes}>
-        {picture
-          ? (
-            <div className={`${styles.plateWrapper} ${plateNum <= 1 ? styles['plateWrapper-bigImg'] : styles['plateWrapper-smallImg']}`}>
-              <div className={`${styles.imageWrapper}`}>
-                <img src={picture} alt="图片" />
-              </div>
-              <div className={`${styles.textWrapper} `}>
-                {
-                  picture ? detail.map(({ platelicense, plate_type, confidence }) => (
-                    <div className={styles.plateInfo}>
-                      <div
-                        className={`${styles.plateShow} ${styles[`plateShow-${getPlateColor(plate_type)}`]} ${curLicense === platelicense ? styles['plateShow-selected'] : ''}`}
-                        onClick={() => this.onPlateChoose(platelicense)}
-                      >
-                        {platelicense}
-                      </div>
-                      <div>
-                        车牌号：
-                        {platelicense}
-                      </div>
-                      <div>
-                        车牌颜色：
-                        {plate_type}
-                      </div>
-                      <div>
-                        置信度：
-                        {parseFloat(confidence * 100).toFixed(2)}
-                        %
-                      </div>
-                    </div>
-                  )) : null
-                }
-              </div>
-            </div>
-          ) : null}
-        <div className={`${styles.plateAlarms} ${picture ? '' : styles['plateAlarms-long']}`}>
-          <div className={styles.plateAlarmsTitle}>
-            {curLicense}
-            {' '}
-            {`${searchType ? '抓拍' : '告警'}信息`}
-          </div>
-          <Spin spinning={listLoading} className={styles['plateAlarms-listSpin']}>
-            <div className={`${styles['plateAlarms-listWrapper']} ${picture ? '' : styles['plateAlarms-listWrapper-long']}`}>
-              {
-                listData.length > 0 || listLoading
-                  ? listData.map(item => (
-                    <AlarmCard
-                      key={item.id}
-                      data={item}
-                      // onDelete={this.handleDel}
-                      disableOperators
-                    />
-                  ))
-                  : (
-                    <div className={styles['plateAlarms-listWrapper-nodata']}>
-                      <img src={NODATA_IMG} alt="" />
-                    </div>
-                  )
-              }
-            </div>
-          </Spin>
-          <div className={styles['plateAlarms-paginationWrapper']}>
-            <Pagination
-              // size="small"
-              total={total}
-              current={pageNo + 1}
-              // pageSize={pageSize}
-              defaultPageSize={12}
-              onChange={this.onPageChange}
-              onShowSizeChange={this.onPageChange}
-              pageSizeOptions={['12', '24', '36']}
-              pageSize={pageSize}
-              hideOnSinglePage={false}
-              showSizeChanger
-              showQuickJumper
-              showTotal={this.showTotal}
-            />
-          </div>
+      <div className={`${styles.plateAlarms} ${picture ? '' : styles['plateAlarms-long']}`}>
+        <div className={styles.plateAlarmsTitle}>
+          {curLicense}
+          {' '}
+          {`${searchType ? '抓拍' : '告警'}信息`}
         </div>
+        <Spin spinning={listLoading} className={styles['plateAlarms-listSpin']}>
+          <div className={`${styles['plateAlarms-listWrapper']} ${picture ? '' : styles['plateAlarms-listWrapper-long']}`}>
+            {
+              listData.length > 0 || listLoading
+                ? listData.map(item => (
+                  <AlarmCard
+                    key={item.id}
+                    data={item}
+                    // onDelete={this.handleDel}
+                    disableOperators
+                  />
+                ))
+                : (
+                  <div className={styles['plateAlarms-listWrapper-nodata']}>
+                    <img src={NODATA_IMG} alt="" />
+                  </div>
+                )
+            }
+          </div>
+        </Spin>
+        <div className={styles['plateAlarms-paginationWrapper']}>
+          <Pagination
+            // size="small"
+            total={total}
+            current={pageNo + 1}
+            // pageSize={pageSize}
+            defaultPageSize={12}
+            onChange={this.onPageChange}
+            onShowSizeChange={this.onPageChange}
+            pageSizeOptions={['12', '24', '36']}
+            pageSize={pageSize}
+            hideOnSinglePage={false}
+            showSizeChanger
+            showQuickJumper
+            showTotal={this.showTotal}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  renderNoData = () => (
+    <div className={styles.nodataWrapper}>
+      <img src={NODATA_IMG} alt="" />
+    </div>
+  )
+
+  renderResult = () => {
+    const { listData } = this.state;
+    if (listData.length === 0) {
+      return this.renderNoData();
+    }
+    return (
+      <Fragment>
+        { this.renderPlateOption() }
+        { this.renderPlateDetail() }
+      </Fragment>
+    );
+  }
+
+  render() {
+    const { listData } = this.state;
+    return (
+      <div className={styles.carRes}>
+        {
+          this.renderResult()
+        }
       </div>
     );
   }
