@@ -320,14 +320,14 @@ class IntelligentSearch extends Component {
                  rules: [
                  ],
                })(
-                 <Select>
+                 <Select allowClear>
                    <Option value="WHITE">白名单</Option>
                    <Option value="BLACK">黑名单</Option>
-                   <Option value="OTHER">其他</Option>
+                   {/* <Option value="OTHER">其他</Option> */}
                  </Select>
                )}
              </Form.Item>
-             <Form.Item label="置信度">
+             <Form.Item label="置信度" key="confirm-0">
                {getFieldDecorator('confirm', {
                  initialValue: 70,
                  rules: [
@@ -362,7 +362,7 @@ class IntelligentSearch extends Component {
                    placeholder="请选择设备"
                    popupClassName={styles.cameraCascader}
                    options={deviceTree}
-                   allowClear={false}
+                   allowClear
                  />
                )}
              </Form.Item>
@@ -384,7 +384,7 @@ class IntelligentSearch extends Component {
                  />
                )}
              </Form.Item>
-             <Form.Item label="置信度">
+             <Form.Item label="置信度" key="confirm-1">
                {getFieldDecorator('confirm', {
                  initialValue: 50,
                  rules: [
