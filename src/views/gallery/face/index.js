@@ -335,7 +335,7 @@ class Face extends Component {
     delFace(data).then((res) => {
       message.success('删除成功');
       this.setState({
-        pageNum: 1,
+        // pageNum: 1,
         selectedRowKeys: [],
       }, () => this.getTableList());
     });
