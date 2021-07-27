@@ -314,6 +314,7 @@ class Alarms extends Component {
                 placeholder="请选择告警类型"
                 value={algoVal}
                 onChange={this.onAlgoChange}
+                allowClear
                 // maxTagCount={1} // 算法改成单选
                 // maxTagTextLength={2} // 算法改成单选
               >
