@@ -243,7 +243,7 @@ class IntelligentSearch extends Component {
 
  switchFaceOrigin = (e) => {
    e.preventDefault();
-   console.log('click', e.target.value);
+   this.props.form.resetFields()
    this.setState({
      filterType: e.target.value,
    });
