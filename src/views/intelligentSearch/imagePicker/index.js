@@ -128,6 +128,14 @@ class ImagePicker extends Component {
      message.error('请上传JPG/PNG类型的图片!');
      return false;
    }
+   const isLt10M = file.size / 1024 / 1024 < 10;
+   if (!isLt10M) {
+    this.setState({
+      cropImgLoading: false,
+    });
+     message.error('图片大小不得超过10M！');
+     return false;
+   }
    //  const isLt2M = file.size / 1024 / 1024 < 2;
    //  if (!isLt2M) {
    //    message.error('请上传小于2MB的图片!');
@@ -136,7 +144,9 @@ class ImagePicker extends Component {
      const {
        imageType, curImage
      } = this.props;
-     addImage({ base64: imageUrl }, imageType);
+     const newImage = { base64: imageUrl };
+     addImage(newImage, imageType);
+     this.setState({curImage:newImage});
      // 如果重复上传同一图片，cropper不会重复加载，onready不执行，导致一直loading
      //  if (imageUrl === curImage.base64) {
      //    this.setState({
