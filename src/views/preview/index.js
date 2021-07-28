@@ -265,7 +265,8 @@ class Preview extends PureComponent {
           const temp = {
             [`videoSrc${videoSrcOrder}`]: {
               ...val,
-              src: ''
+              src: '',
+              chooseNum: videoSrcOrder
             }
           };
           videoSquare[`videoSrc${videoSrcOrder}`] = temp[`videoSrc${videoSrcOrder}`];
@@ -496,7 +497,7 @@ class Preview extends PureComponent {
                 this.setState({
                   videoSquare: { ...videoSquare },
                   videoSrcOrder: '',
-                  chooseSquare: {}
+                  // chooseSquare: {}
                 }, () => {
 
                 });
@@ -821,7 +822,10 @@ class Preview extends PureComponent {
         this.setState({
           // [`videoSrc${val}`]
           videoSrcOrder: val,
-          chooseSquare: {}
+          chooseSquare: {},
+          historyListData: {}
+        }, () => {
+          this.clearTimer();
         });
       }
 
@@ -883,10 +887,10 @@ class Preview extends PureComponent {
 
       getDomSquared = () => {
         const {
-          showSquaredDom, videoSrc, videoName, pointsInfo, appliedTraffic, historyID, noVideo
+          showSquaredDom, videoSrc, videoName, pointsInfo, appliedTraffic, historyID
         } = this.state;
         if (showSquaredDom === 1) {
-          return historyID && !noVideo
+          return historyID
             ? (
               <Fragment>
                 <div className={styles.videoHandle}>
