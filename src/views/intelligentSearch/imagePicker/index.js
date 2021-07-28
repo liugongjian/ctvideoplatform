@@ -117,25 +117,20 @@ class ImagePicker extends Component {
   // }
 
  beforeUpload = (file) => {
-   this.setState({
-     cropImgLoading: true,
-   });
+   
    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
    if (!isJpgOrPng) {
-     this.setState({
-       cropImgLoading: false,
-     });
      message.error('请上传JPG/PNG类型的图片!');
      return false;
    }
    const isLt10M = file.size / 1024 / 1024 < 10;
    if (!isLt10M) {
-    this.setState({
-      cropImgLoading: false,
-    });
      message.error('图片大小不得超过10M！');
      return false;
    }
+   this.setState({
+    cropImgLoading: true,
+  });
    //  const isLt2M = file.size / 1024 / 1024 < 2;
    //  if (!isLt2M) {
    //    message.error('请上传小于2MB的图片!');
