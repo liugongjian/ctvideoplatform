@@ -55,7 +55,7 @@
   color: #333333;
 }
 .intelligentSearch-contentWrapper-leftPart {
-  width: 390px;
+  width: 370px;
   height: 100%;
   background-color: white;
   padding: 15px 0;
@@ -151,4 +151,14 @@
 }
 .searchWrapper .reUpload-icon {
   margin-left: 3px;
+}
+.scrollbar ::-webkit-scrollbar {
+  width: 0.5vw;
+}
+.scrollbar ::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 120, 0.2);
+  border-radius: 5px;
+}
+.scrollbar ::-webkit-scrollbar-track {
+  background: #fff;
 }

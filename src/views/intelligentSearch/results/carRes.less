@@ -94,6 +94,21 @@
       width: calc(100% - 30px);
       bottom: 10px;
     }
+    :global {
+      .ant-spin-container {
+        //滚轮样式
+        ::-webkit-scrollbar {
+          width: 0.5vw;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: rgba(120, 120, 120, 0.2);
+          border-radius: 5px;
+        }
+        ::-webkit-scrollbar-track {
+          background: #fff;
+        }
+      }
+    }
   }
   .plateWrapper {
     background-color: white;
@@ -176,5 +191,18 @@
         border: 1px solid #cccccc;
       }
     }
+  }
+}
+.scrollbar {
+  //滚轮样式
+  ::-webkit-scrollbar {
+    height: 0.5vw;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(120, 120, 120, 0.2);
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #fff;
   }
 }

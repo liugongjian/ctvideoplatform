@@ -76,7 +76,7 @@
       color: #333333;
     }
     &-leftPart {
-      width: 390px;
+      width: 370px;
       height: 100%;
       background-color: white;
       padding: 15px 0;
@@ -188,5 +188,19 @@
     &-icon {
       margin-left: 3px;
     }
+  }
+}
+
+.scrollbar {
+  //滚轮样式
+  ::-webkit-scrollbar {
+    width: 0.5vw;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(120, 120, 120, 0.2);
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #fff;
   }
 }

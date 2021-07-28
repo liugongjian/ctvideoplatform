@@ -145,11 +145,11 @@ class CarRes extends Component {
     } = this.state;
     return picture
       ? (
-        <div className={`${styles.plateWrapper} ${plateNum <= 1 ? styles['plateWrapper-bigImg'] : styles['plateWrapper-smallImg']}`}>
+        <div className={`${styles.plateWrapper} ${plateNum <= 1 ? styles['plateWrapper-bigImg'] : styles['plateWrapper-smallImg']} ${styles.scrollbar}`}>
           <div className={`${styles.imageWrapper}`}>
             <img src={picture} alt="图片" />
           </div>
-          <div className={`${styles.textWrapper} `}>
+          <div className={`${styles.textWrapper}`}>
             {
               picture ? detail.map(({ platelicense, plate_type, confidence }) => (
                 <div className={styles.plateInfo}>
@@ -197,7 +197,7 @@ class CarRes extends Component {
           {' '}
           {`${searchType ? '抓拍' : '告警'}信息`}
         </div>
-        <Spin spinning={listLoading} className={styles['plateAlarms-listSpin']}>
+        <Spin spinning={listLoading} className={`${styles['plateAlarms-listSpin']} ${styles.scrollbar}`}>
           <div className={`${styles['plateAlarms-listWrapper']} ${picture ? '' : styles['plateAlarms-listWrapper-long']}`}>
             {
               listData.length > 0 || listLoading

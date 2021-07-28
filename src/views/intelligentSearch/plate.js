@@ -327,7 +327,7 @@ class IntelligentSearch extends Component {
        <div className={styles['intelligentSearch-contentWrapper']}>
          <div className={styles['intelligentSearch-contentWrapper-leftPart']}>
            {/* <div className={styles.subTitle}>{SEARCH_TYPES[searchType]}</div> */}
-           <div className={styles.searchWrapper}>
+           <div className={`${styles.searchWrapper} ${styles.scrollbar}`}>
              <div className={styles.searchContent}>
                <ImagePicker
                  imageType={SEARCH_TYPES_PLATE}
