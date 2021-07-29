@@ -89,6 +89,16 @@
   width: calc(100% - 30px);
   bottom: 10px;
 }
+.carRes .plateAlarms :global .ant-spin-container ::-webkit-scrollbar {
+  width: 0.5vw;
+}
+.carRes .plateAlarms :global .ant-spin-container ::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 120, 0.2);
+  border-radius: 5px;
+}
+.carRes .plateAlarms :global .ant-spin-container ::-webkit-scrollbar-track {
+  background: #fff;
+}
 .carRes .plateWrapper {
   background-color: white;
   height: 315px;
@@ -163,4 +173,14 @@
   color: black;
   background-color: white;
   border: 1px solid #cccccc;
+}
+.scrollbar ::-webkit-scrollbar {
+  height: 0.5vw;
+}
+.scrollbar ::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 120, 0.2);
+  border-radius: 5px;
+}
+.scrollbar ::-webkit-scrollbar-track {
+  background: #fff;
 }
